@@ -36,6 +36,9 @@ Supabase (free): PostgreSQL + Auth + Storage (bucket site-photos, private) + Rea
 - `db/01_schema.sql` — full schema, already run on Supabase. `db/02_first_admin.sql` — admin helper. ⚠ Neither file is in the repo yet — ask Ahmed to upload them.
 - `db/03_chat.sql` — team chat tables (`chat_messages`, `chat_reads`), `chat_room_visible()`, `chat_directory()`, RLS, realtime; also confirms + promotes `admin@dmc.local`.
 - `db/04_demo_data.sql` — loads the demo data directly (generated from `seed()` + `MAP.*.to`; no photos). Re-runnable: deletes old demo rows first; pauses user triggers inside one transaction.
+- `db/05_push.sql` — push notifications: `push_subscriptions`, `private.push_config` (VAPID keys + hook secret, set via MCP, **not in repo**), RPCs `push_subscribe/unsubscribe/public_key/config_get`, trigger `push_notify()` (pg_net → Edge Function). Applied 2026-10-29.
+- `supabase/functions/push/index.ts` — Edge Function `push` (verify_jwt off; checks `x-hook-secret`, or a user JWT for `{test:true}`). Decides recipients: submitted→CM of project (or Planning if `require_cm` off), endorsed→Planning, returned/approved→engineer, notifications→engineers of discipline, chat→room members. Skips demo inserts.
+- `sw.js` (service worker: show push + open app), `manifest.json`, `icon-192.png`, `icon-512.png` — installable app (PWA). iPhone needs “Add to Home Screen” before push works.
 - **Two modes:** DEMO (no config → data in browser localStorage only) and LIVE (Supabase, shared, real-time).
 
 ## File format rules for `DMC Progress ERP.dc.html`
@@ -90,7 +93,7 @@ update profiles set role='admin', discipline='CIV' where id=(select id from auth
 
 ## Known limitations / roadmap
 - No direct P6 integration; CSV import only. Next: XER/XML import.
-- No offline mode, no push notifications.
+- No offline mode. Push notifications added 2026-10-29 (Data screen → Phone notifications; banner after login).
 - Data load capped at 10,000 rows per table — add pagination before large projects.
 - Vercel Hobby is non-commercial; company adoption needs IT approval or a paid/internal host.
 - Don't upload real project data without company approval.

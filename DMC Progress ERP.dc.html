@@ -4,6 +4,12 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="icon" href="logo.png">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0e5a4b">
+<link rel="apple-touch-icon" href="icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="DMC Progress">
 <script src="./support.js"></script>
 </head>
 <body>
@@ -70,6 +76,7 @@ input,textarea{font:inherit;color:inherit}
   </div></div></sc-if>
   <sc-if value="{{ isDemo }}" hint-placeholder-val="{{ true }}"><button onClick="{{ openSettings }}" style="display:block;width:100%;border:none;text-align:start;background:repeating-linear-gradient(-45deg,#f2c14e 0 10px,#f5cd6a 10px 20px);color:#1d1b18;font-size:12.5px;font-weight:600;padding:7px 16px;line-height:1.35">{{ t.demo }}</button></sc-if>
   <sc-if value="{{ isLive }}" hint-placeholder-val="{{ false }}"><button onClick="{{ openSettings }}" style="display:flex;gap:8px;align-items:center;width:100%;border:none;text-align:start;background:oklch(0.9 0.07 150);color:oklch(0.3 0.09 150);font-size:12.5px;font-weight:600;padding:7px 16px;line-height:1.35"><span style="width:8px;height:8px;border-radius:50%;background:oklch(0.55 0.15 150);flex:0 0 auto"></span><span>{{ liveBar }}</span></button></sc-if>
+  <sc-if value="{{ showPushAsk }}" hint-placeholder-val="{{ false }}"><div style="display:flex;gap:8px;align-items:center;background:#f1e8cf;color:#1d1b18;font-size:13px;font-weight:600;padding:8px 10px 8px 14px;line-height:1.35"><span style="font-size:18px">🔔</span><span style="flex:1">{{ t.pushAsk }}</span><button onClick="{{ pushEnable }}" style="min-height:36px;padding:0 12px;border-radius:8px;font-weight:700;font-size:13px;border:none;background:#0e5a4b;color:#fff">{{ t.pushOn }}</button><button onClick="{{ pushDismiss }}" aria-label="close" style="min-height:36px;min-width:36px;border:none;background:transparent;color:#5f5a52;font-size:18px">×</button></div></sc-if>
   <sc-if value="{{ hasLoadErr }}" hint-placeholder-val="{{ false }}"><div style="background:oklch(0.93 0.05 28);color:oklch(0.38 0.15 28);font-size:12.5px;font-weight:600;padding:7px 16px">⚠ {{ t.loadErrTxt }}: {{ loadErr }}</div></sc-if>
 </header>
 
@@ -883,6 +890,16 @@ input,textarea{font:inherit;color:inherit}
           <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px"><button onClick="{{ loadDemoDb }}" style="min-height:48px;padding:0 14px;border-radius:10px;font-weight:700;font-size:14px;border:1px solid #1d1b18;background:#fff">{{ loadDemoLbl }}</button><button onClick="{{ removeDemoDb }}" style="min-height:48px;padding:0 14px;border-radius:10px;font-weight:700;font-size:14px;border:1px solid oklch(0.52 0.17 28);color:oklch(0.45 0.16 28);background:#fff">{{ removeDemoLbl }}</button></div></div>
         </sc-if>
       </div>
+      <sc-if value="{{ isSignedIn }}" hint-placeholder-val="{{ false }}"><div style="background:#fff;border:1px solid #e2ded6;border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:10px;font-size:14px;line-height:1.5">
+        <div style="display:flex;align-items:center;gap:8px"><span style="font-size:18px">🔔</span><div style="font-weight:700;font-size:16px;flex:1">{{ t.pushTitle }}</div></div>
+        <div style="display:inline-flex;align-self:flex-start;font-size:12.5px;font-weight:700;padding:3px 10px;border-radius:999px;background:{{ pushBg }};color:{{ pushFg }}">{{ pushStatus }}</div>
+        <div style="font-size:13px;color:#5f5a52">{{ t.pushWhat }}</div>
+        <sc-if value="{{ pushIsIOS }}" hint-placeholder-val="{{ false }}"><div style="font-size:13.5px;display:flex;flex-direction:column;gap:3px;background:#f7f5f1;border-radius:8px;padding:10px"><div>{{ t.pushIos1 }}</div><div>{{ t.pushIos2 }}</div><div>{{ t.pushIos3 }}</div></div></sc-if>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <sc-if value="{{ pushCanOn }}" hint-placeholder-val="{{ true }}"><button onClick="{{ pushEnable }}" style="min-height:48px;padding:0 18px;border-radius:10px;font-weight:700;font-size:14px;border:none;background:#0e5a4b;color:#fff">{{ t.pushOn }}</button></sc-if>
+          <sc-if value="{{ pushIsOn }}" hint-placeholder-val="{{ false }}"><button onClick="{{ pushTest }}" style="min-height:48px;padding:0 16px;border-radius:10px;font-weight:700;font-size:14px;border:none;background:#0e5a4b;color:#fff">{{ t.pushTestBtn }}</button><button onClick="{{ pushDisable }}" style="min-height:48px;padding:0 16px;border-radius:10px;font-weight:600;font-size:14px;border:1px solid #cfc9bf;background:#fff;color:#1d1b18">{{ t.pushOff }}</button></sc-if>
+        </div>
+      </div></sc-if>
       <div style="background:#fff;border:1px solid #e2ded6;border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:8px;font-size:14px;line-height:1.5">
         <div style="font-weight:700;font-size:16px">{{ t.storageTitle }}</div>
         <div style="display:inline-flex;align-self:flex-start;font-size:12px;font-weight:700;padding:3px 10px;border-radius:999px;background:{{ stor.bg }};color:{{ stor.fg }}">{{ stor.badge }}</div>
@@ -933,7 +950,7 @@ const I18N={
 en:{title:'DMC Site Progress',otherLang:'عربي',dataShort:'Data',dataDate:'Data date',
 demo:'DEMO DATA — fictional sample projects. Saved only in this browser on this device. Tap for details.',
 role_site:'Site Engineer',role_planner:'Planning Engineer',role_pm:'Project Manager',actingAs:'Acting as site engineer',
-refreshBtn:'Refresh',copyright:'All rights reserved to Eng.',copyShort:'All rights reserved',tab_acts:'Activities',tab_hist:'Submissions',tab_review:'Review',tab_progress:'Progress',tab_import:'Import',tab_portfolio:'Portfolio',tab_trends:'S-curve',tab_lookahead:'Look-ahead',tab_delays:'Delays',
+refreshBtn:'Refresh',pushTitle:'Phone notifications',pushAsk:'Turn on notifications to get new updates, approvals and messages on your phone.',pushOn:'Turn on',pushOff:'Turn off',pushTestBtn:'Send test',pushStOn:'On for this device ✓',pushStOff:'Off on this device',pushStBusy:'Please wait…',pushStDenied:'Blocked by the browser. Allow notifications for this site in the browser settings, then tap Refresh.',pushStUnsup:'This browser does not support notifications. Use Chrome on Android or Safari on iPhone.',pushStIOS:'On iPhone, add the app to the Home Screen first:',pushIos1:'1. In Safari, tap the Share button.',pushIos2:'2. Choose “Add to Home Screen”.',pushIos3:'3. Open the app from the new icon and turn notifications on.',pushWhat:'You will get: new updates to review, approvals, returned updates, CM adjustments, reminders and chat messages.',pushErr:'Notifications:',pushTestSent:'Test notification sent ✓',pushTestNone:'No device registered yet.',copyright:'All rights reserved to Eng.',copyShort:'All rights reserved',tab_acts:'Activities',tab_hist:'Submissions',tab_review:'Review',tab_progress:'Progress',tab_import:'Import',tab_portfolio:'Portfolio',tab_trends:'S-curve',tab_lookahead:'Look-ahead',tab_delays:'Delays',
 search:'Search activity ID or name',f_all:'All',f_needs:'Needs update',f_returned:'Returned',f_drafts:'Drafts',f_pending:'In review',f_delayed:'Delayed',f_missing:'Missing update',allProjects:'All projects',
 planned:'Planned',actual:'Actual (approved)',actualShort:'Actual',variance:'Variance',plannedDates:'Planned dates',aDates:'Actual dates',budgetQty:'Budget quantity',weight:'Weight',assignee:'Assigned to',qtyShort:'Quantity',
 st_draft:'Draft',st_submitted:'In review',st_approved:'Approved',st_returned:'Returned',st_complete:'Complete',st_uptodate:'Up to date',st_needs:'Needs update',st_notstarted:'Not started',
@@ -974,7 +991,7 @@ stats:(p,a,u,kb)=>`${p} projects · ${a} activities · ${u} updates · ${kb} KB 
 ar:{title:'DMC تقدم الموقع',otherLang:'English',dataShort:'البيانات',dataDate:'تاريخ البيانات',
 demo:'بيانات تجريبية — مشاريع وهمية للعرض. محفوظة في هذا المتصفح على هذا الجهاز فقط. اضغط للتفاصيل.',
 role_site:'مهندس موقع',role_planner:'مهندس تخطيط',role_pm:'مدير المشروع',actingAs:'تعمل باسم مهندس الموقع',
-refreshBtn:'تحديث',copyright:'جميع الحقوق محفوظة للمهندس',copyShort:'جميع الحقوق محفوظة',tab_acts:'الأنشطة',tab_hist:'إرسالاتي',tab_review:'المراجعة',tab_progress:'التقدم',tab_import:'الاستيراد',tab_portfolio:'المحفظة',tab_trends:'منحنى S',tab_lookahead:'الأسابيع القادمة',tab_delays:'التأخيرات',
+refreshBtn:'تحديث',pushTitle:'إشعارات الموبايل',pushAsk:'فعّل الإشعارات عشان يوصلك على الموبايل كل تحديث جديد والموافقات والرسائل.',pushOn:'تفعيل',pushOff:'إيقاف',pushTestBtn:'إرسال تجربة',pushStOn:'مفعّلة على الجهاز ده ✓',pushStOff:'مش مفعّلة على الجهاز ده',pushStBusy:'انتظر…',pushStDenied:'المتصفح مانع الإشعارات. اسمح بالإشعارات للموقع ده من إعدادات المتصفح، وبعدين اضغط تحديث.',pushStUnsup:'المتصفح ده مابيدعمش الإشعارات. استخدم كروم على أندرويد أو سفاري على الآيفون.',pushStIOS:'على الآيفون لازم تضيف البرنامج للشاشة الرئيسية الأول:',pushIos1:'١. في سفاري اضغط زرار المشاركة.',pushIos2:'٢. اختار «إضافة إلى الشاشة الرئيسية».',pushIos3:'٣. افتح البرنامج من الأيقونة الجديدة وفعّل الإشعارات.',pushWhat:'هيوصلك: تحديثات جديدة للمراجعة، الموافقات، المرتجعات، تعديلات مدير التنفيذ، التذكيرات، ورسايل المحادثات.',pushErr:'الإشعارات:',pushTestSent:'اتبعت إشعار تجربة ✓',pushTestNone:'مفيش جهاز متسجل لسه.',copyright:'جميع الحقوق محفوظة للمهندس',copyShort:'جميع الحقوق محفوظة',tab_acts:'الأنشطة',tab_hist:'إرسالاتي',tab_review:'المراجعة',tab_progress:'التقدم',tab_import:'الاستيراد',tab_portfolio:'المحفظة',tab_trends:'منحنى S',tab_lookahead:'الأسابيع القادمة',tab_delays:'التأخيرات',
 search:'ابحث برقم النشاط أو اسمه',f_all:'الكل',f_needs:'يحتاج تحديث',f_returned:'مُعاد',f_drafts:'مسودات',f_pending:'قيد المراجعة',f_delayed:'متأخر',f_missing:'تحديث مفقود',allProjects:'كل المشاريع',
 planned:'المخطط',actual:'الفعلي (المعتمد)',actualShort:'الفعلي',variance:'الانحراف',plannedDates:'التواريخ المخططة',aDates:'التواريخ الفعلية',budgetQty:'الكمية المقررة',weight:'الوزن',assignee:'المسند إليه',qtyShort:'الكمية',
 st_draft:'مسودة',st_submitted:'قيد المراجعة',st_approved:'معتمد',st_returned:'مُعاد',st_complete:'مكتمل',st_uptodate:'محدّث',st_needs:'يحتاج تحديث',st_notstarted:'لم يبدأ',
@@ -1356,7 +1373,7 @@ const TABLE_ORDER=['projects','activities','updates','reminders'];
 
 class Component extends DCLogic {
   state=(()=>{const s=load();return{data:s?s.data:seed(),lang:(s&&s.prefs&&s.prefs.lang)||'en',role:(s&&s.prefs&&s.prefs.role)||'site',eng:(s&&s.prefs&&ENG.indexOf(s.prefs.eng)>=0&&s.prefs.eng)||'CIV',
-    tab:{site:'acts',cm:'review',planner:'review',pm:'dash'},detail:null,review:null,form:null,errors:[],q:'',sProj:'all',sFilter:'all',plProj:'P1',plFilter:'all',mode:'demo',auth:'none',user:null,profile:null,syncing:false,lastSync:'',loadErr:'',settingsDb:{},loginEmail:'',loginPw:'',loginErr:'',loginBusy:false,connUrl:connCfg().url,connKey:connCfg().key,wide:false,liveArm:'',pmProj:'all',dlProj:'all',
+    tab:{site:'acts',cm:'review',planner:'review',pm:'dash'},push:'',pushAskHidden:(()=>{try{return localStorage.getItem('dmc-erp:pushAsk')==='no';}catch(e){return false;}})(),detail:null,review:null,form:null,errors:[],q:'',sProj:'all',sFilter:'all',plProj:'P1',plFilter:'all',mode:'demo',auth:'none',user:null,profile:null,syncing:false,lastSync:'',loadErr:'',settingsDb:{},loginEmail:'',loginPw:'',loginErr:'',loginBusy:false,connUrl:connCfg().url,connKey:connCfg().key,wide:false,liveArm:'',pmProj:'all',dlProj:'all',
     comment:'',importText:'',importRows:null,settings:false,toast:'',resetArm:false,bulk:false,bulkVals:{},bulkErr:{},sel:{},rvProj:'all',rvFlag:'all',sBldg:'all',sZone:'all',plBldg:'all',plZone:'all',adjPct:'',adjQty:'',laProj:'all',laDays:14,report:false,repProj:'all',dbProj:'all',uq:'',uFilter:'all',nuOpen:false,nu:{name:'',pw:'',role:'site',disc:'CIV'},nuBusy:false,
     chatOpen:false,chatRoom:null,chatText:'',chatImg:null,chatNew:false,chatQ:'',chatMsgs:[],chatReads:[],chatDir:[],chatErr:''};})();
   live(){return this.state.mode==='live';}
@@ -1367,7 +1384,10 @@ class Component extends DCLogic {
   savePrefs(){try{localStorage.setItem(PREF_KEY,JSON.stringify({lang:this.state.lang}));}catch(e){}}
   componentDidMount(){this._onResize=()=>{const w=window.innerWidth>=1024;if(w!==this.state.wide)this.setState({wide:w});};window.addEventListener('resize',this._onResize);this._onResize();
     try{const p=JSON.parse(localStorage.getItem(PREF_KEY)||'{}');if(p.lang&&p.lang!==this.state.lang)this.setState({lang:p.lang});}catch(e){}
-    let n=0;const go=()=>{if(window.DMC_CONFIG===undefined&&n++<15){setTimeout(go,100);return;}this.initConn();};go();}
+    let n=0;const go=()=>{if(window.DMC_CONFIG===undefined&&n++<15){setTimeout(go,100);return;}this.initConn();};go();
+    if(/^https?:$/.test(location.protocol)&&'serviceWorker' in navigator){navigator.serviceWorker.register('sw.js').catch(()=>{});
+      navigator.serviceWorker.addEventListener('message',e=>{if(e.data&&e.data.type==='dmc-push-open'&&e.data.url==='#chat')this.setState({chatOpen:true,settings:false});});}
+    if(location.hash==='#chat'){this._openChatAfterLogin=true;try{history.replaceState(null,'',location.pathname+location.search);}catch(e){}}}
   componentWillUnmount(){window.removeEventListener('resize',this._onResize);if(this._ch&&this._sb)try{this._sb.removeChannel(this._ch);}catch(e){}}
   async initConn(){const c=connCfg();if(!c.url||!c.key){this.setState({mode:'demo',auth:'none'});return;}
     this.setState({mode:'live',auth:'checking',connUrl:c.url,connKey:c.key,data:{projects:[],activities:[],updates:[],reminders:[]},detail:null,review:null});
@@ -1380,7 +1400,8 @@ class Component extends DCLogic {
     const prof=r.data;if(prof.active===false){this.setState({auth:'signedOut',loginErr:t.inactive});await sb.auth.signOut();return;}
     const role=prof.role==='admin'?(['site','cm','planner','pm'].indexOf(this.state.role)>=0?this.state.role:'planner'):prof.role;
     this.setState({user:{id:user.id,email:user.email},profile:prof,role,eng:prof.discipline||'CIV',auth:'ready',loginErr:''});
-    await this.reloadLive();this.reloadChat();
+    await this.reloadLive();this.reloadChat();this.pushCheck();
+    if(this._openChatAfterLogin){this._openChatAfterLogin=false;this.setState({chatOpen:true});}
     if(!this._ch){let tmr=null,tc=null;this._ch=sb.channel('dmc-live').on('postgres_changes',{event:'*',schema:'public'},p=>{
       if(p&&String(p.table||'').indexOf('chat_')===0){clearTimeout(tc);tc=setTimeout(()=>this.reloadChat(),250);return;}
       clearTimeout(tmr);tmr=setTimeout(()=>this.reloadLive(),700);}).subscribe();}}
@@ -1424,7 +1445,8 @@ class Component extends DCLogic {
     this.setState({loginBusy:true,loginErr:''});const r=await this._sb.auth.signUp({email:this.loginId(),password:s.loginPw,options:{data:{full_name:s.loginEmail.trim()}}});
     this.setState({loginBusy:false});if(r.error){this.setState({loginErr:r.error.message});return;}
     if(r.data&&r.data.session)await this.afterLogin(r.data.user);else this.setState({loginErr:t.signUpOk});}
-  async signOut(){try{await this._sb.auth.signOut();}catch(e){}this.setState({auth:'signedOut',user:null,profile:null,settings:false,chatOpen:false,chatRoom:null,chatMsgs:[],chatReads:[],chatDir:[],users:[],members:[],data:{projects:[],activities:[],updates:[],reminders:[]}});}
+  async signOut(){try{const sub=await this.pushSub();if(sub){await this._sb.rpc('push_unsubscribe',{p_endpoint:sub.endpoint});}}catch(e){}
+    try{await this._sb.auth.signOut();}catch(e){}this.setState({auth:'signedOut',user:null,profile:null,settings:false,chatOpen:false,chatRoom:null,chatMsgs:[],chatReads:[],chatDir:[],users:[],members:[],data:{projects:[],activities:[],updates:[],reminders:[]}});}
   connect(){const s=this.state,t=this.T();if(!/^https:\/\/.+/.test(s.connUrl.trim())||s.connKey.trim().length<20){this.toast(t.connBad);return;}
     try{localStorage.setItem(CONN_KEY,JSON.stringify({url:s.connUrl.trim(),key:s.connKey.trim()}));}catch(e){}this.setState({settings:false});this.initConn();}
   disconnect(){try{localStorage.removeItem(CONN_KEY);}catch(e){}if(this._ch&&this._sb)try{this._sb.removeChannel(this._ch);}catch(e){}this._ch=null;
@@ -1483,6 +1505,29 @@ class Component extends DCLogic {
   onChatImg(e){const file=e.target.files&&e.target.files[0];e.target.value='';if(!file)return;compress(file).then(src=>this.setState({chatImg:src})).catch(()=>{});}
   persist(){try{localStorage.setItem(KEY,JSON.stringify({v:2,data:this.state.data,prefs:{lang:this.state.lang,role:this.state.role,eng:this.state.eng}}));return true;}catch(e){this.toast(I18N[this.state.lang].t_quota);return false;}}
   set(patch,cb){const prev=this.state.data;this.setState(patch,()=>{if(this.live()){this.savePrefs();if(patch.data&&patch.data!==prev)this.pushDiff(prev,patch.data);}else this.persist();cb&&cb();});}
+  // Push notifications (phone / browser). States: unsupported, ios (must add to home screen first), denied, off, on, busy
+  pushSupported(){return /^https?:$/.test(location.protocol)&&'serviceWorker' in navigator&&'PushManager' in window&&'Notification' in window;}
+  pushIOS(){const ua=navigator.userAgent||'';const ios=/iPhone|iPad|iPod/.test(ua)||(ua.indexOf('Macintosh')>=0&&navigator.maxTouchPoints>1);
+    const sa=window.navigator.standalone===true||(window.matchMedia&&window.matchMedia('(display-mode: standalone)').matches);return ios&&!sa;}
+  async pushSub(){if(!this.pushSupported())return null;const reg=await navigator.serviceWorker.getRegistration();return reg?await reg.pushManager.getSubscription():null;}
+  async pushSave(sub){const j=sub.toJSON();const r=await this._sb.rpc('push_subscribe',{p_endpoint:j.endpoint,p_p256dh:j.keys.p256dh,p_auth:j.keys.auth,p_ua:navigator.userAgent});if(r.error)throw r.error;}
+  async pushCheck(){if(!this.live()||this.state.auth!=='ready')return;
+    if(!this.pushSupported()){this.setState({push:this.pushIOS()?'ios':'unsupported'});return;}
+    if(Notification.permission==='denied'){this.setState({push:'denied'});return;}
+    try{const sub=await this.pushSub();if(sub&&Notification.permission==='granted'){await this.pushSave(sub);this.setState({push:'on'});}else this.setState({push:'off'});}
+    catch(e){this.setState({push:'off'});}}
+  async pushEnable(){const t=this.T();if(!this.pushSupported()){this.setState({push:this.pushIOS()?'ios':'unsupported',settings:true});return;}
+    this.setState({push:'busy'});
+    try{const perm=await Notification.requestPermission();if(perm!=='granted'){this.setState({push:perm==='denied'?'denied':'off'});return;}
+      const k=await this._sb.rpc('push_public_key');if(k.error||!k.data)throw (k.error||new Error('no key'));
+      const raw=atob(k.data.replace(/-/g,'+').replace(/_/g,'/')+'==='.slice((k.data.length+3)%4));const key=new Uint8Array(raw.length);for(let i=0;i<raw.length;i++)key[i]=raw.charCodeAt(i);
+      const reg=await navigator.serviceWorker.register('sw.js');await navigator.serviceWorker.ready;
+      let sub=await reg.pushManager.getSubscription();if(!sub)sub=await reg.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:key});
+      await this.pushSave(sub);this.setState({push:'on'});this.pushTest();}
+    catch(e){this.setState({push:'off'});this.toast(t.pushErr+' '+(e.message||e));}}
+  async pushDisable(){this.setState({push:'busy'});try{const sub=await this.pushSub();if(sub){await this._sb.rpc('push_unsubscribe',{p_endpoint:sub.endpoint});await sub.unsubscribe();}}catch(e){}this.setState({push:'off'});}
+  async pushTest(){const t=this.T();try{const r=await this._sb.functions.invoke('push',{body:{test:true}});if(r.error)throw r.error;this.toast(r.data&&r.data.sent?t.pushTestSent:t.pushTestNone);}catch(e){this.toast(t.pushErr+' '+(e.message||e));}}
+  pushDismiss(){try{localStorage.setItem('dmc-erp:pushAsk','no');}catch(e){}this.setState({pushAskHidden:true});}
   toast(m){clearTimeout(this._tt);this.setState({toast:m});this._tt=setTimeout(()=>this.setState({toast:''}),2800);}
   D(){const c=this.cfg(),m=this._memo;if(m&&m.data===this.state.data&&m.stale===c.stale&&m.thr===c.thr)return m.D;const D=derive(this.state.data,c);this._memo={data:this.state.data,stale:c.stale,thr:c.thr,D};return D;}
   top(){try{window.scrollTo(0,0);}catch(e){}}
@@ -1858,7 +1903,11 @@ class Component extends DCLogic {
     return{...liveVals,usersList,usersEmpty:show.users&&!usersList.length,uStats,uq:s.uq,onUq:e=>this.setState({uq:e.target.value}),nuOpen:s.nuOpen,nuBtn:s.nuOpen?t.nuClose:t.nuOpen,toggleNu:()=>this.setState({nuOpen:!s.nuOpen}),nuV,permHead,permCells,
       db,ch,chatOpen:s.chatOpen,chatUnread,chatHasUnread:chatUnread>0,openChat:()=>{this.setState({chatOpen:true,settings:false});if(this.live())this.reloadChat();},
       photoNote:live?t.photoNoteLive:t.photoNote,retTitle:d.retBy?t.returnedBy(d.retBy):t.returnedNote,importJson:e=>this.importJson(e),t,dir:L==='ar'?'rtl':'ltr',lang:L,today:TODAY,roles,tabs,show,toast:s.toast,hasToast:!!s.toast,
-      settingsOpen:s.settings,openSettings:()=>this.setState({settings:true,resetArm:false}),closeSettings:()=>this.setState({settings:false}),
+      showPushAsk:live&&s.auth==='ready'&&s.push==='off'&&!s.pushAskHidden&&!s.settings,pushIsOn:s.push==='on',pushIsIOS:s.push==='ios',pushCanOn:s.push==='off'||s.push==='',
+      pushStatus:({on:t.pushStOn,off:t.pushStOff,busy:t.pushStBusy,denied:t.pushStDenied,unsupported:t.pushStUnsup,ios:t.pushStIOS})[s.push]||t.pushStOff,
+      pushBg:s.push==='on'?C.greenBg:(s.push==='denied'||s.push==='unsupported')?C.redBg:'#ece9e3',pushFg:s.push==='on'?C.green:(s.push==='denied'||s.push==='unsupported')?C.red:'#3f3a33',
+      pushEnable:()=>this.pushEnable(),pushDisable:()=>this.pushDisable(),pushTest:()=>this.pushTest(),pushDismiss:()=>this.pushDismiss(),
+      settingsOpen:s.settings,openSettings:()=>{this.setState({settings:true,resetArm:false});this.pushCheck();},closeSettings:()=>this.setState({settings:false}),
       toggleLang:()=>this.set({lang:L==='en'?'ar':'en'}),refresh:()=>window.location.reload(),langChips:[chip('English',L==='en',()=>this.set({lang:'en'})),chip('العربية',L==='ar',()=>this.set({lang:'ar'}))],
       engChips,q:s.q,onSearch:e=>this.setState({q:e.target.value}),sProjChips,tiles,myRem,hasRem:myRem.length>0,filterOn:s.sFilter!=='all',clearFilter:()=>this.setState({sFilter:'all'}),
       siteCountTxt:t.siteCount(siteList.length,mine.length),siteActs:siteList.map(a=>card(a,s.bulk)),siteEmpty:show.siteList&&!siteList.length,
