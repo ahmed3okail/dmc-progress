@@ -1,0 +1,10 @@
+انسخ الرسالة دي والصقها كأول رسالة في Claude Code (claude.ai/code) بعد ما تربط المشروع ahmed3okail/dmc-progress:
+
+---
+
+You are now the programmer for this repository. First read CLAUDE.md and README.md fully, then:
+1. Check that the repo contains: DMC Progress ERP.dc.html, support.js, config.js, index.html, vercel.json, README.md, CLAUDE.md, db/01_schema.sql, db/02_first_admin.sql. Report anything missing.
+2. Confirm that DMC Progress ERP.dc.html contains the username login (function loginId) and the admin Users tab (tab_users). If not, tell me.
+3. Summarize the project back to me in Egyptian Arabic in 5 short lines, following the chat formatting rules in CLAUDE.md.
+4. Then wait for my requests. For every request: edit, commit, push to main, and tell me in Arabic what changed and what to test on the live site.
+Never ask me for passwords or secret keys.
