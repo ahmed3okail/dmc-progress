@@ -43,6 +43,7 @@ input,textarea{font:inherit;color:inherit}
     </sc-if>
     <div style="margin-top:auto;border-top:1px solid #2a6356;padding-top:12px;display:flex;flex-direction:column;gap:8px">
       <div style="font-size:12px;color:#c9c3b8;line-height:1.4;overflow-wrap:anywhere">{{ userLine }}</div>
+      <div style="font-size:11px;color:#9fc2b8;line-height:1.4">© 2026 {{ t.copyright }} <span style="direction:ltr;unicode-bidi:isolate;font-weight:700">Ahmed A.Okail</span></div>
       <button onClick="{{ refresh }}" style="min-height:40px;border:1px solid #3f7468;background:transparent;color:#e9e4da;border-radius:8px;font-weight:600">↻ {{ t.refreshBtn }}</button>
       <div style="display:flex;gap:6px"><button onClick="{{ toggleLang }}" style="flex:1;min-height:40px;border:1px solid #3f7468;background:transparent;color:#e9e4da;border-radius:8px;font-weight:600">{{ t.otherLang }}</button><button onClick="{{ openSettings }}" style="flex:1;min-height:40px;border:1px solid #3f7468;background:transparent;color:#e9e4da;border-radius:8px;font-weight:600">{{ t.dataShort }}</button></div>
     </div>
@@ -733,6 +734,7 @@ input,textarea{font:inherit;color:inherit}
   </div>
 </sc-if>
 
+<footer style="padding:28px 16px 8px;text-align:center;font-size:12px;color:#605a51">© 2026 {{ t.copyright }} <span style="direction:ltr;unicode-bidi:isolate;font-weight:700">Ahmed A.Okail</span></footer>
 </div>
 </div>
 
@@ -845,6 +847,7 @@ input,textarea{font:inherit;color:inherit}
         <div style="font-size:12px;color:#5f5a52;line-height:1.45">{{ t.signUpNote }}</div>
       </sc-if>
       <button onClick="{{ openDemo }}" style="min-height:44px;border:none;background:transparent;color:#8a4b12;font-weight:600;text-decoration:underline">{{ t.openDemo }}</button>
+      <div style="text-align:center;font-size:11.5px;color:#5f5a52;border-top:1px solid #e4e0d8;padding-top:10px">© 2026 {{ t.copyright }} <span style="direction:ltr;unicode-bidi:isolate;font-weight:700">Ahmed A.Okail</span></div>
     </div>
   </div>
 </sc-if>
@@ -930,7 +933,7 @@ const I18N={
 en:{title:'DMC Site Progress',otherLang:'عربي',dataShort:'Data',dataDate:'Data date',
 demo:'DEMO DATA — fictional sample projects. Saved only in this browser on this device. Tap for details.',
 role_site:'Site Engineer',role_planner:'Planning Engineer',role_pm:'Project Manager',actingAs:'Acting as site engineer',
-refreshBtn:'Refresh',tab_acts:'Activities',tab_hist:'Submissions',tab_review:'Review',tab_progress:'Progress',tab_import:'Import',tab_portfolio:'Portfolio',tab_trends:'S-curve',tab_lookahead:'Look-ahead',tab_delays:'Delays',
+refreshBtn:'Refresh',copyright:'All rights reserved to Eng.',tab_acts:'Activities',tab_hist:'Submissions',tab_review:'Review',tab_progress:'Progress',tab_import:'Import',tab_portfolio:'Portfolio',tab_trends:'S-curve',tab_lookahead:'Look-ahead',tab_delays:'Delays',
 search:'Search activity ID or name',f_all:'All',f_needs:'Needs update',f_returned:'Returned',f_drafts:'Drafts',f_pending:'In review',f_delayed:'Delayed',f_missing:'Missing update',allProjects:'All projects',
 planned:'Planned',actual:'Actual (approved)',actualShort:'Actual',variance:'Variance',plannedDates:'Planned dates',aDates:'Actual dates',budgetQty:'Budget quantity',weight:'Weight',assignee:'Assigned to',qtyShort:'Quantity',
 st_draft:'Draft',st_submitted:'In review',st_approved:'Approved',st_returned:'Returned',st_complete:'Complete',st_uptodate:'Up to date',st_needs:'Needs update',st_notstarted:'Not started',
@@ -971,7 +974,7 @@ stats:(p,a,u,kb)=>`${p} projects · ${a} activities · ${u} updates · ${kb} KB 
 ar:{title:'DMC تقدم الموقع',otherLang:'English',dataShort:'البيانات',dataDate:'تاريخ البيانات',
 demo:'بيانات تجريبية — مشاريع وهمية للعرض. محفوظة في هذا المتصفح على هذا الجهاز فقط. اضغط للتفاصيل.',
 role_site:'مهندس موقع',role_planner:'مهندس تخطيط',role_pm:'مدير المشروع',actingAs:'تعمل باسم مهندس الموقع',
-refreshBtn:'تحديث',tab_acts:'الأنشطة',tab_hist:'إرسالاتي',tab_review:'المراجعة',tab_progress:'التقدم',tab_import:'الاستيراد',tab_portfolio:'المحفظة',tab_trends:'منحنى S',tab_lookahead:'الأسابيع القادمة',tab_delays:'التأخيرات',
+refreshBtn:'تحديث',copyright:'جميع الحقوق محفوظة للمهندس',tab_acts:'الأنشطة',tab_hist:'إرسالاتي',tab_review:'المراجعة',tab_progress:'التقدم',tab_import:'الاستيراد',tab_portfolio:'المحفظة',tab_trends:'منحنى S',tab_lookahead:'الأسابيع القادمة',tab_delays:'التأخيرات',
 search:'ابحث برقم النشاط أو اسمه',f_all:'الكل',f_needs:'يحتاج تحديث',f_returned:'مُعاد',f_drafts:'مسودات',f_pending:'قيد المراجعة',f_delayed:'متأخر',f_missing:'تحديث مفقود',allProjects:'كل المشاريع',
 planned:'المخطط',actual:'الفعلي (المعتمد)',actualShort:'الفعلي',variance:'الانحراف',plannedDates:'التواريخ المخططة',aDates:'التواريخ الفعلية',budgetQty:'الكمية المقررة',weight:'الوزن',assignee:'المسند إليه',qtyShort:'الكمية',
 st_draft:'مسودة',st_submitted:'قيد المراجعة',st_approved:'معتمد',st_returned:'مُعاد',st_complete:'مكتمل',st_uptodate:'محدّث',st_needs:'يحتاج تحديث',st_notstarted:'لم يبدأ',
