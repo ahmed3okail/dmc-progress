@@ -35,6 +35,7 @@ Supabase (free): PostgreSQL + Auth + Storage (bucket site-photos, private) + Rea
 - `index.html` — redirects to the app. `vercel.json` — headers.
 - `db/01_schema.sql` — full schema, already run on Supabase. `db/02_first_admin.sql` — admin helper. ⚠ Neither file is in the repo yet — ask Ahmed to upload them.
 - `db/03_chat.sql` — team chat tables (`chat_messages`, `chat_reads`), `chat_room_visible()`, `chat_directory()`, RLS, realtime; also confirms + promotes `admin@dmc.local`.
+- `db/04_demo_data.sql` — loads the demo data directly (generated from `seed()` + `MAP.*.to`; no photos). Re-runnable: deletes old demo rows first; pauses user triggers inside one transaction.
 - **Two modes:** DEMO (no config → data in browser localStorage only) and LIVE (Supabase, shared, real-time).
 
 ## File format rules for `DMC Progress ERP.dc.html`

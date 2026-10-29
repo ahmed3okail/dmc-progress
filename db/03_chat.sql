@@ -68,8 +68,8 @@ grant execute on function public.chat_directory() to authenticated;
 
 -- Real-time delivery of new messages and read receipts
 do $$ begin
-  begin alter publication supabase_realtime add table public.chat_messages; exception when duplicate_object then null; end;
-  begin alter publication supabase_realtime add table public.chat_reads; exception when duplicate_object then null; end;
+  begin alter publication supabase_realtime add table public.chat_messages; exception when duplicate_object or undefined_object then null; end;
+  begin alter publication supabase_realtime add table public.chat_reads; exception when duplicate_object or undefined_object then null; end;
 end $$;
 
 -- First administrator: confirm the Admin account (username "Admin") and give it the admin role
