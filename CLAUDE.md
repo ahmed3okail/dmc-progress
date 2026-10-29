@@ -77,6 +77,10 @@ update profiles set role='admin', discipline='CIV' where id=(select id from auth
 - Team chat (header "Chat" button): general room, one group per project, private chats, unread badges, read ticks in private chats, photo attach. DEMO = browser only; LIVE needs `db/03_chat.sql`.
 - CSV import column is `discipline` (old `assigned_to` still accepted).
 
+## Demo users (live Supabase, 2026-10-29)
+- Created directly in `auth.users` via the Supabase MCP, confirmed, sharing one demo password (told to Ahmed in chat; not stored here).
+- `civil.eng` / `arch.eng` / `mech.eng` / `elec.eng` (site, CIV/ARC/MEC/ELE), `cm` (cm, CIV), `planner`, `pm`. Site + CM are members of P1–P5.
+
 ## Rules for changes
 - Old versions (DMC Site Progress v1–v4) live outside this repo; don't recreate them.
 - DB changes: add a new file `db/03_<name>.sql` (never edit already-run files) and give Ahmed exact steps to run it in SQL Editor — or use the Supabase MCP if connected.
