@@ -1,0 +1,1400 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./config.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+html,body{margin:0;background:#e9e5de;-webkit-text-size-adjust:100%}
+*{box-sizing:border-box}
+a{color:#8a4b12}a:hover{color:#5c300a}
+button{font:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent}
+input,textarea{font:inherit;color:inherit}
+@media print{[data-app],[data-noprint]{display:none!important}#dmc-report{position:static!important;overflow:visible!important;background:#fff!important}#dmc-report [data-sheet]{margin:0!important;padding:0!important;box-shadow:none!important;max-width:none!important}html,body{background:#fff!important}@page{margin:12mm}}
+</style>
+</helmet>
+<div dir="{{ dir }}" lang="{{ lang }}" style="min-height:100vh;font-family:'IBM Plex Sans','IBM Plex Sans Arabic',system-ui,sans-serif;color:#1d1b18;background:#e9e5de">
+<div style="display:flex;align-items:flex-start;min-height:100vh">
+<sc-if value="{{ wide }}" hint-placeholder-val="{{ false }}">
+  <aside data-noprint="1" style="position:sticky;top:0;height:100vh;width:256px;flex:0 0 256px;background:#1b1a17;color:#e9e4da;display:flex;flex-direction:column;gap:18px;padding:18px 14px;overflow-y:auto">
+    <div style="display:flex;align-items:center;gap:10px">
+      <div style="width:40px;height:40px;flex:0 0 auto;background:oklch(0.76 0.14 65);color:#1b1a17;display:grid;place-items:center;font-weight:700;font-size:14px;border-radius:8px;font-family:'IBM Plex Mono',monospace">DMC</div>
+      <div style="min-width:0"><div style="font-weight:700;font-size:15px;line-height:1.2">{{ t.title }}</div><div style="display:flex;gap:6px;align-items:center;margin-top:3px"><span style="font-size:10.5px;font-weight:700;padding:1px 7px;border-radius:4px;background:{{ srcBg }};color:#1b1a17">{{ srcTag }}</span><span style="font-size:11.5px;color:#a8a194">{{ roleLabel }}</span></div></div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:4px">
+      <div style="font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:#8f887c;font-weight:700;padding:0 8px 4px">{{ t.modules }}</div>
+      <sc-for list="{{ sideTabs }}" as="b" hint-placeholder-count="3"><button onClick="{{ b.onClick }}" style="min-height:44px;display:flex;align-items:center;gap:8px;padding:0 12px;border:none;border-radius:9px;background:{{ b.sbg }};color:{{ b.sfg }};font-size:14.5px;font-weight:{{ b.fw }};text-align:start"><span style="flex:1">{{ b.label }}</span><sc-if value="{{ b.hasBadge }}" hint-placeholder-val="{{ false }}"><span style="min-width:22px;padding:1px 6px;border-radius:999px;background:oklch(0.55 0.17 28);color:#fff;font-size:12px;font-weight:700;text-align:center">{{ b.badge }}</span></sc-if></button></sc-for>
+    </div>
+    <sc-if value="{{ showSideRoles }}" hint-placeholder-val="{{ true }}">
+      <div style="display:flex;flex-direction:column;gap:4px">
+        <div style="font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:#8f887c;font-weight:700;padding:0 8px 4px">{{ t.roleView }}</div>
+        <sc-for list="{{ roles }}" as="r" hint-placeholder-count="4"><button onClick="{{ r.onClick }}" style="min-height:40px;padding:0 12px;border:none;border-radius:9px;background:{{ r.bg }};color:{{ r.fg }};font-size:13.5px;font-weight:600;text-align:start">{{ r.label }}</button></sc-for>
+      </div>
+    </sc-if>
+    <div style="margin-top:auto;border-top:1px solid #34312c;padding-top:12px;display:flex;flex-direction:column;gap:8px">
+      <div style="font-size:12px;color:#c9c3b8;line-height:1.4;overflow-wrap:anywhere">{{ userLine }}</div>
+      <div style="display:flex;gap:6px"><button onClick="{{ toggleLang }}" style="flex:1;min-height:40px;border:1px solid #4a463f;background:transparent;color:#e9e4da;border-radius:8px;font-weight:600">{{ t.otherLang }}</button><button onClick="{{ openSettings }}" style="flex:1;min-height:40px;border:1px solid #4a463f;background:transparent;color:#e9e4da;border-radius:8px;font-weight:600">{{ t.dataShort }}</button></div>
+    </div>
+  </aside>
+</sc-if>
+<div data-app="1" style="flex:1;min-width:0;max-width:1180px;margin:0 auto;min-height:100vh;background:#f4f2ed;padding-bottom:150px">
+
+<header style="position:sticky;top:0;z-index:20;background:#1d1b18;color:#f7f5f1">
+  <div style="display:flex;align-items:center;gap:10px;padding:10px 12px 8px 16px">
+    <div style="width:38px;height:38px;flex:0 0 auto;background:oklch(0.76 0.14 65);color:#1d1b18;display:grid;place-items:center;font-weight:700;font-size:15px;border-radius:7px;font-family:'IBM Plex Mono',monospace">DMC</div>
+    <div style="flex:1;min-width:0">
+      <div style="font-weight:700;font-size:17px;line-height:1.2">{{ t.title }}</div>
+      <div style="font-size:12px;color:#c9c3b8">DMC-CURVE · {{ t.dataDate }} <span style="font-family:'IBM Plex Mono',monospace">{{ today }}</span></div>
+    </div>
+    <button onClick="{{ toggleLang }}" style="min-height:44px;min-width:44px;padding:0 12px;border:1px solid #5a554d;background:transparent;color:#f7f5f1;border-radius:8px;font-weight:600;font-size:14px">{{ t.otherLang }}</button>
+    <button onClick="{{ openSettings }}" style="min-height:44px;padding:0 12px;border:1px solid #5a554d;background:transparent;color:#f7f5f1;border-radius:8px;font-weight:600;font-size:14px">{{ t.dataShort }}</button>
+  </div>
+  <sc-if value="{{ showRoleBar }}" hint-placeholder-val="{{ true }}"><div style="padding:2px 12px 12px"><div style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:4px;background:#2d2b27;border-radius:12px;padding:4px">
+    <sc-for list="{{ roles }}" as="r" hint-placeholder-count="3">
+      <button onClick="{{ r.onClick }}" style="min-height:44px;border-radius:9px;border:none;background:{{ r.bg }};color:{{ r.fg }};font-size:12px;font-weight:600;line-height:1.15;padding:4px 3px">{{ r.label }}</button>
+    </sc-for>
+  </div></div></sc-if>
+  <sc-if value="{{ isDemo }}" hint-placeholder-val="{{ true }}"><button onClick="{{ openSettings }}" style="display:block;width:100%;border:none;text-align:start;background:repeating-linear-gradient(-45deg,#f2c14e 0 10px,#f5cd6a 10px 20px);color:#1d1b18;font-size:12.5px;font-weight:600;padding:7px 16px;line-height:1.35">{{ t.demo }}</button></sc-if>
+  <sc-if value="{{ isLive }}" hint-placeholder-val="{{ false }}"><button onClick="{{ openSettings }}" style="display:flex;gap:8px;align-items:center;width:100%;border:none;text-align:start;background:oklch(0.9 0.07 150);color:oklch(0.3 0.09 150);font-size:12.5px;font-weight:600;padding:7px 16px;line-height:1.35"><span style="width:8px;height:8px;border-radius:50%;background:oklch(0.55 0.15 150);flex:0 0 auto"></span><span>{{ liveBar }}</span></button></sc-if>
+  <sc-if value="{{ hasLoadErr }}" hint-placeholder-val="{{ false }}"><div style="background:oklch(0.93 0.05 28);color:oklch(0.38 0.15 28);font-size:12.5px;font-weight:600;padding:7px 16px">⚠ {{ t.loadErrTxt }}: {{ loadErr }}</div></sc-if>
+</header>
+
+<sc-if value="{{ show.siteList }}" hint-placeholder-val="{{ true }}">
+  <div style="display:flex;flex-direction:column;gap:14px;padding:16px 0">
+    <div style="padding:0 16px;display:flex;flex-direction:column;gap:8px">
+      <div style="font-size:11.5px;color:#605a51;font-weight:700;letter-spacing:.08em;text-transform:uppercase">{{ t.actingAs }}</div>
+      <div style="display:flex;gap:8px;overflow-x:auto">
+        <sc-for list="{{ engChips }}" as="c" hint-placeholder-count="3"><button onClick="{{ c.onClick }}" style="flex:0 0 auto;min-height:44px;padding:0 14px;border-radius:999px;border:1px solid {{ c.bd }};background:{{ c.bg }};color:{{ c.fg }};font-size:14px;font-weight:600;white-space:nowrap">{{ c.label }}</button></sc-for>
+      </div>
+    </div>
+    <sc-if value="{{ hasRem }}" hint-placeholder-val="{{ false }}">
+      <div style="padding:0 16px;display:flex;flex-direction:column;gap:8px">
+        <sc-for list="{{ myRem }}" as="m" hint-placeholder-count="1">
+          <div style="background:#fff6e0;border:1px solid #efd38b;border-radius:14px;padding:14px;display:flex;flex-direction:column;gap:8px">
+            <div style="display:flex;gap:8px;align-items:baseline;flex-wrap:wrap"><span style="font-weight:700;color:#5b4310">{{ m.title }}</span><span style="font-size:12px;color:#7a6538;white-space:nowrap">{{ m.when }}</span></div>
+            <div style="font-size:14.5px;color:#3d2f0c">{{ m.msg }}</div>
+            <div style="font-family:'IBM Plex Mono',monospace;font-size:12.5px;color:#5b4310">{{ m.codes }}</div>
+            <div style="display:flex;gap:8px"><button onClick="{{ m.show }}" style="min-height:44px;padding:0 16px;border:none;background:#1b1a17;color:#fff;border-radius:10px;font-weight:600">{{ m.showLbl }}</button><button onClick="{{ m.dismiss }}" style="min-height:44px;padding:0 16px;border:1px solid #cdb67a;background:transparent;border-radius:10px;font-weight:600;color:#5b4310">{{ t.dismiss }}</button></div>
+          </div>
+        </sc-for>
+      </div>
+    </sc-if>
+    <div style="padding:0 16px;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px">
+      <sc-for list="{{ tiles }}" as="x" hint-placeholder-count="4">
+        <button onClick="{{ x.onClick }}" style="background:{{ x.bg }};border:1.5px solid {{ x.bd }};border-radius:12px;padding:10px 10px 9px;min-height:76px;display:flex;flex-direction:column;align-items:flex-start;justify-content:space-between;gap:4px;text-align:start">
+          <span style="font-size:26px;font-weight:700;line-height:1;color:{{ x.c }}">{{ x.n }}</span>
+          <span style="font-size:12px;color:#3f3a33;line-height:1.2;font-weight:500">{{ x.l }}</span>
+        </button>
+      </sc-for>
+    </div>
+    <div style="padding:0 16px;display:flex;gap:8px">
+      <input type="search" value="{{ q }}" onChange="{{ onSearch }}" placeholder="{{ t.search }}" style="flex:1;min-width:0;min-height:48px;padding:0 14px;border:1px solid #cfc9bf;border-radius:10px;background:#fff;font-size:16px">
+      <button onClick="{{ toggleBulk }}" style="flex:0 0 auto;min-height:48px;padding:0 16px;border:1.5px solid #1b1a17;background:{{ bulkBtn.bg }};color:{{ bulkBtn.fg }};border-radius:10px;font-weight:700;font-size:14px;white-space:nowrap">⚡ {{ bulkBtn.label }}</button>
+    </div>
+    <sc-if value="{{ bulk }}" hint-placeholder-val="{{ false }}"><div style="margin:0 16px;padding:10px 12px;background:oklch(0.95 0.025 250);border:1px solid oklch(0.85 0.05 250);border-radius:10px;font-size:13px;line-height:1.45;color:oklch(0.35 0.1 250)">{{ t.bulkHelp }}</div></sc-if>
+    <div style="display:flex;gap:8px;overflow-x:auto;padding:0 16px 2px">
+      <sc-for list="{{ sProjChips }}" as="c" hint-placeholder-count="4"><button onClick="{{ c.onClick }}" style="flex:0 0 auto;min-height:40px;padding:0 14px;border-radius:999px;border:1px solid {{ c.bd }};background:{{ c.bg }};color:{{ c.fg }};font-size:14px;white-space:nowrap">{{ c.label }}</button></sc-for>
+      <sc-if value="{{ filterOn }}" hint-placeholder-val="{{ false }}"><button onClick="{{ clearFilter }}" style="flex:0 0 auto;min-height:40px;padding:0 14px;border-radius:999px;border:1px dashed #1b1a17;background:#fbf3e4;font-size:14px;white-space:nowrap">{{ t.showAll }}</button></sc-if>
+    </div>
+    <sc-if value="{{ hasSZone }}" hint-placeholder-val="{{ false }}"><div style="display:flex;gap:8px;overflow-x:auto;padding:0 16px 2px"><sc-for list="{{ sZoneChips }}" as="c" hint-placeholder-count="3"><button onClick="{{ c.onClick }}" style="flex:0 0 auto;min-height:40px;padding:0 14px;border-radius:999px;border:1px solid {{ c.bd }};background:{{ c.bg }};color:{{ c.fg }};font-size:14px;white-space:nowrap">{{ c.label }}</button></sc-for></div></sc-if>
+    <sc-if value="{{ hasSBldg }}" hint-placeholder-val="{{ false }}"><div style="display:flex;gap:8px;overflow-x:auto;padding:0 16px 2px"><sc-for list="{{ sBldgChips }}" as="c" hint-placeholder-count="3"><button onClick="{{ c.onClick }}" style="flex:0 0 auto;min-height:40px;padding:0 14px;border-radius:999px;border:1px solid {{ c.bd }};background:{{ c.bg }};color:{{ c.fg }};font-size:14px;white-space:nowrap">{{ c.label }}</button></sc-for></div></sc-if>
+    <div style="padding:0 16px;display:flex;justify-content:space-between;gap:8px;font-size:12px;color:#605a51;flex-wrap:wrap"><span>{{ siteCountTxt }}</span><span>{{ t.legendBar }}</span></div>
+    <div style="padding:0 16px;display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,360px),1fr));gap:10px;align-items:start">
+      <sc-for list="{{ siteActs }}" as="a" hint-placeholder-count="4">
+        <div style="background:#fff;border:1px solid #e4e0d8;border-inline-start:4px solid {{ a.stFg }};border-radius:14px;overflow:hidden;box-shadow:0 1px 2px rgba(27,26,23,.04)">
+          <button onClick="{{ a.open }}" style="text-align:start;width:100%;background:transparent;border:none;padding:14px 14px 12px;display:flex;flex-direction:column;gap:10px;color:inherit">
+            <div style="display:flex;gap:8px;align-items:center;width:100%">
+              <span style="font-family:'IBM Plex Mono',monospace;font-size:13px;font-weight:600;white-space:nowrap">{{ a.code }}</span>
+              <span style="font-size:12px;color:#605a51;white-space:nowrap">{{ a.projCode }}</span>
+              <span style="font-size:10.5px;color:#605a51;border:1px solid #d8d3ca;border-radius:4px;padding:1px 5px;white-space:nowrap">{{ a.srcLabel }}</span>
+              <span style="margin-inline-start:auto;font-size:12px;font-weight:600;padding:4px 9px;border-radius:999px;background:{{ a.stBg }};color:{{ a.stFg }};white-space:nowrap">{{ a.stLabel }}</span>
+            </div>
+            <div style="display:flex;gap:12px;align-items:flex-end;width:100%">
+              <div style="flex:1;min-width:0;font-weight:600;font-size:16.5px;line-height:1.3;text-wrap:pretty">{{ a.name }}</div>
+              <div style="font-size:26px;font-weight:700;line-height:1;letter-spacing:-0.02em">{{ a.actualTxt }}</div>
+            </div>
+            <div style="position:relative;height:10px;background:#ece9e3;border-radius:5px;width:100%">
+              <div style="position:absolute;inset-block:0;inset-inline-start:0;width:{{ a.actualW }};background:{{ a.barColor }};border-radius:5px"></div>
+              <div style="position:absolute;top:-4px;bottom:-4px;inset-inline-start:{{ a.plannedW }};width:2px;margin-inline-start:-1px;background:#1b1a17;border-radius:1px"></div>
+            </div>
+            <div style="font-size:12px;color:#605a51;direction:inherit">{{ a.meta }}</div>
+          </button>
+          <sc-if value="{{ a.bulkOn }}" hint-placeholder-val="{{ false }}">
+            <div style="display:grid;grid-template-columns:52px minmax(0,1fr) 52px 56px 64px;gap:6px;align-items:center;padding:10px 12px;border-top:1px dashed #e4e0d8;background:#faf8f4;direction:ltr">
+              <button onClick="{{ a.dec }}" style="min-height:48px;border:1px solid #cfc9bf;background:#fff;border-radius:10px;font-weight:700;font-size:16px">−5</button>
+              <div style="text-align:center;display:flex;flex-direction:column;line-height:1.1"><span style="font-size:11px;color:#605a51">{{ a.bulkFrom }}</span><span style="font-size:22px;font-weight:700;color:{{ a.bulkColor }}">{{ a.bulkTxt }}</span></div>
+              <button onClick="{{ a.inc }}" style="min-height:48px;border:1px solid #cfc9bf;background:#fff;border-radius:10px;font-weight:700;font-size:16px">+5</button>
+              <button onClick="{{ a.inc10 }}" style="min-height:48px;border:1px solid #cfc9bf;background:#fff;border-radius:10px;font-weight:700;font-size:16px">+10</button>
+              <button onClick="{{ a.full }}" style="min-height:48px;border:1px solid #1b1a17;background:#1b1a17;color:#fff;border-radius:10px;font-weight:700;font-size:14px">100%</button>
+            </div>
+            <sc-if value="{{ a.hasBulkErr }}" hint-placeholder-val="{{ false }}"><div style="padding:8px 14px 10px;background:oklch(0.95 0.035 28);color:oklch(0.42 0.16 28);font-size:13px;font-weight:600">{{ a.bulkErr }}</div></sc-if>
+          </sc-if>
+        </div>
+      </sc-for>
+      <sc-if value="{{ siteEmpty }}" hint-placeholder-val="{{ false }}"><div style="padding:28px;text-align:center;color:#605a51;border:1px dashed #cfc9bf;border-radius:12px">{{ t.noItems }}</div></sc-if>
+    </div>
+  </div>
+</sc-if>
+
+<sc-if value="{{ show.siteHist }}" hint-placeholder-val="{{ false }}">
+  <div style="display:flex;flex-direction:column;gap:12px;padding:16px">
+    <div style="font-size:22px;font-weight:700">{{ t.myHistTitle }}</div>
+    <div style="display:flex;gap:8px;overflow-x:auto">
+      <sc-for list="{{ engChips }}" as="c" hint-placeholder-count="3"><button onClick="{{ c.onClick }}" style="flex:0 0 auto;min-height:44px;padding:0 14px;border-radius:999px;border:1px solid {{ c.bd }};background:{{ c.bg }};color:{{ c.fg }};font-size:14px;font-weight:600;white-space:nowrap">{{ c.label }}</button></sc-for>
+    </div>
+    <sc-for list="{{ myHist }}" as="h" hint-placeholder-count="4">
+      <button onClick="{{ h.open }}" style="text-align:start;width:100%;background:#fff;border:1px solid #e2ded6;border-radius:12px;padding:12px 14px;display:flex;gap:12px;align-items:center;color:inherit">
+        <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:4px">
+          <div style="display:flex;gap:8px;align-items:center"><span style="font-family:'IBM Plex Mono',monospace;font-size:13px;font-weight:600">{{ h.code }}</span><span style="font-size:12px;color:#5f5a52;white-space:nowrap">{{ h.when }}</span></div>
+          <div style="font-size:15px;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ h.name }}</div>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px">
+          <span style="font-size:18px;font-weight:700">{{ h.pctTxt }}</span>
+          <span style="font-size:12px;font-weight:600;padding:3px 9px;border-radius:999px;background:{{ h.stBg }};color:{{ h.stFg }}">{{ h.stLabel }}</span>
+        </div>
+      </button>
+    </sc-for>
+    <sc-if value="{{ myHistEmpty }}" hint-placeholder-val="{{ false }}"><div style="padding:28px;text-align:center;color:#5f5a52;border:1px dashed #cfc9bf;border-radius:12px">{{ t.noItems }}</div></sc-if>
+  </div>
+</sc-if>
+
+<sc-if value="{{ show.detail }}" hint-placeholder-val="{{ false }}">
+  <div style="display:flex;flex-direction:column;gap:14px;padding:12px 16px 16px;max-width:880px;margin:0 auto;width:100%">
+    <button onClick="{{ closeDetail }}" style="align-self:flex-start;min-height:44px;padding:0 14px;border:1px solid #cfc9bf;background:#fff;border-radius:10px;font-weight:600">{{ t.backArrow }}</button>
+    <div style="background:#fff;border:1px solid #e2ded6;border-radius:12px;padding:16px;display:flex;flex-direction:column;gap:12px">
+      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+        <span style="font-family:'IBM Plex Mono',monospace;font-size:14px;font-weight:600">{{ d.code }}</span>
+        <span style="font-size:11px;color:#5f5a52;border:1px solid #d8d3ca;border-radius:4px;padding:1px 5px">{{ d.src }}</span>
+        <span style="margin-inline-start:auto;font-size:12px;font-weight:600;padding:4px 9px;border-radius:999px;background:{{ d.stBg }};color:{{ d.stFg }}">{{ d.stLabel }}</span>
+      </div>
+      <div style="font-size:21px;font-weight:700;line-height:1.25;text-wrap:pretty">{{ d.name }}</div>
+      <div style="font-size:13px;color:#5f5a52">{{ d.proj }} · {{ d.loc }} · {{ d.wbs }}</div>
+      <div style="display:grid;grid-template-columns:auto minmax(0,1fr) 48px;gap:8px 10px;align-items:center;font-size:13px">
+        <span style="color:#5f5a52">{{ t.planned }}</span><div style="height:10px;background:#ece9e3;border-radius:5px;overflow:hidden"><div style="height:100%;width:{{ d.plannedW }};background:#a59e92"></div></div><span style="text-align:end;font-weight:700">{{ d.plannedTxt }}</span>
+        <span style="color:#5f5a52">{{ t.actual }}</span><div style="height:10px;background:#ece9e3;border-radius:5px;overflow:hidden"><div style="height:100%;width:{{ d.actualW }};background:{{ d.barColor }}"></div></div><span style="text-align:end;font-weight:700">{{ d.actualTxt }}</span>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px 14px;font-size:13px;border-top:1px solid #ece9e3;padding-top:12px">
+        <div><div style="color:#5f5a52">{{ t.plannedDates }}</div><div style="font-family:'IBM Plex Mono',monospace;font-size:12.5px">{{ d.ps }} → {{ d.pf }}</div></div>
+        <div><div style="color:#5f5a52">{{ t.aDates }}</div><div style="font-family:'IBM Plex Mono',monospace;font-size:12.5px">{{ d.aStart }} → {{ d.aFinish }}</div></div>
+        <div><div style="color:#5f5a52">{{ t.budgetQty }}</div><div style="font-weight:600">{{ d.qtyTxt }}</div></div>
+        <div><div style="color:#5f5a52">{{ t.weight }}</div><div style="font-weight:600">{{ d.w }}</div></div>
+        <div><div style="color:#5f5a52">{{ t.assignee }}</div><div style="font-weight:600">{{ d.assignee }}</div></div>
+        <div><div style="color:#5f5a52">{{ t.variance }}</div><div style="font-weight:700;color:{{ d.varColor }};direction:ltr;unicode-bidi:isolate">{{ d.varTxt }}</div></div>
+      </div>
+    </div>
+
+    <sc-if value="{{ d.hasGallery }}" hint-placeholder-val="{{ false }}">
+      <div style="background:#fff;border:1px solid #e2ded6;border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:10px">
+        <div style="font-weight:700;font-size:16px">{{ t.actPhotos }} · {{ d.galleryN }}</div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px"><sc-for list="{{ d.gallery }}" as="x" hint-placeholder-count="0"><div style="display:flex;flex-direction:column;gap:3px;min-width:0"><div style="aspect-ratio:1 / 1;width:100%;border-radius:6px;background:#ece9e3 center/cover no-repeat;background-image:{{ x.bg }};-webkit-print-color-adjust:exact;print-color-adjust:exact"></div><div style="font-size:12.5px;font-weight:600;overflow-wrap:anywhere">{{ x.cap }}</div><div style="font-size:11px;color:#605a51;overflow-wrap:anywhere">{{ x.meta }}</div></div></sc-for></div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ d.showReturned }}" hint-placeholder-val="{{ false }}">
+      <div style="background:oklch(0.95 0.035 28);border:1px solid oklch(0.82 0.08 28);border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:6px">
+        <div style="font-weight:700;color:oklch(0.45 0.16 28)">{{ t.returnedNote }} · {{ d.retWhen }}</div>
+        <div style="font-size:15px">“{{ d.retComment }}”</div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ d.isPending }}" hint-placeholder-val="{{ false }}">
+      <div style="background:oklch(0.95 0.025 250);border:1px solid oklch(0.82 0.06 250);border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:10px">
+        <div style="font-weight:600;color:oklch(0.4 0.12 250);font-size:14px;line-height:1.4">{{ d.awaitTxt }}</div>
+        <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;font-size:13px">
+          <div><div style="color:#5f5a52">{{ t.progressPct }}</div><div style="font-size:20px;font-weight:700">{{ d.pend.pct }}</div></div>
+          <div><div style="color:#5f5a52">{{ t.qtyShort }}</div><div style="font-size:16px;font-weight:600">{{ d.pend.qty }}</div></div>
+          <div><div style="color:#5f5a52">{{ t.aDates }}</div><div style="font-family:'IBM Plex Mono',monospace;font-size:12.5px">{{ d.pend.dates }}</div></div>
+          <div><div style="color:#5f5a52">{{ t.delayReason }}</div><div>{{ d.pend.delay }}</div></div>
+        </div>
+        <div style="font-size:14px">{{ d.pend.remarks }}</div>
+        <sc-if value="{{ d.pend.hasAdj }}" hint-placeholder-val="{{ false }}"><div style="font-size:13.5px;font-weight:600;color:oklch(0.4 0.1 70);background:oklch(0.95 0.05 85);border-radius:8px;padding:8px 10px">✎ {{ d.pend.adj }}</div></sc-if>
+        <sc-if value="{{ d.canWithdraw }}" hint-placeholder-val="{{ false }}"><button onClick="{{ withdraw }}" style="align-self:flex-start;min-height:44px;padding:0 16px;border:1px solid #1d1b18;background:#fff;border-radius:10px;font-weight:600">{{ t.withdraw }}</button></sc-if>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ d.canEdit }}" hint-placeholder-val="{{ false }}">
+      <div style="background:#fff;border:1px solid #e2ded6;border-radius:12px;padding:16px;display:flex;flex-direction:column;gap:20px">
+        <div style="display:flex;align-items:baseline;gap:8px;flex-wrap:wrap"><div style="font-weight:700;font-size:19px">{{ t.updateProgress }}</div><div style="font-size:12.5px;color:#5f5a52">{{ d.formSrc }}</div></div>
+        <div style="display:flex;flex-direction:column;gap:10px">
+          <label style="font-size:14px;font-weight:600">{{ t.progressPct }}</label>
+          <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+            <input type="number" min="0" max="100" step="1" value="{{ fm.pct }}" onChange="{{ f.pct }}" style="width:112px;min-height:56px;font-size:28px;font-weight:700;text-align:center;border:1px solid #cfc9bf;border-radius:10px;background:#fff">
+            <span style="font-size:24px;font-weight:700">%</span>
+            <span style="font-size:13px;color:#5f5a52;flex:1;min-width:140px">{{ d.pctHint }}</span>
+          </div>
+          <input type="range" min="0" max="100" step="1" value="{{ fm.pct }}" onChange="{{ f.pct }}" style="width:100%;height:36px;accent-color:#b85c16">
+          <div style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px">
+            <sc-for list="{{ quick }}" as="b" hint-placeholder-count="4"><button onClick="{{ b.onClick }}" style="min-height:48px;border:1px solid #cfc9bf;background:#f7f5f1;border-radius:10px;font-weight:700;font-size:15px;direction:ltr">{{ b.label }}</button></sc-for>
+          </div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <label style="font-size:14px;font-weight:600">{{ t.qtyDone }} ({{ d.unit }})</label>
+          <div style="display:flex;gap:8px">
+            <input type="number" min="0" step="any" value="{{ fm.qty }}" onChange="{{ f.qty }}" style="flex:1;min-width:0;min-height:52px;padding:0 14px;font-size:18px;border:1px solid #cfc9bf;border-radius:10px;background:#fff">
+            <button onClick="{{ f.qtyFromPct }}" style="min-height:52px;padding:0 14px;border:1px solid #cfc9bf;background:#f7f5f1;border-radius:10px;font-weight:600;font-size:13.5px">{{ t.fromPct }}</button>
+          </div>
+          <div style="font-size:12.5px;color:#5f5a52">{{ d.impliedTxt }}</div>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px">
+          <div style="display:flex;flex-direction:column;gap:8px"><label style="font-size:14px;font-weight:600">{{ t.actualStart }}</label><input type="date" max="{{ today }}" value="{{ fm.aStart }}" onChange="{{ f.aStart }}" style="min-height:52px;padding:0 10px;font-size:16px;border:1px solid #cfc9bf;border-radius:10px;background:#fff;width:100%"></div>
+          <div style="display:flex;flex-direction:column;gap:8px"><label style="font-size:14px;font-weight:600">{{ t.actualFinish }}</label><input type="date" max="{{ today }}" value="{{ fm.aFinish }}" onChange="{{ f.aFinish }}" style="min-height:52px;padding:0 10px;font-size:16px;border:1px solid #cfc9bf;border-radius:10px;background:#fff;width:100%"></div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <label style="font-size:14px;font-weight:600">{{ t.delayReason }}</label>
+          <sc-if value="{{ d.needDelay }}" hint-placeholder-val="{{ false }}"><div style="font-size:12.5px;color:oklch(0.45 0.16 28);font-weight:600">{{ t.delayReq }}</div></sc-if>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <sc-for list="{{ delayChips }}" as="c" hint-placeholder-count="6"><button onClick="{{ c.onClick }}" style="min-height:44px;padding:0 14px;border-radius:999px;border:1px solid {{ c.bd }};background:{{ c.bg }};color:{{ c.fg }};font-size:14px">{{ c.label }}</button></sc-for>
+          </div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <label style="font-size:14px;font-weight:600">{{ t.remarks }}</label>
+          <textarea rows="3" value="{{ fm.remarks }}" onChange="{{ f.remarks }}" placeholder="{{ t.remarksPh }}" style="padding:12px 14px;font-size:16px;border:1px solid #cfc9bf;border-radius:10px;background:#fff;resize:vertical"></textarea>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <label style="font-size:14px;font-weight:600">{{ t.photos }}</label>
+          <div style="display:flex;gap:12px;flex-wrap:wrap">
+            <sc-for list="{{ photos }}" as="p" hint-placeholder-count="0"><div style="display:flex;gap:10px;width:100%;align-items:flex-start;border:1px solid #e4e0d8;border-radius:10px;padding:8px"><div style="position:relative;width:86px;height:86px;flex:0 0 auto"><div role="img" style="width:86px;height:86px;border-radius:8px;background:#ece9e3 center/cover no-repeat;background-image:{{ p.bg }}"></div><span style="position:absolute;inset-inline:0;bottom:0;background:rgba(0,0,0,.6);color:#fff;font-size:10px;padding:2px 4px;font-family:'IBM Plex Mono',monospace;border-radius:0 0 8px 8px">{{ p.time }}</span><button onClick="{{ p.remove }}" aria-label="remove" style="position:absolute;top:-8px;inset-inline-end:-8px;width:32px;height:32px;border-radius:50%;border:2px solid #fff;background:#1d1b18;color:#fff;font-size:16px;line-height:1">×</button></div><div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:6px"><input value="{{ p.caption }}" onChange="{{ p.onCaption }}" placeholder="{{ t.captionPh }}" style="min-height:44px;padding:0 10px;border:1px solid #cfc9bf;border-radius:8px;font-size:15px;width:100%"><div style="font-size:11.5px;color:#605a51">{{ p.geo }}</div></div></div></sc-for>
+            <sc-if value="{{ canAddPhoto }}" hint-placeholder-val="{{ true }}"><label style="width:100%;min-height:56px;border:1.5px dashed #a59e92;border-radius:10px;display:grid;place-items:center;font-size:15px;font-weight:600;color:#3f3a33;text-align:center;cursor:pointer;padding:6px;background:#f7f5f1">{{ t.addPhotoLong }}<input type="file" accept="image/*" multiple onChange="{{ onPhotos }}" style="display:none"></label></sc-if>
+          </div>
+          <div style="font-size:12px;color:#5f5a52">{{ t.photoNote }}</div>
+        </div>
+        <sc-if value="{{ hasErrors }}" hint-placeholder-val="{{ false }}">
+          <div style="background:oklch(0.95 0.035 28);border-radius:10px;padding:12px 14px;display:flex;flex-direction:column;gap:4px;color:oklch(0.42 0.16 28);font-size:14px;font-weight:600">
+            <sc-for list="{{ errors }}" as="e" hint-placeholder-count="1"><div>• {{ e.msg }}</div></sc-for>
+          </div>
+        </sc-if>
+        <div style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.4fr);gap:10px">
+          <button onClick="{{ saveDraft }}" style="min-height:54px;border:1px solid #1d1b18;background:#fff;border-radius:10px;font-weight:700;font-size:15px">{{ t.saveDraft }}</button>
+          <button onClick="{{ submit }}" style="min-height:54px;border:none;background:#1d1b18;color:#fff;border-radius:10px;font-weight:700;font-size:15px">{{ t.submit }}</button>
+        </div>
+      </div>
+    </sc-if>
+    <sc-if value="{{ d.readOnly }}" hint-placeholder-val="{{ false }}"><div style="font-size:13px;color:#5f5a52;padding:0 4px">{{ t.readOnly }}</div></sc-if>
+
+    <div style="display:flex;flex-direction:column;gap:8px">
+      <div style="font-size:17px;font-weight:700">{{ t.history }}</div>
+      <sc-for list="{{ detailHist }}" as="h" hint-placeholder-count="3">
+        <div style="background:#fff;border:1px solid #e2ded6;border-radius:10px;padding:12px 14px;display:flex;flex-direction:column;gap:6px">
+          <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+            <span style="font-size:18px;font-weight:700">{{ h.pctTxt }}</span>
+            <span style="font-size:13px;color:#5f5a52">{{ h.qtyTxt }}</span>
+            <span style="margin-inline-start:auto;font-size:12px;font-weight:600;padding:3px 9px;border-radius:999px;background:{{ h.stBg }};color:{{ h.stFg }}">{{ h.stLabel }}</span>
+          </div>
+          <div style="font-size:12.5px;color:#5f5a52">{{ h.byLine }}</div>
+          <sc-if value="{{ h.hasAdj }}" hint-placeholder-val="{{ false }}"><div style="font-size:13px;font-weight:600;color:oklch(0.4 0.1 70);background:oklch(0.95 0.05 85);border-radius:6px;padding:6px 8px">✎ {{ h.adjTxt }}</div></sc-if>
+          <sc-if value="{{ h.hasNote }}" hint-placeholder-val="{{ false }}"><div style="font-size:13.5px">{{ h.note }}</div></sc-if>
+          <sc-if value="{{ h.hasComment }}" hint-placeholder-val="{{ false }}"><div style="font-size:13.5px;color:oklch(0.42 0.16 28)">{{ t.reviewComment }}: {{ h.comment }}</div></sc-if>
+          <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#5f5a52;line-height:1.5">{{ h.log }}</div>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+</sc-if>
+
+<sc-if value="{{ show.review }}" hint-placeholder-val="{{ false }}">
+  <div style="display:flex;flex-direction:column;gap:12px;padding:16px">
+    <div style="font-size:22px;font-weight:700">{{ t.reviewQueue }}</div>
+    <div style="font-size:13px;color:#5f5a52;line-height:1.4">{{ t.reviewHelp }}</div></div><div style="display:flex;gap:8px;overflow-x:auto;padding:0 16px 2px"><sc-for list="{{ rvProjChips }}" as="c" hint-placeholder-count="3"><button onClick="{{ c.onClick }}" style="flex:0 0 auto;min-height:40px;padding:0 14px;border-radius:999px;border:1px solid {{ c.bd }};background:{{ c.bg }};color:{{ c.fg }};font-size:14px;white-space:nowrap">{{ c.label }}</button></sc-for></div><div style="display:flex;gap:8px;overflow-x:auto;padding:0 16px 2px"><sc-for list="{{ rvFlagChips }}" as="c" hint-placeholder-count="3"><button onClick="{{ c.onClick }}" style="flex:0 0 auto;min-height:40px;padding:0 14px;border-radius:999px;border:1px solid {{ c.bd }};background:{{ c.bg }};color:{{ c.fg }};font-size:14px;white-space:nowrap">{{ c.label }}</button></sc-for></div><div style="padding:0 16px;display:flex;gap:8px;flex-wrap:wrap"><sc-if value="{{ hasClean }}" hint-placeholder-val="{{ false }}"><button onClick="{{ selectClean }}" style="min-height:50px;border:1px solid #1b1a17;background:#fff;border-radius:10px;font-weight:700;font-size:14px;padding:0 12px;min-height:44px">✓ {{ selectCleanTxt }}</button></sc-if><button onClick="{{ clearSel }}" style="min-height:50px;border:1px solid #1b1a17;background:#fff;border-radius:10px;font-weight:700;font-size:14px;padding:0 12px;min-height:44px;border-color:#cfc9bf">{{ t.clearSel }}</button></div><div style="display:flex;flex-direction:column;gap:12px;padding:0 16px">
+    <sc-for list="{{ reviewList }}" as="r" hint-placeholder-count="3"><div style="display:flex;gap:8px;align-items:stretch"><button onClick="{{ r.toggle }}" aria-label="select" style="flex:0 0 48px;border-radius:12px;border:1.5px solid {{ r.ckBd }};background:{{ r.ckBg }};color:#fff;font-size:20px;font-weight:700">{{ r.check }}</button>
+      <button onClick="{{ r.open }}" style="text-align:start;width:100%;background:#fff;border:1px solid #e2ded6;border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:8px;color:inherit">
+        <div style="display:flex;gap:8px;align-items:center;width:100%"><span style="font-family:'IBM Plex Mono',monospace;font-size:13px;font-weight:600">{{ r.code }}</span><span style="font-size:12px;color:#5f5a52;white-space:nowrap">{{ r.proj }}</span><span style="margin-inline-start:auto;font-size:12px;color:#5f5a52;white-space:nowrap">{{ r.age }}</span></div>
+        <div style="font-weight:600;font-size:16px;line-height:1.3">{{ r.name }}</div>
+        <div style="display:flex;align-items:center;gap:10px;width:100%"><span style="font-size:13px;color:#5f5a52;flex:1">{{ r.eng }}</span><span style="font-size:18px;font-weight:700;direction:ltr;unicode-bidi:isolate;white-space:nowrap">{{ r.change }}</span></div>
+        <sc-if value="{{ r.hasFlag }}" hint-placeholder-val="{{ false }}"><div style="font-size:12.5px;font-weight:600;color:oklch(0.45 0.13 70)">⚠ {{ r.flag }}</div></sc-if>
+      </button></div>
+    </sc-for>
+    <sc-if value="{{ reviewEmpty }}" hint-placeholder-val="{{ false }}"><div style="padding:28px;text-align:center;color:#5f5a52;border:1px dashed #cfc9bf;border-radius:12px">{{ t.reviewEmpty }}</div></sc-if>
+  </div>
+</sc-if>
+
+<sc-if value="{{ show.reviewDetail }}" hint-placeholder-val="{{ false }}">
+  <div style="display:flex;flex-direction:column;gap:14px;padding:12px 16px 16px;max-width:880px;margin:0 auto;width:100%">
+    <button onClick="{{ closeReview }}" style="align-self:flex-start;min-height:44px;padding:0 14px;border:1px solid #cfc9bf;background:#fff;border-radius:10px;font-weight:600">{{ t.backArrow }}</button>
+    <div style="background:#fff;border:1px solid #e2ded6;border-radius:12px;padding:16px;display:flex;flex-direction:column;gap:12px">
+      <div style="display:flex;gap:8px;align-items:center"><span style="font-family:'IBM Plex Mono',monospace;font-size:14px;font-weight:600">{{ rv.code }}</span><span style="font-size:12px;color:#5f5a52;white-space:nowrap">{{ rv.proj }}</span></div>
+      <div style="font-size:20px;font-weight:700;line-height:1.25">{{ rv.name }}</div>
+      <div style="font-size:13px;color:#5f5a52">{{ rv.byLine }}</div>
+      <sc-if value="{{ rv.hasCm }}" hint-placeholder-val="{{ false }}"><div style="font-size:13.5px;font-weight:600;color:oklch(0.4 0.11 150);background:oklch(0.95 0.035 150);border-radius:8px;padding:8px 10px">✓ {{ rv.cmLine }}</div></sc-if>
+      <div style="display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr) minmax(0,1fr);border:1px solid #ece9e3;border-radius:10px;overflow:hidden;font-size:13.5px">
+        <div style="padding:8px 10px;background:#f2efe9;font-weight:600"></div>
+        <div style="padding:8px 10px;background:#f2efe9;font-weight:600;color:#5f5a52">{{ t.prevApproved }}</div>
+        <div style="padding:8px 10px;background:#f2efe9;font-weight:600">{{ t.submittedVal }}</div>
+        <sc-for list="{{ rv.rows }}" as="x" hint-placeholder-count="4">
+          <div style="padding:9px 10px;border-top:1px solid #ece9e3;color:#5f5a52">{{ x.l }}</div>
+          <div style="padding:9px 10px;border-top:1px solid #ece9e3;color:#5f5a52;overflow-wrap:anywhere">{{ x.a }}</div>
+          <div style="padding:9px 10px;border-top:1px solid #ece9e3;font-weight:{{ x.fw }};background:{{ x.bg }};overflow-wrap:anywhere">{{ x.b }}</div>
+        </sc-for>
+      </div>
+      <div style="font-size:13px;color:#5f5a52">{{ rv.plannedLine }}</div>
+      <sc-if value="{{ rv.hasRemarks }}" hint-placeholder-val="{{ false }}"><div style="font-size:14.5px;background:#f7f5f1;border-radius:8px;padding:10px 12px">“{{ rv.remarks }}”</div></sc-if>
+      <sc-if value="{{ rv.hasPhotos }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex;gap:10px;flex-wrap:wrap"><sc-for list="{{ rv.photos }}" as="p" hint-placeholder-count="0"><div style="display:flex;flex-direction:column;gap:4px;width:150px"><div style="width:150px;height:150px;border-radius:8px;background:#ece9e3 center/cover no-repeat;background-image:{{ p.bg }}"></div><div style="font-size:12.5px;font-weight:600">{{ p.caption }}</div><div style="font-size:11px;color:#605a51">{{ p.meta }}</div><sc-if value="{{ p.hasMap }}" hint-placeholder-val="{{ false }}"><a href="{{ p.map }}" target="_blank" rel="noopener" style="font-size:12px">{{ t.openMap }} ↗</a></sc-if></div></sc-for></div>
+      </sc-if>
+      <sc-if value="{{ rv.hasWarnings }}" hint-placeholder-val="{{ false }}">
+        <div style="background:oklch(0.95 0.05 85);border-radius:10px;padding:10px 12px;display:flex;flex-direction:column;gap:4px;font-size:13.5px;color:oklch(0.38 0.09 70);font-weight:600">
+          <sc-for list="{{ rv.warnings }}" as="w" hint-placeholder-count="1"><div>⚠ {{ w.msg }}</div></sc-for>
+        </div>
+      </sc-if>
+    </div>
+    <div style="background:#fff;border:1px solid #e2ded6;border-radius:12px;padding:16px;display:flex;flex-direction:column;gap:10px">
+      <sc-if value="{{ canAdjust }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex;flex-direction:column;gap:10px;padding-bottom:14px;border-bottom:1px dashed #e4e0d8">
+          <div style="font-weight:700;font-size:16px">✎ {{ t.adjTitleCM }}</div>
+          <div style="font-size:12.5px;color:#605a51;line-height:1.45">{{ t.adjHelp }}</div>
+          <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px">
+            <div style="display:flex;flex-direction:column;gap:6px"><label style="font-size:13px;font-weight:600">{{ t.progressPct }}</label><input type="number" min="0" max="100" step="1" value="{{ adjPct }}" onChange="{{ onAdjPct }}" style="min-height:52px;padding:0 12px;font-size:18px;font-weight:700;border:1px solid #cfc9bf;border-radius:10px;background:#fff;width:100%;min-width:0"></div>
+            <div style="display:flex;flex-direction:column;gap:6px"><label style="font-size:13px;font-weight:600">{{ adjQtyLabel }}</label><div style="display:flex;gap:6px"><input type="number" min="0" step="any" value="{{ adjQty }}" onChange="{{ onAdjQty }}" style="min-height:52px;padding:0 12px;font-size:18px;font-weight:700;border:1px solid #cfc9bf;border-radius:10px;background:#fff;width:100%;min-width:0"><button onClick="{{ adjQtyFromPct }}" style="flex:0 0 auto;min-height:52px;padding:0 10px;border:1px solid #cfc9bf;background:#f7f5f1;border-radius:10px;font-weight:600;font-size:12.5px">{{ t.fromPct }}</button></div></div>
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px"><sc-for list="{{ adjQuick }}" as="b" hint-placeholder-count="4"><button onClick="{{ b.onClick }}" style="min-height:46px;border:1px solid #cfc9bf;background:#f7f5f1;border-radius:10px;font-weight:700;font-size:14px;direction:ltr">{{ b.label }}</button></sc-for></div>
+          <sc-if value="{{ adjChanged }}" hint-placeholder-val="{{ false }}"><div style="font-size:13.5px;font-weight:600;color:oklch(0.4 0.1 70);background:oklch(0.95 0.05 85);border-radius:8px;padding:8px 10px">{{ adjChangedTxt }}</div></sc-if>
+        </div>
+      </sc-if>
+      <label style="font-size:14px;font-weight:600">{{ t.reviewComment }}</label>
+      <textarea rows="3" value="{{ comment }}" onChange="{{ onComment }}" placeholder="{{ t.reviewCommentPh }}" style="padding:12px 14px;font-size:16px;border:1px solid #cfc9bf;border-radius:10px;background:#fff;resize:vertical"></textarea>
+      <sc-if value="{{ hasErrors }}" hint-placeholder-val="{{ false }}"><div style="color:oklch(0.42 0.16 28);font-weight:600;font-size:14px"><sc-for list="{{ errors }}" as="e" hint-placeholder-count="1"><div>• {{ e.msg }}</div></sc-for></div></sc-if>
+      <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px">
+        <button onClick="{{ ret }}" style="min-height:54px;border:1px solid oklch(0.52 0.17 28);color:oklch(0.45 0.16 28);background:#fff;border-radius:10px;font-weight:700;font-size:15px">{{ t.returnBtn }}</button>
+        <button onClick="{{ approve }}" style="min-height:54px;border:none;background:oklch(0.48 0.12 150);color:#fff;border-radius:10px;font-weight:700;font-size:15px">{{ approveLbl }}</button>
+      </div>
+      <div style="font-size:12.5px;color:#5f5a52">{{ t.approveNote }}</div>
+    </div>
+  </div>
+</sc-if>
+
+<sc-if value="{{ show.progress }}" hint-placeholder-val="{{ false }}">
+  <div style="display:flex;flex-direction:column;gap:12px;padding:16px 0">
+    <div style="padding:0 16px;font-size:22px;font-weight:700">{{ t.progressTitle }}</div>
+    <div style="display:flex;gap:8px;overflow-x:auto;padding:0 16px 2px">
+      <sc-for list="{{ plChips }}" as="c" hint-placeholder-count="3"><button onClick="{{ c.onClick }}" style="flex:0 0 auto;min-height:40px;padding:0 14px;border-radius:999px;border:1px solid {{ c.bd }};background:{{ c.bg }};color:{{ c.fg }};font-size:14px;white-space:nowrap">{{ c.label }}</button></sc-for>
+    </div>
+    <div style="padding:0 16px;font-size:13px;color:#5f5a52">{{ plSummary }}</div>
+    <div style="padding:0 16px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px">
+      <sc-for list="{{ kpis }}" as="k" hint-placeholder-count="6">
+        <div style="background:#fff;border:1px solid #e2ded6;border-radius:10px;padding:10px 12px;display:flex;flex-direction:column;gap:2px">
+          <div style="font-size:12px;color:#5f5a52">{{ k.l }}</div>
+          <div style="font-size:22px;font-weight:700;color:{{ k.c }};direction:ltr;unicode-bidi:isolate;text-align:start">{{ k.v }}</div>
+        </div>
+      </sc-for>
+    </div>
+    <div style="padding:0 16px;font-size:12px;color:#5f5a52">{{ t.weightedNote }}</div>
+    <sc-if value="{{ hasPlBreak }}" hint-placeholder-val="{{ false }}"><div style="margin:0 16px;background:#fff;border:1px solid #e4e0d8;border-radius:12px;overflow:hidden">
+      <div style="padding:10px 12px;font-weight:700;font-size:15px">{{ t.byLoc }}</div>
+      <sc-for list="{{ plBreak }}" as="b" hint-placeholder-count="3">
+        <button onClick="{{ b.onClick }}" style="display:grid;grid-template-columns:minmax(0,1fr) auto;gap:5px 10px;width:100%;text-align:start;border:none;border-top:1px solid #f0ede7;background:{{ b.bg }};padding:10px 12px;padding-inline-start:{{ b.pad }};color:inherit;font:inherit">
+          <span style="font-weight:{{ b.fw }};font-size:{{ b.fs }}">{{ b.label }} <span style="font-weight:400;font-size:12px;color:#605a51">· {{ b.n }}</span></span>
+          <span style="font-weight:700;font-size:13.5px;color:{{ b.vc }};direction:ltr;unicode-bidi:isolate;white-space:nowrap">{{ b.v }}</span>
+          <div style="grid-column:1 / -1;position:relative;height:8px;background:#ece9e3;border-radius:4px"><div style="position:absolute;inset-block:0;inset-inline-start:0;width:{{ b.aW }};background:{{ b.bar }};border-radius:4px"></div><div style="position:absolute;top:-3px;bottom:-3px;inset-inline-start:{{ b.pW }};width:2px;background:#1b1a17"></div></div>
+          <span style="grid-column:1 / -1;font-size:12px;color:#605a51">{{ t.planned }} {{ b.pT }} · {{ t.actualShort }} {{ b.aT }}</span>
+        </button>
+      </sc-for>
+    </div><div style="padding:6px 16px 0;font-size:12px;color:#605a51">{{ t.byLocHint }}</div></sc-if>
+    <div style="display:flex;gap:8px;overflow-x:auto;padding:0 16px 2px">
+      <sc-for list="{{ plFilterChips }}" as="c" hint-placeholder-count="4"><button onClick="{{ c.onClick }}" style="flex:0 0 auto;min-height:40px;padding:0 14px;border-radius:999px;border:1px solid {{ c.bd }};background:{{ c.bg }};color:{{ c.fg }};font-size:14px;white-space:nowrap">{{ c.label }}</button></sc-for>
+    </div>
+    <div style="padding:0 16px;display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,360px),1fr));gap:10px;align-items:start">
+      <sc-for list="{{ plActs }}" as="a" hint-placeholder-count="4">
+        <div style="background:#fff;border:1px solid #e4e0d8;border-inline-start:4px solid {{ a.stFg }};border-radius:14px;overflow:hidden;box-shadow:0 1px 2px rgba(27,26,23,.04)">
+          <button onClick="{{ a.open }}" style="text-align:start;width:100%;background:transparent;border:none;padding:14px 14px 12px;display:flex;flex-direction:column;gap:10px;color:inherit">
+            <div style="display:flex;gap:8px;align-items:center;width:100%">
+              <span style="font-family:'IBM Plex Mono',monospace;font-size:13px;font-weight:600;white-space:nowrap">{{ a.code }}</span>
+              <span style="font-size:12px;color:#605a51;white-space:nowrap">{{ a.projCode }}</span>
+              <span style="font-size:10.5px;color:#605a51;border:1px solid #d8d3ca;border-radius:4px;padding:1px 5px;white-space:nowrap">{{ a.srcLabel }}</span>
+              <span style="margin-inline-start:auto;font-size:12px;font-weight:600;padding:4px 9px;border-radius:999px;background:{{ a.stBg }};color:{{ a.stFg }};white-space:nowrap">{{ a.stLabel }}</span>
+            </div>
+            <div style="display:flex;gap:12px;align-items:flex-end;width:100%">
+              <div style="flex:1;min-width:0;font-weight:600;font-size:16.5px;line-height:1.3;text-wrap:pretty">{{ a.name }}</div>
+              <div style="font-size:26px;font-weight:700;line-height:1;letter-spacing:-0.02em">{{ a.actualTxt }}</div>
+            </div>
+            <div style="position:relative;height:10px;background:#ece9e3;border-radius:5px;width:100%">
+              <div style="position:absolute;inset-block:0;inset-inline-start:0;width:{{ a.actualW }};background:{{ a.barColor }};border-radius:5px"></div>
+              <div style="position:absolute;top:-4px;bottom:-4px;inset-inline-start:{{ a.plannedW }};width:2px;margin-inline-start:-1px;background:#1b1a17;border-radius:1px"></div>
+            </div>
+            <div style="font-size:12px;color:#605a51;direction:inherit">{{ a.meta }}</div>
+          </button>
+        </div>
+      </sc-for>
+      <sc-if value="{{ plEmpty }}" hint-placeholder-val="{{ false }}"><div style="padding:28px;text-align:center;color:#5f5a52;border:1px dashed #cfc9bf;border-radius:12px">{{ t.noItems }}</div></sc-if>
+    </div>
+    <div style="padding:4px 16px 0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px">
+      <sc-if value="{{ hasMissing }}" hint-placeholder-val="{{ false }}"><button onClick="{{ sendReminders }}" style="min-height:50px;border:1px solid #1b1a17;background:#fff;border-radius:10px;font-weight:700;font-size:14px;padding:0 12px;grid-column:1 / -1;background:#fff6e0;border-color:#cdb67a">🔔 {{ remindTxt }}</button></sc-if><button onClick="{{ openReport }}" style="min-height:50px;border:1px solid #1b1a17;background:#fff;border-radius:10px;font-weight:700;font-size:14px;padding:0 12px;grid-column:1 / -1;background:#1b1a17;color:#fff">{{ t.weeklyReport }}</button>
+      <button onClick="{{ exportProgress }}" style="min-height:52px;border:1px solid #1d1b18;background:#fff;border-radius:10px;font-weight:700;font-size:14px">↓ {{ t.exportProgress }}</button>
+      <button onClick="{{ exportHistory }}" style="min-height:52px;border:1px solid #1d1b18;background:#fff;border-radius:10px;font-weight:700;font-size:14px">↓ {{ t.exportHistory }}</button>
+    </div>
+  </div>
+</sc-if>
+
+<sc-if value="{{ show.import }}" hint-placeholder-val="{{ false }}">
+  <div style="display:flex;flex-direction:column;gap:12px;padding:16px">
+    <div style="font-size:22px;font-weight:700">{{ t.importTitle }}</div>
+    <div style="font-size:14px;line-height:1.5;color:#3d3933;text-wrap:pretty">{{ t.importHelp }}</div>
+    <div style="background:#fff;border:1px solid #e2ded6;border-radius:10px;padding:12px;display:flex;flex-direction:column;gap:6px">
+      <div style="font-size:12.5px;font-weight:600;color:#5f5a52">{{ t.columns }}</div>
+      <div style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;line-height:1.6;direction:ltr;text-align:left;overflow-wrap:anywhere">{{ csvCols }}</div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px">
+      <button onClick="{{ loadSample }}" style="min-height:50px;border:1px solid #1d1b18;background:#fff;border-radius:10px;font-weight:600;font-size:14px">{{ t.loadSample }}</button>
+      <label style="min-height:50px;border:1px solid #1d1b18;background:#fff;border-radius:10px;font-weight:600;font-size:14px;display:grid;place-items:center;cursor:pointer;text-align:center;padding:0 8px">{{ t.chooseFile }}<input type="file" accept=".csv,text/csv" onChange="{{ onCsvFile }}" style="display:none"></label>
+    </div>
+    <textarea rows="7" value="{{ importText }}" onChange="{{ onImportText }}" placeholder="project_code,project_name,activity_id,…" style="padding:12px;font-family:'IBM Plex Mono',monospace;font-size:12px;border:1px solid #cfc9bf;border-radius:10px;background:#fff;direction:ltr;text-align:left;white-space:pre;resize:vertical"></textarea>
+    <button onClick="{{ validateImport }}" style="min-height:52px;border:none;background:#1d1b18;color:#fff;border-radius:10px;font-weight:700;font-size:15px">{{ t.validate }}</button>
+    <sc-if value="{{ imp.has }}" hint-placeholder-val="{{ false }}">
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <div style="font-weight:700">{{ imp.summary }}</div>
+        <sc-for list="{{ imp.rows }}" as="r" hint-placeholder-count="3">
+          <div style="background:{{ r.bg }};border:1px solid {{ r.bd }};border-radius:10px;padding:10px 12px;display:flex;flex-direction:column;gap:3px;font-size:13.5px">
+            <div style="display:flex;gap:8px"><span style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#5f5a52">#{{ r.line }}</span><span style="font-family:'IBM Plex Mono',monospace;font-weight:600">{{ r.code }}</span><span style="flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ r.name }}</span><span style="font-weight:600">{{ r.action }}</span></div>
+            <div style="font-size:12.5px;color:#5f5a52">{{ r.info }}</div>
+            <sc-if value="{{ r.hasErr }}" hint-placeholder-val="{{ false }}"><div style="font-size:12.5px;font-weight:600;color:oklch(0.42 0.16 28)">{{ r.err }}</div></sc-if>
+          </div>
+        </sc-for>
+        <sc-if value="{{ imp.canImport }}" hint-placeholder-val="{{ false }}"><button onClick="{{ doImport }}" style="min-height:54px;border:none;background:oklch(0.48 0.12 150);color:#fff;border-radius:10px;font-weight:700;font-size:15px">{{ imp.btn }}</button></sc-if>
+      </div>
+    </sc-if>
+  </div>
+</sc-if>
+
+<sc-if value="{{ show.portfolio }}" hint-placeholder-val="{{ false }}">
+  <div style="display:flex;flex-direction:column;gap:12px;padding:16px">
+    <div style="background:#1d1b18;color:#f7f5f1;border-radius:14px;padding:18px;display:flex;flex-direction:column;gap:12px">
+      <div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px;flex-wrap:wrap"><div style="font-size:15px;font-weight:600">{{ t.portfolio }}</div><div style="font-size:12px;color:#c9c3b8">{{ t.byValue }}</div></div>
+      <div style="display:flex;gap:24px;align-items:flex-end;flex-wrap:wrap">
+        <div><div style="font-size:12px;color:#c9c3b8">{{ t.actualShort }}</div><div style="font-size:40px;font-weight:700;line-height:1">{{ pf.actual }}</div></div>
+        <div><div style="font-size:12px;color:#c9c3b8">{{ t.planned }}</div><div style="font-size:24px;font-weight:600;line-height:1.1">{{ pf.planned }}</div></div>
+        <div><div style="font-size:12px;color:#c9c3b8">{{ t.variance }}</div><div style="font-size:24px;font-weight:700;line-height:1.1;color:{{ pf.varColor }};direction:ltr;unicode-bidi:isolate">{{ pf.variance }}</div></div>
+      </div>
+      <div style="position:relative;height:12px;background:#3a3631;border-radius:6px;overflow:hidden"><div style="position:absolute;inset-block:0;inset-inline-start:0;width:{{ pf.plannedW }};background:#6b655c"></div><div style="position:absolute;inset-block:3px;inset-inline-start:0;width:{{ pf.actualW }};background:oklch(0.76 0.14 65);border-radius:3px"></div></div>
+      <div style="font-size:13px;color:#c9c3b8">{{ t.spi }} {{ pf.spi }} · {{ pf.flags }}</div><button onClick="{{ openReport }}" style="min-height:46px;border:none;background:oklch(0.76 0.14 65);color:#1b1a17;border-radius:10px;font-weight:700">{{ t.weeklyReport }}</button>
+    </div>
+    <div style="font-size:17px;font-weight:700;padding-top:4px">{{ t.projectsTitle }}</div>
+    <sc-for list="{{ pmProjects }}" as="p" hint-placeholder-count="3">
+      <button onClick="{{ p.open }}" style="text-align:start;width:100%;background:#fff;border:1px solid #e2ded6;border-inline-start:5px solid {{ p.stFg }};border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:10px;color:inherit">
+        <div style="display:flex;gap:8px;align-items:center;width:100%;flex-wrap:wrap">
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:13px;font-weight:600">{{ p.code }}</span>
+          <span style="font-size:11px;color:#5f5a52;border:1px solid #d8d3ca;border-radius:4px;padding:1px 5px">{{ p.srcLabel }}</span>
+          <span style="margin-inline-start:auto;font-size:12px;font-weight:700;padding:4px 10px;border-radius:999px;background:{{ p.stBg }};color:{{ p.stFg }}">{{ p.stLabel }}</span>
+        </div>
+        <div style="font-weight:700;font-size:17px;line-height:1.25">{{ p.name }}</div>
+        <div style="font-size:12.5px;color:#5f5a52">{{ p.sub }}</div>
+        <div style="display:grid;grid-template-columns:auto minmax(0,1fr) 52px;gap:6px 10px;align-items:center;font-size:12.5px;width:100%">
+          <span style="color:#5f5a52">{{ t.planned }}</span><div style="height:9px;background:#ece9e3;border-radius:5px;overflow:hidden"><div style="height:100%;width:{{ p.plannedW }};background:#a59e92"></div></div><span style="text-align:end;font-weight:600">{{ p.plannedTxt }}</span>
+          <span style="color:#5f5a52">{{ t.actualShort }}</span><div style="height:9px;background:#ece9e3;border-radius:5px;overflow:hidden"><div style="height:100%;width:{{ p.actualW }};background:{{ p.barColor }}"></div></div><span style="text-align:end;font-weight:600">{{ p.actualTxt }}</span>
+        </div>
+        <div style="display:flex;gap:10px;align-items:center;width:100%;flex-wrap:wrap"><span style="font-size:15px;font-weight:700;color:{{ p.varColor }};direction:ltr;unicode-bidi:isolate">{{ p.varTxt }}</span><span style="font-size:13px;font-weight:700;color:{{ p.spiColor }}">SPI {{ p.spi }}</span><span style="font-size:12.5px;color:#5f5a52">{{ p.flags }}</span></div>
+      </button>
+    </sc-for>
+  </div>
+</sc-if>
+
+<sc-if value="{{ show.trends }}" hint-placeholder-val="{{ false }}">
+  <div style="display:flex;flex-direction:column;gap:12px;padding:16px 0">
+    <div style="padding:0 16px;font-size:20px;font-weight:700;line-height:1.3">{{ t.trendTitle }}</div>
+    <div style="display:flex;gap:8px;overflow-x:auto;padding:0 16px 2px">
+      <sc-for list="{{ pmChips }}" as="c" hint-placeholder-count="4"><button onClick="{{ c.onClick }}" style="flex:0 0 auto;min-height:40px;padding:0 14px;border-radius:999px;border:1px solid {{ c.bd }};background:{{ c.bg }};color:{{ c.fg }};font-size:14px;white-space:nowrap">{{ c.label }}</button></sc-for>
+    </div>
+    <div style="margin:0 16px;background:#fff;border:1px solid #e2ded6;border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:10px">
+      <div style="display:flex;gap:16px;font-size:13px;flex-wrap:wrap">
+        <span style="display:flex;align-items:center;gap:6px"><span style="width:18px;height:3px;background:#8f887c"></span>{{ t.planned }}</span>
+        <span style="display:flex;align-items:center;gap:6px"><span style="width:18px;height:4px;background:oklch(0.62 0.16 50)"></span>{{ t.actual }}</span><span style="display:flex;align-items:center;gap:6px"><span style="width:2px;height:14px;background:#1b1a17"></span>{{ t.todayL }}</span>
+      </div>
+      <div style="direction:ltr;position:relative">
+        <svg viewBox="0 0 300 130" preserveAspectRatio="none" style="width:100%;height:200px;display:block;overflow:visible">
+          <line x1="0" y1="5" x2="300" y2="5" style="stroke:#ece9e3;stroke-width:1;vector-effect:non-scaling-stroke"></line>
+          <line x1="0" y1="35" x2="300" y2="35" style="stroke:#ece9e3;stroke-width:1;vector-effect:non-scaling-stroke"></line>
+          <line x1="0" y1="65" x2="300" y2="65" style="stroke:#ece9e3;stroke-width:1;vector-effect:non-scaling-stroke"></line>
+          <line x1="0" y1="95" x2="300" y2="95" style="stroke:#ece9e3;stroke-width:1;vector-effect:non-scaling-stroke"></line>
+          <line x1="0" y1="125" x2="300" y2="125" style="stroke:#cfc9bf;stroke-width:1;vector-effect:non-scaling-stroke"></line>
+          <line x1="{{ chart.tx }}" y1="0" x2="{{ chart.tx }}" y2="125" style="stroke:#1b1a17;stroke-width:1.5;vector-effect:non-scaling-stroke"></line>
+          <polyline points="{{ chart.planPts }}" style="fill:none;stroke:#8f887c;stroke-width:2;stroke-dasharray:5 4;vector-effect:non-scaling-stroke"></polyline>
+          <polyline points="{{ chart.actPts }}" style="fill:none;stroke:oklch(0.62 0.16 50);stroke-width:3.5;vector-effect:non-scaling-stroke;stroke-linejoin:round"></polyline>
+        </svg>
+        <div style="position:absolute;inset-inline-start:2px;top:-2px;font-size:10px;color:#5f5a52">100%</div>
+        <div style="position:absolute;inset-inline-start:2px;top:93px;font-size:10px;color:#5f5a52">50%</div>
+      </div>
+      <div style="direction:ltr;display:flex;justify-content:space-between;font-size:10.5px;color:#5f5a52;font-family:'IBM Plex Mono',monospace">
+        <span>{{ axis.a }}</span><span>{{ axis.b }}</span>
+      </div>
+    </div>
+    <div style="margin:0 16px;display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px"><sc-for list="{{ scStats }}" as="k" hint-placeholder-count="5"><div style="background:#fff;border:1px solid #e4e0d8;border-radius:10px;padding:10px 12px"><div style="font-size:12px;color:#605a51">{{ k.l }}</div><div style="font-size:18px;font-weight:700;color:{{ k.c }}">{{ k.v }}</div></div></sc-for></div><div style="margin:0 16px;font-size:12px;color:#605a51">{{ t.spiLong }}</div>
+    <sc-if value="{{ hasTpBreak }}" hint-placeholder-val="{{ false }}"><div style="margin:0 16px;background:#fff;border:1px solid #e4e0d8;border-radius:12px;overflow:hidden">
+      <div style="padding:10px 12px;font-weight:700;font-size:15px">{{ t.byLoc }}</div>
+      <sc-for list="{{ tpBreak }}" as="b" hint-placeholder-count="3">
+        <div style="display:grid;grid-template-columns:minmax(0,1fr) auto;gap:5px 10px;width:100%;text-align:start;border:none;border-top:1px solid #f0ede7;background:{{ b.bg }};padding:10px 12px;padding-inline-start:{{ b.pad }};color:inherit;font:inherit">
+          <span style="font-weight:{{ b.fw }};font-size:{{ b.fs }}">{{ b.label }} <span style="font-weight:400;font-size:12px;color:#605a51">· {{ b.n }}</span></span>
+          <span style="font-weight:700;font-size:13.5px;color:{{ b.vc }};direction:ltr;unicode-bidi:isolate;white-space:nowrap">{{ b.v }}</span>
+          <div style="grid-column:1 / -1;position:relative;height:8px;background:#ece9e3;border-radius:4px"><div style="position:absolute;inset-block:0;inset-inline-start:0;width:{{ b.aW }};background:{{ b.bar }};border-radius:4px"></div><div style="position:absolute;top:-3px;bottom:-3px;inset-inline-start:{{ b.pW }};width:2px;background:#1b1a17"></div></div>
+          <span style="grid-column:1 / -1;font-size:12px;color:#605a51">{{ t.planned }} {{ b.pT }} · {{ t.actualShort }} {{ b.aT }}</span>
+        </div>
+      </sc-for>
+    </div></sc-if>
+    <div style="margin:0 16px;background:#fff;border:1px solid #e2ded6;border-radius:12px;overflow:hidden;display:grid;grid-template-columns:minmax(0,1.3fr) repeat(3,minmax(0,1fr));font-size:13px">
+      <div style="padding:9px 12px;background:#f2efe9;font-weight:600">{{ t.weekCol }}</div><div style="padding:9px 12px;background:#f2efe9;font-weight:600">{{ t.planned }}</div><div style="padding:9px 12px;background:#f2efe9;font-weight:600">{{ t.actualShort }}</div><div style="padding:9px 12px;background:#f2efe9;font-weight:600">{{ t.variance }}</div>
+      <sc-for list="{{ trendRows }}" as="r" hint-placeholder-count="5">
+        <div style="padding:8px 12px;border-top:1px solid #ece9e3;font-family:'IBM Plex Mono',monospace;font-size:12px">{{ r.w }}</div><div style="padding:8px 12px;border-top:1px solid #ece9e3">{{ r.p }}</div><div style="padding:8px 12px;border-top:1px solid #ece9e3;font-weight:600">{{ r.a }}</div><div style="padding:8px 12px;border-top:1px solid #ece9e3;color:{{ r.c }};font-weight:600;direction:ltr;unicode-bidi:isolate;text-align:start">{{ r.v }}</div>
+      </sc-for>
+    </div>
+  </div>
+</sc-if>
+
+<sc-if value="{{ show.lookahead }}" hint-placeholder-val="{{ false }}"><div style="display:flex;flex-direction:column;gap:12px;padding:16px 0"><div style="padding:0 16px;font-size:20px;font-weight:700">{{ t.tab_lookahead }}</div><div style="padding:0 16px;font-size:13px;color:#605a51">{{ t.laHelp }}</div><div style="display:flex;gap:8px;overflow-x:auto;padding:0 16px 2px"><sc-for list="{{ laChips }}" as="c" hint-placeholder-count="3"><button onClick="{{ c.onClick }}" style="flex:0 0 auto;min-height:40px;padding:0 14px;border-radius:999px;border:1px solid {{ c.bd }};background:{{ c.bg }};color:{{ c.fg }};font-size:14px;white-space:nowrap">{{ c.label }}</button></sc-for></div><div style="display:flex;gap:8px;overflow-x:auto;padding:0 16px 2px"><sc-for list="{{ laWin }}" as="c" hint-placeholder-count="3"><button onClick="{{ c.onClick }}" style="flex:0 0 auto;min-height:40px;padding:0 14px;border-radius:999px;border:1px solid {{ c.bd }};background:{{ c.bg }};color:{{ c.fg }};font-size:14px;white-space:nowrap">{{ c.label }}</button></sc-for></div><div style="padding:0 16px;font-size:16px;font-weight:700">{{ t.la_start }}</div><div style="padding:0 16px;display:flex;flex-direction:column;gap:8px"><sc-for list="{{ laStart }}" as="a" hint-placeholder-count="3"><button onClick="{{ a.open }}" style="text-align:start;width:100%;background:#fff;border:1px solid #e4e0d8;border-radius:12px;padding:12px 14px;display:flex;gap:12px;align-items:center;color:inherit"><div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:3px"><div style="display:flex;gap:8px"><span style="font-family:'IBM Plex Mono',monospace;font-size:12.5px;font-weight:600">{{ a.code }}</span><span style="font-size:12px;color:#605a51;white-space:nowrap">{{ a.proj }}</span><span style="font-size:12px;color:#605a51;white-space:nowrap">{{ a.eng }}</span></div><div style="font-size:15px;font-weight:600">{{ a.name }}</div><div style="font-size:12.5px;color:#605a51">{{ a.date }} · {{ a.when }} · {{ t.actualShort }} {{ a.actual }}</div></div><span style="font-size:12px;font-weight:700;padding:4px 9px;border-radius:999px;background:{{ a.stBg }};color:{{ a.stFg }};white-space:nowrap">{{ a.stLabel }}</span></button></sc-for><sc-if value="{{ laStartEmpty }}" hint-placeholder-val="{{ false }}"><div style="padding:16px;text-align:center;color:#605a51;border:1px dashed #cfc9bf;border-radius:12px">{{ t.noItems }}</div></sc-if></div><div style="padding:0 16px;font-size:16px;font-weight:700">{{ t.la_finish }}</div><div style="padding:0 16px;display:flex;flex-direction:column;gap:8px"><sc-for list="{{ laFinish }}" as="a" hint-placeholder-count="3"><button onClick="{{ a.open }}" style="text-align:start;width:100%;background:#fff;border:1px solid #e4e0d8;border-radius:12px;padding:12px 14px;display:flex;gap:12px;align-items:center;color:inherit"><div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:3px"><div style="display:flex;gap:8px"><span style="font-family:'IBM Plex Mono',monospace;font-size:12.5px;font-weight:600">{{ a.code }}</span><span style="font-size:12px;color:#605a51;white-space:nowrap">{{ a.proj }}</span><span style="font-size:12px;color:#605a51;white-space:nowrap">{{ a.eng }}</span></div><div style="font-size:15px;font-weight:600">{{ a.name }}</div><div style="font-size:12.5px;color:#605a51">{{ a.date }} · {{ a.when }} · {{ t.actualShort }} {{ a.actual }}</div></div><span style="font-size:12px;font-weight:700;padding:4px 9px;border-radius:999px;background:{{ a.stBg }};color:{{ a.stFg }};white-space:nowrap">{{ a.stLabel }}</span></button></sc-for><sc-if value="{{ laFinishEmpty }}" hint-placeholder-val="{{ false }}"><div style="padding:16px;text-align:center;color:#605a51;border:1px dashed #cfc9bf;border-radius:12px">{{ t.noItems }}</div></sc-if></div></div></sc-if>
+
+<sc-if value="{{ show.delays }}" hint-placeholder-val="{{ false }}">
+  <div style="display:flex;flex-direction:column;gap:12px;padding:16px 0">
+    <div style="padding:0 16px;font-size:20px;font-weight:700;line-height:1.3">{{ t.delaysTitle }}</div>
+    <div style="display:flex;gap:8px;overflow-x:auto;padding:0 16px 2px">
+      <sc-for list="{{ dlChips }}" as="c" hint-placeholder-count="4"><button onClick="{{ c.onClick }}" style="flex:0 0 auto;min-height:40px;padding:0 14px;border-radius:999px;border:1px solid {{ c.bd }};background:{{ c.bg }};color:{{ c.fg }};font-size:14px;white-space:nowrap">{{ c.label }}</button></sc-for>
+    </div>
+    <div style="margin:0 16px;background:#fff;border:1px solid #e2ded6;border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:12px">
+      <sc-for list="{{ reasons }}" as="r" hint-placeholder-count="4">
+        <div style="display:flex;flex-direction:column;gap:5px">
+          <div style="display:flex;justify-content:space-between;font-size:14px;gap:8px"><span style="font-weight:600">{{ r.label }}</span><span style="color:#5f5a52">{{ r.n }}</span></div>
+          <div style="height:12px;background:#ece9e3;border-radius:6px;overflow:hidden"><div style="height:100%;width:{{ r.w }};background:oklch(0.62 0.16 50);border-radius:6px"></div></div>
+        </div>
+      </sc-for>
+      <sc-if value="{{ reasonsEmpty }}" hint-placeholder-val="{{ false }}"><div style="color:#5f5a52;text-align:center;padding:16px">{{ t.noItems }}</div></sc-if>
+    </div>
+    <div style="padding:4px 16px 0;font-size:17px;font-weight:700">{{ t.delayedActs }}</div>
+    <div style="padding:0 16px;display:flex;flex-direction:column;gap:8px">
+      <sc-for list="{{ delayedList }}" as="a" hint-placeholder-count="3">
+        <button onClick="{{ a.open }}" style="text-align:start;width:100%;background:#fff;border:1px solid #e2ded6;border-radius:10px;padding:12px 14px;display:flex;gap:12px;align-items:center;color:inherit">
+          <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:3px">
+            <div style="display:flex;gap:8px"><span style="font-family:'IBM Plex Mono',monospace;font-size:12.5px;font-weight:600">{{ a.code }}</span><span style="font-size:12px;color:#5f5a52;white-space:nowrap">{{ a.proj }}</span></div>
+            <div style="font-size:15px;font-weight:500">{{ a.name }}</div>
+            <div style="font-size:12.5px;color:#5f5a52">{{ a.reason }}</div>
+          </div>
+          <span style="font-size:17px;font-weight:700;color:oklch(0.48 0.17 28);direction:ltr;unicode-bidi:isolate;white-space:nowrap">{{ a.varTxt }}</span>
+        </button>
+      </sc-for>
+      <sc-if value="{{ delayedEmpty }}" hint-placeholder-val="{{ false }}"><div style="padding:20px;text-align:center;color:#5f5a52;border:1px dashed #cfc9bf;border-radius:12px">{{ t.noItems }}</div></sc-if>
+    </div>
+  </div>
+</sc-if>
+
+</div>
+</div>
+
+<sc-if value="{{ notWide }}" hint-placeholder-val="{{ true }}"><nav data-noprint="1" style="position:fixed;bottom:0;left:0;right:0;z-index:30;background:#fff;border-top:1px solid #d8d3ca;padding-bottom:env(safe-area-inset-bottom)">
+  <div style="max-width:760px;margin:0 auto;display:flex">
+    <sc-for list="{{ tabs }}" as="b" hint-placeholder-count="3">
+      <button onClick="{{ b.onClick }}" style="flex:1;min-height:58px;margin:4px 3px;border:none;border-radius:12px;background:{{ b.bg }};color:{{ b.fg }};font-size:14px;font-weight:{{ b.fw }};display:flex;align-items:center;justify-content:center;gap:6px">
+        <span>{{ b.label }}</span>
+        <sc-if value="{{ b.hasBadge }}" hint-placeholder-val="{{ false }}"><span style="min-width:22px;padding:1px 6px;border-radius:999px;background:oklch(0.52 0.17 28);color:#fff;font-size:12px;font-weight:700">{{ b.badge }}</span></sc-if>
+      </button>
+    </sc-for>
+  </div>
+</nav></sc-if>
+
+<sc-if value="{{ showBulkBar }}" hint-placeholder-val="{{ false }}"><div data-noprint="1" style="position:fixed;left:0;right:0;bottom:calc(66px + env(safe-area-inset-bottom));z-index:35;padding:0 12px"><div style="max-width:736px;margin:0 auto;background:#1b1a17;color:#fff;border-radius:14px;padding:10px;display:flex;gap:8px;align-items:center;box-shadow:0 8px 24px rgba(0,0,0,.25)"><span style="flex:1;padding:0 6px;font-size:13.5px;font-weight:600">{{ bulkCountTxt }}</span><button onClick="{{ bulkCancel }}" style="min-height:48px;padding:0 14px;border:1px solid #5a554d;background:transparent;color:#fff;border-radius:10px;font-weight:600">{{ t.bulkCancel }}</button><button onClick="{{ bulkSubmit }}" style="min-height:48px;padding:0 16px;border:none;background:oklch(0.76 0.14 65);color:#1b1a17;border-radius:10px;font-weight:700;white-space:nowrap">{{ bulkSubmitTxt }}</button></div></div></sc-if>
+<sc-if value="{{ showSelBar }}" hint-placeholder-val="{{ false }}"><div data-noprint="1" style="position:fixed;left:0;right:0;bottom:calc(66px + env(safe-area-inset-bottom));z-index:35;padding:0 12px"><div style="max-width:736px;margin:0 auto;background:#1b1a17;color:#fff;border-radius:14px;padding:10px;display:flex;gap:8px;align-items:center;box-shadow:0 8px 24px rgba(0,0,0,.25)"><span style="flex:1;padding:0 6px;font-size:13.5px;font-weight:600">{{ selCountTxt }}</span><button onClick="{{ approveSel }}" style="min-height:48px;padding:0 16px;border:none;background:oklch(0.76 0.14 65);color:#1b1a17;border-radius:10px;font-weight:700;white-space:nowrap">{{ approveSelTxt }}</button></div></div></sc-if>
+<sc-if value="{{ reportOpen }}" hint-placeholder-val="{{ false }}"><div id="dmc-report" style="position:fixed;inset:0;z-index:60;background:#e7e3dc;overflow-y:auto">
+<div data-noprint="1" style="position:sticky;top:0;background:#1b1a17;color:#fff;padding:10px 12px;display:flex;gap:8px;align-items:center;flex-wrap:wrap"><button onClick="{{ closeReport }}" style="min-height:44px;padding:0 14px;border:1px solid #5a554d;background:transparent;color:#fff;border-radius:10px;font-weight:600">{{ t.close }}</button><button onClick="{{ printReport }}" style="min-height:44px;padding:0 16px;border:none;background:oklch(0.76 0.14 65);color:#1b1a17;border-radius:10px;font-weight:700">{{ t.print }}</button><span style="font-size:12px;color:#c9c3b8">{{ t.printNote }}</span><div style="flex-basis:100%;display:flex;gap:8px;overflow-x:auto;padding-top:4px"><sc-for list="{{ rp.chips }}" as="c" hint-placeholder-count="4"><button onClick="{{ c.onClick }}" style="flex:0 0 auto;min-height:40px;padding:0 14px;border-radius:999px;border:1px solid {{ c.bd }};background:{{ c.bg }};color:{{ c.fg }};font-size:14px;white-space:nowrap">{{ c.label }}</button></sc-for></div></div>
+<div data-sheet="1" style="max-width:820px;margin:16px auto;background:#fff;padding:28px;font-size:12.5px;line-height:1.45;display:flex;flex-direction:column;gap:16px;box-shadow:0 2px 10px rgba(0,0,0,.08)">
+<div style="display:flex;justify-content:space-between;gap:12px;border-bottom:2px solid #1b1a17;padding-bottom:10px;flex-wrap:wrap"><div><div style="font-size:11px;letter-spacing:.1em;font-weight:700">DMC-CURVE</div><div style="font-size:22px;font-weight:700">{{ t.repTitle }}</div><div style="font-size:14px;font-weight:600">{{ rp.scope }}</div></div><div style="text-align:end"><div style="font-weight:600">{{ rp.week }}</div><div>{{ t.dataDate }} {{ today }}</div></div></div>
+<div style="background:#fff3cf;border:1px solid #e9cf7c;padding:6px 10px;font-weight:700">{{ t.repDemo }}</div>
+<div style="font-size:15px;font-weight:700">{{ rp.summary }}</div><div>{{ rp.pf }}</div>
+<div style="display:grid;grid-template-columns:minmax(0,2.4fr) repeat(5,minmax(0,1fr));border:1px solid #d8d3ca"><div style="padding:6px 8px;background:#f2efe9;font-weight:700">{{ t.repProject }}</div><div style="padding:6px 8px;background:#f2efe9;font-weight:700">{{ t.planned }}</div><div style="padding:6px 8px;background:#f2efe9;font-weight:700">{{ t.actualShort }}</div><div style="padding:6px 8px;background:#f2efe9;font-weight:700">{{ t.variance }}</div><div style="padding:6px 8px;background:#f2efe9;font-weight:700">SPI</div><div style="padding:6px 8px;background:#f2efe9;font-weight:700">{{ t.repStatus }}</div>
+<sc-for list="{{ rp.rows }}" as="r" hint-placeholder-count="3"><div style="padding:6px 8px;border-top:1px solid #e4e0d8">{{ r.code }} {{ r.name }}</div><div style="padding:6px 8px;border-top:1px solid #e4e0d8">{{ r.p }}</div><div style="padding:6px 8px;border-top:1px solid #e4e0d8;font-weight:700">{{ r.a }}</div><div style="padding:6px 8px;border-top:1px solid #e4e0d8;color:{{ r.vc }};direction:ltr;unicode-bidi:isolate;text-align:start">{{ r.v }}</div><div style="padding:6px 8px;border-top:1px solid #e4e0d8">{{ r.spi }}</div><div style="padding:6px 8px;border-top:1px solid #e4e0d8;color:{{ r.stc }};font-weight:700">{{ r.st }}</div></sc-for></div>
+<sc-for list="{{ rp.projects }}" as="p" hint-placeholder-count="3"><div style="border:1px solid #d8d3ca;padding:12px;display:flex;flex-direction:column;gap:6px;break-inside:avoid"><div style="font-size:14px;font-weight:700">{{ p.title }}</div><div>{{ p.line }}</div><div><b>{{ t.byLoc }}:</b> {{ p.bldg }}</div><div style="direction:ltr"><svg viewBox="0 0 300 130" preserveAspectRatio="none" style="width:100%;height:110px;display:block"><line x1="0" y1="125" x2="300" y2="125" style="stroke:#cfc9bf;stroke-width:1;vector-effect:non-scaling-stroke"></line><line x1="{{ p.tx }}" y1="0" x2="{{ p.tx }}" y2="125" style="stroke:#1b1a17;stroke-width:1;vector-effect:non-scaling-stroke"></line><polyline points="{{ p.planPts }}" style="fill:none;stroke:#8f887c;stroke-width:1.5;stroke-dasharray:4 3;vector-effect:non-scaling-stroke"></polyline><polyline points="{{ p.actPts }}" style="fill:none;stroke:oklch(0.62 0.16 50);stroke-width:2.5;vector-effect:non-scaling-stroke"></polyline></svg><div style="font-size:10px;color:#605a51;font-family:'IBM Plex Mono',monospace">{{ p.range }}</div></div><div><b>{{ t.repDelayed }}:</b> {{ p.delayed }}</div><div><b>{{ t.repMissing }}:</b> {{ p.missing }}</div><div style="font-weight:700;margin-top:6px">{{ t.repPhotos }}</div><sc-if value="{{ p.noPhotos }}" hint-placeholder-val="{{ false }}"><div style="color:#605a51">{{ t.repNoPhotos }}</div></sc-if><sc-for list="{{ p.photoActs }}" as="g" hint-placeholder-count="0"><div style="display:flex;flex-direction:column;gap:6px;break-inside:avoid;border-top:1px solid #eee;padding-top:8px"><div style="font-weight:600">{{ g.title }}</div><div style="font-size:11.5px;color:#605a51">{{ g.sub }}</div><div style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px"><sc-for list="{{ g.photos }}" as="x" hint-placeholder-count="0"><div style="display:flex;flex-direction:column;gap:3px;min-width:0"><div style="aspect-ratio:1 / 1;width:100%;border-radius:6px;background:#ece9e3 center/cover no-repeat;background-image:{{ x.bg }};-webkit-print-color-adjust:exact;print-color-adjust:exact"></div><div style="font-size:11px;font-weight:600;overflow-wrap:anywhere">{{ x.cap }}</div><div style="font-size:9.5px;color:#605a51;overflow-wrap:anywhere">{{ x.meta }}</div></div></sc-for></div></div></sc-for></div></sc-for>
+<div style="font-size:15px;font-weight:700">{{ t.repApproved }}</div>
+<div style="display:flex;flex-direction:column;border:1px solid #d8d3ca"><sc-for list="{{ rp.approved }}" as="u" hint-placeholder-count="3"><div style="display:grid;grid-template-columns:minmax(0,3fr) minmax(0,1.2fr) minmax(0,1.4fr) minmax(0,1fr);gap:8px;padding:5px 8px;border-bottom:1px solid #eee"><span>{{ u.code }} · {{ u.proj }} · {{ u.name }}</span><span style="direction:ltr;unicode-bidi:isolate;text-align:start;font-weight:600">{{ u.change }}</span><span>{{ u.by }}</span><span>{{ u.when }}</span></div></sc-for><sc-if value="{{ rp.approvedEmpty }}" hint-placeholder-val="{{ false }}"><div style="padding:8px">{{ t.none }}</div></sc-if></div>
+<div style="font-size:15px;font-weight:700">{{ t.repReasons }}</div>
+<div style="display:flex;flex-direction:column;gap:4px"><sc-for list="{{ rp.reasons }}" as="r" hint-placeholder-count="3"><div style="display:grid;grid-template-columns:160px minmax(0,1fr) 80px;gap:8px;align-items:center"><span>{{ r.label }}</span><div style="height:8px;background:#ece9e3"><div style="height:100%;width:{{ r.w }};background:oklch(0.62 0.16 50)"></div></div><span>{{ r.n }}</span></div></sc-for><sc-if value="{{ rp.reasonsEmpty }}" hint-placeholder-val="{{ false }}"><div>{{ t.none }}</div></sc-if></div>
+<div style="border-top:1px solid #d8d3ca;padding-top:8px;font-size:11px;color:#605a51">{{ t.repFooter }}</div>
+</div></div></sc-if>
+
+<sc-if value="{{ showLogin }}" hint-placeholder-val="{{ false }}">
+  <div data-noprint="1" style="position:fixed;inset:0;z-index:70;background:#1b1a17;display:grid;place-items:center;padding:20px;overflow-y:auto">
+    <div style="width:100%;max-width:400px;background:#f7f5f1;border-radius:16px;padding:24px;display:flex;flex-direction:column;gap:14px">
+      <div style="display:flex;align-items:center;gap:10px"><div style="width:44px;height:44px;background:oklch(0.76 0.14 65);display:grid;place-items:center;font-weight:700;border-radius:9px;font-family:'IBM Plex Mono',monospace">DMC</div><div><div style="font-weight:700;font-size:19px">{{ t.title }}</div><div style="font-size:12.5px;color:#5f5a52;direction:ltr;unicode-bidi:isolate">{{ host }}</div></div></div>
+      <sc-if value="{{ authChecking }}" hint-placeholder-val="{{ false }}"><div style="padding:16px 0;color:#5f5a52;font-weight:600">{{ t.connecting }}</div></sc-if>
+      <sc-if value="{{ authForm }}" hint-placeholder-val="{{ false }}">
+        <div style="font-size:14px;color:#3d3933">{{ t.loginSub }}</div>
+        <label style="font-size:13px;font-weight:600">{{ t.email }}</label>
+        <input type="email" autocomplete="username" value="{{ loginEmail }}" onChange="{{ onLoginEmail }}" style="min-height:50px;padding:0 14px;border:1px solid #cfc9bf;border-radius:10px;background:#fff;font-size:16px;direction:ltr">
+        <label style="font-size:13px;font-weight:600">{{ t.password }}</label>
+        <input type="password" autocomplete="current-password" value="{{ loginPw }}" onChange="{{ onLoginPw }}" style="min-height:50px;padding:0 14px;border:1px solid #cfc9bf;border-radius:10px;background:#fff;font-size:16px;direction:ltr">
+        <sc-if value="{{ hasLoginErr }}" hint-placeholder-val="{{ false }}"><div style="background:oklch(0.95 0.035 28);color:oklch(0.42 0.16 28);border-radius:8px;padding:9px 11px;font-size:13.5px;font-weight:600">{{ loginErr }}</div></sc-if>
+        <button onClick="{{ signIn }}" style="min-height:52px;border:none;background:#1d1b18;color:#fff;border-radius:10px;font-weight:700;font-size:15px">{{ signInLbl }}</button>
+        <button onClick="{{ signUp }}" style="min-height:46px;border:1px solid #1d1b18;background:#fff;border-radius:10px;font-weight:600">{{ t.signUp }}</button>
+        <div style="font-size:12px;color:#5f5a52;line-height:1.45">{{ t.signUpNote }}</div>
+      </sc-if>
+      <button onClick="{{ openDemo }}" style="min-height:44px;border:none;background:transparent;color:#8a4b12;font-weight:600;text-decoration:underline">{{ t.openDemo }}</button>
+    </div>
+  </div>
+</sc-if>
+
+<sc-if value="{{ hasToast }}" hint-placeholder-val="{{ false }}">
+  <div data-noprint="1" style="position:fixed;bottom:140px;left:0;right:0;z-index:40;display:flex;justify-content:center;padding:0 16px;pointer-events:none">
+    <div style="background:#1d1b18;color:#fff;padding:12px 18px;border-radius:10px;font-weight:600;font-size:14.5px;max-width:520px;box-shadow:0 6px 20px rgba(0,0,0,.2)">{{ toast }}</div>
+  </div>
+</sc-if>
+
+<sc-if value="{{ settingsOpen }}" hint-placeholder-val="{{ false }}">
+  <div data-noprint="1" style="position:fixed;inset:0;z-index:50;background:rgba(29,27,24,.5);display:flex;align-items:flex-end;justify-content:center">
+    <div style="background:#f7f5f1;width:100%;max-width:760px;max-height:88vh;overflow-y:auto;border-radius:16px 16px 0 0;padding:18px 16px 28px;display:flex;flex-direction:column;gap:14px">
+      <div style="display:flex;align-items:center;gap:10px"><div style="font-size:20px;font-weight:700;flex:1">{{ t.settings }}</div><button onClick="{{ closeSettings }}" style="min-height:44px;padding:0 16px;border:1px solid #cfc9bf;background:#fff;border-radius:10px;font-weight:600">{{ t.close }}</button></div>
+      <div style="display:flex;flex-direction:column;gap:6px">
+        <div style="font-size:13px;font-weight:600;color:#5f5a52">{{ t.language }}</div>
+        <div style="display:flex;gap:8px"><sc-for list="{{ langChips }}" as="c" hint-placeholder-count="2"><button onClick="{{ c.onClick }}" style="min-height:44px;padding:0 18px;border-radius:999px;border:1px solid {{ c.bd }};background:{{ c.bg }};color:{{ c.fg }};font-size:15px">{{ c.label }}</button></sc-for></div>
+      </div>
+      <div style="background:#fff;border:1px solid #e2ded6;border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:10px;font-size:14px;line-height:1.5">
+        <div style="font-weight:700;font-size:16px">{{ t.connTitle }}</div>
+        <div style="font-weight:600">{{ connStatus }}</div>
+        <sc-if value="{{ isSignedIn }}" hint-placeholder-val="{{ false }}"><div style="font-size:13px;color:#5f5a52">{{ userLine }}</div></sc-if>
+        <sc-if value="{{ connEditable }}" hint-placeholder-val="{{ true }}">
+          <div style="font-size:12.5px;color:#5f5a52">{{ t.connHelp }}</div>
+          <input value="{{ connUrl }}" onChange="{{ onConnUrl }}" placeholder="https://xxxx.supabase.co" style="min-height:48px;padding:0 12px;border:1px solid #cfc9bf;border-radius:10px;background:#fff;font-size:14px;width:100%;direction:ltr;font-family:'IBM Plex Mono',monospace">
+          <input value="{{ connKey }}" onChange="{{ onConnKey }}" placeholder="anon public key" style="min-height:48px;padding:0 12px;border:1px solid #cfc9bf;border-radius:10px;background:#fff;font-size:14px;width:100%;direction:ltr;font-family:'IBM Plex Mono',monospace">
+          <div style="display:flex;gap:8px;flex-wrap:wrap"><button onClick="{{ connect }}" style="min-height:48px;padding:0 14px;border-radius:10px;font-weight:700;font-size:14px;border:none;background:#1d1b18;color:#fff">{{ t.connect }}</button><sc-if value="{{ isLive }}" hint-placeholder-val="{{ false }}"><button onClick="{{ disconnect }}" style="min-height:48px;padding:0 14px;border-radius:10px;font-weight:700;font-size:14px;border:1px solid #1d1b18;background:#fff">{{ t.disconnect }}</button></sc-if></div>
+        </sc-if>
+        <sc-if value="{{ connFromFile }}" hint-placeholder-val="{{ false }}"><div style="font-size:12.5px;color:#5f5a52">{{ t.connFile }}</div></sc-if>
+        <sc-if value="{{ isSignedIn }}" hint-placeholder-val="{{ false }}"><button onClick="{{ signOut }}" style="min-height:48px;padding:0 14px;border-radius:10px;font-weight:700;font-size:14px;align-self:flex-start;border:1px solid #1d1b18;background:#fff">{{ t.signOut }}</button></sc-if>
+        <sc-if value="{{ isAdmin }}" hint-placeholder-val="{{ false }}">
+          <div style="border-top:1px dashed #e2ded6;padding-top:10px;display:flex;flex-direction:column;gap:8px"><div style="font-weight:700">{{ t.adminTools }}</div><div style="font-size:12.5px;color:#5f5a52">{{ t.adminHelp }}</div>
+          <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px"><button onClick="{{ loadDemoDb }}" style="min-height:48px;padding:0 14px;border-radius:10px;font-weight:700;font-size:14px;border:1px solid #1d1b18;background:#fff">{{ loadDemoLbl }}</button><button onClick="{{ removeDemoDb }}" style="min-height:48px;padding:0 14px;border-radius:10px;font-weight:700;font-size:14px;border:1px solid oklch(0.52 0.17 28);color:oklch(0.45 0.16 28);background:#fff">{{ removeDemoLbl }}</button></div></div>
+        </sc-if>
+      </div>
+      <div style="background:#fff;border:1px solid #e2ded6;border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:8px;font-size:14px;line-height:1.5">
+        <div style="font-weight:700;font-size:16px">{{ t.storageTitle }}</div>
+        <div style="display:inline-flex;align-self:flex-start;font-size:12px;font-weight:700;padding:3px 10px;border-radius:999px;background:{{ stor.bg }};color:{{ stor.fg }}">{{ stor.badge }}</div>
+        <div>{{ stor.l1 }}</div>
+        <div>{{ stor.l2 }}</div>
+        <div>{{ stor.l3 }}</div>
+      </div>
+      <div style="background:#fff;border:1px solid #e2ded6;border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:6px;font-size:14px;line-height:1.5">
+        <div style="font-weight:700;font-size:16px">{{ t.legendTitle }}</div>
+        <div>{{ t.legend }}</div>
+        <div style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#5f5a52">{{ stats }}</div>
+      </div>
+      <sc-if value="{{ isDemo }}" hint-placeholder-val="{{ true }}"><div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px">
+        <button onClick="{{ exportJson }}" style="min-height:52px;border:1px solid #1d1b18;background:#fff;border-radius:10px;font-weight:600;font-size:14px">{{ t.exportJson }}</button>
+        <button onClick="{{ onReset }}" style="min-height:52px;border:1px solid oklch(0.52 0.17 28);color:oklch(0.45 0.16 28);background:#fff;border-radius:10px;font-weight:700;font-size:14px">{{ resetLabel }}</button>
+      </div></sc-if>
+    </div>
+  </div>
+</sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;requireCM&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Rules&quot;},&quot;staleDays&quot;:{&quot;editor&quot;:&quot;int&quot;,&quot;default&quot;:7,&quot;min&quot;:1,&quot;max&quot;:30,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Rules&quot;},&quot;delayThreshold&quot;:{&quot;editor&quot;:&quot;int&quot;,&quot;default&quot;:10,&quot;min&quot;:1,&quot;max&quot;:40,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Rules&quot;}}">
+const KEY='dmc-erp:demo',KEY3='dmc-site-progress:v4',PREF_KEY='dmc-erp:prefs',CONN_KEY='dmc-erp:conn';
+const LOC={A1010:['SITE','—'],A1020:['BLD-A','Z1'],A1030:['BLD-A','Z1'],A1040:['BLD-A','Z2'],A1050:['BLD-A','Z1'],A1060:['BLD-A','Z2'],A1070:['BLD-B','Z1'],A1080:['BLD-B','Z2'],B2010:['TWR-1','Z1'],B2020:['TWR-1','Z1'],B2030:['TWR-1','Z2'],B2040:['TWR-2','Z1'],B2050:['TWR-2','Z2'],B2060:['TWR-1','Z3'],B2070:['TWR-2','Z1'],B2080:['PODIUM','Z1'],C3010:['SITE','—'],C3020:['WH-1','Z1'],C3030:['WH-1','Z2'],C3040:['WH-1','Z2'],C3050:['WH-2','Z1'],C3060:['WH-2','Z2'],C3070:['WH-1','Z1'],C3080:['SITE','—']};
+const locOf=c=>LOC[c]||['SITE','—'];
+const uniq=arr=>Array.from(new Set(arr));
+const DAY=864e5;
+const p2=n=>String(n).padStart(2,'0');
+const stamp=()=>{const d=new Date();return `${d.getFullYear()}-${p2(d.getMonth()+1)}-${p2(d.getDate())}T${p2(d.getHours())}:${p2(d.getMinutes())}`;};
+const TODAY=stamp().slice(0,10);
+const addD=(s,n)=>new Date(Date.parse(s)+n*DAY).toISOString().slice(0,10);
+const dd=(a,b)=>Math.round((Date.parse(b.slice(0,10))-Date.parse(a.slice(0,10)))/DAY);
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+const r1=v=>Math.round(v*10)/10;
+const uid=p=>p+Date.now().toString(36)+Math.random().toString(36).slice(2,6);
+const isDate=s=>/^\d{4}-\d{2}-\d{2}$/.test(s)&&!isNaN(Date.parse(s));
+const DELAYS=['material','manpower','equipment','weather','design','client','subcon','permit','other'];
+const ENG=['CIV','ARC','MEC','ELE'];
+const PEOPLE={CIV:{en:'Civil Engineer',ar:'المهندس المدني'},ARC:{en:'Architectural Engineer',ar:'المهندس المعماري'},MEC:{en:'Mechanical Engineer',ar:'المهندس الميكانيكي'},ELE:{en:'Electrical Engineer',ar:'المهندس الكهربائي'},CM:{en:'Construction Manager',ar:'مدير الإنشاءات'},PL:{en:'Planning Engineer',ar:'مهندس التخطيط'}};
+const ALIAS={CIVIL:'CIV',ARCH:'ARC',ARCHITECTURAL:'ARC',MECH:'MEC',MECHANICAL:'MEC',ELEC:'ELE',ELECTRICAL:'ELE'};
+const DISC={A1010:'CIV',A1020:'CIV',A1030:'CIV',A1040:'CIV',A1050:'CIV',A1060:'ARC',A1070:'ELE',A1080:'ARC',B2010:'CIV',B2020:'CIV',B2030:'CIV',B2040:'CIV',B2050:'ARC',B2060:'MEC',B2070:'CIV',B2080:'ARC',C3010:'CIV',C3020:'CIV',C3030:'CIV',C3040:'ARC',C3050:'CIV',C3060:'ELE',C3070:'MEC',C3080:'CIV'};
+function decideU(u,ok,role,c,ts){const cm=role==='cm',by=cm?'CM':'PL';
+  if(ok&&cm)return Object.assign({},u,{status:'endorsed',cmAt:ts,cmBy:'CM',cmComment:c,log:u.log.concat([{at:ts,ev:'endorsed',by}])});
+  return Object.assign({},u,{status:ok?'approved':'returned',reviewed:ts,reviewer:by,comment:c,log:u.log.concat([{at:ts,ev:ok?'approved':'returned',by}])});}
+const C={green:'oklch(0.48 0.12 150)',greenBg:'oklch(0.94 0.04 150)',red:'oklch(0.48 0.17 28)',redBg:'oklch(0.95 0.035 28)',amber:'oklch(0.45 0.1 70)',amberBg:'oklch(0.94 0.06 85)',blue:'oklch(0.45 0.12 250)',blueBg:'oklch(0.94 0.03 250)',grey:'#5f5a52',greyBg:'#ece9e3',barOk:'oklch(0.58 0.13 150)',barWarn:'oklch(0.68 0.14 70)',barBad:'oklch(0.56 0.18 28)'};
+const CSV_COLS=['project_code','project_name','activity_id','activity_name','activity_name_ar','wbs','planned_start','planned_finish','budget_qty','unit','weight','assigned_to','zone','building'];
+
+const I18N={
+en:{title:'DMC Site Progress',otherLang:'عربي',dataShort:'Data',dataDate:'Data date',
+demo:'DEMO DATA — fictional sample projects. Saved only in this browser on this device. Tap for details.',
+role_site:'Site Engineer',role_planner:'Planning Engineer',role_pm:'Project Manager',actingAs:'Acting as site engineer',
+tab_acts:'Activities',tab_hist:'Submissions',tab_review:'Review',tab_progress:'Progress',tab_import:'Import',tab_portfolio:'Portfolio',tab_trends:'S-curve',tab_lookahead:'Look-ahead',tab_delays:'Delays',
+search:'Search activity ID or name',f_all:'All',f_needs:'Needs update',f_returned:'Returned',f_drafts:'Drafts',f_pending:'In review',f_delayed:'Delayed',f_missing:'Missing update',allProjects:'All projects',
+planned:'Planned',actual:'Actual (approved)',actualShort:'Actual',variance:'Variance',plannedDates:'Planned dates',aDates:'Actual dates',budgetQty:'Budget quantity',weight:'Weight',assignee:'Assigned to',qtyShort:'Quantity',
+st_draft:'Draft',st_submitted:'In review',st_approved:'Approved',st_returned:'Returned',st_complete:'Complete',st_uptodate:'Up to date',st_needs:'Needs update',st_notstarted:'Not started',
+backArrow:'← Back',updateProgress:'Update progress',progressPct:'Progress %',qtyDone:'Completed quantity, cumulative',fromPct:'Calc from %',
+actualStart:'Actual start',actualFinish:'Actual finish',remarks:'Remarks',remarksPh:'What was done, location, crew…',delayReason:'Delay reason',delayReq:'Required — progress is behind plan by more than the threshold',
+photos:'Site photos',addPhoto:'Photo',photoNote:'Up to 4 photos. Compressed and stored in this browser only.',saveDraft:'Save draft',submit:'Submit for review',withdraw:'Withdraw to edit',
+awaiting:'Submitted — waiting for Planning Engineer review. Official progress does not change until approved.',returnedNote:'Returned by Planning Engineer',history:'Update history',noItems:'Nothing here.',
+readOnly:'Read-only: only the assigned site engineer can submit updates for this activity.',myHistTitle:'My submissions',
+reviewQueue:'Submitted updates',reviewHelp:'Approving an update makes it the official actual progress. Returned updates go back to the engineer with your comment.',reviewEmpty:'No updates waiting for review.',
+prevApproved:'Previous approved',submittedVal:'Submitted',reviewComment:'Review comment',reviewCommentPh:'Required when returning',approve:'Approve',returnBtn:'Return',approveNote:'Each decision is logged in the update history with your name and time.',
+progressTitle:'Planned vs approved progress',weightedNote:'Project % = Σ(activity weight × %) ÷ Σ weight. Only approved updates count as actual.',
+k_planned:'Planned',k_actual:'Actual',k_var:'Variance',k_pending:'In review',k_missing:'Missing',k_delayed:'Delayed',
+exportProgress:'Progress CSV',exportHistory:'Update history CSV',
+importTitle:'Import schedule (CSV)',importHelp:'Export activities from Primavera P6 (or any scheduler) to Excel/CSV and arrange them in these columns. This app does not connect to P6 directly; XER/XML import is planned for a later version. Rows are matched by project_code + activity_id: existing activities are updated, new ones are added.',
+columns:'Expected columns',loadSample:'Load sample CSV',chooseFile:'Choose CSV file',validate:'Validate',
+portfolio:'Portfolio progress',byValue:'Weighted by contract value',projectsTitle:'Projects',st_attn:'Needs attention',st_watch:'Watch',st_ok:'On track',
+trendTitle:'S-curve — planned vs approved actual',weekCol:'Week ending',delaysTitle:'Delay reasons reported',delayedActs:'Delayed activities',
+settings:'Settings & data',language:'Language',storageTitle:'Where is data stored?',storageBadge:'Personal · this device only · not synchronised',
+storage1:'This version saves everything in your browser’s local storage on this device. It is personal storage, not shared storage.',
+storage2:'Other people, phones or browsers will not see these updates. The role switch in the header only simulates the three users on one device — nothing is synchronised between users.',
+storage3:'Limits: roughly 5 MB per browser (photos are compressed), data is lost if browser data is cleared, and there are no logins, so names in the history are simulated. Real use needs a shared backend: database, user accounts and roles, photo storage, and a schedule import service.',
+legendTitle:'Demo vs real data',legend:'“Demo” = fictional seed data. “Imported” = loaded from your CSV. Updates you enter here are marked “Entered here”. Reset removes everything and reloads the demo.',
+exportJson:'Download backup (JSON)',reset:'Reset demo data',resetConfirm:'Tap again to confirm',close:'Close',
+src_demo:'Demo',src_imported:'Imported',src_user:'Entered here',
+t_saved:'Draft saved',t_submitted:'Submitted for review',t_approved:'Approved — official progress updated',t_returned:'Returned to engineer',t_withdrawn:'Withdrawn to draft',t_reset:'Demo data restored',t_quota:'Storage full — remove photos',t_exported:'File downloaded',t_noValid:'No valid rows',
+ev_saved:'saved',ev_submitted:'submitted',ev_approved:'approved',ev_returned:'returned',ev_withdrawn:'withdrawn',
+err_pct:'Progress must be 0–100',err_lower:'Lower than approved progress — explain in remarks',err_start:'Actual start is required once work has started',err_finish:'Actual finish is required at 100%',err_finishEarly:'Actual finish is only allowed at 100%',err_order:'Finish cannot be before start',err_future:'Dates cannot be in the future',err_delay:'Select a delay reason',err_qty:'Quantity must be between 0 and 110% of budget',err_comment:'A comment is required to return an update',
+delays:{material:'Material delivery',manpower:'Manpower shortage',equipment:'Equipment breakdown',weather:'Weather / heat',design:'Design / RFI pending',client:'Client approval',subcon:'Subcontractor',permit:'Permits / authority',other:'Other'},
+siteCount:(n,a)=>`${n} of ${a} assigned activities`,lastUpd:d=>d?`Last update ${d}`:'No update yet',ago:n=>n<=0?'today':`${n} d ago`,
+pctHint:(a,p)=>`Approved ${a}% · planned today ${p}%`,implied:(x)=>`Quantity implies ${x}%`,formNew:'New update',formDraft:'Editing draft',formRet:'Revising returned update',
+flags:(d,m,p)=>`${d} delayed · ${m} missing updates · ${p} in review`,
+w_qty:(x,y)=>`Quantity implies ${x}% but ${y}% was entered`,w_jump:x=>`Large jump: +${x} points since last approval`,w_ahead:x=>`Ahead of plan by ${x} points`,w_lower:x=>`Lower than current approved ${x}%`,w_delay:'Behind plan — delay reason given',
+plannedLine:(p,a)=>`Planned today ${p}% · currently approved ${a}%`,byLine:(n,w)=>`${n} · ${w}`,
+impSummary:(v,e)=>`${v} valid · ${e} with errors`,impBtn:n=>`Import ${n} valid rows`,impNew:'New',impUpd:'Update',impErr:'Error',impToast:n=>`Imported ${n} activities`,
+e_col:c=>`Missing column: ${c}`,e_req:'Required value missing',e_date:'Invalid date — use YYYY-MM-DD',e_order:'Finish is before start',e_qty:'budget_qty must be > 0',e_w:'weight must be > 0',e_eng:'assigned_to must be E1, E2 or E3',e_dup:'Duplicate activity in file',
+plSummary:(n,v)=>`${n} activities · contract value SAR ${v}M (fictional)`,reports:n=>`${n} reports`,
+stats:(p,a,u,kb)=>`${p} projects · ${a} activities · ${u} updates · ${kb} KB used`},
+ar:{title:'DMC تقدم الموقع',otherLang:'English',dataShort:'البيانات',dataDate:'تاريخ البيانات',
+demo:'بيانات تجريبية — مشاريع وهمية للعرض. محفوظة في هذا المتصفح على هذا الجهاز فقط. اضغط للتفاصيل.',
+role_site:'مهندس موقع',role_planner:'مهندس تخطيط',role_pm:'مدير المشروع',actingAs:'تعمل باسم مهندس الموقع',
+tab_acts:'الأنشطة',tab_hist:'إرسالاتي',tab_review:'المراجعة',tab_progress:'التقدم',tab_import:'الاستيراد',tab_portfolio:'المحفظة',tab_trends:'منحنى S',tab_lookahead:'الأسابيع القادمة',tab_delays:'التأخيرات',
+search:'ابحث برقم النشاط أو اسمه',f_all:'الكل',f_needs:'يحتاج تحديث',f_returned:'مُعاد',f_drafts:'مسودات',f_pending:'قيد المراجعة',f_delayed:'متأخر',f_missing:'تحديث مفقود',allProjects:'كل المشاريع',
+planned:'المخطط',actual:'الفعلي (المعتمد)',actualShort:'الفعلي',variance:'الانحراف',plannedDates:'التواريخ المخططة',aDates:'التواريخ الفعلية',budgetQty:'الكمية المقررة',weight:'الوزن',assignee:'المسند إليه',qtyShort:'الكمية',
+st_draft:'مسودة',st_submitted:'قيد المراجعة',st_approved:'معتمد',st_returned:'مُعاد',st_complete:'مكتمل',st_uptodate:'محدّث',st_needs:'يحتاج تحديث',st_notstarted:'لم يبدأ',
+backArrow:'→ رجوع',updateProgress:'تحديث التقدم',progressPct:'نسبة الإنجاز %',qtyDone:'الكمية المنفذة، تراكمية',fromPct:'احسب من النسبة',
+actualStart:'البداية الفعلية',actualFinish:'النهاية الفعلية',remarks:'ملاحظات',remarksPh:'ما تم تنفيذه، الموقع، الطاقم…',delayReason:'سبب التأخير',delayReq:'مطلوب — التقدم متأخر عن المخطط بأكثر من الحد المسموح',
+photos:'صور الموقع',addPhoto:'صورة',photoNote:'حتى 4 صور. تُضغط وتُحفظ في هذا المتصفح فقط.',saveDraft:'حفظ كمسودة',submit:'إرسال للمراجعة',withdraw:'سحب للتعديل',
+awaiting:'تم الإرسال — بانتظار مراجعة مهندس التخطيط. لا يتغير التقدم الرسمي قبل الاعتماد.',returnedNote:'أعاده مهندس التخطيط',history:'سجل التحديثات',noItems:'لا توجد عناصر.',
+readOnly:'للعرض فقط: مهندس الموقع المسند إليه النشاط هو من يرسل التحديثات.',myHistTitle:'إرسالاتي',
+reviewQueue:'التحديثات المرسلة',reviewHelp:'اعتماد التحديث يجعله التقدم الفعلي الرسمي. التحديثات المعادة ترجع للمهندس مع تعليقك.',reviewEmpty:'لا توجد تحديثات بانتظار المراجعة.',
+prevApproved:'المعتمد السابق',submittedVal:'المرسل',reviewComment:'تعليق المراجعة',reviewCommentPh:'مطلوب عند الإعادة',approve:'اعتماد',returnBtn:'إعادة',approveNote:'يُسجل كل قرار في سجل التحديثات مع الاسم والوقت.',
+progressTitle:'المخطط مقابل التقدم المعتمد',weightedNote:'نسبة المشروع = مجموع (وزن النشاط × النسبة) ÷ مجموع الأوزان. التحديثات المعتمدة فقط تُحتسب فعلياً.',
+k_planned:'المخطط',k_actual:'الفعلي',k_var:'الانحراف',k_pending:'قيد المراجعة',k_missing:'مفقود',k_delayed:'متأخر',
+exportProgress:'تقرير التقدم CSV',exportHistory:'سجل التحديثات CSV',
+importTitle:'استيراد الجدول الزمني (CSV)',importHelp:'صدّر الأنشطة من Primavera P6 (أو أي برنامج جدولة) إلى Excel/CSV ورتبها حسب هذه الأعمدة. هذا التطبيق لا يتصل ببرنامج P6 مباشرة، واستيراد ملفات XER/XML مخطط لإصدار لاحق. تتم المطابقة برمز المشروع ورقم النشاط: الأنشطة الموجودة تُحدَّث والجديدة تُضاف.',
+columns:'الأعمدة المطلوبة',loadSample:'تحميل ملف نموذجي',chooseFile:'اختيار ملف CSV',validate:'تحقق',
+portfolio:'تقدم المحفظة',byValue:'مرجّح بقيمة العقد',projectsTitle:'المشاريع',st_attn:'يحتاج اهتمام',st_watch:'مراقبة',st_ok:'ضمن الخطة',
+trendTitle:'منحنى S — المخطط مقابل الفعلي المعتمد',weekCol:'نهاية الأسبوع',delaysTitle:'أسباب التأخير المبلغ عنها',delayedActs:'الأنشطة المتأخرة',
+settings:'الإعدادات والبيانات',language:'اللغة',storageTitle:'أين تُحفظ البيانات؟',storageBadge:'شخصي · هذا الجهاز فقط · غير متزامن',
+storage1:'يحفظ هذا الإصدار كل البيانات في التخزين المحلي لمتصفحك على هذا الجهاز. إنه تخزين شخصي وليس مشتركاً.',
+storage2:'لن يرى الآخرون أو الهواتف أو المتصفحات الأخرى هذه التحديثات. مفتاح الأدوار في الأعلى يحاكي المستخدمين الثلاثة على جهاز واحد فقط — لا توجد مزامنة بين المستخدمين.',
+storage3:'القيود: حوالي 5 ميغابايت لكل متصفح (الصور مضغوطة)، تُفقد البيانات عند مسح بيانات المتصفح، ولا يوجد تسجيل دخول لذا الأسماء في السجل محاكاة. الاستخدام الفعلي يحتاج خادماً مشتركاً: قاعدة بيانات، حسابات وصلاحيات، تخزين للصور، وخدمة لاستيراد الجداول.',
+legendTitle:'البيانات التجريبية والحقيقية',legend:'«تجريبي» = بيانات وهمية. «مستورد» = من ملف CSV الخاص بك. التحديثات التي تدخلها هنا تُعلَّم «أُدخل هنا». إعادة التعيين تحذف كل شيء وتعيد البيانات التجريبية.',
+exportJson:'تنزيل نسخة احتياطية (JSON)',reset:'إعادة تعيين البيانات التجريبية',resetConfirm:'اضغط مرة أخرى للتأكيد',close:'إغلاق',
+src_demo:'تجريبي',src_imported:'مستورد',src_user:'أُدخل هنا',
+t_saved:'تم حفظ المسودة',t_submitted:'تم الإرسال للمراجعة',t_approved:'تم الاعتماد — تم تحديث التقدم الرسمي',t_returned:'أُعيد إلى المهندس',t_withdrawn:'سُحب إلى مسودة',t_reset:'تمت استعادة البيانات التجريبية',t_quota:'التخزين ممتلئ — احذف بعض الصور',t_exported:'تم تنزيل الملف',t_noValid:'لا توجد صفوف صالحة',
+ev_saved:'حُفظ',ev_submitted:'أُرسل',ev_approved:'اعتُمد',ev_returned:'أُعيد',ev_withdrawn:'سُحب',
+err_pct:'النسبة يجب أن تكون بين 0 و100',err_lower:'أقل من التقدم المعتمد — اشرح السبب في الملاحظات',err_start:'البداية الفعلية مطلوبة بعد بدء العمل',err_finish:'النهاية الفعلية مطلوبة عند 100%',err_finishEarly:'النهاية الفعلية تُسمح فقط عند 100%',err_order:'النهاية لا يمكن أن تسبق البداية',err_future:'لا يمكن أن تكون التواريخ في المستقبل',err_delay:'اختر سبب التأخير',err_qty:'الكمية يجب أن تكون بين 0 و110% من المقرر',err_comment:'التعليق مطلوب لإعادة التحديث',
+delays:{material:'تأخر توريد المواد',manpower:'نقص العمالة',equipment:'عطل المعدات',weather:'الطقس / الحرارة',design:'تصميم / استفسار فني معلق',client:'موافقة العميل',subcon:'مقاول الباطن',permit:'التصاريح / الجهات',other:'أخرى'},
+siteCount:(n,a)=>`${n} من ${a} نشاطاً مسنداً`,lastUpd:d=>d?`آخر تحديث ${d}`:'لا يوجد تحديث',ago:n=>n<=0?'اليوم':`منذ ${n} يوم`,
+pctHint:(a,p)=>`المعتمد ${a}% · المخطط اليوم ${p}%`,implied:x=>`الكمية تعادل ${x}%`,formNew:'تحديث جديد',formDraft:'تعديل مسودة',formRet:'مراجعة تحديث مُعاد',
+flags:(d,m,p)=>`${d} متأخر · ${m} تحديث مفقود · ${p} قيد المراجعة`,
+w_qty:(x,y)=>`الكمية تعادل ${x}% بينما أُدخل ${y}%`,w_jump:x=>`قفزة كبيرة: +${x} نقطة منذ آخر اعتماد`,w_ahead:x=>`متقدم عن المخطط بـ ${x} نقطة`,w_lower:x=>`أقل من المعتمد الحالي ${x}%`,w_delay:'متأخر عن المخطط — تم ذكر السبب',
+plannedLine:(p,a)=>`المخطط اليوم ${p}% · المعتمد حالياً ${a}%`,byLine:(n,w)=>`${n} · ${w}`,
+impSummary:(v,e)=>`${v} صالح · ${e} به أخطاء`,impBtn:n=>`استيراد ${n} صفوف صالحة`,impNew:'جديد',impUpd:'تحديث',impErr:'خطأ',impToast:n=>`تم استيراد ${n} نشاط`,
+e_col:c=>`عمود مفقود: ${c}`,e_req:'قيمة مطلوبة مفقودة',e_date:'تاريخ غير صالح — استخدم YYYY-MM-DD',e_order:'النهاية قبل البداية',e_qty:'الكمية يجب أن تكون أكبر من 0',e_w:'الوزن يجب أن يكون أكبر من 0',e_eng:'المسند إليه يجب أن يكون E1 أو E2 أو E3',e_dup:'نشاط مكرر في الملف',
+plSummary:(n,v)=>`${n} نشاط · قيمة العقد ${v} مليون ريال (وهمية)`,reports:n=>`${n} بلاغ`,
+stats:(p,a,u,kb)=>`${p} مشاريع · ${a} نشاط · ${u} تحديث · ${kb} KB مستخدم`}
+};
+
+Object.assign(I18N.en,{spi:'SPI',spiLong:'Schedule performance index = approved actual ÷ planned',fcFinish:'Forecast finish at current SPI',plFinish:'Planned finish',todayL:'Today',legendBar:'Bar = approved actual · tick = planned today',
+overline:'Overview',bulkMode:'Quick update',bulkOff:'Done',bulkHelp:'Quick update: tap −5 / +5 / +10 / 100 on each activity, then submit all at once. Quantity is calculated from %; start date is today if none is recorded. Open an activity to add photos, remarks or exact dates.',
+bulkSubmit:n=>`Submit ${n} updates`,bulkCount:n=>`${n} changed`,bulkDone:(ok,e)=>`Submitted ${ok}`+(e?` · ${e} need details`:''),bulkNone:'No changes yet',bulkCancel:'Cancel',showAll:'✕ Show all',
+f_flagged:'Flagged',f_clean:'Clean',selectClean:n=>`Select all clean (${n})`,clearSel:'Clear',approveSel:n=>`Approve ${n} selected`,bulkApproved:n=>`Approved ${n} updates`,selCount:n=>`${n} selected`,
+remind:n=>`Send reminders (${n})`,remindSent:n=>`${n} reminders created — in-app only`,remindTitle:'Reminder from Planning',remindMissing:n=>`${n} of your activities have no progress update for over a week.`,dismiss:'Dismiss',showActs:'Show activities',remindNote:'Reminders appear inside this app only (this browser). No SMS, email or push is sent.',
+weeklyReport:'Weekly report',print:'Print / Save as PDF',printNote:'Opens the browser print dialog — choose “Save as PDF”.',repTitle:'Weekly progress report',repWeek:(a,b)=>`Week ${a} → ${b}`,repDemo:'Contains DEMO data — fictional projects for demonstration only.',repSummary:'Portfolio summary',repProject:'Project',repStatus:'Status',repApproved:'Approved this week',repMissing:'Missing updates',repDelayed:'Delayed',repReasons:'Delay reasons (last 10 weeks)',repFooter:'Generated from data stored in this browser. Only approved updates count as actual progress.',none:'None',repBy:'Approved by',
+captionPh:'Caption, e.g. Grid C3 east face',geoOk:(a,b,c)=>`GPS ${a}, ${b} (±${c} m)`,geoPending:'Getting location…',geoNone:'Location not available',openMap:'Map',addPhotoLong:'＋ Add photo — camera or gallery',photoNote:'Up to 4 photos. Time and GPS (if you allow it) are recorded. Compressed and stored in this browser only.',
+la_start:'Starting',la_finish:'Finishing',la_win:n=>`Next ${n} days`,la_in:n=>n<0?`${-n} d overdue`:n===0?'today':`in ${n} d`,lateStart:'Late start',atRisk:'At risk',ready:'Planned',onTrackS:'On track',laHelp:'Activities planned to start or finish soon, with risk based on approved progress.'});
+Object.assign(I18N.ar,{spi:'SPI',spiLong:'مؤشر أداء الجدول = الفعلي المعتمد ÷ المخطط',fcFinish:'النهاية المتوقعة وفق SPI الحالي',plFinish:'النهاية المخططة',todayL:'اليوم',legendBar:'الشريط = الفعلي المعتمد · العلامة = المخطط اليوم',
+overline:'نظرة عامة',bulkMode:'تحديث سريع',bulkOff:'إنهاء',bulkHelp:'التحديث السريع: اضغط −5 / +5 / +10 / 100 لكل نشاط ثم أرسل الكل مرة واحدة. تُحسب الكمية من النسبة، وتاريخ البداية هو اليوم إن لم يُسجل. افتح النشاط لإضافة صور أو ملاحظات أو تواريخ دقيقة.',
+bulkSubmit:n=>`إرسال ${n} تحديثات`,bulkCount:n=>`${n} تغيير`,bulkDone:(ok,e)=>`تم إرسال ${ok}`+(e?` · ${e} تحتاج تفاصيل`:''),bulkNone:'لا توجد تغييرات بعد',bulkCancel:'إلغاء',showAll:'✕ عرض الكل',
+f_flagged:'عليها ملاحظات',f_clean:'سليمة',selectClean:n=>`تحديد كل السليمة (${n})`,clearSel:'مسح',approveSel:n=>`اعتماد ${n} محددة`,bulkApproved:n=>`تم اعتماد ${n} تحديثات`,selCount:n=>`${n} محدد`,
+remind:n=>`إرسال تذكيرات (${n})`,remindSent:n=>`تم إنشاء ${n} تذكيرات — داخل التطبيق فقط`,remindTitle:'تذكير من التخطيط',remindMissing:n=>`${n} من أنشطتك بدون تحديث للتقدم منذ أكثر من أسبوع.`,dismiss:'إخفاء',showActs:'عرض الأنشطة',remindNote:'التذكيرات تظهر داخل هذا التطبيق فقط (هذا المتصفح). لا تُرسل رسائل نصية أو بريد أو إشعارات.',
+weeklyReport:'التقرير الأسبوعي',print:'طباعة / حفظ PDF',printNote:'يفتح نافذة الطباعة في المتصفح — اختر «حفظ كـ PDF».',repTitle:'تقرير التقدم الأسبوعي',repWeek:(a,b)=>`الأسبوع ${a} ← ${b}`,repDemo:'يحتوي على بيانات تجريبية — مشاريع وهمية للعرض فقط.',repSummary:'ملخص المحفظة',repProject:'المشروع',repStatus:'الحالة',repApproved:'المعتمد هذا الأسبوع',repMissing:'تحديثات مفقودة',repDelayed:'متأخر',repReasons:'أسباب التأخير (آخر 10 أسابيع)',repFooter:'أُنشئ من البيانات المحفوظة في هذا المتصفح. التحديثات المعتمدة فقط تُحتسب تقدماً فعلياً.',none:'لا يوجد',repBy:'اعتمده',
+captionPh:'وصف، مثل: محور C3 الواجهة الشرقية',geoOk:(a,b,c)=>`GPS ${a}, ${b} (±${c} م)`,geoPending:'جارٍ تحديد الموقع…',geoNone:'الموقع غير متاح',openMap:'خريطة',addPhotoLong:'＋ إضافة صورة — الكاميرا أو المعرض',photoNote:'حتى 4 صور. يُسجل الوقت والموقع (إن سمحت). تُضغط وتُحفظ في هذا المتصفح فقط.',
+la_start:'تبدأ',la_finish:'تنتهي',la_win:n=>`الـ ${n} يوماً القادمة`,la_in:n=>n<0?`متأخر ${-n} يوم`:n===0?'اليوم':`بعد ${n} يوم`,lateStart:'بداية متأخرة',atRisk:'معرّض للخطر',ready:'مخطط',onTrackS:'ضمن الخطة',laHelp:'الأنشطة المخطط بدؤها أو انتهاؤها قريباً، مع تقييم الخطر حسب التقدم المعتمد.'});
+Object.assign(I18N.en,{role_cm:'Construction Manager',actingAs:'Acting as discipline engineer',st_submitted:'Awaiting CM',st_endorsed:'Awaiting Planning',ev_endorsed:'approved by CM',
+awaiting:'Submitted — waiting for Construction Manager approval (step 1 of 2). Official progress changes only after Planning approves.',awaitingPL:'Approved by Construction Manager — waiting for Planning Engineer review (step 2 of 2). Official progress changes only after Planning approves.',
+cmLine:w=>`Approved by Construction Manager · ${w}`,reviewQueue:'Updates approved by Construction Manager',reviewHelp:'Step 2 of 2: these updates were already checked and approved by the Construction Manager. Your approval makes them official actual progress. Returned updates go back to the engineer.',
+readOnly:'Read-only: only the assigned discipline engineer can submit updates for this activity.',e_eng:'assigned_to must be CIV, ARC, MEC or ELE (or Civil, Architectural, Mechanical, Electrical)',
+storage2:'Other people, phones or browsers will not see these updates. The role switch in the header only simulates the four roles on one device — nothing is synchronised between users.',
+cm:{reviewQueue:'Updates awaiting your approval',reviewHelp:'Step 1 of 2: check the work on site. Approving forwards the update to the Planning Engineer; official progress changes only after Planning approves. Returned updates go back to the engineer.',approveNote:'Your approval is logged and the update is forwarded to Planning.',t_approved:'Approved — forwarded to Planning',bulkApproved:n=>`Approved ${n} — forwarded to Planning`}});
+Object.assign(I18N.ar,{role_cm:'مدير الإنشاءات',actingAs:'تعمل باسم مهندس التخصص',st_submitted:'بانتظار مدير الإنشاءات',st_endorsed:'بانتظار التخطيط',ev_endorsed:'وافق مدير الإنشاءات',
+awaiting:'تم الإرسال — بانتظار موافقة مدير الإنشاءات (الخطوة 1 من 2). لا يتغير التقدم الرسمي إلا بعد اعتماد التخطيط.',awaitingPL:'وافق مدير الإنشاءات — بانتظار مراجعة مهندس التخطيط (الخطوة 2 من 2). لا يتغير التقدم الرسمي إلا بعد اعتماد التخطيط.',
+cmLine:w=>`وافق مدير الإنشاءات · ${w}`,reviewQueue:'تحديثات وافق عليها مدير الإنشاءات',reviewHelp:'الخطوة 2 من 2: هذه التحديثات تمت مراجعتها والموافقة عليها من مدير الإنشاءات. اعتمادك يجعلها التقدم الفعلي الرسمي. التحديثات المعادة ترجع للمهندس.',
+readOnly:'للعرض فقط: مهندس التخصص المسند إليه النشاط هو من يرسل التحديثات.',e_eng:'المسند إليه يجب أن يكون CIV أو ARC أو MEC أو ELE',
+storage2:'لن يرى الآخرون أو الهواتف أو المتصفحات الأخرى هذه التحديثات. مفتاح الأدوار في الأعلى يحاكي الأدوار الأربعة على جهاز واحد فقط — لا توجد مزامنة بين المستخدمين.',
+cm:{reviewQueue:'تحديثات بانتظار موافقتك',reviewHelp:'الخطوة 1 من 2: تحقق من العمل في الموقع. الموافقة ترسل التحديث إلى مهندس التخطيط، ولا يتغير التقدم الرسمي إلا بعد اعتماد التخطيط. التحديثات المعادة ترجع للمهندس.',approveNote:'تُسجل موافقتك ويُحال التحديث إلى التخطيط.',t_approved:'تمت الموافقة — أُحيل إلى التخطيط',bulkApproved:n=>`تمت الموافقة على ${n} — أُحيلت إلى التخطيط`}});
+Object.assign(I18N.en,{siteWide:'Site-wide',allBldg:'All buildings',allZones:'All zones',zoneL:'Zone',byLoc:'Progress by zone & building',byLocHint:'Tap a zone or building to filter the list below.',actsShort:'act.',
+adjTitle:'Construction Manager adjusted your update',adjMsg:(a,b,qa,qb,u)=>`Progress ${a}% → ${b}% · qty ${qa} → ${qb} ${u}`,adjNoteTxt:(a,b)=>`Adjusted by Construction Manager: ${a}% → ${b}%`,openAct:'Open activity',
+adjTitleCM:'Adjust before approving (optional)',adjHelp:'If the site check differs from what was submitted, change the % or quantity. The engineer gets a notification and the change is kept in the history as a note. A comment is required.',
+adjPreview:(p0,p1,q0,q1,u)=>`Will be approved as ${p1}% (submitted ${p0}%) · ${q1} ${u} (submitted ${q0})`,adjReset:'Reset',approveAdj:'Approve with changes',
+err_adjComment:'A comment is required when adjusting',err_adjFinish:'Cannot adjust to 100% — the engineer has not entered an actual finish date. Return it instead.',t_adjusted:'Adjusted & approved — engineer notified',repProjSummary:'Project summary',repPhotos:'Site photos this week',repNoPhotos:'No photos attached this week.',actPhotos:'Activity photos',ev_adjusted:'adjusted'});
+Object.assign(I18N.ar,{siteWide:'عام للموقع',allBldg:'كل المباني',allZones:'كل المناطق',zoneL:'منطقة',byLoc:'التقدم حسب المنطقة والمبنى',byLocHint:'اضغط على منطقة أو مبنى لتصفية القائمة بالأسفل.',actsShort:'نشاط',
+adjTitle:'عدّل مدير الإنشاءات تحديثك',adjMsg:(a,b,qa,qb,u)=>`النسبة من ${a}% إلى ${b}% · الكمية من ${qa} إلى ${qb} ${u}`,adjNoteTxt:(a,b)=>`عدّله مدير الإنشاءات: من ${a}% إلى ${b}%`,openAct:'فتح النشاط',
+adjTitleCM:'تعديل قبل الموافقة (اختياري)',adjHelp:'إذا اختلف التحقق في الموقع عن المرسل، عدّل النسبة أو الكمية. يصل إشعار للمهندس ويُحفظ التعديل في السجل كملاحظة. التعليق مطلوب.',
+adjPreview:(p0,p1,q0,q1,u)=>`سيُعتمد بنسبة ${p1}% (المرسل ${p0}%) · ${q1} ${u} (المرسل ${q0})`,adjReset:'استعادة',approveAdj:'موافقة مع التعديل',
+err_adjComment:'التعليق مطلوب عند التعديل',err_adjFinish:'لا يمكن التعديل إلى 100% — لم يُدخل المهندس تاريخ النهاية الفعلية. أعد التحديث بدلاً من ذلك.',t_adjusted:'تم التعديل والموافقة — تم إشعار المهندس',repProjSummary:'ملخص المشروع',repPhotos:'صور الموقع هذا الأسبوع',repNoPhotos:'لا توجد صور مرفقة هذا الأسبوع.',actPhotos:'صور النشاط',ev_adjusted:'عُدّل'});
+Object.assign(I18N.en,{title:'DMC Progress ERP',modules:'Modules',roleView:'Role view',demoUser:'Demo mode · no sign-in',
+connTitle:'Database connection',connDemo:'Not connected — DEMO mode (this browser only)',connLive:h=>'Connected to shared database · '+h,connHelp:'Paste your Supabase Project URL and anon public key (Project Settings → API). Saved in this browser.',connFile:'Connection is set by the site administrator (config.js).',connect:'Connect',disconnect:'Disconnect (back to demo)',connBad:'Enter a valid https URL and anon key',
+signIn:'Sign in',signUp:'Create account',signOut:'Sign out',wait:'Please wait…',email:'Work email',password:'Password',loginSub:'Sign in with your company account. Your role and discipline are assigned by the administrator.',
+signUpNote:'New accounts start without access until an administrator assigns a role and project.',loginNeed:'Enter email and password',signUpNeed:'Enter email and a password of at least 8 characters',signUpOk:'Account created — confirm your email, then sign in.',
+noProfile:'No profile found for this account. Ask the administrator.',inactive:'Your account is disabled.',openDemo:'Open demo mode instead',connecting:'Connecting…',
+liveBar:(h,s)=>'LIVE · Shared database'+(s?' · '+s:''),syncing:'Saving…',syncedAt:x=>'synced '+x,syncErr:'Not saved:',loadErrTxt:'Could not load data',
+adminTools:'Administrator tools',adminHelp:'Demo rows are marked is_demo and can be removed at any time without touching real data.',loadDemoDb:'Load demo data into database',removeDemoDb:'Remove demo data',demoLoaded:'Demo data loaded',demoRemoved:'Demo data removed',
+storageBadgeLive:'Shared · Supabase PostgreSQL · real-time',storageLive1:'Data is stored in a shared PostgreSQL database (Supabase). Every signed-in user sees the same data, and changes appear for others within seconds.',
+storageLive2:'Workflow rules (CM → Planning approval, approved updates locked, roles per discipline) are enforced by the database itself, not only by this screen. Every change is written to an audit log.',
+storageLive3:'Free plan limits apply (database size, file storage, inactive projects may pause). Photos are stored in a private bucket and shown with temporary links.',
+prole_site:'Site engineer',prole_cm:'Construction Manager',prole_planner:'Planning Engineer',prole_pm:'Project Manager',prole_admin:'Administrator'});
+Object.assign(I18N.ar,{title:'DMC Progress ERP',modules:'الوحدات',roleView:'عرض حسب الدور',demoUser:'وضع تجريبي · بدون تسجيل دخول',
+connTitle:'الاتصال بقاعدة البيانات',connDemo:'غير متصل — وضع تجريبي (هذا المتصفح فقط)',connLive:h=>'متصل بقاعدة بيانات مشتركة · '+h,connHelp:'الصق رابط مشروع Supabase والمفتاح العام anon (Project Settings ← API). يُحفظ في هذا المتصفح.',connFile:'الاتصال مضبوط من مسؤول الموقع (config.js).',connect:'اتصال',disconnect:'قطع الاتصال (العودة للتجريبي)',connBad:'أدخل رابط https صحيح والمفتاح العام',
+signIn:'تسجيل الدخول',signUp:'إنشاء حساب',signOut:'تسجيل الخروج',wait:'انتظر…',email:'البريد الإلكتروني للعمل',password:'كلمة المرور',loginSub:'سجّل الدخول بحساب الشركة. الدور والتخصص يحددهما مسؤول النظام.',
+signUpNote:'الحسابات الجديدة لا تملك صلاحيات حتى يحدد المسؤول الدور والمشروع.',loginNeed:'أدخل البريد وكلمة المرور',signUpNeed:'أدخل البريد وكلمة مرور 8 أحرف على الأقل',signUpOk:'تم إنشاء الحساب — أكّد بريدك ثم سجّل الدخول.',
+noProfile:'لا يوجد ملف لهذا الحساب. تواصل مع المسؤول.',inactive:'حسابك موقوف.',openDemo:'فتح الوضع التجريبي بدلاً من ذلك',connecting:'جارٍ الاتصال…',
+liveBar:(h,s)=>'مباشر · قاعدة بيانات مشتركة'+(s?' · '+s:''),syncing:'جارٍ الحفظ…',syncedAt:x=>'آخر مزامنة '+x,syncErr:'لم يُحفظ:',loadErrTxt:'تعذر تحميل البيانات',
+adminTools:'أدوات المسؤول',adminHelp:'الصفوف التجريبية معلّمة is_demo ويمكن حذفها في أي وقت دون المساس بالبيانات الحقيقية.',loadDemoDb:'تحميل بيانات تجريبية في القاعدة',removeDemoDb:'حذف البيانات التجريبية',demoLoaded:'تم تحميل البيانات التجريبية',demoRemoved:'تم حذف البيانات التجريبية',
+storageBadgeLive:'مشترك · Supabase PostgreSQL · لحظي',storageLive1:'البيانات محفوظة في قاعدة بيانات PostgreSQL مشتركة (Supabase). كل المستخدمين المسجلين يرون نفس البيانات، والتغييرات تظهر للآخرين خلال ثوانٍ.',
+storageLive2:'قواعد سير العمل (موافقة مدير الإنشاءات ثم التخطيط، قفل التحديثات المعتمدة، الصلاحيات حسب التخصص) تفرضها قاعدة البيانات نفسها وليس الشاشة فقط. كل تغيير يُسجَّل في سجل تدقيق.',
+storageLive3:'تنطبق حدود الخطة المجانية (حجم القاعدة، تخزين الملفات، وقد يتوقف المشروع غير النشط مؤقتاً). الصور في مخزن خاص وتُعرض بروابط مؤقتة.',
+prole_site:'مهندس موقع',prole_cm:'مدير الإنشاءات',prole_planner:'مهندس التخطيط',prole_pm:'مدير المشروع',prole_admin:'مسؤول النظام'});
+const ROWS=[
+['P1','A1010','Mobilisation & site setup','التجهيز والتعبئة للموقع','1.1 Preliminaries',-120,20,1,'LS',2,'E1',100,0,0,''],
+['P1','A1020','Bulk excavation','الحفر العام','2.1 Substructure',-100,30,4500,'m3',6,'E1',100,3,0,''],
+['P1','A1030','Raft foundation concrete','خرسانة الأساس الحصيري','2.2 Substructure',-75,35,1200,'m3',12,'E1',92,5,4,'equipment'],
+['P1','A1040','Basement retaining walls','جدران القبو الاستنادية','2.3 Substructure',-45,70,650,'m3',10,'E1',55,4,6,''],
+['P1','A1050','Ground floor columns','أعمدة الدور الأرضي','3.1 Superstructure',-10,45,180,'m3',8,'E1',15,2,5,''],
+['P1','A1060','Basement waterproofing','العزل المائي للقبو','2.4 Substructure',-30,40,3800,'m2',5,'E1',30,6,12,'weather'],
+['P1','A1070','Electrical containment first fix','تمديدات المواسير الكهربائية – المرحلة الأولى','4.1 Electrical',5,60,1,'LS',15,'E1',0,0,0,''],
+['P1','A1080','Blockwork','أعمال البلوك','3.2 Superstructure',20,50,6200,'m2',9,'E1',0,0,0,''],
+['P2','B2010','Bored piling','الخوازيق المحفورة','2.1 Foundations',-140,40,320,'nos',10,'E2',100,5,0,''],
+['P2','B2020','Pile caps','قواعد الخوازيق','2.2 Foundations',-100,30,85,'nos',6,'E2',100,8,0,'subcon'],
+['P2','B2030','Tower slabs L1–L4','بلاطات البرج 1–4','3.1 Tower frame',-80,70,2400,'m3',18,'E2',62,10,5,'material'],
+['P2','B2040','Tower slabs L5–L8','بلاطات البرج 5–8','3.2 Tower frame',-10,70,2400,'m3',18,'E2',3,4,9,'design'],
+['P2','B2050','Façade anchor installation','تركيب مثبتات الواجهة','5.1 Envelope',-15,40,1400,'nos',6,'E2',0,0,0,''],
+['P2','B2060','Plumbing risers','صواعد السباكة','4.1 MEP',-10,45,900,'m',7,'E2',10,2,3,''],
+['P2','B2070','Lift shaft core walls','جدران بئر المصعد','3.3 Tower frame',-50,60,120,'m3',8,'E2',40,6,4,'manpower'],
+['P2','B2080','Podium landscaping','تنسيق حدائق المنصة','6.1 External',30,40,2600,'m2',4,'E2',0,0,0,''],
+['P3','C3010','Site grading','تسوية الموقع','1.1 Earthworks',-90,20,18000,'m2',5,'E3',100,-2,0,''],
+['P3','C3020','Isolated footings','القواعد المنفصلة','2.1 Substructure',-70,25,420,'m3',10,'E3',100,0,0,''],
+['P3','C3030','Structural steel erection','تركيب الهيكل الفولاذي','3.1 Superstructure',-45,50,860,'t',22,'E3',88,-3,3,''],
+['P3','C3040','Roof sheeting','تغطية السقف بالألواح','3.2 Envelope',-15,35,12000,'m2',12,'E3',40,-2,4,''],
+['P3','C3050','Slab on grade','البلاطة الأرضية','2.2 Substructure',-20,40,9500,'m2',14,'E3',52,0,2,''],
+['P3','C3060','LV power & lighting','الإنارة وتوزيع الجهد المنخفض','4.1 Electrical',-8,40,5200,'m',6,'E3',12,0,3,''],
+['P3','C3070','Fire sprinkler network','شبكة رشاشات الحريق','4.2 MEP',-5,50,7400,'m',9,'E1',10,0,2,''],
+['P3','C3080','External paving','الرصف الخارجي','5.1 External',25,30,6800,'m2',5,'E3',0,0,0,'']];
+
+function plannedPct(a,d){if(d<a.ps)return 0;if(d>=a.pf)return 100;const t=dd(a.ps,a.pf);return t<=0?100:clamp(dd(a.ps,d)/t*100,0,100);}
+
+function seed(){
+  const projects=[
+    {id:'P1',code:'DMC-101',name:'Al Noor Medical Centre',nameAr:'مركز النور الطبي',loc:'Riyadh',locAr:'الرياض',value:48,src:'demo'},
+    {id:'P2',code:'DMC-102',name:'Harbour View Residences',nameAr:'مساكن إطلالة الميناء',loc:'Jeddah',locAr:'جدة',value:92,src:'demo'},
+    {id:'P3',code:'DMC-103',name:'Logistics Warehouse Ph. 2',nameAr:'مستودع لوجستي – المرحلة 2',loc:'Dammam',locAr:'الدمام',value:31,src:'demo'}];
+  const activities=[],updates=[];
+  ROWS.forEach(([pid,code,name,nameAr,wbs,s,d,qty,unit,w,eng,cur,lag,last,reason])=>{
+    eng=DISC[code]||eng;const ps=addD(TODAY,s),pf=addD(ps,d),a={id:'A_'+code,pid,code,name,nameAr,wbs,ps,pf,qty,unit,w,eng,bldg:locOf(code)[0],zone:locOf(code)[1],src:'demo'};
+    activities.push(a);
+    if(!cur)return;
+    const as=addD(ps,lag);
+    let end=cur===100?addD(pf,lag):addD(TODAY,-(last||3));
+    if(end>addD(TODAY,-2))end=addD(TODAY,-2);
+    const span=Math.max(1,dd(as,end)),dates=[];
+    for(let x=7;x<span;x+=7)dates.push(addD(as,x));
+    dates.push(end);
+    dates.forEach((dt,i)=>{
+      const pct=Math.max(1,Math.round(cur*dd(as,dt)/span));
+      const rv=addD(dt,1);
+      const behind=plannedPct(a,dt)-pct>10;
+      updates.push({id:`S_${code}_${i}`,actId:a.id,by:eng,pct,qty:Math.round(qty*pct)/100,aStart:as,aFinish:pct===100?dt:'',remarks:'',delay:behind&&reason?reason:(i===dates.length-1&&reason?reason:''),photos:[],status:'approved',created:dt+'T15:30',submitted:dt+'T15:30',reviewed:rv+'T09:10',reviewer:'PL',cmAt:dt+'T17:45',cmBy:'CM',cmComment:'',comment:'',prevId:'',src:'demo',log:[{at:dt+'T15:30',ev:'submitted',by:eng},{at:dt+'T17:45',ev:'endorsed',by:'CM'},{at:rv+'T09:10',ev:'approved',by:'PL'}]});
+    });
+  });
+  const P=(code,o)=>{const a=activities.find(x=>x.code===code);const ap=updates.filter(u=>u.actId===a.id).pop();const at=o.at;
+    updates.push(Object.assign({id:'S_'+code+'_p',actId:a.id,by:a.eng,qty:Math.round(a.qty*o.pct)/100,aStart:ap?ap.aStart:addD(TODAY,-3),aFinish:'',remarks:'',delay:'',photos:[],created:at,submitted:o.status==='draft'?'':at,reviewed:'',reviewer:'',comment:'',prevId:'',src:'demo',log:[{at,ev:o.status==='draft'?'saved':'submitted',by:a.eng}]},o));};
+  P('A1040',{pct:62,status:'submitted',at:addD(TODAY,-1)+'T16:05',remarks:'Wall panels W7–W9 poured. Formwork moved to grid C.'});
+  P('B2030',{pct:68,status:'endorsed',at:addD(TODAY,-2)+'T17:40',delay:'material',remarks:'Rebar delivery for L4 delayed 5 days. Pour rescheduled.'});
+  {const u=updates[updates.length-1];u.cmAt=addD(TODAY,-1)+'T08:30';u.cmBy='CM';u.cmComment='L4 pour only half complete — adjusted to 68%.';u.origPct=72;u.origQty=Math.round(2400*72)/100;u.adjBy='CM';u.adjAt=u.cmAt;u.adjNote=u.cmComment;u.log.push({at:u.cmAt,ev:'adjusted',by:'CM',detail:'72% → 68%'});u.log.push({at:u.cmAt,ev:'endorsed',by:'CM'});}
+  P('C3040',{pct:45,qty:4200,status:'submitted',at:TODAY+'T08:15',remarks:'Bays 1–6 sheeted, ridge capping pending.'});
+  const ret=addD(TODAY,-2);
+  P('A1050',{pct:25,qty:30,status:'returned',at:addD(TODAY,-3)+'T15:00',remarks:'Columns GF-C1 to C12 cast.',reviewed:ret+'T10:20',reviewer:'CM',comment:'30 m3 is about 17% of 180 m3, not 25%. Please check the quantity or the %.'});
+  updates[updates.length-1].log.push({at:ret+'T10:20',ev:'returned',by:'CM'});
+  P('C3070',{pct:15,status:'draft',at:TODAY+'T07:50',remarks:'Zone A mains installed'});
+  const reminders=[{id:'R_seed',to:'ARC',from:'PL',at:addD(TODAY,-1)+'T09:00',actIds:['A_B2050'],type:'missing',done:false},{id:'R_seed2',to:'CIV',from:'CM',at:addD(TODAY,-1)+'T08:30',actIds:['A_B2030'],type:'adjusted',from_pct:72,to_pct:68,from_qty:1728,to_qty:1632,note:'L4 pour only half complete — adjusted to 68%.',done:false}];
+  return {projects,activities,updates,reminders,seededAt:stamp()};
+}
+
+function normPhoto(p,i){return typeof p==='string'?{id:'ph'+i,src:p,caption:'',at:'',lat:null,lng:null,acc:null,geo:'none'}:p;}
+function normalize(d){d.reminders=d.reminders||[];d.activities=d.activities.map(a=>Object.assign({bldg:locOf(a.code)[0],zone:locOf(a.code)[1]},a));d.updates=d.updates.map(u=>Object.assign({},u,{photos:(u.photos||[]).map(normPhoto)}));return d;}
+function load(){try{for(const k of [KEY,KEY3]){const r=localStorage.getItem(k);if(r){const d=JSON.parse(r);if(d&&d.data){d.data=normalize(d.data);return d;}}}}catch(e){}return null;}
+function makeUpdate(ups,f,status,eng){const ts=stamp(),ev=status==='submitted'?'submitted':'saved';
+  const vals={pct:clamp(Math.round(Number(f.pct)||0),0,100),qty:Number(f.qty)||0,aStart:f.aStart||'',aFinish:f.aFinish||'',remarks:f.remarks||'',delay:f.delay||'',photos:f.photos||[]};
+  let id=f.draftId;
+  if(id&&ups.some(u=>u.id===id&&u.status==='draft'))return{id,ups:ups.map(u=>u.id===id?Object.assign({},u,vals,{status,submitted:status==='submitted'?ts:'',log:u.log.concat([{at:ts,ev,by:eng}])}):u)};
+  id=uid('U');return{id,ups:ups.concat([Object.assign({id,actId:f.actId,by:eng},vals,{status,created:ts,submitted:status==='submitted'?ts:'',reviewed:'',reviewer:'',comment:'',prevId:f.prevId||'',src:'user',log:[{at:ts,ev,by:eng}]})])};}
+function warnsOf(u,a,t){const w=[],imp=a.qty?Math.round(u.qty/a.qty*100):0;if(Math.abs(imp-u.pct)>10)w.push(t.w_qty(imp,u.pct));if(u.pct-a.actual>30)w.push(t.w_jump(u.pct-a.actual));if(u.pct-a.planned>15)w.push(t.w_ahead(Math.round(u.pct-a.planned)));if(u.pct<a.actual)w.push(t.w_lower(a.actual));return w;}
+function curve(lists,vals){const all=[].concat(...lists);if(!all.length)return{plan:'',act:'',tx:0,start:TODAY,end:TODAY};
+  const start=all.reduce((m,a)=>a.ps<m?a.ps:m,all[0].ps),end=all.reduce((m,a)=>a.pf>m?a.pf:m,all[0].pf),span=Math.max(1,dd(start,end)),step=Math.max(7,Math.ceil(span/40));
+  const dates=[];for(let x=0;x<span;x+=step)dates.push(addD(start,x));dates.push(end);
+  const val=(d,k)=>{let V=0,S=0;lists.forEach((l,i)=>{if(!l.length)return;const r=roll(l,d);V+=vals[i];S+=vals[i]*r[k];});return V?S/V:0;};
+  const X=d=>r1(clamp(dd(start,d)/span,0,1)*300),Y=v=>r1(125-v*1.2);
+  const ad=dates.filter(d=>d<TODAY);if(TODAY>=start)ad.push(TODAY<=end?TODAY:end);
+  return{plan:dates.map(d=>X(d)+','+Y(val(d,'p'))).join(' '),act:ad.map(d=>X(d)+','+Y(val(d,'a'))).join(' '),tx:X(TODAY),start,end};}
+const fmtMs=ms=>{const d=new Date(ms);return `${d.getFullYear()}-${p2(d.getMonth()+1)}-${p2(d.getDate())} ${p2(d.getHours())}:${p2(d.getMinutes())}`;};
+
+function derive(data,cfg){
+  const byAct={};
+  data.updates.forEach(u=>{(byAct[u.actId]=byAct[u.actId]||[]).push(u);});
+  Object.values(byAct).forEach(l=>l.sort((a,b)=>a.created<b.created?-1:1));
+  const acts=data.activities.map(a=>{
+    const ups=byAct[a.id]||[];
+    const appr=ups.filter(u=>u.status==='approved').sort((x,y)=>x.reviewed<y.reviewed?-1:1);
+    const off=appr[appr.length-1];
+    const planned=plannedPct(a,TODAY),actual=off?off.pct:0;
+    const pending=ups.find(u=>u.status==='submitted'||u.status==='endorsed')||null;
+    const draft=ups.find(u=>u.status==='draft')||null;
+    const nd=ups.filter(u=>u.status!=='draft');
+    const lastSub=nd[nd.length-1]||null;
+    const returned=lastSub&&lastSub.status==='returned'?lastSub:null;
+    const lastDate=lastSub?(lastSub.submitted||lastSub.created).slice(0,10):'';
+    const missing=a.ps<=TODAY&&actual<100&&(!lastDate||dd(lastDate,TODAY)>cfg.stale);
+    const delayed=actual<100&&(planned-actual>cfg.thr||a.pf<TODAY);
+    return Object.assign({},a,{ups,appr,off,planned,actual,pending,draft,returned,lastDate,missing,delayed,variance:actual-planned,aStart:off?off.aStart:'',aFinish:off?off.aFinish:'',aQty:off?off.qty:0});
+  });
+  const actMap={};acts.forEach(a=>actMap[a.id]=a);
+  const projects=data.projects.map(p=>{
+    const list=acts.filter(a=>a.pid===p.id),r=roll(list,TODAY);
+    const missing=list.filter(a=>a.missing).length,delayed=list.filter(a=>a.delayed).length,pending=list.filter(a=>a.pending).length,v=r.a-r.p;
+    const status=(v<-5||missing>=2||delayed>=3)?'attn':(v<-2||missing||delayed)?'watch':'ok';
+    return Object.assign({},p,{list,planned:r.p,actual:r.a,variance:v,missing,delayed,pending,status});
+  });
+  const projMap={};projects.forEach(p=>projMap[p.id]=p);
+  return {acts,actMap,projects,projMap};
+}
+function actualAt(a,at){let v=0;for(const u of a.appr){if(u.reviewed.slice(0,10)<=at)v=u.pct;else break;}return v;}
+function roll(list,at){let W=0,P=0,A=0;list.forEach(a=>{W+=a.w;P+=a.w*plannedPct(a,at);A+=a.w*actualAt(a,at);});return W?{p:P/W,a:A/W}:{p:0,a:0};}
+
+function parseCSV(text){text=text.replace(/^\ufeff/,'');const rows=[];let row=[],cell='',q=false;
+  for(let i=0;i<text.length;i++){const c=text[i];
+    if(q){if(c==='"'){if(text[i+1]==='"'){cell+='"';i++;}else q=false;}else cell+=c;}
+    else if(c==='"')q=true;else if(c===','){row.push(cell);cell='';}
+    else if(c==='\n'||c==='\r'){if(c==='\r'&&text[i+1]==='\n')i++;row.push(cell);rows.push(row);row=[];cell='';}
+    else cell+=c;}
+  if(cell||row.length){row.push(cell);rows.push(row);}
+  return rows.filter(r=>r.some(x=>x.trim()));}
+const toCSV=rows=>rows.map(r=>r.map(v=>{v=v==null?'':String(v);return /[",\r\n]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v;}).join(',')).join('\r\n');
+function download(name,text,type){const blob=new Blob([type==='application/json'?text:'\ufeff'+text],{type:type||'text/csv;charset=utf-8'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),2000);}
+function compress(file){return new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>{const img=new Image();img.onload=()=>{const sc=Math.min(1,800/Math.max(img.width,img.height));const c=document.createElement('canvas');c.width=Math.round(img.width*sc);c.height=Math.round(img.height*sc);c.getContext('2d').drawImage(img,0,0,c.width,c.height);res(c.toDataURL('image/jpeg',0.6));};img.onerror=rej;img.src=r.result;};r.onerror=rej;r.readAsDataURL(file);});}
+function sampleCSV(){const d=n=>addD(TODAY,n);return [CSV_COLS.join(','),
+`DMC-104,Coastal School Annex,D4010,Site clearance,تنظيف الموقع,1.1 Enabling,${d(-20)},${d(-5)},6000,m2,4,CIV`,
+`DMC-104,Coastal School Annex,D4020,Strip footings,القواعد الشريطية,2.1 Substructure,${d(-8)},${d(20)},260,m3,10,CIV`,
+`DMC-104,Coastal School Annex,D4030,Ground beams,الجسور الأرضية,2.2 Substructure,${d(10)},${d(35)},140,m3,8,CIV`,
+`DMC-104,Coastal School Annex,D4040,Steel frame,الهيكل الفولاذي,3.1 Superstructure,${d(30)},${d(75)},210,t,16,CIV`,
+`DMC-104,Coastal School Annex,D4050,Roof deck,سطح السقف,3.2 Superstructure,${d(80)},${d(70)},2400,m2,9,ARC`,
+`DMC-101,,A1080,Blockwork (re-baselined),أعمال البلوك,3.2 Superstructure,${d(25)},${d(80)},6400,m2,9,ARC`].map((l,i)=>i===0?l:l+','+['—,SITE','Z1,BLD-1','Z1,BLD-2','Z2,BLD-1','Z2,BLD-2','Z2,BLD-B'][i-1]).join('\n');}
+
+// ───────── Data source adapter: DEMO (this browser) or LIVE (Supabase, shared) ─────────
+function connCfg(){const w=window.DMC_CONFIG||{};let l={};try{l=JSON.parse(localStorage.getItem(CONN_KEY)||'{}');}catch(e){}
+  return{url:String(w.SUPABASE_URL||l.url||'').trim(),key:String(w.SUPABASE_ANON_KEY||l.key||'').trim(),fromFile:!!(w.SUPABASE_URL&&w.SUPABASE_ANON_KEY)};}
+let _sb=null,_sbKey='';
+async function getSB(c){if(_sb&&_sbKey===c.url+c.key)return _sb;const m=await import('https://esm.sh/@supabase/supabase-js@2');
+  _sb=m.createClient(c.url,c.key,{auth:{persistSession:true,storageKey:'dmc-erp-auth'}});_sbKey=c.url+c.key;return _sb;}
+const toTs=s=>s?new Date(s.length<=10?s+'T00:00':s).toISOString():null;
+const fromTs=s=>s?fmtMs(Date.parse(s)).replace(' ','T'):'';
+const EMPTYP={id:'',code:'—',name:'—',nameAr:'—',list:[],planned:0,actual:0,variance:0,missing:0,delayed:0,pending:0,value:0,status:'ok',src:'user'};
+const MAP={
+ projects:{t:'projects',to:p=>({id:p.id,code:p.code,name:p.name,name_ar:p.nameAr,location:p.loc,location_ar:p.locAr,contract_value:p.value,source:p.src,is_demo:p.src==='demo'}),
+  from:r=>({id:r.id,code:r.code,name:r.name,nameAr:r.name_ar||r.name,loc:r.location||'—',locAr:r.location_ar||r.location||'—',value:Number(r.contract_value)||0,src:r.source||'imported'})},
+ activities:{t:'activities',to:a=>({id:a.id,project_id:a.pid,code:a.code,name:a.name,name_ar:a.nameAr,wbs:a.wbs,zone:a.zone||'—',building:a.bldg||'SITE',planned_start:a.ps,planned_finish:a.pf,budget_qty:a.qty,unit:a.unit,weight:a.w,discipline:a.eng,source:a.src,is_demo:a.src==='demo'}),
+  from:r=>({id:r.id,pid:r.project_id,code:r.code,name:r.name,nameAr:r.name_ar||r.name,wbs:r.wbs||'—',zone:r.zone||'—',bldg:r.building||'SITE',ps:r.planned_start,pf:r.planned_finish,qty:Number(r.budget_qty),unit:r.unit,w:Number(r.weight),eng:r.discipline,src:r.source||'imported'})},
+ updates:{t:'progress_updates',to:u=>({id:u.id,activity_id:u.actId,discipline:u.by,pct:u.pct,qty:u.qty,actual_start:u.aStart||null,actual_finish:u.aFinish||null,remarks:u.remarks||'',delay_reason:u.delay||null,
+   photos:(u.photos||[]).map(p=>({id:p.id,path:p.path||null,caption:p.caption||'',at:p.at||'',lat:p.lat==null?null:p.lat,lng:p.lng==null?null:p.lng,acc:p.acc==null?null:p.acc,geo:p.geo||'none'})),
+   status:u.status,created_at:toTs(u.created),submitted_at:toTs(u.submitted),cm_at:toTs(u.cmAt),cm_comment:u.cmComment||'',orig_pct:u.origPct==null?null:u.origPct,orig_qty:u.origQty==null?null:u.origQty,adj_at:toTs(u.adjAt),adj_note:u.adjNote||'',
+   reviewed_at:toTs(u.reviewed),reviewer_role:u.reviewer||null,review_comment:u.comment||'',prev_id:u.prevId||null,source:u.src||'user',log:u.log||[]}),
+  from:r=>({id:r.id,actId:r.activity_id,by:r.discipline,pct:r.pct,qty:Number(r.qty),aStart:r.actual_start||'',aFinish:r.actual_finish||'',remarks:r.remarks||'',delay:r.delay_reason||'',photos:(r.photos||[]).map(p=>Object.assign({src:''},p)),
+   status:r.status,created:fromTs(r.created_at),submitted:fromTs(r.submitted_at),cmAt:fromTs(r.cm_at),cmBy:r.cm_at?'CM':'',cmComment:r.cm_comment||'',origPct:r.orig_pct==null?undefined:r.orig_pct,origQty:r.orig_qty==null?undefined:Number(r.orig_qty),adjAt:fromTs(r.adj_at),adjNote:r.adj_note||'',adjBy:r.adj_at?'CM':'',
+   reviewed:fromTs(r.reviewed_at),reviewer:r.reviewer_role||'',comment:r.review_comment||'',prevId:r.prev_id||'',src:r.source||'user',log:r.log||[]})},
+ reminders:{t:'notifications',to:r=>({id:r.id,to_discipline:r.to,from_role:r.from,type:r.type,activity_ids:r.actIds||[],from_pct:r.from_pct==null?null:r.from_pct,to_pct:r.to_pct==null?null:r.to_pct,from_qty:r.from_qty==null?null:r.from_qty,to_qty:r.to_qty==null?null:r.to_qty,note:r.note||'',done:!!r.done,created_at:toTs(r.at)}),
+  from:r=>({id:r.id,to:r.to_discipline,from:r.from_role,type:r.type,actIds:r.activity_ids||[],from_pct:r.from_pct,to_pct:r.to_pct,from_qty:r.from_qty,to_qty:r.to_qty,note:r.note||'',done:r.done,at:fromTs(r.created_at)})}};
+const TABLE_ORDER=['projects','activities','updates','reminders'];
+
+class Component extends DCLogic {
+  state=(()=>{const s=load();return{data:s?s.data:seed(),lang:(s&&s.prefs&&s.prefs.lang)||'en',role:(s&&s.prefs&&s.prefs.role)||'site',eng:(s&&s.prefs&&ENG.indexOf(s.prefs.eng)>=0&&s.prefs.eng)||'CIV',
+    tab:{site:'acts',cm:'review',planner:'review',pm:'portfolio'},detail:null,review:null,form:null,errors:[],q:'',sProj:'all',sFilter:'all',plProj:'P1',plFilter:'all',mode:'demo',auth:'none',user:null,profile:null,syncing:false,lastSync:'',loadErr:'',settingsDb:{},loginEmail:'',loginPw:'',loginErr:'',loginBusy:false,connUrl:connCfg().url,connKey:connCfg().key,wide:false,liveArm:'',pmProj:'all',dlProj:'all',
+    comment:'',importText:'',importRows:null,settings:false,toast:'',resetArm:false,bulk:false,bulkVals:{},bulkErr:{},sel:{},rvProj:'all',rvFlag:'all',sBldg:'all',sZone:'all',plBldg:'all',plZone:'all',adjPct:'',adjQty:'',laProj:'all',laDays:14,report:false,repProj:'all'};})();
+  live(){return this.state.mode==='live';}
+  dbSet(k){const v=this.live()?this.state.settingsDb[k]:undefined;return v===undefined||v===null?undefined:v;}
+  reqCM(){const v=this.dbSet('require_cm');return v!==undefined?(v===true||v==='true'):(this.props.requireCM!==false);}
+  cfg(){return{stale:Number(this.dbSet('stale_days')??this.props.staleDays??7),thr:Number(this.dbSet('delay_threshold')??this.props.delayThreshold??10)};}
+  canSwitch(){return !this.live()||(this.state.profile&&this.state.profile.role==='admin');}
+  savePrefs(){try{localStorage.setItem(PREF_KEY,JSON.stringify({lang:this.state.lang}));}catch(e){}}
+  componentDidMount(){this._onResize=()=>{const w=window.innerWidth>=1024;if(w!==this.state.wide)this.setState({wide:w});};window.addEventListener('resize',this._onResize);this._onResize();
+    try{const p=JSON.parse(localStorage.getItem(PREF_KEY)||'{}');if(p.lang&&p.lang!==this.state.lang)this.setState({lang:p.lang});}catch(e){}
+    let n=0;const go=()=>{if(window.DMC_CONFIG===undefined&&n++<15){setTimeout(go,100);return;}this.initConn();};go();}
+  componentWillUnmount(){window.removeEventListener('resize',this._onResize);if(this._ch&&this._sb)try{this._sb.removeChannel(this._ch);}catch(e){}}
+  async initConn(){const c=connCfg();if(!c.url||!c.key){this.setState({mode:'demo',auth:'none'});return;}
+    this.setState({mode:'live',auth:'checking',connUrl:c.url,connKey:c.key,data:{projects:[],activities:[],updates:[],reminders:[]},detail:null,review:null});
+    try{const sb=await getSB(c);this._sb=sb;const {data}=await sb.auth.getSession();
+      if(!this._authSub){this._authSub=sb.auth.onAuthStateChange(ev=>{if(ev==='SIGNED_OUT')this.setState({auth:'signedOut',user:null,profile:null});});}
+      if(data&&data.session)await this.afterLogin(data.session.user);else this.setState({auth:'signedOut'});
+    }catch(e){this.setState({auth:'signedOut',loginErr:String(e.message||e)});}}
+  async afterLogin(user){const sb=this._sb,t=this.T();const r=await sb.from('profiles').select('*').eq('id',user.id).maybeSingle();
+    if(r.error||!r.data){this.setState({auth:'signedOut',loginErr:(r.error&&r.error.message)||t.noProfile});return;}
+    const prof=r.data;if(prof.active===false){this.setState({auth:'signedOut',loginErr:t.inactive});await sb.auth.signOut();return;}
+    const role=prof.role==='admin'?(['site','cm','planner','pm'].indexOf(this.state.role)>=0?this.state.role:'planner'):prof.role;
+    this.setState({user:{id:user.id,email:user.email},profile:prof,role,eng:prof.discipline||'CIV',auth:'ready',loginErr:''});
+    await this.reloadLive();
+    if(!this._ch){let tmr=null;this._ch=sb.channel('dmc-live').on('postgres_changes',{event:'*',schema:'public'},()=>{clearTimeout(tmr);tmr=setTimeout(()=>this.reloadLive(),700);}).subscribe();}}
+  async reloadLive(){const sb=this._sb;if(!sb||this.state.auth!=='ready')return;
+    try{const q=n=>sb.from(n).select('*').limit(10000);
+      const res=await Promise.all([q('projects'),q('activities'),q('progress_updates'),q('notifications'),q('app_settings')]);
+      res.forEach(x=>{if(x.error)throw x.error;});
+      const updates=res[2].data.map(MAP.updates.from),cache=this._signed||{},need=[];
+      updates.forEach(x=>x.photos.forEach(p=>{if(p.path&&!cache[p.path])need.push(p.path);}));
+      if(need.length){const sr=await sb.storage.from('site-photos').createSignedUrls(need,43200);(sr.data||[]).forEach(d=>{if(d.signedUrl&&d.path)cache[d.path]=d.signedUrl;});}
+      this._signed=cache;updates.forEach(x=>{x.photos=x.photos.map(p=>p.path&&cache[p.path]?Object.assign({},p,{src:cache[p.path]}):p);});
+      const st={};(res[4].data||[]).forEach(r=>{st[r.key]=r.value;});
+      this.setState({data:{projects:res[0].data.map(MAP.projects.from),activities:res[1].data.map(MAP.activities.from),updates,reminders:res[3].data.map(MAP.reminders.from)},settingsDb:st,lastSync:stamp(),loadErr:''});
+    }catch(e){this.setState({loadErr:String(e.message||e)});}}
+  async uploadPhotos(x){const sb=this._sb,out=[];for(const p of (x.photos||[])){if(p.path||!p.src||p.src.indexOf('data:')!==0){out.push(p);continue;}
+      const blob=await (await fetch(p.src)).blob(),path=x.actId+'/'+x.id+'/'+p.id+'.jpg';
+      const r=await sb.storage.from('site-photos').upload(path,blob,{contentType:'image/jpeg',upsert:true});if(r.error)throw r.error;out.push(Object.assign({},p,{path}));}
+    x.photos=out;}
+  async pushDiff(prev,next){const sb=this._sb,t=this.T();if(!sb)return;this.setState({syncing:true});
+    try{for(const k of TABLE_ORDER){const m=MAP[k],pm=new Map((prev[k]||[]).map(x=>[x.id,x])),ins=[];
+        for(const x of (next[k]||[])){const o=pm.get(x.id);if(o===x)continue;if(k==='updates')await this.uploadPhotos(x);
+          const row=m.to(x);if(!o){ins.push(row);continue;}
+          const or=m.to(o),patch={};Object.keys(row).forEach(c=>{if(JSON.stringify(row[c])!==JSON.stringify(or[c]))patch[c]=row[c];});
+          if(Object.keys(patch).length){const r=await sb.from(m.t).update(patch).eq('id',x.id);if(r.error)throw r.error;}}
+        if(ins.length){const r=await sb.from(m.t).insert(ins);if(r.error)throw r.error;}
+        if(k==='activities'&&ins.length){const locs={};ins.forEach(a=>{locs[a.project_id+'|'+a.zone+'|'+a.building]={project_id:a.project_id,zone:a.zone,building:a.building};});await sb.from('project_locations').upsert(Object.values(locs));}}
+      this.setState({syncing:false});
+    }catch(e){this.setState({syncing:false});this.toast(t.syncErr+' '+(e.message||e));}
+    await this.reloadLive();}
+  async signIn(){const s=this.state,t=this.T();if(!s.loginEmail.trim()||!s.loginPw){this.setState({loginErr:t.loginNeed});return;}
+    this.setState({loginBusy:true,loginErr:''});const r=await this._sb.auth.signInWithPassword({email:s.loginEmail.trim(),password:s.loginPw});
+    if(r.error){this.setState({loginBusy:false,loginErr:r.error.message});return;}this.setState({loginBusy:false,loginPw:''});await this.afterLogin(r.data.user);}
+  async signUp(){const s=this.state,t=this.T();if(!s.loginEmail.trim()||s.loginPw.length<8){this.setState({loginErr:t.signUpNeed});return;}
+    this.setState({loginBusy:true,loginErr:''});const r=await this._sb.auth.signUp({email:s.loginEmail.trim(),password:s.loginPw});
+    this.setState({loginBusy:false});if(r.error){this.setState({loginErr:r.error.message});return;}
+    if(r.data&&r.data.session)await this.afterLogin(r.data.user);else this.setState({loginErr:t.signUpOk});}
+  async signOut(){try{await this._sb.auth.signOut();}catch(e){}this.setState({auth:'signedOut',user:null,profile:null,settings:false,data:{projects:[],activities:[],updates:[],reminders:[]}});}
+  connect(){const s=this.state,t=this.T();if(!/^https:\/\/.+/.test(s.connUrl.trim())||s.connKey.trim().length<20){this.toast(t.connBad);return;}
+    try{localStorage.setItem(CONN_KEY,JSON.stringify({url:s.connUrl.trim(),key:s.connKey.trim()}));}catch(e){}this.setState({settings:false});this.initConn();}
+  disconnect(){try{localStorage.removeItem(CONN_KEY);}catch(e){}if(this._ch&&this._sb)try{this._sb.removeChannel(this._ch);}catch(e){}this._ch=null;
+    const d=load();this.setState({mode:'demo',auth:'none',user:null,profile:null,data:d?d.data:seed(),settings:false,detail:null,review:null});}
+  openDemo(){const d=load();this.setState({mode:'demo',auth:'none',data:d?d.data:seed(),detail:null,review:null});}
+  async loadDemoToDb(){const sb=this._sb,t=this.T();if(this.state.liveArm!=='load'){this.setState({liveArm:'load'});return;}this.setState({liveArm:'',syncing:true});
+    try{const d=seed();for(const k of TABLE_ORDER){const rows=(d[k]||[]).map(MAP[k].to);if(!rows.length)continue;const r=await sb.from(MAP[k].t).upsert(rows);if(r.error)throw r.error;}this.toast(t.demoLoaded);}
+    catch(e){this.toast(t.syncErr+' '+(e.message||e));}this.setState({syncing:false});await this.reloadLive();}
+  async removeDemoFromDb(){const sb=this._sb,t=this.T();if(this.state.liveArm!=='remove'){this.setState({liveArm:'remove'});return;}this.setState({liveArm:'',syncing:true});
+    try{let r=await sb.from('notifications').delete().like('id','R_seed%');if(r.error)throw r.error;r=await sb.from('projects').delete().eq('is_demo',true);if(r.error)throw r.error;this.toast(t.demoRemoved);}
+    catch(e){this.toast(t.syncErr+' '+(e.message||e));}this.setState({syncing:false});await this.reloadLive();}
+  persist(){try{localStorage.setItem(KEY,JSON.stringify({v:2,data:this.state.data,prefs:{lang:this.state.lang,role:this.state.role,eng:this.state.eng}}));return true;}catch(e){this.toast(I18N[this.state.lang].t_quota);return false;}}
+  set(patch,cb){const prev=this.state.data;this.setState(patch,()=>{if(this.live()){this.savePrefs();if(patch.data&&patch.data!==prev)this.pushDiff(prev,patch.data);}else this.persist();cb&&cb();});}
+  toast(m){clearTimeout(this._tt);this.setState({toast:m});this._tt=setTimeout(()=>this.setState({toast:''}),2800);}
+  D(){const c=this.cfg(),m=this._memo;if(m&&m.data===this.state.data&&m.stale===c.stale&&m.thr===c.thr)return m.D;const D=derive(this.state.data,c);this._memo={data:this.state.data,stale:c.stale,thr:c.thr,D};return D;}
+  top(){try{window.scrollTo(0,0);}catch(e){}}
+  formFrom(a){const src=a.draft||a.returned;
+    if(src)return{actId:a.id,draftId:a.draft?a.draft.id:null,prevId:a.draft?(a.draft.prevId||''):a.returned.id,pct:String(src.pct),qty:String(src.qty),aStart:src.aStart||'',aFinish:src.aFinish||'',remarks:src.remarks||'',delay:src.delay||'',photos:src.photos||[]};
+    return{actId:a.id,draftId:null,prevId:'',pct:String(a.actual),qty:String(a.aQty),aStart:a.aStart||'',aFinish:a.aFinish||'',remarks:'',delay:'',photos:[]};}
+  openDetail(id){const a=this.D().actMap[id];if(!a)return;this.setState({detail:id,form:this.formFrom(a),errors:[]});this.top();}
+  setF(k,v){this.setState(s=>({form:Object.assign({},s.form,{[k]:v})}));}
+  validate(f,a){const t=I18N[this.state.lang],e=[],pct=Number(f.pct),qty=Number(f.qty);
+    if(f.pct===''||isNaN(pct)||pct<0||pct>100)e.push(t.err_pct);
+    if(pct<a.actual&&!f.remarks.trim())e.push(t.err_lower);
+    if(pct>0&&!f.aStart)e.push(t.err_start);
+    if(pct===100&&!f.aFinish)e.push(t.err_finish);
+    if(pct<100&&f.aFinish)e.push(t.err_finishEarly);
+    if(f.aStart&&f.aFinish&&f.aFinish<f.aStart)e.push(t.err_order);
+    if((f.aStart&&f.aStart>TODAY)||(f.aFinish&&f.aFinish>TODAY))e.push(t.err_future);
+    if(a.planned-pct>this.cfg().thr&&!f.delay)e.push(t.err_delay);
+    if(f.qty===''||isNaN(qty)||qty<0||qty>a.qty*1.1)e.push(t.err_qty);
+    return e;}
+  writeUpdate(status){
+    const s=this.state,f=s.form,t=I18N[s.lang],D=this.D(),a=D.actMap[f.actId];
+    if(status==='submitted'){const errs=this.validate(f,a);if(errs.length){this.setState({errors:errs});return;}}
+    const {ups,id}=makeUpdate(s.data.updates,f,status,s.eng);
+    this.set({data:Object.assign({},s.data,{updates:ups}),form:Object.assign({},f,{draftId:id}),errors:[]},()=>this.toast(status==='submitted'?t.t_submitted:t.t_saved));
+  }
+  T(){const b=I18N[this.state.lang];return this.state.role==='cm'?Object.assign({},b,b.cm):b;}
+  qStatuses(role){return role==='cm'?['submitted']:this.reqCM()?['endorsed']:['submitted','endorsed'];}
+  withdraw(){const s=this.state,a=this.D().actMap[s.detail];if(!a||!a.pending||a.pending.status!=='submitted')return;const ts=stamp(),pid=a.pending.id;
+    const ups=s.data.updates.map(u=>u.id===pid?Object.assign({},u,{status:'draft',submitted:'',log:u.log.concat([{at:ts,ev:'withdrawn',by:s.eng}])}):u);
+    this.set({data:Object.assign({},s.data,{updates:ups})},()=>{const a2=this.D().actMap[s.detail];this.setState({form:this.formFrom(a2)});this.toast(I18N[s.lang].t_withdrawn);});}
+  decide(ok){const s=this.state,t=this.T(),c=s.comment.trim();if(!ok&&!c){this.setState({errors:[t.err_comment]});return;}
+    const ts=stamp(),u0=s.data.updates.find(u=>u.id===s.review);if(!u0)return;let adj=null;
+    if(ok&&s.role==='cm'){const a=this.D().actMap[u0.actId],np=Number(s.adjPct),nq=Number(s.adjQty);
+      if((s.adjPct!==''&&np!==u0.pct)||(s.adjQty!==''&&nq!==u0.qty)){const e=[];
+        if(s.adjPct===''||isNaN(np)||np<0||np>100||np!==Math.round(np))e.push(t.err_pct);
+        if(s.adjQty===''||isNaN(nq)||nq<0||nq>a.qty*1.1)e.push(t.err_qty);
+        if(np===100&&!u0.aFinish)e.push(t.err_adjFinish);
+        if(!c)e.push(t.err_adjComment);
+        if(e.length){this.setState({errors:e});return;}adj={pct:np,qty:nq};}}
+    const ups=s.data.updates.map(u=>{if(u.id!==s.review)return u;let x=u;
+      if(adj)x=Object.assign({},u,{origPct:u.pct,origQty:u.qty,pct:adj.pct,qty:adj.qty,aFinish:adj.pct<100?'':u.aFinish,adjBy:'CM',adjAt:ts,adjNote:c,log:u.log.concat([{at:ts,ev:'adjusted',by:'CM',detail:u.pct+'% → '+adj.pct+'%'}])});
+      return decideU(x,ok,s.role,c,ts);});
+    let reminders=s.data.reminders||[];
+    if(adj)reminders=reminders.concat([{id:uid('R'),to:u0.by,from:'CM',at:ts,actIds:[u0.actId],type:'adjusted',from_pct:u0.pct,to_pct:adj.pct,from_qty:u0.qty,to_qty:adj.qty,note:c,done:false}]);
+    this.set({data:Object.assign({},s.data,{updates:ups,reminders}),review:null,comment:'',errors:[]},()=>{this.toast(adj?t.t_adjusted:(ok?t.t_approved:t.t_returned));this.top();});}
+  onPhotos(e){const files=Array.from(e.target.files||[]);e.target.value='';const room=4-((this.state.form&&this.state.form.photos)||[]).length;
+    files.slice(0,Math.max(0,room)).forEach(file=>compress(file).then(src=>{const id=uid('ph');const ph={id,src,caption:'',at:fmtMs(file.lastModified||Date.now()),lat:null,lng:null,acc:null,geo:'pending'};
+      this.setState(s=>s.form?{form:Object.assign({},s.form,{photos:s.form.photos.concat([ph]).slice(0,4)})}:null);this.locate(id);}).catch(()=>{}));}
+  patchPhoto(id,patch){this.setState(s=>s.form?{form:Object.assign({},s.form,{photos:s.form.photos.map(p=>p.id===id?Object.assign({},p,patch):p)})}:null);}
+  locate(id){if(!navigator.geolocation){this.patchPhoto(id,{geo:'none'});return;}
+    try{navigator.geolocation.getCurrentPosition(pos=>this.patchPhoto(id,{geo:'ok',lat:pos.coords.latitude,lng:pos.coords.longitude,acc:Math.round(pos.coords.accuracy)}),()=>this.patchPhoto(id,{geo:'none'}),{enableHighAccuracy:true,timeout:10000,maximumAge:60000});}catch(e){this.patchPhoto(id,{geo:'none'});}}
+  bulkBase(a){return a.draft?a.draft.pct:a.actual;}
+  bulkStep(a,delta){this.setState(s=>{const b=s.bulkVals[a.id]!=null?s.bulkVals[a.id]:this.bulkBase(a);const v=delta===null?100:clamp(b+delta,0,100);return{bulkVals:Object.assign({},s.bulkVals,{[a.id]:v}),bulkErr:Object.assign({},s.bulkErr,{[a.id]:''})};});}
+  bulkSubmit(){const s=this.state,t=I18N[s.lang],D=this.D();let ups=s.data.updates,ok=0;const errs={},keep={};
+    Object.keys(s.bulkVals).forEach(id=>{const a=D.actMap[id],v=s.bulkVals[id];if(!a||a.pending||v===this.bulkBase(a))return;const src=a.draft||{};
+      const f={actId:id,draftId:a.draft?a.draft.id:null,prevId:a.draft?(a.draft.prevId||''):(a.returned?a.returned.id:''),pct:String(v),qty:String(Math.round(a.qty*v)/100),aStart:src.aStart||a.aStart||TODAY,aFinish:v===100?(src.aFinish||TODAY):'',remarks:src.remarks||'',delay:src.delay||(a.off&&a.off.delay)||'',photos:src.photos||[]};
+      const e=this.validate(f,a);if(e.length){errs[id]=e[0];keep[id]=v;return;}ups=makeUpdate(ups,f,'submitted',s.eng).ups;ok++;});
+    const n=Object.keys(errs).length;if(!ok&&!n){this.toast(t.bulkNone);return;}
+    this.set({data:Object.assign({},s.data,{updates:ups}),bulkVals:keep,bulkErr:errs,bulk:n>0},()=>this.toast(t.bulkDone(ok,n)));}
+  approveMany(ids){const s=this.state,t=this.T(),ts=stamp(),set=new Set(ids);let n=0;
+    const okSt=this.qStatuses(s.role);const ups=s.data.updates.map(u=>{if(!set.has(u.id)||okSt.indexOf(u.status)<0)return u;n++;return decideU(u,true,s.role,'',ts);});
+    this.set({data:Object.assign({},s.data,{updates:ups}),sel:{}},()=>this.toast(t.bulkApproved(n)));}
+  sendReminders(pid){const s=this.state,t=I18N[s.lang],p=this.D().projMap[pid],by={};p.list.filter(a=>a.missing).forEach(a=>{(by[a.eng]=by[a.eng]||[]).push(a.id);});
+    const ts=stamp(),rs=Object.keys(by).map(e=>({id:uid('R'),to:e,from:'PL',at:ts,actIds:by[e],type:'missing',done:false}));
+    this.set({data:Object.assign({},s.data,{reminders:(s.data.reminders||[]).concat(rs)})},()=>this.toast(t.remindSent(rs.length)));}
+  dismissReminder(id){const s=this.state;this.set({data:Object.assign({},s.data,{reminders:s.data.reminders.map(r=>r.id===id?Object.assign({},r,{done:true}):r)})});}
+  runValidate(text){const t=I18N[this.state.lang],rows=parseCSV(text||'');if(!rows.length){this.setState({importRows:[]});return;}
+    const head=rows[0].map(h=>h.trim().toLowerCase()),need=['project_code','activity_id','activity_name','planned_start','planned_finish','budget_qty','unit','weight','assigned_to'];
+    const miss=need.filter(c=>head.indexOf(c)<0);
+    if(miss.length){this.setState({importRows:[{line:1,ok:false,code:'',name:'',errs:miss.map(t.e_col),rec:null}]});return;}
+    const g=(r,c)=>{const i=head.indexOf(c);return i<0?'':String(r[i]||'').trim();};const seen={},data=this.state.data;
+    const out=rows.slice(1).map((r,i)=>{const errs=[],rec={project_code:g(r,'project_code'),project_name:g(r,'project_name'),code:g(r,'activity_id'),name:g(r,'activity_name'),nameAr:g(r,'activity_name_ar'),wbs:g(r,'wbs'),ps:g(r,'planned_start'),pf:g(r,'planned_finish'),qty:Number(g(r,'budget_qty')),unit:g(r,'unit'),w:Number(g(r,'weight')),bldg:g(r,'building')||'SITE',zone:g(r,'zone')||'—',eng:(x=>ALIAS[x]||x)(g(r,'assigned_to').toUpperCase().trim().split(/\s+/)[0])};
+      if(!rec.project_code||!rec.code||!rec.name||!rec.unit)errs.push(t.e_req);
+      if(!isDate(rec.ps)||!isDate(rec.pf))errs.push(t.e_date);else if(rec.pf<rec.ps)errs.push(t.e_order);
+      if(!(rec.qty>0))errs.push(t.e_qty);if(!(rec.w>0))errs.push(t.e_w);if(ENG.indexOf(rec.eng)<0)errs.push(t.e_eng);
+      const k=rec.project_code+'|'+rec.code;if(seen[k])errs.push(t.e_dup);seen[k]=1;
+      const proj=data.projects.find(p=>p.code===rec.project_code);const exists=!!(proj&&data.activities.find(a=>a.pid===proj.id&&a.code===rec.code));
+      return{line:i+2,ok:!errs.length,errs,rec,exists,code:rec.code,name:rec.name};});
+    this.setState({importRows:out});}
+  doImport(){const s=this.state,t=I18N[s.lang],ok=(s.importRows||[]).filter(r=>r.ok);if(!ok.length){this.toast(t.t_noValid);return;}
+    const projects=s.data.projects.slice(),activities=s.data.activities.slice();
+    ok.forEach(({rec})=>{let p=projects.find(x=>x.code===rec.project_code);
+      if(!p){p={id:'P_'+rec.project_code,code:rec.project_code,name:rec.project_name||rec.project_code,nameAr:rec.project_name||rec.project_code,loc:'—',locAr:'—',value:10,src:'imported'};projects.push(p);}
+      const fields={bldg:rec.bldg,zone:rec.zone,code:rec.code,name:rec.name,nameAr:rec.nameAr||rec.name,wbs:rec.wbs||'—',ps:rec.ps,pf:rec.pf,qty:rec.qty,unit:rec.unit,w:rec.w,eng:rec.eng,src:'imported'};
+      const i=activities.findIndex(a=>a.pid===p.id&&a.code===rec.code);
+      if(i>=0)activities[i]=Object.assign({},activities[i],fields);else activities.push(Object.assign({id:'X_'+p.code+'_'+rec.code,pid:p.id},fields));});
+    if(this.live()&&this._sb)this._sb.from('schedule_imports').insert({file_name:'csv',row_count:ok.length}).then(()=>{});
+    this.set({data:Object.assign({},s.data,{projects,activities}),importRows:null},()=>this.toast(t.impToast(ok.length)));}
+  exportProgress(){const D=this.D(),rows=[['data_date','project_code','activity_id','activity_name','wbs','zone','building','planned_start','planned_finish','weight','planned_pct','approved_pct','variance_pts','approved_qty','budget_qty','unit','actual_start','actual_finish','delayed','missing_update','pending_review','data_source']];
+    D.acts.forEach(a=>rows.push([TODAY,D.projMap[a.pid].code,a.code,a.name,a.wbs,a.zone,a.bldg,a.ps,a.pf,a.w,r1(a.planned),a.actual,r1(a.variance),a.aQty,a.qty,a.unit,a.aStart,a.aFinish,a.delayed?'Y':'N',a.missing?'Y':'N',a.pending?'Y':'N',a.src]));
+    rows.push([]);D.projects.forEach(p=>rows.push([TODAY,p.code,'PROJECT TOTAL',p.name,'','','','','','',r1(p.planned),r1(p.actual),r1(p.variance),'','','','','','','','',p.src]));
+    download(`DMC_progress_${TODAY}.csv`,toCSV(rows));this.toast(I18N[this.state.lang].t_exported);}
+  exportHistory(){const D=this.D(),rows=[['update_id','project_code','activity_id','engineer','status','pct','qty','actual_start','actual_finish','delay_reason','remarks','created','submitted','reviewed','reviewer','review_comment','photos','revises_update','cm_approved_at','cm_comment','cm_adjusted_from_pct','source','event_log']];
+    this.state.data.updates.slice().sort((a,b)=>a.created<b.created?-1:1).forEach(u=>{const a=D.actMap[u.actId];if(!a)return;rows.push([u.id,D.projMap[a.pid].code,a.code,PEOPLE[u.by]?PEOPLE[u.by].en:u.by,u.status,u.pct,u.qty,u.aStart,u.aFinish,u.delay,u.remarks,u.created,u.submitted,u.reviewed,u.reviewer?PEOPLE[u.reviewer].en:'',u.comment,(u.photos||[]).length,u.prevId,u.cmAt||'',u.cmComment||'',u.adjAt?u.origPct:'',u.src,u.log.map(l=>`${l.at} ${l.ev} ${l.by}`).join(' | ')]);});
+    download(`DMC_update_history_${TODAY}.csv`,toCSV(rows));this.toast(I18N[this.state.lang].t_exported);}
+
+  renderVals(){
+    const s=this.state,t=this.T(),L=s.lang,cfg=this.cfg(),D=this.D(),isRev=s.role==='cm'||s.role==='planner';
+    const nm=o=>o?(L==='ar'?(o.nameAr||o.name):o.name):'';
+    const bl=b=>!b||b==='SITE'?t.siteWide:b,zl=z=>!z||z==='—'?t.siteWide:t.zoneL+' '+z,locL=a=>a.zone&&a.zone!=='—'?zl(a.zone)+(a.bldg&&a.bldg!=='SITE'?' · '+a.bldg:''):bl(a.bldg);
+    const person=id=>PEOPLE[id]?PEOPLE[id][L]:id;
+    const p0=v=>Math.round(v)+'%',p1=v=>r1(v).toFixed(1)+'%',sg=v=>(v>0?'+':'')+r1(v).toFixed(1)+'%';
+    const W=v=>clamp(v,0,100)+'%';
+    const vc=v=>v>=-2?C.green:v>=-cfg.thr/2?C.amber:C.red;
+    const spiOf=(a,p)=>p>0.5?a/p:null,spiTxt=x=>x==null?'—':x.toFixed(2),spiC=x=>x==null?'#1b1a17':x>=0.95?C.green:x>=0.85?C.amber:C.red;
+    const chip=(label,active,onClick)=>({label,onClick,bg:active?'#1b1a17':'#fff',fg:active?'#fff':'#1b1a17',bd:active?'#1b1a17':'#cfc9bf'});
+    const srcL=x=>x==='imported'?t.src_imported:x==='user'?t.src_user:t.src_demo;
+    const stOf=a=>a.pending?(a.pending.status==='endorsed'?['st_endorsed',C.blueBg,C.blue]:['st_submitted',C.blueBg,C.blue]):a.draft?['st_draft',C.amberBg,C.amber]:a.returned?['st_returned',C.redBg,C.red]:a.actual>=100?['st_complete',C.greenBg,C.green]:a.missing?['st_needs',C.redBg,C.red]:a.ps>TODAY?['st_notstarted',C.greyBg,C.grey]:a.delayed?['f_delayed',C.amberBg,C.amber]:['st_uptodate',C.greenBg,C.green];
+    const upSt={draft:['st_draft',C.amberBg,C.amber],submitted:['st_submitted',C.blueBg,C.blue],endorsed:['st_endorsed',C.blueBg,C.blue],approved:['st_approved',C.greenBg,C.green],returned:['st_returned',C.redBg,C.red]};
+    const card=(a,bulk)=>{const st=stOf(a);const o={code:a.code,projCode:D.projMap[a.pid].code,name:nm(a),srcLabel:srcL(a.src),stLabel:t[st[0]],stBg:st[1],stFg:st[2],plannedW:W(a.planned),plannedTxt:p0(a.planned),actualW:W(a.actual),actualTxt:p0(a.actual),barColor:a.delayed?C.barBad:a.variance<-2?C.barWarn:C.barOk,
+      meta:locL(a)+' · '+t.planned+' '+p0(a.planned)+' · '+sg(a.variance)+' · '+t.lastUpd(a.lastDate),open:()=>this.openDetail(a.id),bulkOn:false,hasBulkErr:false};
+      if(bulk&&!a.pending&&a.actual<100&&(a.ps<=TODAY||a.actual>0)){const b=this.bulkBase(a),v=s.bulkVals[a.id]!=null?s.bulkVals[a.id]:b;
+        Object.assign(o,{bulkOn:true,bulkTxt:v+'%',bulkFrom:v!==b?b+'% →':'',bulkColor:v!==b?C.blue:'#1b1a17',dec:()=>this.bulkStep(a,-5),inc:()=>this.bulkStep(a,5),inc10:()=>this.bulkStep(a,10),full:()=>this.bulkStep(a,null),hasBulkErr:!!s.bulkErr[a.id],bulkErr:s.bulkErr[a.id]||''});}
+      return o;};
+    const role=s.role,tab=s.tab[role];
+    const setTab=k=>()=>{this.setState({tab:Object.assign({},s.tab,{[role]:k}),detail:null,review:null,errors:[],bulk:false,bulkVals:{},bulkErr:{}});this.top();};
+    const qS=this.qStatuses(isRev?s.role:'planner');const pendingAll=s.data.updates.filter(u=>qS.indexOf(u.status)>=0&&D.actMap[u.actId]).sort((a,b)=>a.submitted<b.submitted?-1:1);
+    const mine=D.acts.filter(a=>a.eng===s.eng);
+    const FIL={all:()=>true,needs:a=>a.missing||(!!a.returned&&!a.draft),returned:a=>!!a.returned,drafts:a=>!!a.draft,pending:a=>!!a.pending};
+    const needsN=mine.filter(FIL.needs).length;
+    const notifN=(s.data.reminders||[]).filter(r=>r.to===s.eng&&!r.done&&r.type==='adjusted').length;
+    const TABS={site:['acts','hist'],cm:['review','progress'],planner:['review','progress','import'],pm:['portfolio','trends','lookahead','delays']};
+    const tabs=TABS[role].map(k=>{const bd=k==='review'?pendingAll.length:k==='acts'?needsN+notifN:0;return{label:t['tab_'+k],onClick:setTab(k),fg:k===tab?'#1b1a17':'#605a51',fw:k===tab?'700':'500',bg:k===tab?'oklch(0.93 0.05 70)':'transparent',hasBadge:bd>0,badge:bd};});
+    const roles=['site','cm','planner','pm'].map(r=>({label:t['role_'+r],onClick:()=>{this.set({role:r,detail:null,review:null,errors:[],bulk:false,bulkVals:{},bulkErr:{},sel:{}});this.top();},bg:r===role?'oklch(0.76 0.14 65)':'transparent',fg:r===role?'#1b1a17':'#e9e4da'}));
+    const inDetail=!!(s.detail&&D.actMap[s.detail]),inReview=isRev&&!!(s.review&&pendingAll.find(u=>u.id===s.review));
+    const show={siteList:role==='site'&&tab==='acts'&&!inDetail,siteHist:role==='site'&&tab==='hist'&&!inDetail,detail:inDetail,review:isRev&&tab==='review'&&!inReview&&!inDetail,reviewDetail:inReview&&!inDetail,progress:isRev&&tab==='progress'&&!inDetail,import:role==='planner'&&tab==='import'&&!inDetail,portfolio:role==='pm'&&tab==='portfolio'&&!inDetail,trends:role==='pm'&&tab==='trends'&&!inDetail,lookahead:role==='pm'&&tab==='lookahead'&&!inDetail,delays:role==='pm'&&tab==='delays'&&!inDetail};
+
+    // Site
+    const q=s.q.trim().toLowerCase();
+    const siteList=!show.siteList?[]:mine.filter(a=>(s.sProj==='all'||a.pid===s.sProj)&&FIL[s.sFilter](a)&&(s.sBldg==='all'||a.bldg===s.sBldg)&&(s.sZone==='all'||a.zone===s.sZone)&&(!q||(a.code+' '+a.name+' '+a.nameAr).toLowerCase().indexOf(q)>=0));
+    const engChips=(this.canSwitch()?ENG:[s.eng]).map(e=>chip(person(e),e===s.eng,()=>this.set({eng:e,detail:null,bulk:false,bulkVals:{},bulkErr:{}})));
+    const myProj=D.projects.filter(p=>mine.some(a=>a.pid===p.id));
+    const sProjChips=[chip(t.allProjects,s.sProj==='all',()=>this.setState({sProj:'all',sBldg:'all',sZone:'all'}))].concat(myProj.map(p=>chip(p.code,s.sProj===p.id,()=>this.setState({sProj:p.id,sBldg:'all',sZone:'all'}))));
+    const sPool=s.sProj==='all'?[]:mine.filter(a=>a.pid===s.sProj),sZ=uniq(sPool.map(a=>a.zone));
+    const sZoneChips=sZ.length>1?[chip(t.allZones,s.sZone==='all',()=>this.setState({sZone:'all',sBldg:'all'}))].concat(sZ.map(z=>chip(zl(z),s.sZone===z,()=>this.setState({sZone:z,sBldg:'all'})))):[];
+    const sB=s.sZone==='all'?[]:uniq(sPool.filter(a=>a.zone===s.sZone).map(a=>a.bldg)).filter(b=>b!=='SITE');
+    const sBldgChips=sB.length>1?[chip(t.allBldg,s.sBldg==='all',()=>this.setState({sBldg:'all'}))].concat(sB.map(b=>chip(bl(b),s.sBldg===b,()=>this.setState({sBldg:b})))):[];
+    const TC={needs:C.red,returned:C.red,drafts:C.amber,pending:C.blue};
+    const tiles=['needs','returned','drafts','pending'].map(k=>{const n=mine.filter(FIL[k]).length,on=s.sFilter===k;return{n,l:t['f_'+k],c:n?TC[k]:'#8a8378',bd:on?'#1b1a17':'#e4e0d8',bg:on?'#fbf3e4':'#fff',onClick:()=>this.setState({sFilter:on?'all':k})};});
+    const myRem=show.siteList?(s.data.reminders||[]).filter(r=>r.to===s.eng&&!r.done).map(r=>{
+      if(r.type==='adjusted'){const a=D.actMap[r.actIds[0]];if(!a)return null;return{title:t.adjTitle,when:r.at.replace('T',' '),msg:t.adjMsg(r.from_pct,r.to_pct,r.from_qty,r.to_qty,a.unit)+(r.note?' — “'+r.note+'”':''),codes:a.code+' · '+nm(a)+' · '+locL(a),showLbl:t.openAct,show:()=>{this.dismissReminder(r.id);this.openDetail(a.id);},dismiss:()=>this.dismissReminder(r.id)};}
+      const left=r.actIds.filter(id=>D.actMap[id]&&D.actMap[id].missing);if(!left.length)return null;
+      return{title:t.remindTitle+' · '+person(r.from),when:r.at.replace('T',' '),msg:t.remindMissing(left.length),codes:left.map(id=>D.actMap[id].code).join(' · '),showLbl:t.showActs,dismiss:()=>this.dismissReminder(r.id),show:()=>this.setState({sFilter:'needs',sProj:'all',sBldg:'all',sZone:'all'})};}).filter(Boolean):[];
+    const bulkChanged=Object.keys(s.bulkVals).filter(id=>D.actMap[id]&&s.bulkVals[id]!==this.bulkBase(D.actMap[id])).length;
+    const myHist=!show.siteHist?[]:s.data.updates.filter(u=>u.by===s.eng&&D.actMap[u.actId]).sort((a,b)=>a.created<b.created?1:-1).slice(0,50).map(u=>{const a=D.actMap[u.actId],st=upSt[u.status];return{code:a.code,name:nm(a),when:(u.submitted||u.created).replace('T',' '),pctTxt:u.pct+'%',stLabel:t[st[0]],stBg:st[1],stFg:st[2],open:()=>this.openDetail(a.id)};});
+    const geoTxt=p=>p.geo==='ok'?t.geoOk(p.lat.toFixed(5),p.lng.toFixed(5),p.acc):p.geo==='pending'?t.geoPending:t.geoNone;
+    const mapUrl=p=>p.geo==='ok'?'https://www.openstreetmap.org/?mlat='+p.lat+'&mlon='+p.lng+'#map=18/'+p.lat+'/'+p.lng:'';
+
+    // Detail
+    let d={pend:{}},fm={},f={},quick=[],delayChips=[],photos=[],detailHist=[];
+    if(inDetail){const a=D.actMap[s.detail],st=stOf(a),fmS=s.form||this.formFrom(a);fm=fmS;
+      const own=role==='site'&&a.eng===s.eng,canEdit=own&&!a.pending&&(a.actual<100||!!a.draft);
+      const pctN=Number(fm.pct)||0,qtyN=Number(fm.qty)||0,spi=spiOf(a.actual,a.planned);
+      const gal=[];a.ups.filter(u=>u.status!=='draft').slice().reverse().forEach(u=>(u.photos||[]).forEach(x=>gal.push({bg:'url('+x.src+')',cap:x.caption||'—',meta:(x.at||(u.submitted||u.created).replace('T',' '))+' · '+u.pct+'% · '+t[upSt[u.status][0]]+(x.geo==='ok'?' · GPS '+x.lat.toFixed(5)+', '+x.lng.toFixed(5):'')})));
+      d={code:a.code,name:nm(a),proj:nm(D.projMap[a.pid])+' ('+D.projMap[a.pid].code+')',wbs:a.wbs,loc:locL(a),gallery:gal,hasGallery:gal.length>0,galleryN:gal.length,src:srcL(a.src),stLabel:t[st[0]],stBg:st[1],stFg:st[2],ps:a.ps,pf:a.pf,aStart:a.aStart||'—',aFinish:a.aFinish||'—',
+        qtyTxt:a.aQty.toLocaleString('en')+' / '+a.qty.toLocaleString('en')+' '+a.unit,w:a.w,assignee:person(a.eng),plannedW:W(a.planned),actualW:W(a.actual),plannedTxt:p0(a.planned),actualTxt:p0(a.actual),spi:spiTxt(spi),spiColor:spiC(spi),
+        barColor:a.delayed?C.barBad:a.variance<-2?C.barWarn:C.barOk,varTxt:sg(a.variance),varColor:vc(a.variance),unit:a.unit,
+        showReturned:!!a.returned&&!a.pending,retComment:a.returned?a.returned.comment:'',retWhen:a.returned?a.returned.reviewed.replace('T',' '):'',
+        isPending:!!a.pending,canWithdraw:!!a.pending&&own&&a.pending.status==='submitted',awaitTxt:a.pending&&a.pending.status==='endorsed'?t.awaitingPL:t.awaiting,
+        pend:a.pending?{pct:a.pending.pct+'%',qty:a.pending.qty+' '+a.unit,dates:(a.pending.aStart||'—')+' → '+(a.pending.aFinish||'—'),delay:a.pending.delay?t.delays[a.pending.delay]:'—',remarks:a.pending.remarks,hasAdj:!!a.pending.adjAt,adj:a.pending.adjAt?t.adjNoteTxt(a.pending.origPct,a.pending.pct)+(a.pending.adjNote?' — '+a.pending.adjNote:''):''}:{},
+        canEdit,readOnly:!own,formSrc:fm.draftId?t.formDraft:fm.prevId?t.formRet:t.formNew,
+        pctHint:t.pctHint(a.actual,Math.round(a.planned)),impliedTxt:t.implied(a.qty?r1(qtyN/a.qty*100):0),needDelay:a.planned-pctN>cfg.thr};
+      const setPct=v=>{v=clamp(Math.round(v),0,100);this.setF('pct',String(v));};
+      f={pct:e=>this.setF('pct',e.target.value),qty:e=>this.setF('qty',e.target.value),aStart:e=>this.setF('aStart',e.target.value),aFinish:e=>this.setF('aFinish',e.target.value),remarks:e=>this.setF('remarks',e.target.value),qtyFromPct:()=>this.setF('qty',String(Math.round(a.qty*pctN)/100))};
+      quick=[['−5',-5],['+5',5],['+10',10],['100%',null]].map(([l,v])=>({label:l,onClick:()=>{if(v===null){setPct(100);if(!this.state.form.aFinish)this.setF('aFinish',TODAY);}else setPct((Number(this.state.form.pct)||0)+v);}}));
+      delayChips=DELAYS.map(k=>chip(t.delays[k],fm.delay===k,()=>this.setF('delay',fm.delay===k?'':k)));
+      photos=(fm.photos||[]).map(p=>({bg:'url('+p.src+')',time:p.at?p.at.slice(5):'',caption:p.caption||'',geo:geoTxt(p),onCaption:e=>this.patchPhoto(p.id,{caption:e.target.value}),remove:()=>this.setF('photos',this.state.form.photos.filter(x=>x.id!==p.id))}));
+      detailHist=a.ups.slice().reverse().map(u=>{const st=upSt[u.status];const note=[u.delay?t.delayReason+': '+t.delays[u.delay]:'',u.remarks,(u.photos||[]).length?t.photos+': '+u.photos.length:''].filter(Boolean).join(' · ');
+        return{pctTxt:u.pct+'%',qtyTxt:u.qty+' '+a.unit,stLabel:t[st[0]],stBg:st[1],stFg:st[2],byLine:person(u.by)+' · '+srcL(u.src),hasNote:!!note,note,hasAdj:!!u.adjAt,adjTxt:u.adjAt?t.adjNoteTxt(u.origPct,u.pct)+' ('+u.origQty+' → '+u.qty+' '+a.unit+')'+(u.adjNote?' — '+u.adjNote:''):'',hasComment:!!u.comment,comment:u.comment,log:u.log.map(l=>l.at.replace('T',' ')+' '+(t['ev_'+l.ev]||l.ev)+(l.detail?' '+l.detail:'')+' · '+person(l.by)).join('\n')};});
+    }
+
+    // Review
+    const withW=isRev?pendingAll.map(u=>({u,a:D.actMap[u.actId],w:warnsOf(u,D.actMap[u.actId],t)})):[];
+    const rvF=withW.filter(x=>(s.rvProj==='all'||x.a.pid===s.rvProj)&&(s.rvFlag==='all'||(s.rvFlag==='flagged'?x.w.length>0:x.w.length===0)));
+    const selIds=Object.keys(s.sel).filter(id=>s.sel[id]&&pendingAll.some(u=>u.id===id));
+    const cleanIds=rvF.filter(x=>!x.w.length).map(x=>x.u.id);
+    const reviewList=!show.review?[]:rvF.map(({u,a,w})=>{const on=!!s.sel[u.id];return{code:a.code,proj:D.projMap[a.pid].code+' · '+locL(a),name:nm(a),eng:person(u.by),age:t.ago(dd(u.submitted,TODAY)),change:a.actual+'% → '+u.pct+'%',hasFlag:w.length>0,flag:w.join(' · '),hasDelay:!!u.delay,delay:u.delay?t.delays[u.delay]:'',
+      open:()=>{this.setState({review:u.id,comment:'',errors:[],adjPct:String(u.pct),adjQty:String(u.qty)});this.top();},toggle:()=>this.setState(st=>({sel:Object.assign({},st.sel,{[u.id]:!st.sel[u.id]})})),check:on?'✓':'',ckBg:on?'#1b1a17':'#fff',ckBd:on?'#1b1a17':'#a59e92',bd:on?'#1b1a17':'#e4e0d8'};});
+    const rvProjChips=[chip(t.allProjects,s.rvProj==='all',()=>this.setState({rvProj:'all'}))].concat(D.projects.filter(p=>withW.some(x=>x.a.pid===p.id)).map(p=>chip(p.code,s.rvProj===p.id,()=>this.setState({rvProj:p.id}))));
+    const rvFlagChips=[['all','f_all'],['flagged','f_flagged'],['clean','f_clean']].map(([k,l])=>chip(t[l]+' · '+withW.filter(x=>k==='all'||(k==='flagged'?x.w.length:!x.w.length)).length,s.rvFlag===k,()=>this.setState({rvFlag:k})));
+    let rv={rows:[],photos:[],warnings:[]};
+    if(inReview){const u=pendingAll.find(x=>x.id===s.review),a=D.actMap[u.actId],o=a.off||{},dl=k=>k?t.delays[k]:'—';
+      const row=(l,x,y)=>({l,a:x,b:y,fw:String(x)!==String(y)?'700':'400',bg:String(x)!==String(y)?'oklch(0.96 0.04 85)':'transparent'});
+      const warn=warnsOf(u,a,t);
+      rv={hasCm:!!u.cmAt,cmLine:u.cmAt?t.cmLine(u.cmAt.replace('T',' '))+(u.adjAt?' · '+t.adjNoteTxt(u.origPct,u.pct):'')+(u.cmComment?' — “'+u.cmComment+'”':''):'',code:a.code,proj:D.projMap[a.pid].code,name:nm(a),byLine:person(u.by)+' · '+u.submitted.replace('T',' ')+' · '+srcL(u.src),
+        rows:[row(t.progressPct,(o.pct||0)+'%',u.pct+'%'),row(t.qtyShort+' ('+a.unit+')',o.qty||0,u.qty),row(t.actualStart,o.aStart||'—',u.aStart||'—'),row(t.actualFinish,o.aFinish||'—',u.aFinish||'—'),row(t.delayReason,dl(o.delay),dl(u.delay))],
+        plannedLine:t.plannedLine(Math.round(a.planned),a.actual),hasRemarks:!!u.remarks,remarks:u.remarks,hasPhotos:(u.photos||[]).length>0,
+        photos:(u.photos||[]).map(p=>({bg:'url('+p.src+')',caption:p.caption||'—',meta:(p.at||'')+' · '+geoTxt(p),hasMap:p.geo==='ok',map:mapUrl(p)})),hasWarnings:warn.length>0,warnings:warn.map(msg=>({msg}))};}
+
+    let adjV={changed:false,txt:'',qtyLabel:'',fromPct:()=>{}},adjQuick=[];
+    if(inReview&&role==='cm'){const u=pendingAll.find(x=>x.id===s.review),a=D.actMap[u.actId],np=Number(s.adjPct),nq=Number(s.adjQty);
+      const ch=(s.adjPct!==''&&np!==u.pct)||(s.adjQty!==''&&nq!==u.qty);
+      adjV={changed:ch,txt:t.adjPreview(u.pct,s.adjPct,u.qty,s.adjQty,a.unit),qtyLabel:t.qtyShort+' ('+a.unit+')',fromPct:()=>this.setState({adjQty:String(Math.round(a.qty*(Number(this.state.adjPct)||0))/100)})};
+      adjQuick=[['−10',-10],['−5',-5],['+5',5]].map(([l,v])=>({label:l,onClick:()=>this.setState(st=>{const p=clamp((Number(st.adjPct)||0)+v,0,100);return{adjPct:String(p),adjQty:String(Math.round(a.qty*p)/100)};})})).concat([{label:t.adjReset,onClick:()=>this.setState({adjPct:String(u.pct),adjQty:String(u.qty)})}]);}
+    const bdown=(list,selZ,selB,onZ,onB)=>{const rows=[],mk=(label,lst,top,on,onClick)=>{const r=roll(lst,TODAY),v=r.a-r.p;return{label,n:lst.length+' '+t.actsShort,pT:p1(r.p),aT:p1(r.a),v:sg(v),vc:vc(v),pW:W(r.p),aW:W(r.a),bar:v<-5?C.barBad:v<-2?C.barWarn:C.barOk,pad:top?'12px':'32px',fw:top?'700':'500',fs:top?'15px':'13.5px',bg:on?'#fbf3e4':top?'#fff':'#faf8f4',onClick};};
+      uniq(list.map(a=>a.zone)).forEach(z=>{const lz=list.filter(a=>a.zone===z);rows.push(mk(zl(z),lz,true,selZ===z&&selB==='all',()=>onZ&&onZ(z)));const bs=uniq(lz.map(a=>a.bldg)).filter(b=>b!=='SITE');if(bs.length>1)bs.forEach(b=>rows.push(mk(bl(b),lz.filter(a=>a.bldg===b),false,selZ===z&&selB===b,()=>onB&&onB(z,b))));});return rows;};
+    // Planner progress
+    const pp=D.projMap[s.plProj]||D.projects[0]||EMPTYP;
+    const plChips=D.projects.map(p=>chip(p.code,p.id===pp.id,()=>this.setState({plProj:p.id,plBldg:'all',plZone:'all'})));
+    const plPool=pp.list.filter(a=>(s.plBldg==='all'||a.bldg===s.plBldg)&&(s.plZone==='all'||a.zone===s.plZone));
+    const plBreak=show.progress?bdown(pp.list,s.plZone,s.plBldg,z=>this.setState(st=>({plZone:st.plZone===z&&st.plBldg==='all'?'all':z,plBldg:'all'})),(z,b)=>this.setState(st=>({plZone:z,plBldg:st.plZone===z&&st.plBldg===b?'all':b}))):[];
+    const PF={all:()=>true,delayed:a=>a.delayed,missing:a=>a.missing,pending:a=>!!a.pending};
+    const plFilterChips=[['all','f_all'],['delayed','f_delayed'],['missing','f_missing'],['pending','f_pending']].map(([k,l])=>chip(t[l]+' · '+plPool.filter(PF[k]).length,s.plFilter===k,()=>this.setState({plFilter:k})));
+    const plActs=show.progress?plPool.filter(PF[s.plFilter]).map(a=>card(a,false)):[];
+    const ppSpi=spiOf(pp.actual,pp.planned);
+    const kpis=[{l:t.k_planned,v:p1(pp.planned),c:'#1b1a17'},{l:t.k_actual,v:p1(pp.actual),c:'#1b1a17'},{l:t.spi,v:spiTxt(ppSpi),c:spiC(ppSpi)},{l:t.k_pending,v:String(pp.pending),c:pp.pending?C.blue:'#1b1a17'},{l:t.k_missing,v:String(pp.missing),c:pp.missing?C.red:'#1b1a17'},{l:t.k_delayed,v:String(pp.delayed),c:pp.delayed?C.red:'#1b1a17'}];
+
+    // Import
+    const ir=s.importRows;
+    const imp={has:!!ir,summary:ir?t.impSummary(ir.filter(r=>r.ok).length,ir.filter(r=>!r.ok).length):'',canImport:!!ir&&ir.some(r=>r.ok),btn:ir?t.impBtn(ir.filter(r=>r.ok).length):'',
+      rows:(ir||[]).map(r=>({line:r.line,code:r.code,name:r.name,action:r.ok?(r.exists?t.impUpd:t.impNew):t.impErr,info:r.rec?r.rec.project_code+' · '+r.rec.ps+' → '+r.rec.pf+' · '+r.rec.qty+' '+r.rec.unit+' · w '+r.rec.w+' · '+r.rec.eng+' · '+r.rec.zone+' / '+r.rec.bldg:'',hasErr:!r.ok,err:r.errs.join(' · '),bg:r.ok?'#fff':C.redBg,bd:r.ok?'#e4e0d8':'oklch(0.82 0.08 28)'}))};
+
+    // Portfolio
+    const V=D.projects.reduce((x,p)=>x+p.value,0)||1;
+    const pfP=D.projects.reduce((x,p)=>x+p.value*p.planned,0)/V,pfA=D.projects.reduce((x,p)=>x+p.value*p.actual,0)/V,pfS=spiOf(pfA,pfP);
+    const sum=k=>D.projects.reduce((x,p)=>x+p[k],0);
+    const pf={planned:p1(pfP),actual:p1(pfA),spi:spiTxt(pfS),variance:sg(pfA-pfP),varColor:pfA-pfP>=-2?'oklch(0.82 0.12 150)':'oklch(0.8 0.13 45)',plannedW:W(pfP),actualW:W(pfA),flags:t.flags(sum('delayed'),sum('missing'),sum('pending'))};
+    const ORD={attn:0,watch:1,ok:2},STC={attn:[C.redBg,C.red],watch:[C.amberBg,C.amber],ok:[C.greenBg,C.green]};
+    const pmProjects=!show.portfolio?[]:D.projects.slice().sort((a,b)=>ORD[a.status]-ORD[b.status]||a.variance-b.variance).map(p=>{const sp=spiOf(p.actual,p.planned);return{code:p.code,name:nm(p),sub:(L==='ar'?p.locAr:p.loc)+' · SAR '+p.value+'M · '+p.list.length+' '+t.tab_acts,srcLabel:srcL(p.src),stLabel:t['st_'+p.status],stBg:STC[p.status][0],stFg:STC[p.status][1],
+      plannedW:W(p.planned),actualW:W(p.actual),plannedTxt:p1(p.planned),actualTxt:p1(p.actual),barColor:p.variance<-5?C.barBad:p.variance<-2?C.barWarn:C.barOk,varTxt:sg(p.variance),varColor:vc(p.variance),spi:spiTxt(sp),spiColor:spiC(sp),flags:t.flags(p.delayed,p.missing,p.pending),
+      open:()=>{this.setState({tab:Object.assign({},s.tab,{pm:'trends'}),pmProj:p.id,dlProj:p.id,laProj:p.id});this.top();}};});
+
+    // S-curve + weekly table
+    const tp=D.projMap[s.pmProj];
+    let chart={planPts:'',actPts:'',tx:0},scStats=[],trendRows=[],axis={a:'',b:''};
+    if(show.trends){const c=tp?curve([tp.list],[1]):curve(D.projects.map(p=>p.list),D.projects.map(p=>p.value));chart={planPts:c.plan,actPts:c.act,tx:c.tx};axis={a:c.start,b:c.end};
+      const P=tp?tp.planned:pfP,A=tp?tp.actual:pfA,sp=spiOf(A,P),fc=sp&&A<100?addD(TODAY,Math.round(Math.max(0,dd(TODAY,c.end))/Math.max(sp,0.2))):c.end;
+      scStats=[{l:t.planned,v:p1(P),c:'#1b1a17'},{l:t.actualShort,v:p1(A),c:'#1b1a17'},{l:t.spi,v:spiTxt(sp),c:spiC(sp)},{l:t.plFinish,v:c.end,c:'#1b1a17'},{l:t.fcFinish,v:fc,c:fc>c.end?C.red:C.green}];
+      const weeks=[];for(let k=7;k>=0;k--)weeks.push(addD(TODAY,-7*k));
+      trendRows=weeks.map(w=>{let r;if(tp)r=roll(tp.list,w);else{let Pp=0,Aa=0;D.projects.forEach(p=>{const x=roll(p.list,w);Pp+=p.value*x.p;Aa+=p.value*x.a;});r={p:Pp/V,a:Aa/V};}return{w,p:p1(r.p),a:p1(r.a),v:sg(r.a-r.p),c:vc(r.a-r.p)};}).reverse();}
+    const pmChips=[chip(t.allProjects,!tp,()=>this.setState({pmProj:'all'}))].concat(D.projects.map(p=>chip(p.code,!!tp&&tp.id===p.id,()=>this.setState({pmProj:p.id}))));
+
+    // Look-ahead
+    const lp=D.projMap[s.laProj];
+    const laChips=[chip(t.allProjects,!lp,()=>this.setState({laProj:'all'}))].concat(D.projects.map(p=>chip(p.code,!!lp&&lp.id===p.id,()=>this.setState({laProj:p.id}))));
+    const laWin=[14,28].map(n=>chip(t.la_win(n),s.laDays===n,()=>this.setState({laDays:n})));
+    let laStart=[],laFinish=[];
+    if(show.lookahead){const lim=addD(TODAY,s.laDays),pool=D.acts.filter(a=>!lp||a.pid===lp.id);
+      const it=(a,date,risk)=>({code:a.code,proj:D.projMap[a.pid].code,name:nm(a),date,when:t.la_in(dd(TODAY,date)),actual:p0(a.actual),eng:person(a.eng),stLabel:risk?risk[0]:t.ready,stBg:risk?risk[1]:C.greyBg,stFg:risk?risk[2]:C.grey,open:()=>this.openDetail(a.id)});
+      laStart=pool.filter(a=>a.actual===0&&a.ps<=lim&&dd(a.ps,TODAY)<=21).sort((x,y)=>x.ps<y.ps?-1:1).map(a=>it(a,a.ps,a.ps<TODAY?[t.lateStart,C.redBg,C.red]:null));
+      laFinish=pool.filter(a=>a.actual<100&&a.pf<=lim&&(a.actual>0||a.pf>=TODAY)).sort((x,y)=>x.pf<y.pf?-1:1).map(a=>{const left=dd(TODAY,a.pf),risk=a.pf<TODAY||a.planned-a.actual>cfg.thr||(left<7&&a.actual<70);return it(a,a.pf,risk?[t.atRisk,C.redBg,C.red]:[t.onTrackS,C.greenBg,C.green]);});}
+
+    // Delays
+    const countReasons=pid=>{const since=addD(TODAY,-70),c={};s.data.updates.forEach(u=>{const a=D.actMap[u.actId];if(!a||!u.delay||(u.status!=='approved'&&u.status!=='submitted'&&u.status!=='endorsed')||(u.submitted||u.created).slice(0,10)<since)return;if(pid&&a.pid!==pid)return;c[u.delay]=(c[u.delay]||0)+1;});return c;};
+    const dp=D.projMap[s.dlProj];
+    const dlChips=[chip(t.allProjects,!dp,()=>this.setState({dlProj:'all'}))].concat(D.projects.map(p=>chip(p.code,!!dp&&dp.id===p.id,()=>this.setState({dlProj:p.id}))));
+    const counts=show.delays||s.report?countReasons(show.delays&&dp?dp.id:null):{};
+    const mx=Math.max(1,...Object.values(counts));
+    const reasons=DELAYS.filter(k=>counts[k]).sort((a,b)=>counts[b]-counts[a]).map(k=>({label:t.delays[k],n:t.reports(counts[k]),w:(counts[k]/mx*100)+'%'}));
+    const delayedList=!show.delays?[]:D.acts.filter(a=>a.delayed&&(!dp||a.pid===dp.id)).sort((a,b)=>a.variance-b.variance).map(a=>{const lr=a.ups.slice().reverse().find(u=>u.delay);return{code:a.code,proj:D.projMap[a.pid].code,name:nm(a),varTxt:sg(a.variance),reason:lr?t.delays[lr.delay]:(a.missing?t.f_missing:'—'),open:()=>this.openDetail(a.id)};});
+
+    // Weekly report
+    let rp={rows:[],projects:[],approved:[],reasons:[]};
+    if(s.report){const wk0=addD(TODAY,-6),rP=D.projMap[s.repProj],rList=rP?[rP]:D.projects;
+      const rpP=rP?rP.planned:pfP,rpA=rP?rP.actual:pfA,rpS=spiOf(rpA,rpP),rc=countReasons(rP?rP.id:null),rmx=Math.max(1,...Object.values(rc));
+      rp={week:t.repWeek(wk0,TODAY),scope:rP?rP.code+' · '+nm(rP):t.allProjects,summary:rP?t.repProjSummary:t.repSummary,pf:t.planned+' '+p1(rpP)+' · '+t.actualShort+' '+p1(rpA)+' · '+t.spi+' '+spiTxt(rpS)+(rP?'':' · '+t.byValue),
+        rows:rList.map(p=>{const sp=spiOf(p.actual,p.planned);return{code:p.code,name:nm(p),p:p1(p.planned),a:p1(p.actual),v:sg(p.variance),vc:vc(p.variance),spi:spiTxt(sp),st:t['st_'+p.status],stc:STC[p.status][1]};}),
+        projects:rList.map(p=>{const c=curve([p.list],[1]);return{photoActs:p.list.map(a=>{const ph=[];a.ups.filter(u=>u.status!=='draft'&&u.status!=='returned'&&(u.submitted||u.created).slice(0,10)>=wk0).forEach(u=>(u.photos||[]).forEach(x=>ph.push({bg:'url('+x.src+')',cap:x.caption||'—',meta:(x.at||'')+' · '+u.pct+'% · '+t[upSt[u.status][0]]+(x.geo==='ok'?' · GPS '+x.lat.toFixed(5)+', '+x.lng.toFixed(5):'')})));return ph.length?{title:a.code+' · '+nm(a),sub:locL(a)+' · '+t.actualShort+' '+p0(a.actual)+' · '+person(a.eng),photos:ph}:null;}).filter(Boolean),bldg:uniq(p.list.map(a=>a.zone)).map(z=>{const r=roll(p.list.filter(a=>a.zone===z),TODAY);return zl(z)+' '+p1(r.a)+' ('+sg(r.a-r.p)+')';}).join(' · '),title:p.code+' · '+nm(p),planPts:c.plan,actPts:c.act,tx:c.tx,range:c.start+' → '+c.end,line:t.planned+' '+p1(p.planned)+' · '+t.actualShort+' '+p1(p.actual)+' · '+t.spi+' '+spiTxt(spiOf(p.actual,p.planned)),
+          delayed:p.list.filter(a=>a.delayed).map(a=>a.code+' '+nm(a)+' ('+sg(a.variance)+')').join('; ')||t.none,missing:p.list.filter(a=>a.missing).map(a=>a.code+' '+nm(a)+' — '+person(a.eng)).join('; ')||t.none};}),
+        approved:s.data.updates.filter(u=>u.status==='approved'&&u.reviewed.slice(0,10)>=wk0&&D.actMap[u.actId]&&(!rP||D.actMap[u.actId].pid===rP.id)).sort((a,b)=>a.reviewed<b.reviewed?1:-1).map(u=>{const a=D.actMap[u.actId],i=a.appr.indexOf(u),prev=i>0?a.appr[i-1].pct:0;return{code:a.code,proj:D.projMap[a.pid].code,name:nm(a),change:prev+'% → '+u.pct+'%',by:person(u.by),when:u.reviewed.slice(0,10)};}),
+        reasons:DELAYS.filter(k=>rc[k]).sort((a,b)=>rc[b]-rc[a]).map(k=>({label:t.delays[k],n:t.reports(rc[k]),w:(rc[k]/rmx*100)+'%'}))};
+      rp.projects.forEach(p=>{p.noPhotos=!p.photoActs.length;});rp.approvedEmpty=!rp.approved.length;rp.reasonsEmpty=!rp.reasons.length;
+      rp.chips=[chip(t.allProjects,!rP,()=>this.setState({repProj:'all'}))].concat(D.projects.map(p=>chip(p.code,!!rP&&rP.id===p.id,()=>this.setState({repProj:p.id}))));}
+
+    let kb=0;if(s.settings)try{kb=Math.round((localStorage.getItem(KEY)||'').length/1024);}catch(e){}
+    const errors=(s.errors||[]).map(msg=>({msg}));
+    const openReport=()=>this.setState({report:true,repProj:show.progress?pp.id:(show.trends&&tp?tp.id:'all')});
+    const live=this.live(),host=(()=>{try{return new URL(s.connUrl).host;}catch(e){return '';}})(),prof=s.profile;
+    const liveVals={isDemo:!live,isLive:live,wide:s.wide,notWide:!s.wide,showRoleBar:this.canSwitch()&&!s.wide,showSideRoles:this.canSwitch(),
+      showLogin:live&&s.auth!=='ready',authChecking:live&&s.auth==='checking',authForm:live&&s.auth==='signedOut',
+      loginEmail:s.loginEmail,loginPw:s.loginPw,onLoginEmail:e=>this.setState({loginEmail:e.target.value}),onLoginPw:e=>this.setState({loginPw:e.target.value}),
+      signIn:()=>this.signIn(),signUp:()=>this.signUp(),openDemo:()=>this.openDemo(),hasLoginErr:!!s.loginErr,loginErr:s.loginErr,signInLbl:s.loginBusy?t.wait:t.signIn,
+      host,liveBar:t.liveBar(host,s.syncing?t.syncing:(s.lastSync?t.syncedAt(s.lastSync.slice(11)):'')),hasLoadErr:live&&!!s.loadErr,loadErr:s.loadErr,
+      userLine:prof&&s.user?(s.user.email+' · '+t['prole_'+prof.role]+(prof.discipline?' · '+person(prof.discipline):'')):t.demoUser,
+      connStatus:live?t.connLive(host):t.connDemo,connUrl:s.connUrl,connKey:s.connKey,onConnUrl:e=>this.setState({connUrl:e.target.value}),onConnKey:e=>this.setState({connKey:e.target.value}),
+      connEditable:!connCfg().fromFile,connFromFile:!!connCfg().fromFile,connect:()=>this.connect(),disconnect:()=>this.disconnect(),signOut:()=>this.signOut(),isSignedIn:live&&s.auth==='ready',
+      isAdmin:!!(live&&prof&&prof.role==='admin'),loadDemoDb:()=>this.loadDemoToDb(),removeDemoDb:()=>this.removeDemoFromDb(),
+      loadDemoLbl:s.liveArm==='load'?t.resetConfirm:t.loadDemoDb,removeDemoLbl:s.liveArm==='remove'?t.resetConfirm:t.removeDemoDb,
+      stor:live?{badge:t.storageBadgeLive,l1:t.storageLive1,l2:t.storageLive2,l3:t.storageLive3,bg:'oklch(0.94 0.05 150)',fg:'oklch(0.38 0.1 150)'}:{badge:t.storageBadge,l1:t.storage1,l2:t.storage2,l3:t.storage3,bg:'oklch(0.94 0.06 85)',fg:'oklch(0.4 0.09 70)'},
+      sideTabs:tabs.map(b=>Object.assign({},b,{sbg:b.fw==='700'?'oklch(0.76 0.14 65)':'transparent',sfg:b.fw==='700'?'#1b1a17':'#e9e4da'})),roleLabel:t['role_'+role],srcTag:live?'LIVE':'DEMO',srcBg:live?'oklch(0.62 0.13 150)':'#f2c14e'};
+    return{...liveVals,t,dir:L==='ar'?'rtl':'ltr',lang:L,today:TODAY,roles,tabs,show,toast:s.toast,hasToast:!!s.toast,
+      settingsOpen:s.settings,openSettings:()=>this.setState({settings:true,resetArm:false}),closeSettings:()=>this.setState({settings:false}),
+      toggleLang:()=>this.set({lang:L==='en'?'ar':'en'}),langChips:[chip('English',L==='en',()=>this.set({lang:'en'})),chip('العربية',L==='ar',()=>this.set({lang:'ar'}))],
+      engChips,q:s.q,onSearch:e=>this.setState({q:e.target.value}),sProjChips,tiles,myRem,hasRem:myRem.length>0,filterOn:s.sFilter!=='all',clearFilter:()=>this.setState({sFilter:'all'}),
+      siteCountTxt:t.siteCount(siteList.length,mine.length),siteActs:siteList.map(a=>card(a,s.bulk)),siteEmpty:show.siteList&&!siteList.length,
+      bulk:s.bulk,bulkBtn:s.bulk?{label:t.bulkOff,bg:'#1b1a17',fg:'#fff'}:{label:t.bulkMode,bg:'#fff',fg:'#1b1a17'},toggleBulk:()=>this.setState({bulk:!s.bulk,bulkVals:{},bulkErr:{}}),
+      showBulkBar:show.siteList&&s.bulk,bulkCountTxt:t.bulkCount(bulkChanged),bulkSubmitTxt:t.bulkSubmit(bulkChanged),bulkSubmit:()=>this.bulkSubmit(),bulkCancel:()=>this.setState({bulk:false,bulkVals:{},bulkErr:{}}),
+      myHist,myHistEmpty:show.siteHist&&!myHist.length,
+      d,fm,f,quick,delayChips,photos,canAddPhoto:photos.length<4,onPhotos:e=>this.onPhotos(e),errors,hasErrors:errors.length>0,
+      saveDraft:()=>this.writeUpdate('draft'),submit:()=>this.writeUpdate('submitted'),withdraw:()=>this.withdraw(),closeDetail:()=>{this.setState({detail:null,form:null,errors:[]});this.top();},detailHist,
+      reviewList,reviewEmpty:show.review&&!reviewList.length,rvProjChips,rvFlagChips,selectClean:()=>this.setState({sel:Object.fromEntries(cleanIds.map(id=>[id,true]))}),selectCleanTxt:t.selectClean(cleanIds.length),hasClean:cleanIds.length>0,clearSel:()=>this.setState({sel:{}}),
+      showSelBar:show.review&&selIds.length>0,selCountTxt:t.selCount(selIds.length),approveSelTxt:t.approveSel(selIds.length),approveSel:()=>this.approveMany(selIds),
+      sBldgChips,sZoneChips,hasSBldg:sBldgChips.length>0,hasSZone:sZoneChips.length>0,plBreak,hasPlBreak:plBreak.length>1,tpBreak:show.trends&&tp?bdown(tp.list,'',''):[],hasTpBreak:!!(show.trends&&tp),
+      canAdjust:inReview&&role==='cm',adjPct:s.adjPct,adjQty:s.adjQty,onAdjPct:e=>this.setState({adjPct:e.target.value}),onAdjQty:e=>this.setState({adjQty:e.target.value}),adjQtyFromPct:adjV.fromPct,adjChanged:adjV.changed,adjChangedTxt:adjV.txt,adjQtyLabel:adjV.qtyLabel,adjQuick,approveLbl:adjV.changed?t.approveAdj:t.approve,
+      rv,comment:s.comment,onComment:e=>this.setState({comment:e.target.value}),approve:()=>this.decide(true),ret:()=>this.decide(false),closeReview:()=>this.setState({review:null,errors:[]}),
+      plChips,kpis,plFilterChips,plActs,plEmpty:show.progress&&!plActs.length,plSummary:t.plSummary(pp.list.length,pp.value),exportProgress:()=>this.exportProgress(),exportHistory:()=>this.exportHistory(),
+      hasMissing:pp.missing>0,remindTxt:t.remind(pp.missing),sendReminders:()=>this.sendReminders(pp.id),openReport,
+      importText:s.importText,onImportText:e=>this.setState({importText:e.target.value,importRows:null}),loadSample:()=>{const x=sampleCSV();this.setState({importText:x});this.runValidate(x);},
+      onCsvFile:e=>{const file=e.target.files&&e.target.files[0];e.target.value='';if(!file)return;const r=new FileReader();r.onload=()=>{this.setState({importText:String(r.result)});this.runValidate(String(r.result));};r.readAsText(file);},
+      validateImport:()=>this.runValidate(s.importText),imp,doImport:()=>this.doImport(),csvCols:CSV_COLS.join(', '),
+      pf,pmProjects,chart,axis,scStats,trendRows,pmChips,laChips,laWin,laStart,laFinish,laStartEmpty:!laStart.length,laFinishEmpty:!laFinish.length,
+      dlChips,reasons,reasonsEmpty:show.delays&&!reasons.length,delayedList,delayedEmpty:show.delays&&!delayedList.length,
+      reportOpen:s.report,rp,closeReport:()=>this.setState({report:false}),printReport:()=>{try{window.print();}catch(e){}},
+      stats:t.stats(s.data.projects.length,s.data.activities.length,s.data.updates.length,kb),
+      exportJson:()=>{download('DMC_backup_'+TODAY+'.json',JSON.stringify({v:2,exported:stamp(),storage:'browser-localStorage (personal)',data:s.data},null,1),'application/json');this.toast(t.t_exported);},
+      resetLabel:s.resetArm?t.resetConfirm:t.reset,
+      onReset:()=>{if(!s.resetArm){this.setState({resetArm:true});return;}this.set({data:seed(),resetArm:false,settings:false,detail:null,review:null,form:null,importRows:null,sel:{},bulk:false,bulkVals:{},bulkErr:{}},()=>this.toast(t.t_reset));}};
+  }
+}
+</script>
+</body>
+</html>
