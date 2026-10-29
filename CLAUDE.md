@@ -76,6 +76,7 @@ update profiles set role='admin', discipline='CIV' where id=(select id from auth
 - Users tab: role/pending/disabled filters, search, "Add user" (signUp via a second client without session, then profile update), permissions matrix.
 - Team chat (header "Chat" button): general room, one group per project, private chats, unread badges, read ticks in private chats, photo attach. DEMO = browser only; LIVE needs `db/03_chat.sql`.
 - CSV import column is `discipline` (old `assigned_to` still accepted).
+- Look-ahead tab is available to every role (site, CM, Planning, PM, admin).
 
 ## Demo users (live Supabase, 2026-10-29)
 - Created directly in `auth.users` via the Supabase MCP, confirmed, sharing one demo password (told to Ahmed in chat; not stored here).
