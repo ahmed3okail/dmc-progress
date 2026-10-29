@@ -77,6 +77,7 @@ update profiles set role='admin', discipline='CIV' where id=(select id from auth
 - Team chat (header "Chat" button): general room, one group per project, private chats, unread badges, read ticks in private chats, photo attach. DEMO = browser only; LIVE needs `db/03_chat.sql`.
 - CSV import column is `discipline` (old `assigned_to` still accepted).
 - Look-ahead tab is available to every role (site, CM, Planning, PM, admin).
+- Branding: `logo.png` (DMC | CURVE, cropped from the company image) in sidebar, header and login; brand green `#0b4a3e`/`#0e5a4b` for dark surfaces and primary buttons, gold `#c5a45a` accent, `#f1e8cf` light gold. Header ↻ refresh button (full page reload). Mobile bottom nav fits all tabs without scrolling.
 
 ## Demo users (live Supabase, 2026-10-29)
 - Created directly in `auth.users` via the Supabase MCP, confirmed, sharing one demo password (told to Ahmed in chat; not stored here).
