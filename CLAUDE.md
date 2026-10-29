@@ -33,7 +33,8 @@ Supabase (free): PostgreSQL + Auth + Storage (bucket site-photos, private) + Rea
 - `DMC Progress ERP.dc.html` — the whole app (one file). Opens directly in a browser. Uses `support.js` runtime (generated — **never edit support.js**).
 - `config.js` — Supabase URL + publishable key (safe to publish). Never put a secret key here.
 - `index.html` — redirects to the app. `vercel.json` — headers.
-- `db/01_schema.sql` — full schema, already run on Supabase. `db/02_first_admin.sql` — admin helper.
+- `db/01_schema.sql` — full schema, already run on Supabase. `db/02_first_admin.sql` — admin helper. ⚠ Neither file is in the repo yet — ask Ahmed to upload them.
+- `db/03_chat.sql` — team chat tables (`chat_messages`, `chat_reads`), `chat_room_visible()`, `chat_directory()`, RLS, realtime; also confirms + promotes `admin@dmc.local`.
 - **Two modes:** DEMO (no config → data in browser localStorage only) and LIVE (Supabase, shared, real-time).
 
 ## File format rules for `DMC Progress ERP.dc.html`
@@ -67,6 +68,13 @@ update profiles set role='admin', discipline='CIV' where id=(select id from auth
 - Repo `ahmed3okail/dmc-progress`, deployed on Vercel.
 - ⚠ A `sb_secret_` key and the database password were pasted in chat earlier — Ahmed was told to revoke/reset both. Confirm with him that it's done.
 - Pending: Ahmed creates the `Admin` account on the live site, then runs the SQL above. Supabase "Confirm email" may need to be turned off for username logins.
+
+## Features added 2026-10-29
+- Demo data v3 (localStorage key `dmc-erp:demo:v3`): 5 projects, 53 activities across CIV/ARC/MEC/ELE, pending/endorsed/returned/draft updates, labelled DEMO PHOTO placeholders, demo chat.
+- Dashboard tab (`dash`) for CM, Planning, PM: KPIs, ring gauge, S-curve, weekly gain, project health / zone breakdown, discipline performance, workflow, delay reasons, most-behind list, look-ahead, activity feed.
+- Users tab: role/pending/disabled filters, search, "Add user" (signUp via a second client without session, then profile update), permissions matrix.
+- Team chat (header "Chat" button): general room, one group per project, private chats, unread badges, read ticks in private chats, photo attach. DEMO = browser only; LIVE needs `db/03_chat.sql`.
+- CSV import column is `discipline` (old `assigned_to` still accepted).
 
 ## Rules for changes
 - Old versions (DMC Site Progress v1–v4) live outside this repo; don't recreate them.

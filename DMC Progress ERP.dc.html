@@ -32,6 +32,7 @@ input,textarea{font:inherit;color:inherit}
     <div style="display:flex;flex-direction:column;gap:4px">
       <div style="font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:#8f887c;font-weight:700;padding:0 8px 4px">{{ t.modules }}</div>
       <sc-for list="{{ sideTabs }}" as="b" hint-placeholder-count="3"><button onClick="{{ b.onClick }}" style="min-height:44px;display:flex;align-items:center;gap:8px;padding:0 12px;border:none;border-radius:9px;background:{{ b.sbg }};color:{{ b.sfg }};font-size:14.5px;font-weight:{{ b.fw }};text-align:start"><span style="flex:1">{{ b.label }}</span><sc-if value="{{ b.hasBadge }}" hint-placeholder-val="{{ false }}"><span style="min-width:22px;padding:1px 6px;border-radius:999px;background:oklch(0.55 0.17 28);color:#fff;font-size:12px;font-weight:700;text-align:center">{{ b.badge }}</span></sc-if></button></sc-for>
+      <button onClick="{{ openChat }}" style="min-height:44px;margin-top:6px;display:flex;align-items:center;gap:8px;padding:0 12px;border:1px solid #3d3a34;border-radius:9px;background:transparent;color:#e9e4da;font-size:14.5px;font-weight:600;text-align:start"><span style="flex:1">{{ t.chatBtn }}</span><sc-if value="{{ chatHasUnread }}" hint-placeholder-val="{{ false }}"><span style="min-width:22px;padding:1px 6px;border-radius:999px;background:oklch(0.55 0.15 150);color:#fff;font-size:12px;font-weight:700;text-align:center">{{ chatUnread }}</span></sc-if></button>
     </div>
     <sc-if value="{{ showSideRoles }}" hint-placeholder-val="{{ true }}">
       <div style="display:flex;flex-direction:column;gap:4px">
@@ -51,9 +52,10 @@ input,textarea{font:inherit;color:inherit}
   <div style="display:flex;align-items:center;gap:10px;padding:10px 12px 8px 16px">
     <div style="width:38px;height:38px;flex:0 0 auto;background:oklch(0.76 0.14 65);color:#1d1b18;display:grid;place-items:center;font-weight:700;font-size:15px;border-radius:7px;font-family:'IBM Plex Mono',monospace">DMC</div>
     <div style="flex:1;min-width:0">
-      <div style="font-weight:700;font-size:17px;line-height:1.2">{{ t.title }}</div>
-      <div style="font-size:12px;color:#c9c3b8">DMC-CURVE · {{ t.dataDate }} <span style="font-family:'IBM Plex Mono',monospace">{{ today }}</span></div>
+      <div style="font-weight:700;font-size:17px;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ t.title }}</div>
+      <div style="font-size:12px;color:#c9c3b8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">DMC-CURVE · {{ t.dataDate }} <span style="font-family:'IBM Plex Mono',monospace">{{ today }}</span></div>
     </div>
+    <button onClick="{{ openChat }}" style="position:relative;min-height:44px;padding:0 12px;border:1px solid oklch(0.62 0.13 150);background:transparent;color:#f7f5f1;border-radius:8px;font-weight:600;font-size:14px">{{ t.chatBtn }}<sc-if value="{{ chatHasUnread }}" hint-placeholder-val="{{ false }}"><span style="position:absolute;top:-7px;inset-inline-end:-7px;min-width:21px;height:21px;padding:0 6px;border-radius:999px;background:oklch(0.55 0.15 150);color:#fff;font-size:11.5px;font-weight:700;display:grid;place-items:center;border:2px solid #1d1b18">{{ chatUnread }}</span></sc-if></button>
     <button onClick="{{ toggleLang }}" style="min-height:44px;min-width:44px;padding:0 12px;border:1px solid #5a554d;background:transparent;color:#f7f5f1;border-radius:8px;font-weight:600;font-size:14px">{{ t.otherLang }}</button>
     <button onClick="{{ openSettings }}" style="min-height:44px;padding:0 12px;border:1px solid #5a554d;background:transparent;color:#f7f5f1;border-radius:8px;font-weight:600;font-size:14px">{{ t.dataShort }}</button>
   </div>
@@ -200,7 +202,7 @@ input,textarea{font:inherit;color:inherit}
 
     <sc-if value="{{ d.showReturned }}" hint-placeholder-val="{{ false }}">
       <div style="background:oklch(0.95 0.035 28);border:1px solid oklch(0.82 0.08 28);border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:6px">
-        <div style="font-weight:700;color:oklch(0.45 0.16 28)">{{ t.returnedNote }} · {{ d.retWhen }}</div>
+        <div style="font-weight:700;color:oklch(0.45 0.16 28)">{{ retTitle }} · {{ d.retWhen }}</div>
         <div style="font-size:15px">“{{ d.retComment }}”</div>
       </div>
     </sc-if>
@@ -264,7 +266,7 @@ input,textarea{font:inherit;color:inherit}
             <sc-for list="{{ photos }}" as="p" hint-placeholder-count="0"><div style="display:flex;gap:10px;width:100%;align-items:flex-start;border:1px solid #e4e0d8;border-radius:10px;padding:8px"><div style="position:relative;width:86px;height:86px;flex:0 0 auto"><div role="img" style="width:86px;height:86px;border-radius:8px;background:#ece9e3 center/cover no-repeat;background-image:{{ p.bg }}"></div><span style="position:absolute;inset-inline:0;bottom:0;background:rgba(0,0,0,.6);color:#fff;font-size:10px;padding:2px 4px;font-family:'IBM Plex Mono',monospace;border-radius:0 0 8px 8px">{{ p.time }}</span><button onClick="{{ p.remove }}" aria-label="remove" style="position:absolute;top:-8px;inset-inline-end:-8px;width:32px;height:32px;border-radius:50%;border:2px solid #fff;background:#1d1b18;color:#fff;font-size:16px;line-height:1">×</button></div><div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:6px"><input value="{{ p.caption }}" onChange="{{ p.onCaption }}" placeholder="{{ t.captionPh }}" style="min-height:44px;padding:0 10px;border:1px solid #cfc9bf;border-radius:8px;font-size:15px;width:100%"><div style="font-size:11.5px;color:#605a51">{{ p.geo }}</div></div></div></sc-for>
             <sc-if value="{{ canAddPhoto }}" hint-placeholder-val="{{ true }}"><label style="width:100%;min-height:56px;border:1.5px dashed #a59e92;border-radius:10px;display:grid;place-items:center;font-size:15px;font-weight:600;color:#3f3a33;text-align:center;cursor:pointer;padding:6px;background:#f7f5f1">{{ t.addPhotoLong }}<input type="file" accept="image/*" multiple onChange="{{ onPhotos }}" style="display:none"></label></sc-if>
           </div>
-          <div style="font-size:12px;color:#5f5a52">{{ t.photoNote }}</div>
+          <div style="font-size:12px;color:#5f5a52">{{ photoNote }}</div>
         </div>
         <sc-if value="{{ hasErrors }}" hint-placeholder-val="{{ false }}">
           <div style="background:oklch(0.95 0.035 28);border-radius:10px;padding:12px 14px;display:flex;flex-direction:column;gap:4px;color:oklch(0.42 0.16 28);font-size:14px;font-weight:600">
@@ -545,13 +547,140 @@ input,textarea{font:inherit;color:inherit}
 
 <sc-if value="{{ show.lookahead }}" hint-placeholder-val="{{ false }}"><div style="display:flex;flex-direction:column;gap:12px;padding:16px 0"><div style="padding:0 16px;font-size:20px;font-weight:700">{{ t.tab_lookahead }}</div><div style="padding:0 16px;font-size:13px;color:#605a51">{{ t.laHelp }}</div><div style="display:flex;gap:8px;overflow-x:auto;padding:0 16px 2px"><sc-for list="{{ laChips }}" as="c" hint-placeholder-count="3"><button onClick="{{ c.onClick }}" style="flex:0 0 auto;min-height:40px;padding:0 14px;border-radius:999px;border:1px solid {{ c.bd }};background:{{ c.bg }};color:{{ c.fg }};font-size:14px;white-space:nowrap">{{ c.label }}</button></sc-for></div><div style="display:flex;gap:8px;overflow-x:auto;padding:0 16px 2px"><sc-for list="{{ laWin }}" as="c" hint-placeholder-count="3"><button onClick="{{ c.onClick }}" style="flex:0 0 auto;min-height:40px;padding:0 14px;border-radius:999px;border:1px solid {{ c.bd }};background:{{ c.bg }};color:{{ c.fg }};font-size:14px;white-space:nowrap">{{ c.label }}</button></sc-for></div><div style="padding:0 16px;font-size:16px;font-weight:700">{{ t.la_start }}</div><div style="padding:0 16px;display:flex;flex-direction:column;gap:8px"><sc-for list="{{ laStart }}" as="a" hint-placeholder-count="3"><button onClick="{{ a.open }}" style="text-align:start;width:100%;background:#fff;border:1px solid #e4e0d8;border-radius:12px;padding:12px 14px;display:flex;gap:12px;align-items:center;color:inherit"><div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:3px"><div style="display:flex;gap:8px"><span style="font-family:'IBM Plex Mono',monospace;font-size:12.5px;font-weight:600">{{ a.code }}</span><span style="font-size:12px;color:#605a51;white-space:nowrap">{{ a.proj }}</span><span style="font-size:12px;color:#605a51;white-space:nowrap">{{ a.eng }}</span></div><div style="font-size:15px;font-weight:600">{{ a.name }}</div><div style="font-size:12.5px;color:#605a51">{{ a.date }} · {{ a.when }} · {{ t.actualShort }} {{ a.actual }}</div></div><span style="font-size:12px;font-weight:700;padding:4px 9px;border-radius:999px;background:{{ a.stBg }};color:{{ a.stFg }};white-space:nowrap">{{ a.stLabel }}</span></button></sc-for><sc-if value="{{ laStartEmpty }}" hint-placeholder-val="{{ false }}"><div style="padding:16px;text-align:center;color:#605a51;border:1px dashed #cfc9bf;border-radius:12px">{{ t.noItems }}</div></sc-if></div><div style="padding:0 16px;font-size:16px;font-weight:700">{{ t.la_finish }}</div><div style="padding:0 16px;display:flex;flex-direction:column;gap:8px"><sc-for list="{{ laFinish }}" as="a" hint-placeholder-count="3"><button onClick="{{ a.open }}" style="text-align:start;width:100%;background:#fff;border:1px solid #e4e0d8;border-radius:12px;padding:12px 14px;display:flex;gap:12px;align-items:center;color:inherit"><div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:3px"><div style="display:flex;gap:8px"><span style="font-family:'IBM Plex Mono',monospace;font-size:12.5px;font-weight:600">{{ a.code }}</span><span style="font-size:12px;color:#605a51;white-space:nowrap">{{ a.proj }}</span><span style="font-size:12px;color:#605a51;white-space:nowrap">{{ a.eng }}</span></div><div style="font-size:15px;font-weight:600">{{ a.name }}</div><div style="font-size:12.5px;color:#605a51">{{ a.date }} · {{ a.when }} · {{ t.actualShort }} {{ a.actual }}</div></div><span style="font-size:12px;font-weight:700;padding:4px 9px;border-radius:999px;background:{{ a.stBg }};color:{{ a.stFg }};white-space:nowrap">{{ a.stLabel }}</span></button></sc-for><sc-if value="{{ laFinishEmpty }}" hint-placeholder-val="{{ false }}"><div style="padding:16px;text-align:center;color:#605a51;border:1px dashed #cfc9bf;border-radius:12px">{{ t.noItems }}</div></sc-if></div></div></sc-if>
 
+<sc-if value="{{ show.dash }}" hint-placeholder-val="{{ false }}">
+  <div style="display:flex;flex-direction:column;gap:14px;padding:16px 0">
+    <div style="padding:0 16px;display:flex;align-items:baseline;gap:10px;flex-wrap:wrap"><div style="font-size:22px;font-weight:700">{{ t.dashTitle }}</div><div style="font-size:12.5px;color:#605a51">{{ db.scopeNote }}</div></div>
+    <div style="display:flex;gap:8px;overflow-x:auto;padding:0 16px 2px">
+      <sc-for list="{{ db.chips }}" as="c" hint-placeholder-count="4"><button onClick="{{ c.onClick }}" style="flex:0 0 auto;min-height:40px;padding:0 14px;border-radius:999px;border:1px solid {{ c.bd }};background:{{ c.bg }};color:{{ c.fg }};font-size:14px;white-space:nowrap">{{ c.label }}</button></sc-for>
+    </div>
+    <div style="margin:0 16px;background:#1d1b18;color:#f7f5f1;border-radius:14px;padding:16px;display:flex;gap:20px;align-items:center;flex-wrap:wrap">
+      <div style="position:relative;width:136px;height:136px;flex:0 0 auto">
+        <svg viewBox="0 0 120 120" style="width:136px;height:136px;display:block;transform:rotate(-90deg)">
+          <circle cx="60" cy="60" r="50" style="fill:none;stroke:#3a3631;stroke-width:11"></circle>
+          <circle cx="60" cy="60" r="50" stroke-dasharray="{{ db.ringA }}" style="fill:none;stroke:oklch(0.76 0.14 65);stroke-width:11"></circle>
+          <circle cx="60" cy="60" r="36" style="fill:none;stroke:#3a3631;stroke-width:6"></circle>
+          <circle cx="60" cy="60" r="36" stroke-dasharray="{{ db.ringP }}" style="fill:none;stroke:#a59e92;stroke-width:6"></circle>
+        </svg>
+        <div style="position:absolute;inset:0;display:grid;place-items:center;text-align:center"><div><div style="font-size:24px;font-weight:700;line-height:1">{{ db.actual }}</div><div style="font-size:11px;color:#c9c3b8;margin-top:4px">{{ t.actualShort }}</div></div></div>
+      </div>
+      <div style="flex:1;min-width:220px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px 18px">
+        <div><div style="font-size:12px;color:#c9c3b8">{{ t.planned }}</div><div style="font-size:22px;font-weight:700">{{ db.planned }}</div></div>
+        <div><div style="font-size:12px;color:#c9c3b8">{{ t.variance }}</div><div style="font-size:22px;font-weight:700;color:{{ db.varColor }};direction:ltr;unicode-bidi:isolate;text-align:start">{{ db.variance }}</div></div>
+        <div><div style="font-size:12px;color:#c9c3b8">{{ t.spi }}</div><div style="font-size:22px;font-weight:700">{{ db.spi }}</div></div>
+        <div><div style="font-size:12px;color:#c9c3b8">{{ t.fcFinish }}</div><div style="font-size:15px;font-weight:700;color:{{ db.fcColor }};font-family:'IBM Plex Mono',monospace">{{ db.fc }}</div><div style="font-size:11px;color:#a8a194">{{ t.plFinish }} <span style="font-family:'IBM Plex Mono',monospace">{{ db.plFinish }}</span></div></div>
+      </div>
+    </div>
+    <div style="padding:0 16px;display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,160px),1fr));gap:8px">
+      <sc-for list="{{ db.kpis }}" as="k" hint-placeholder-count="8"><div style="background:#fff;border:1px solid #e2ded6;border-inline-start:4px solid {{ k.c }};border-radius:10px;padding:10px 12px;display:flex;flex-direction:column;gap:2px;min-height:76px"><span style="font-size:24px;font-weight:700;line-height:1.1;color:{{ k.c }}">{{ k.v }}</span><span style="font-size:13px;color:#2d2a25;font-weight:600">{{ k.l }}</span><span style="font-size:11.5px;color:#605a51;line-height:1.3">{{ k.sub }}</span></div></sc-for>
+    </div>
+    <div style="padding:0 16px;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr));gap:12px;align-items:start">
+      <div style="background:#fff;border:1px solid #e2ded6;border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:10px">
+        <div style="font-weight:700;font-size:15px">{{ t.p_scurve }}</div>
+        <div style="display:flex;gap:16px;font-size:12.5px;flex-wrap:wrap"><span style="display:flex;align-items:center;gap:6px"><span style="width:18px;height:3px;background:#8f887c"></span>{{ t.planned }}</span><span style="display:flex;align-items:center;gap:6px"><span style="width:18px;height:4px;background:oklch(0.62 0.16 50)"></span>{{ t.actual }}</span><span style="display:flex;align-items:center;gap:6px"><span style="width:2px;height:14px;background:#1b1a17"></span>{{ t.todayL }}</span></div>
+        <div style="direction:ltr;position:relative">
+          <svg viewBox="0 0 300 130" preserveAspectRatio="none" style="width:100%;height:190px;display:block;overflow:visible">
+            <line x1="0" y1="5" x2="300" y2="5" style="stroke:#ece9e3;stroke-width:1;vector-effect:non-scaling-stroke"></line>
+            <line x1="0" y1="65" x2="300" y2="65" style="stroke:#ece9e3;stroke-width:1;vector-effect:non-scaling-stroke"></line>
+            <line x1="0" y1="125" x2="300" y2="125" style="stroke:#cfc9bf;stroke-width:1;vector-effect:non-scaling-stroke"></line>
+            <line x1="{{ db.chart.tx }}" y1="0" x2="{{ db.chart.tx }}" y2="125" style="stroke:#1b1a17;stroke-width:1.5;vector-effect:non-scaling-stroke"></line>
+            <polyline points="{{ db.chart.planPts }}" style="fill:none;stroke:#8f887c;stroke-width:2;stroke-dasharray:5 4;vector-effect:non-scaling-stroke"></polyline>
+            <polyline points="{{ db.chart.actPts }}" style="fill:none;stroke:oklch(0.62 0.16 50);stroke-width:3.5;vector-effect:non-scaling-stroke;stroke-linejoin:round"></polyline>
+          </svg>
+          <div style="position:absolute;left:2px;top:-2px;font-size:10px;color:#5f5a52">100%</div>
+          <div style="position:absolute;left:2px;top:88px;font-size:10px;color:#5f5a52">50%</div>
+        </div>
+        <div style="direction:ltr;display:flex;justify-content:space-between;font-size:10.5px;color:#5f5a52;font-family:'IBM Plex Mono',monospace"><span>{{ db.axis.a }}</span><span>{{ db.axis.b }}</span></div>
+      </div>
+      <div style="background:#fff;border:1px solid #e2ded6;border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:8px">
+        <div style="font-weight:700;font-size:15px">{{ t.p_weekly }}</div>
+        <div style="font-size:12px;color:#605a51">{{ t.p_weeklyHelp }}</div>
+        <div style="display:flex;gap:6px;direction:ltr;align-items:flex-end;border-bottom:1px solid #cfc9bf;padding-top:6px">
+          <sc-for list="{{ db.weeks }}" as="w" hint-placeholder-count="8"><div style="flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;gap:3px"><span style="font-size:10.5px;font-weight:700;color:#3f3a33">{{ w.aT }}</span><div style="display:flex;gap:2px;align-items:flex-end;justify-content:center;width:100%;height:120px"><div style="width:40%;height:{{ w.pH }};background:#cfc9bf;border-radius:3px 3px 0 0"></div><div style="width:40%;height:{{ w.aH }};background:oklch(0.76 0.14 65);border-radius:3px 3px 0 0"></div></div></div></sc-for>
+        </div>
+        <div style="display:flex;gap:6px;direction:ltr"><sc-for list="{{ db.weeks }}" as="w" hint-placeholder-count="8"><span style="flex:1;min-width:0;text-align:center;font-size:10px;color:#605a51;font-family:'IBM Plex Mono',monospace">{{ w.lbl }}</span></sc-for></div>
+      </div>
+      <div style="background:#fff;border:1px solid #e2ded6;border-radius:12px;overflow:hidden;display:flex;flex-direction:column">
+        <div style="padding:14px 14px 6px;font-weight:700;font-size:15px">{{ db.healthTitle }}</div>
+        <sc-for list="{{ db.health }}" as="h" hint-placeholder-count="4">
+          <sc-if value="{{ h.isProj }}" hint-placeholder-val="{{ true }}"><button onClick="{{ h.open }}" style="display:flex;flex-direction:column;gap:6px;width:100%;text-align:start;border:none;border-top:1px solid #f0ede7;background:#fff;padding:10px 14px;color:inherit">
+            <div style="display:flex;gap:8px;align-items:center;width:100%"><span style="font-family:'IBM Plex Mono',monospace;font-size:12.5px;font-weight:600">{{ h.code }}</span><span style="flex:1;min-width:0;font-weight:600;font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ h.name }}</span><span style="font-size:11.5px;font-weight:700;padding:3px 9px;border-radius:999px;background:{{ h.stBg }};color:{{ h.stFg }};white-space:nowrap">{{ h.stLabel }}</span></div>
+            <div style="position:relative;height:8px;background:#ece9e3;border-radius:4px;width:100%"><div style="position:absolute;inset-block:0;inset-inline-start:0;width:{{ h.aW }};background:{{ h.bar }};border-radius:4px"></div><div style="position:absolute;top:-3px;bottom:-3px;inset-inline-start:{{ h.pW }};width:2px;background:#1b1a17"></div></div>
+            <div style="display:flex;gap:8px;width:100%;font-size:12px;color:#605a51;flex-wrap:wrap"><span style="flex:1;min-width:0">{{ h.line }}</span><span style="font-weight:700;color:{{ h.vc }};direction:ltr;unicode-bidi:isolate">{{ h.v }}</span></div>
+            <div style="font-size:11.5px;color:#605a51">{{ h.flags }}</div>
+          </button></sc-if>
+          <sc-if value="{{ h.isLoc }}" hint-placeholder-val="{{ false }}"><div style="display:grid;grid-template-columns:minmax(0,1fr) auto;gap:5px 10px;border-top:1px solid #f0ede7;background:{{ h.bg }};padding:10px 12px;padding-inline-start:{{ h.pad }}">
+            <span style="font-weight:{{ h.fw }};font-size:{{ h.fs }}">{{ h.label }} <span style="font-weight:400;font-size:12px;color:#605a51">· {{ h.n }}</span></span>
+            <span style="font-weight:700;font-size:13.5px;color:{{ h.vc }};direction:ltr;unicode-bidi:isolate;white-space:nowrap">{{ h.v }}</span>
+            <div style="grid-column:1 / -1;position:relative;height:8px;background:#ece9e3;border-radius:4px"><div style="position:absolute;inset-block:0;inset-inline-start:0;width:{{ h.aW }};background:{{ h.bar }};border-radius:4px"></div><div style="position:absolute;top:-3px;bottom:-3px;inset-inline-start:{{ h.pW }};width:2px;background:#1b1a17"></div></div>
+            <span style="grid-column:1 / -1;font-size:12px;color:#605a51">{{ t.planned }} {{ h.pT }} · {{ t.actualShort }} {{ h.aT }}</span>
+          </div></sc-if>
+        </sc-for>
+      </div>
+      <div style="background:#fff;border:1px solid #e2ded6;border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:12px">
+        <div style="font-weight:700;font-size:15px">{{ t.p_disc }}</div>
+        <sc-for list="{{ db.disc }}" as="x" hint-placeholder-count="4"><div style="display:flex;flex-direction:column;gap:5px">
+          <div style="display:flex;gap:8px;align-items:baseline"><span style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;font-weight:700;padding:1px 6px;border-radius:4px;background:#f2efe9">{{ x.code }}</span><span style="flex:1;font-weight:600;font-size:14px">{{ x.label }}</span><span style="font-weight:700;font-size:13.5px;color:{{ x.vc }};direction:ltr;unicode-bidi:isolate">{{ x.v }}</span></div>
+          <div style="position:relative;height:8px;background:#ece9e3;border-radius:4px"><div style="position:absolute;inset-block:0;inset-inline-start:0;width:{{ x.aW }};background:{{ x.bar }};border-radius:4px"></div><div style="position:absolute;top:-3px;bottom:-3px;inset-inline-start:{{ x.pW }};width:2px;background:#1b1a17"></div></div>
+          <div style="font-size:12px;color:#605a51">{{ x.line }}</div>
+        </div></sc-for>
+      </div>
+      <div style="background:#fff;border:1px solid #e2ded6;border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:10px">
+        <div style="font-weight:700;font-size:15px">{{ t.p_flow }}</div>
+        <sc-for list="{{ db.flow }}" as="x" hint-placeholder-count="5"><div style="display:flex;flex-direction:column;gap:4px">
+          <div style="display:flex;justify-content:space-between;gap:8px;font-size:13.5px"><span>{{ x.l }}</span><span style="font-weight:700">{{ x.n }}</span></div>
+          <div style="height:10px;background:#ece9e3;border-radius:5px;overflow:hidden"><div style="height:100%;width:{{ x.w }};background:{{ x.c }};border-radius:5px"></div></div>
+        </div></sc-for>
+      </div>
+      <div style="background:#fff;border:1px solid #e2ded6;border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:10px">
+        <div style="font-weight:700;font-size:15px">{{ t.p_reasons }}</div>
+        <sc-for list="{{ db.reasons }}" as="r" hint-placeholder-count="4"><div style="display:flex;flex-direction:column;gap:4px">
+          <div style="display:flex;justify-content:space-between;gap:8px;font-size:13.5px"><span style="font-weight:600">{{ r.label }}</span><span style="color:#5f5a52">{{ r.n }}</span></div>
+          <div style="height:10px;background:#ece9e3;border-radius:5px;overflow:hidden"><div style="height:100%;width:{{ r.w }};background:oklch(0.62 0.16 50);border-radius:5px"></div></div>
+        </div></sc-for>
+        <sc-if value="{{ db.noReasons }}" hint-placeholder-val="{{ false }}"><div style="color:#5f5a52;text-align:center;padding:12px">{{ t.noItems }}</div></sc-if>
+      </div>
+      <div style="background:#fff;border:1px solid #e2ded6;border-radius:12px;overflow:hidden;display:flex;flex-direction:column">
+        <div style="padding:14px 14px 6px;font-weight:700;font-size:15px">{{ t.p_behind }}</div>
+        <sc-for list="{{ db.behind }}" as="a" hint-placeholder-count="4"><button onClick="{{ a.open }}" style="display:flex;gap:10px;align-items:center;width:100%;text-align:start;border:none;border-top:1px solid #f0ede7;background:#fff;padding:10px 14px;color:inherit;min-height:56px">
+          <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:2px"><div style="display:flex;gap:8px"><span style="font-family:'IBM Plex Mono',monospace;font-size:12.5px;font-weight:600">{{ a.code }}</span><span style="font-size:12px;color:#605a51;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ a.proj }}</span></div><div style="font-size:14px;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ a.name }}</div><div style="font-size:12px;color:#605a51">{{ t.actualShort }} / {{ t.planned }} · {{ a.aT }}</div></div>
+          <span style="font-size:16px;font-weight:700;color:{{ a.vc }};direction:ltr;unicode-bidi:isolate;white-space:nowrap">{{ a.v }}</span>
+        </button></sc-for>
+      </div>
+      <div style="background:#fff;border:1px solid #e2ded6;border-radius:12px;overflow:hidden;display:flex;flex-direction:column">
+        <div style="padding:14px 14px 4px;font-weight:700;font-size:15px">{{ t.p_ahead }}</div>
+        <div style="padding:0 14px 10px;display:flex;flex-direction:column;gap:4px"><sc-for list="{{ db.ahead }}" as="x" hint-placeholder-count="3"><div style="font-size:13.5px;font-weight:600;color:{{ x.c }}">{{ x.l }}</div></sc-for></div>
+        <div style="padding:10px 14px 6px;font-weight:700;font-size:15px;border-top:1px solid #ece9e3">{{ t.p_feed }}</div>
+        <sc-for list="{{ db.feed }}" as="e" hint-placeholder-count="5"><button onClick="{{ e.open }}" style="display:flex;flex-direction:column;gap:2px;width:100%;text-align:start;border:none;border-top:1px solid #f0ede7;background:#fff;padding:8px 14px;color:inherit">
+          <div style="display:flex;gap:8px;width:100%;font-size:13px"><span style="flex:1;min-width:0;font-weight:600">{{ e.txt }}</span><span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#605a51;white-space:nowrap">{{ e.when }}</span></div>
+          <div style="font-size:12px;color:#605a51">{{ e.act }}</div>
+        </button></sc-for>
+      </div>
+    </div>
+  </div>
+</sc-if>
+
 <sc-if value="{{ show.users }}" hint-placeholder-val="{{ false }}">
   <div style="display:flex;flex-direction:column;gap:12px;padding:16px;max-width:980px;margin:0 auto;width:100%">
-    <div style="font-size:22px;font-weight:700">{{ t.usersTitle }}</div>
+    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap"><div style="font-size:22px;font-weight:700;flex:1">{{ t.usersTitle }}</div><button onClick="{{ toggleNu }}" style="min-height:46px;padding:0 16px;border:none;background:#1d1b18;color:#fff;border-radius:10px;font-weight:700;font-size:14px">{{ nuBtn }}</button></div>
     <div style="font-size:13.5px;color:#5f5a52;line-height:1.5">{{ t.usersHelp }}</div>
+    <sc-if value="{{ nuOpen }}" hint-placeholder-val="{{ false }}">
+      <div style="background:#fff;border:1.5px solid #1d1b18;border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:10px">
+        <div style="font-weight:700;font-size:17px">{{ t.nuTitle }}</div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr));gap:10px">
+          <div style="display:flex;flex-direction:column;gap:6px"><label style="font-size:13px;font-weight:600">{{ t.nuName }}</label><input type="text" autocomplete="off" autocapitalize="none" spellcheck="false" value="{{ nuV.name }}" onChange="{{ nuV.onName }}" placeholder="civil.eng1" style="min-height:48px;padding:0 12px;border:1px solid #cfc9bf;border-radius:10px;background:#fff;font-size:16px;direction:ltr"></div>
+          <div style="display:flex;flex-direction:column;gap:6px"><label style="font-size:13px;font-weight:600">{{ t.nuPw }}</label><input type="password" autocomplete="new-password" value="{{ nuV.pw }}" onChange="{{ nuV.onPw }}" style="min-height:48px;padding:0 12px;border:1px solid #cfc9bf;border-radius:10px;background:#fff;font-size:16px;direction:ltr"></div>
+        </div>
+        <div style="font-size:12px;font-weight:700;color:#5f5a52">{{ t.nuRole }}</div><div style="display:flex;gap:6px;flex-wrap:wrap"><sc-for list="{{ nuV.roleChips }}" as="c" hint-placeholder-count="5"><button onClick="{{ c.onClick }}" style="min-height:42px;padding:0 12px;border-radius:999px;border:1px solid {{ c.bd }};background:{{ c.bg }};color:{{ c.fg }};font-size:13.5px">{{ c.label }}</button></sc-for></div>
+        <div style="font-size:12px;font-weight:700;color:#5f5a52">{{ t.nuDisc }}</div><div style="display:flex;gap:6px;flex-wrap:wrap"><sc-for list="{{ nuV.discChips }}" as="c" hint-placeholder-count="4"><button onClick="{{ c.onClick }}" style="min-height:42px;padding:0 12px;border-radius:999px;border:1px solid {{ c.bd }};background:{{ c.bg }};color:{{ c.fg }};font-size:13.5px">{{ c.label }}</button></sc-for></div>
+        <div style="font-size:12.5px;color:#605a51;line-height:1.45;background:#f7f5f1;border-radius:8px;padding:8px 10px">{{ t.nuNote }}</div>
+        <button onClick="{{ nuV.create }}" style="min-height:52px;border:none;background:oklch(0.48 0.12 150);color:#fff;border-radius:10px;font-weight:700;font-size:15px">{{ nuV.btn }}</button>
+      </div>
+    </sc-if>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(112px,1fr));gap:8px"><sc-for list="{{ uStats }}" as="k" hint-placeholder-count="8"><button onClick="{{ k.onClick }}" style="text-align:start;background:{{ k.bg }};border:1.5px solid {{ k.bd }};border-radius:10px;padding:8px 10px;display:flex;flex-direction:column;gap:2px;color:inherit;min-height:60px"><span style="font-size:20px;font-weight:700;line-height:1.1;color:{{ k.c }}">{{ k.n }}</span><span style="font-size:12px;color:#3f3a33;line-height:1.25">{{ k.l }}</span></button></sc-for></div>
+    <input type="search" value="{{ uq }}" onChange="{{ onUq }}" placeholder="{{ t.uSearch }}" style="min-height:48px;padding:0 14px;border:1px solid #cfc9bf;border-radius:10px;background:#fff;font-size:16px">
     <sc-for list="{{ usersList }}" as="u" hint-placeholder-count="2">
       <div style="background:#fff;border:1px solid #e4e0d8;border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:10px">
-        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap"><span style="font-weight:700;font-size:16px;direction:ltr;unicode-bidi:isolate">{{ u.name }}</span><sc-if value="{{ u.hasMe }}" hint-placeholder-val="{{ false }}"><span style="font-size:11.5px;font-weight:700;padding:2px 8px;border-radius:999px;background:#1b1a17;color:#fff">{{ t.you }}</span></sc-if>
+        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap"><span style="font-weight:700;font-size:16px;direction:ltr;unicode-bidi:isolate">{{ u.name }}</span><sc-if value="{{ u.hasMe }}" hint-placeholder-val="{{ false }}"><span style="font-size:11.5px;font-weight:700;padding:2px 8px;border-radius:999px;background:#1b1a17;color:#fff">{{ t.you }}</span></sc-if><sc-if value="{{ u.hasPending }}" hint-placeholder-val="{{ false }}"><span style="font-size:11.5px;font-weight:700;padding:2px 8px;border-radius:999px;background:oklch(0.94 0.06 85);color:oklch(0.45 0.1 70)">{{ t.uPending }}</span></sc-if>
           <button onClick="{{ u.toggleActive }}" style="margin-inline-start:auto;min-height:36px;padding:0 12px;border:none;border-radius:999px;background:{{ u.activeBg }};color:{{ u.activeFg }};font-weight:700;font-size:12.5px">{{ u.activeLbl }}</button></div>
         <div style="font-size:12px;font-weight:700;color:#5f5a52">{{ t.uRole }}</div><div style="display:flex;gap:6px;flex-wrap:wrap"><sc-for list="{{ u.roleChips }}" as="c" hint-placeholder-count="4"><button onClick="{{ c.onClick }}" style="min-height:40px;padding:0 12px;border-radius:999px;border:1px solid {{ c.bd }};background:{{ c.bg }};color:{{ c.fg }};font-size:13px">{{ c.label }}</button></sc-for></div>
         <div style="font-size:12px;font-weight:700;color:#5f5a52">{{ t.uDisc }}</div><div style="display:flex;gap:6px;flex-wrap:wrap"><sc-for list="{{ u.discChips }}" as="c" hint-placeholder-count="4"><button onClick="{{ c.onClick }}" style="min-height:40px;padding:0 12px;border-radius:999px;border:1px solid {{ c.bd }};background:{{ c.bg }};color:{{ c.fg }};font-size:13px">{{ c.label }}</button></sc-for></div>
@@ -559,6 +688,13 @@ input,textarea{font:inherit;color:inherit}
       </div>
     </sc-for>
     <sc-if value="{{ usersEmpty }}" hint-placeholder-val="{{ false }}"><div style="padding:24px;text-align:center;color:#5f5a52;border:1px dashed #cfc9bf;border-radius:12px">{{ t.noItems }}</div></sc-if>
+    <div style="background:#fff;border:1px solid #e4e0d8;border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:8px">
+      <div style="font-weight:700;font-size:16px">{{ t.permTitle }}</div>
+      <div style="overflow-x:auto"><div style="display:grid;grid-template-columns:minmax(160px,1.7fr) repeat(5,minmax(78px,1fr));min-width:560px;font-size:13px;border:1px solid #ece9e3;border-radius:8px;overflow:hidden">
+        <sc-for list="{{ permHead }}" as="h" hint-placeholder-count="6"><div style="padding:8px;background:#f2efe9;font-weight:700;font-size:12px;text-align:center">{{ h.l }}</div></sc-for>
+        <sc-for list="{{ permCells }}" as="c" hint-placeholder-count="12"><div style="padding:8px;border-top:1px solid #ece9e3;color:{{ c.c }};font-weight:{{ c.fw }};text-align:{{ c.al }}">{{ c.v }}</div></sc-for>
+      </div></div>
+    </div>
   </div>
 </sc-if>
 
@@ -598,9 +734,9 @@ input,textarea{font:inherit;color:inherit}
 </div>
 
 <sc-if value="{{ notWide }}" hint-placeholder-val="{{ true }}"><nav data-noprint="1" style="position:fixed;bottom:0;left:0;right:0;z-index:30;background:#fff;border-top:1px solid #d8d3ca;padding-bottom:env(safe-area-inset-bottom)">
-  <div style="max-width:760px;margin:0 auto;display:flex">
+  <div style="max-width:760px;margin:0 auto;display:flex;overflow-x:auto">
     <sc-for list="{{ tabs }}" as="b" hint-placeholder-count="3">
-      <button onClick="{{ b.onClick }}" style="flex:1;min-height:58px;margin:4px 3px;border:none;border-radius:12px;background:{{ b.bg }};color:{{ b.fg }};font-size:14px;font-weight:{{ b.fw }};display:flex;align-items:center;justify-content:center;gap:6px">
+      <button onClick="{{ b.onClick }}" style="flex:1 0 auto;min-width:66px;padding:0 8px;white-space:nowrap;min-height:58px;margin:4px 3px;border:none;border-radius:12px;background:{{ b.bg }};color:{{ b.fg }};font-size:14px;font-weight:{{ b.fw }};display:flex;align-items:center;justify-content:center;gap:6px">
         <span>{{ b.label }}</span>
         <sc-if value="{{ b.hasBadge }}" hint-placeholder-val="{{ false }}"><span style="min-width:22px;padding:1px 6px;border-radius:999px;background:oklch(0.52 0.17 28);color:#fff;font-size:12px;font-weight:700">{{ b.badge }}</span></sc-if>
       </button>
@@ -626,6 +762,69 @@ input,textarea{font:inherit;color:inherit}
 <div style="border-top:1px solid #d8d3ca;padding-top:8px;font-size:11px;color:#605a51">{{ t.repFooter }}</div>
 </div></div></sc-if>
 
+<sc-if value="{{ chatOpen }}" hint-placeholder-val="{{ false }}">
+  <div data-noprint="1" style="position:fixed;inset:0;z-index:55;background:#1b1a17;display:flex;justify-content:center">
+    <div style="width:100%;max-width:1180px;height:100%;display:flex;background:#f4f2ed;overflow:hidden">
+      <sc-if value="{{ ch.showList }}" hint-placeholder-val="{{ true }}">
+        <div style="flex:{{ ch.listFlex }};min-width:0;display:flex;flex-direction:column;background:#fff;border-inline-end:1px solid #e4e0d8;height:100%">
+          <div style="display:flex;align-items:center;gap:8px;padding:10px 12px;background:#1d1b18;color:#f7f5f1">
+            <div style="flex:1;font-weight:700;font-size:19px">{{ t.chatTitle }}</div>
+            <button onClick="{{ ch.toggleNew }}" style="min-height:44px;padding:0 12px;border:1px solid oklch(0.62 0.13 150);background:transparent;color:#f7f5f1;border-radius:8px;font-weight:600;font-size:14px">{{ t.chatNew }}</button>
+            <button onClick="{{ ch.close }}" style="min-height:44px;padding:0 12px;border:1px solid #5a554d;background:transparent;color:#f7f5f1;border-radius:8px;font-weight:600;font-size:14px">{{ t.chatClose }}</button>
+          </div>
+          <div style="padding:8px 10px;border-bottom:1px solid #ece9e3"><input type="search" value="{{ ch.q }}" onChange="{{ ch.onQ }}" placeholder="{{ t.chatSearch }}" style="width:100%;min-height:44px;padding:0 14px;border:1px solid #e4e0d8;border-radius:22px;background:#f4f2ed;font-size:16px"></div>
+          <sc-if value="{{ ch.hasErr }}" hint-placeholder-val="{{ false }}"><div style="margin:10px;background:oklch(0.95 0.035 28);color:oklch(0.42 0.16 28);border-radius:8px;padding:10px 12px;font-size:13px;font-weight:600;line-height:1.45">{{ t.chatErr }}<div style="font-weight:400;font-size:11.5px;margin-top:4px;direction:ltr;unicode-bidi:isolate">{{ ch.err }}</div></div></sc-if>
+          <sc-if value="{{ ch.isDemo }}" hint-placeholder-val="{{ true }}"><div style="padding:7px 12px;background:#fff6e0;color:#5b4310;font-size:12px;line-height:1.4;border-bottom:1px solid #efd38b">{{ t.chatDemoNote }}</div></sc-if>
+          <div style="flex:1;overflow-y:auto">
+            <sc-if value="{{ ch.newOpen }}" hint-placeholder-val="{{ false }}">
+              <div style="padding:10px 14px 4px;font-size:12px;font-weight:700;color:#605a51;letter-spacing:.04em">{{ t.chatPeople }}</div>
+              <sc-for list="{{ ch.people }}" as="p" hint-placeholder-count="3"><button onClick="{{ p.open }}" style="display:flex;gap:12px;align-items:center;width:100%;text-align:start;border:none;background:#fff;padding:9px 14px;color:inherit;min-height:60px"><span style="width:42px;height:42px;flex:0 0 auto;border-radius:50%;background:{{ p.col }};color:#fff;display:grid;place-items:center;font-weight:700;font-size:12.5px;font-family:'IBM Plex Mono',monospace">{{ p.ini }}</span><span style="flex:1;min-width:0;display:flex;flex-direction:column"><span style="font-weight:600;font-size:15px">{{ p.name }}</span><span style="font-size:12.5px;color:#605a51">{{ p.sub }}</span></span></button></sc-for>
+              <sc-if value="{{ ch.noPeople }}" hint-placeholder-val="{{ false }}"><div style="padding:10px 14px;color:#605a51;font-size:13px">{{ t.chatNoPeople }}</div></sc-if>
+              <div style="height:8px;background:#f4f2ed;border-block:1px solid #ece9e3"></div>
+            </sc-if>
+            <sc-for list="{{ ch.rooms }}" as="r" hint-placeholder-count="5"><button onClick="{{ r.open }}" style="display:flex;gap:12px;align-items:center;width:100%;text-align:start;border:none;border-bottom:1px solid #f0ede7;background:{{ r.bg }};padding:10px 14px;color:inherit;min-height:70px">
+              <span style="width:48px;height:48px;flex:0 0 auto;border-radius:50%;background:{{ r.col }};color:#fff;display:grid;place-items:center;font-weight:700;font-size:13px;font-family:'IBM Plex Mono',monospace">{{ r.ini }}</span>
+              <span style="flex:1;min-width:0;display:flex;flex-direction:column;gap:3px">
+                <span style="display:flex;gap:8px;align-items:baseline"><span style="flex:1;min-width:0;font-weight:600;font-size:15.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ r.name }}</span><span style="font-size:11.5px;color:{{ r.whenC }};white-space:nowrap">{{ r.when }}</span></span>
+                <span style="display:flex;gap:8px;align-items:center"><span dir="auto" style="flex:1;min-width:0;font-size:13.5px;color:#605a51;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-align:start">{{ r.prev }}</span><sc-if value="{{ r.hasUnread }}" hint-placeholder-val="{{ false }}"><span style="min-width:22px;height:22px;padding:0 6px;border-radius:999px;background:oklch(0.55 0.15 150);color:#fff;font-size:12px;font-weight:700;display:grid;place-items:center">{{ r.unread }}</span></sc-if></span>
+              </span>
+            </button></sc-for>
+          </div>
+        </div>
+      </sc-if>
+      <sc-if value="{{ ch.showConv }}" hint-placeholder-val="{{ false }}">
+        <div style="flex:1;min-width:0;display:flex;flex-direction:column;height:100%">
+          <div style="display:flex;align-items:center;gap:10px;padding:8px 12px;background:#1d1b18;color:#f7f5f1;min-height:62px">
+            <sc-if value="{{ ch.hasBack }}" hint-placeholder-val="{{ true }}"><button onClick="{{ ch.back }}" aria-label="back" style="min-height:44px;min-width:44px;border:none;background:transparent;color:#f7f5f1;font-size:20px;font-weight:700">{{ t.chatBack }}</button></sc-if>
+            <span style="width:40px;height:40px;flex:0 0 auto;border-radius:50%;background:{{ ch.col }};color:#fff;display:grid;place-items:center;font-weight:700;font-size:12px;font-family:'IBM Plex Mono',monospace">{{ ch.ini }}</span>
+            <div style="flex:1;min-width:0"><div style="font-weight:700;font-size:16px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ ch.name }}</div><div style="font-size:12px;color:#c9c3b8;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ ch.sub }}</div></div>
+            <button onClick="{{ ch.close }}" style="min-height:44px;padding:0 12px;border:1px solid #5a554d;background:transparent;color:#f7f5f1;border-radius:8px;font-weight:600;font-size:14px">{{ t.chatClose }}</button>
+          </div>
+          <div id="dmc-chat-msgs" style="flex:1;overflow-y:auto;background:#ece5da;padding:12px 10px;display:flex;flex-direction:column;gap:6px">
+            <sc-if value="{{ ch.empty }}" hint-placeholder-val="{{ false }}"><div style="align-self:center;margin-top:24px;background:#fff6e0;color:#5b4310;border-radius:8px;padding:8px 12px;font-size:13px">{{ t.chatNoMsgs }}</div></sc-if>
+            <sc-for list="{{ ch.items }}" as="m" hint-placeholder-count="4">
+              <sc-if value="{{ m.isSep }}" hint-placeholder-val="{{ false }}"><div style="align-self:center;margin:6px 0;background:#fff;color:#605a51;border-radius:8px;padding:4px 10px;font-size:12px;font-weight:600;box-shadow:0 1px 1px rgba(0,0,0,.06)">{{ m.sep }}</div></sc-if>
+              <sc-if value="{{ m.isMsg }}" hint-placeholder-val="{{ true }}"><div style="align-self:{{ m.align }};max-width:min(78%,560px);background:{{ m.bg }};border-radius:12px;border-end-end-radius:{{ m.r1 }};border-end-start-radius:{{ m.r2 }};padding:6px 9px 5px;box-shadow:0 1px 1px rgba(0,0,0,.08);display:flex;flex-direction:column;gap:3px">
+                <sc-if value="{{ m.showName }}" hint-placeholder-val="{{ false }}"><span style="font-size:12.5px;font-weight:700;color:{{ m.nameC }}">{{ m.name }}</span></sc-if>
+                <sc-if value="{{ m.hasImg }}" hint-placeholder-val="{{ false }}"><div style="width:min(260px,62vw);aspect-ratio:4 / 3;border-radius:8px;background:#ddd center/cover no-repeat;background-image:{{ m.img }}"></div></sc-if>
+                <sc-if value="{{ m.hasBody }}" hint-placeholder-val="{{ true }}"><div dir="auto" style="font-size:15px;line-height:1.4;white-space:pre-wrap;overflow-wrap:anywhere;text-align:start">{{ m.body }}</div></sc-if>
+                <span style="align-self:flex-end;display:flex;gap:4px;align-items:center;font-size:11px;color:#7a7368;direction:ltr"><span>{{ m.time }}</span><span style="color:{{ m.tickC }};font-weight:700">{{ m.ticks }}</span></span>
+              </div></sc-if>
+            </sc-for>
+          </div>
+          <sc-if value="{{ ch.hasImg }}" hint-placeholder-val="{{ false }}"><div style="display:flex;gap:10px;align-items:center;padding:8px 12px;background:#f0ede7;border-top:1px solid #e4e0d8"><div style="width:64px;height:64px;border-radius:8px;background:#ddd center/cover no-repeat;background-image:{{ ch.imgBg }}"></div><button onClick="{{ ch.dropImg }}" style="min-height:40px;padding:0 12px;border:1px solid #cfc9bf;background:#fff;border-radius:8px;font-weight:600">✕</button></div></sc-if>
+          <div style="display:flex;gap:8px;align-items:flex-end;padding:8px 10px calc(8px + env(safe-area-inset-bottom));background:#f0ede7;border-top:1px solid #e4e0d8">
+            <label aria-label="photo" style="flex:0 0 auto;width:48px;height:48px;border-radius:50%;display:grid;place-items:center;background:#fff;border:1px solid #cfc9bf;font-size:24px;line-height:1;cursor:pointer;color:#3f3a33">+<input type="file" accept="image/*" onChange="{{ ch.onImg }}" style="display:none"></label>
+            <textarea rows="1" value="{{ ch.text }}" onChange="{{ ch.onText }}" onKeyDown="{{ ch.onKey }}" placeholder="{{ t.chatPh }}" dir="auto" style="flex:1;min-width:0;min-height:48px;max-height:140px;padding:12px 16px;border:1px solid #cfc9bf;border-radius:24px;background:#fff;font-size:16px;resize:none;line-height:1.4"></textarea>
+            <button onClick="{{ ch.send }}" aria-label="send" style="flex:0 0 auto;width:48px;height:48px;border-radius:50%;border:none;background:oklch(0.48 0.12 150);color:#fff;font-size:19px;transform:{{ ch.sendFlip }}">➤</button>
+          </div>
+        </div>
+      </sc-if>
+      <sc-if value="{{ ch.showEmpty }}" hint-placeholder-val="{{ false }}"><div style="flex:1;display:grid;place-items:center;background:#ece5da;color:#605a51;font-size:15px;padding:20px;text-align:center">{{ t.chatEmpty }}</div></sc-if>
+    </div>
+  </div>
+</sc-if>
+
 <sc-if value="{{ showLogin }}" hint-placeholder-val="{{ false }}">
   <div data-noprint="1" style="position:fixed;inset:0;z-index:70;background:#1b1a17;display:grid;place-items:center;padding:20px;overflow-y:auto">
     <div style="width:100%;max-width:400px;background:#f7f5f1;border-radius:16px;padding:24px;display:flex;flex-direction:column;gap:14px">
@@ -634,7 +833,7 @@ input,textarea{font:inherit;color:inherit}
       <sc-if value="{{ authForm }}" hint-placeholder-val="{{ false }}">
         <div style="font-size:14px;color:#3d3933">{{ t.loginSub }}</div>
         <label style="font-size:13px;font-weight:600">{{ t.email }}</label>
-        <input type="email" autocomplete="username" value="{{ loginEmail }}" onChange="{{ onLoginEmail }}" style="min-height:50px;padding:0 14px;border:1px solid #cfc9bf;border-radius:10px;background:#fff;font-size:16px;direction:ltr">
+        <input type="text" autocomplete="username" autocapitalize="none" spellcheck="false" value="{{ loginEmail }}" onChange="{{ onLoginEmail }}" style="min-height:50px;padding:0 14px;border:1px solid #cfc9bf;border-radius:10px;background:#fff;font-size:16px;direction:ltr">
         <label style="font-size:13px;font-weight:600">{{ t.password }}</label>
         <input type="password" autocomplete="current-password" value="{{ loginPw }}" onChange="{{ onLoginPw }}" style="min-height:50px;padding:0 14px;border:1px solid #cfc9bf;border-radius:10px;background:#fff;font-size:16px;direction:ltr">
         <sc-if value="{{ hasLoginErr }}" hint-placeholder-val="{{ false }}"><div style="background:oklch(0.95 0.035 28);color:oklch(0.42 0.16 28);border-radius:8px;padding:9px 11px;font-size:13.5px;font-weight:600">{{ loginErr }}</div></sc-if>
@@ -692,6 +891,7 @@ input,textarea{font:inherit;color:inherit}
       </div>
       <sc-if value="{{ isDemo }}" hint-placeholder-val="{{ true }}"><div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px">
         <button onClick="{{ exportJson }}" style="min-height:52px;border:1px solid #1d1b18;background:#fff;border-radius:10px;font-weight:600;font-size:14px">{{ t.exportJson }}</button>
+        <label style="min-height:52px;border:1px solid #1d1b18;background:#fff;border-radius:10px;font-weight:600;font-size:14px;display:grid;place-items:center;cursor:pointer;text-align:center;padding:0 8px">{{ t.importJson }}<input type="file" accept=".json,application/json" onChange="{{ importJson }}" style="display:none"></label>
         <button onClick="{{ onReset }}" style="min-height:52px;border:1px solid oklch(0.52 0.17 28);color:oklch(0.45 0.16 28);background:#fff;border-radius:10px;font-weight:700;font-size:14px">{{ resetLabel }}</button>
       </div></sc-if>
     </div>
@@ -700,9 +900,8 @@ input,textarea{font:inherit;color:inherit}
 </div>
 </x-dc>
 <script type="text/x-dc" data-dc-script data-props="{&quot;requireCM&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Rules&quot;},&quot;staleDays&quot;:{&quot;editor&quot;:&quot;int&quot;,&quot;default&quot;:7,&quot;min&quot;:1,&quot;max&quot;:30,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Rules&quot;},&quot;delayThreshold&quot;:{&quot;editor&quot;:&quot;int&quot;,&quot;default&quot;:10,&quot;min&quot;:1,&quot;max&quot;:40,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Rules&quot;}}">
-const KEY='dmc-erp:demo',KEY3='dmc-site-progress:v4',PREF_KEY='dmc-erp:prefs',CONN_KEY='dmc-erp:conn';
-const LOC={A1010:['SITE','—'],A1020:['BLD-A','Z1'],A1030:['BLD-A','Z1'],A1040:['BLD-A','Z2'],A1050:['BLD-A','Z1'],A1060:['BLD-A','Z2'],A1070:['BLD-B','Z1'],A1080:['BLD-B','Z2'],B2010:['TWR-1','Z1'],B2020:['TWR-1','Z1'],B2030:['TWR-1','Z2'],B2040:['TWR-2','Z1'],B2050:['TWR-2','Z2'],B2060:['TWR-1','Z3'],B2070:['TWR-2','Z1'],B2080:['PODIUM','Z1'],C3010:['SITE','—'],C3020:['WH-1','Z1'],C3030:['WH-1','Z2'],C3040:['WH-1','Z2'],C3050:['WH-2','Z1'],C3060:['WH-2','Z2'],C3070:['WH-1','Z1'],C3080:['SITE','—']};
-const locOf=c=>LOC[c]||['SITE','—'];
+const KEY='dmc-erp:demo:v3',PREF_KEY='dmc-erp:prefs',CONN_KEY='dmc-erp:conn';
+const locOf=()=>['SITE','—'];
 const uniq=arr=>Array.from(new Set(arr));
 const DAY=864e5;
 const p2=n=>String(n).padStart(2,'0');
@@ -716,14 +915,13 @@ const uid=p=>p+Date.now().toString(36)+Math.random().toString(36).slice(2,6);
 const isDate=s=>/^\d{4}-\d{2}-\d{2}$/.test(s)&&!isNaN(Date.parse(s));
 const DELAYS=['material','manpower','equipment','weather','design','client','subcon','permit','other'];
 const ENG=['CIV','ARC','MEC','ELE'];
-const PEOPLE={CIV:{en:'Civil Engineer',ar:'المهندس المدني'},ARC:{en:'Architectural Engineer',ar:'المهندس المعماري'},MEC:{en:'Mechanical Engineer',ar:'المهندس الميكانيكي'},ELE:{en:'Electrical Engineer',ar:'المهندس الكهربائي'},CM:{en:'Construction Manager',ar:'مدير الإنشاءات'},PL:{en:'Planning Engineer',ar:'مهندس التخطيط'}};
+const PEOPLE={CIV:{en:'Civil Engineer',ar:'المهندس المدني'},ARC:{en:'Architectural Engineer',ar:'المهندس المعماري'},MEC:{en:'Mechanical Engineer',ar:'المهندس الميكانيكي'},ELE:{en:'Electrical Engineer',ar:'المهندس الكهربائي'},CM:{en:'Construction Manager',ar:'مدير الإنشاءات'},PL:{en:'Planning Engineer',ar:'مهندس التخطيط'},PM:{en:'Project Manager',ar:'مدير المشروع'}};
 const ALIAS={CIVIL:'CIV',ARCH:'ARC',ARCHITECTURAL:'ARC',MECH:'MEC',MECHANICAL:'MEC',ELEC:'ELE',ELECTRICAL:'ELE'};
-const DISC={A1010:'CIV',A1020:'CIV',A1030:'CIV',A1040:'CIV',A1050:'CIV',A1060:'ARC',A1070:'ELE',A1080:'ARC',B2010:'CIV',B2020:'CIV',B2030:'CIV',B2040:'CIV',B2050:'ARC',B2060:'MEC',B2070:'CIV',B2080:'ARC',C3010:'CIV',C3020:'CIV',C3030:'CIV',C3040:'ARC',C3050:'CIV',C3060:'ELE',C3070:'MEC',C3080:'CIV'};
 function decideU(u,ok,role,c,ts){const cm=role==='cm',by=cm?'CM':'PL';
   if(ok&&cm)return Object.assign({},u,{status:'endorsed',cmAt:ts,cmBy:'CM',cmComment:c,log:u.log.concat([{at:ts,ev:'endorsed',by}])});
   return Object.assign({},u,{status:ok?'approved':'returned',reviewed:ts,reviewer:by,comment:c,log:u.log.concat([{at:ts,ev:ok?'approved':'returned',by}])});}
 const C={green:'oklch(0.48 0.12 150)',greenBg:'oklch(0.94 0.04 150)',red:'oklch(0.48 0.17 28)',redBg:'oklch(0.95 0.035 28)',amber:'oklch(0.45 0.1 70)',amberBg:'oklch(0.94 0.06 85)',blue:'oklch(0.45 0.12 250)',blueBg:'oklch(0.94 0.03 250)',grey:'#5f5a52',greyBg:'#ece9e3',barOk:'oklch(0.58 0.13 150)',barWarn:'oklch(0.68 0.14 70)',barBad:'oklch(0.56 0.18 28)'};
-const CSV_COLS=['project_code','project_name','activity_id','activity_name','activity_name_ar','wbs','planned_start','planned_finish','budget_qty','unit','weight','assigned_to','zone','building'];
+const CSV_COLS=['project_code','project_name','activity_id','activity_name','activity_name_ar','wbs','planned_start','planned_finish','budget_qty','unit','weight','discipline','zone','building'];
 
 const I18N={
 en:{title:'DMC Site Progress',otherLang:'عربي',dataShort:'Data',dataDate:'Data date',
@@ -870,31 +1068,99 @@ storageBadgeLive:'مشترك · Supabase PostgreSQL · لحظي',storageLive1:'�
 storageLive2:'قواعد سير العمل (موافقة مدير الإنشاءات ثم التخطيط، قفل التحديثات المعتمدة، الصلاحيات حسب التخصص) تفرضها قاعدة البيانات نفسها وليس الشاشة فقط. كل تغيير يُسجَّل في سجل تدقيق.',
 storageLive3:'تنطبق حدود الخطة المجانية (حجم القاعدة، تخزين الملفات، وقد يتوقف المشروع غير النشط مؤقتاً). الصور في مخزن خاص وتُعرض بروابط مؤقتة.',
 prole_site:'مهندس موقع',prole_cm:'مدير الإنشاءات',prole_planner:'مهندس التخطيط',prole_pm:'مدير المشروع',prole_admin:'مسؤول النظام'});
+Object.assign(I18N.en,{tab_dash:'Dashboard',dashTitle:'Project dashboard',dashScopeAll:n=>`${n} projects · weighted by contract value`,dashScopeOne:n=>`${n} activities · weighted by activity weight`,
+k_total:'Activities',k_inprog:'In progress',k_done:'Completed',k_notstarted:'Not started',k_awaitCM:'Awaiting CM',k_awaitPL:'Awaiting Planning',k_appr7:'Approved · 7 days',k_returnedN:'Returned',kDelayedSub:n=>`> ${n} pts behind or overdue`,kMissingSub:n=>`no update for ${n}+ days`,kOfTotal:(n,a)=>`${n} of ${a}`,
+p_scurve:'S-curve — planned vs approved actual',p_weekly:'Weekly progress gain — last 8 weeks',p_weeklyHelp:'Grey = planned gain · amber = approved actual gain (percentage points)',p_health:'Project health',p_disc:'Performance by discipline',p_flow:'Approval workflow',p_reasons:'Top delay reasons · last 10 weeks',p_behind:'Most behind plan',p_ahead:'Next 14 days',p_feed:'Recent activity',
+fl_draft:'Drafts (not submitted)',fl_cm:'Awaiting Construction Manager',fl_pl:'Awaiting Planning Engineer',fl_ret:'Returned for correction',fl_appr:'Approved in the last 7 days',
+la_startsN:n=>`${n} activities planned to start`,la_finishesN:n=>`${n} activities planned to finish`,la_riskN:n=>`${n} finishing activities at risk`,discLine:(n,d,m)=>`${n} act. · ${d} delayed · ${m} missing`,
+nuOpen:'+ Add user',nuClose:'Close',nuTitle:'New user',nuName:'Username',nuPw:'Password (at least 8 characters)',nuRole:'Role',nuDisc:'Discipline',nuCreate:'Create user',nuBusy:'Creating…',
+nuNote:'The colleague signs in with this username and password. “Confirm email” must be turned off in Supabase, otherwise username accounts cannot sign in.',nuOk:'User created',nuOkConfirm:'User created — but Supabase still requires email confirmation. Turn off “Confirm email” so they can sign in.',
+uAll:'All',uPendingL:'Waiting for access',uDisabledL:'Disabled',uSearch:'Search by username',uPending:'Needs discipline or project',
+permTitle:'What each role can do',perm_scope:'Projects visible',perm_update:'Enter & submit progress',perm_cm:'Check, adjust & approve (step 1)',perm_pl:'Final approval (step 2)',perm_import:'Import P6 schedule (CSV)',perm_reports:'Dashboard, S-curve & reports',perm_users:'Manage users & permissions',perm_chat:'Team chat',permAssigned:'Assigned',permAll:'All',
+chatBtn:'Chat',chatTitle:'Chats',chatNew:'New chat',chatSearch:'Search chats',chatPh:'Type a message',chatGeneral:'DMC team',chatGeneralSub:'Everyone',chatProjSub:'Project group',chatEmpty:'Select a chat to start messaging',chatNoMsgs:'No messages yet — say hello.',chatPeople:'Start a chat with',chatYesterday:'Yesterday',chatToday:'Today',chatYou:'You',chatPhoto:'Photo',chatClose:'Close',chatBack:'←',
+chatErr:'Chat is not set up in the database yet. The administrator must run db/03_chat.sql in Supabase SQL Editor.',chatDemoNote:'Demo chat — saved in this browser only. Switch role to reply as another person.',chatNoPeople:'No other users yet.',
+returnedBy:n=>`Returned by ${n}`,photoNoteLive:'Up to 4 photos. Time and GPS (if you allow it) are recorded. Photos are compressed and stored in the shared database.',
+signUpOk:'Account created. Ask the administrator to give you a role, discipline and project.',importJson:'Restore backup (JSON)',t_imported:'Backup restored',t_badJson:'Not a valid backup file',
+e_eng:'discipline must be CIV, ARC, MEC or ELE (or Civil, Architectural, Mechanical, Electrical)'});
+Object.assign(I18N.ar,{tab_dash:'لوحة المتابعة',dashTitle:'لوحة متابعة المشاريع',dashScopeAll:n=>`${n} مشاريع · مرجّح بقيمة العقد`,dashScopeOne:n=>`${n} نشاط · مرجّح بوزن النشاط`,
+k_total:'الأنشطة',k_inprog:'قيد التنفيذ',k_done:'مكتمل',k_notstarted:'لم يبدأ',k_awaitCM:'بانتظار مدير الإنشاءات',k_awaitPL:'بانتظار التخطيط',k_appr7:'معتمد · 7 أيام',k_returnedN:'مُعاد',kDelayedSub:n=>`متأخر أكثر من ${n} نقاط أو تجاوز النهاية`,kMissingSub:n=>`بدون تحديث ${n} أيام أو أكثر`,kOfTotal:(n,a)=>`${n} من ${a}`,
+p_scurve:'منحنى S — المخطط مقابل الفعلي المعتمد',p_weekly:'التقدم الأسبوعي — آخر 8 أسابيع',p_weeklyHelp:'الرمادي = المخطط · البرتقالي = الفعلي المعتمد (نقاط مئوية)',p_health:'حالة المشاريع',p_disc:'الأداء حسب التخصص',p_flow:'دورة الاعتماد',p_reasons:'أهم أسباب التأخير · آخر 10 أسابيع',p_behind:'الأكثر تأخراً عن المخطط',p_ahead:'الـ 14 يوماً القادمة',p_feed:'آخر الأحداث',
+fl_draft:'مسودات (لم تُرسل)',fl_cm:'بانتظار مدير الإنشاءات',fl_pl:'بانتظار مهندس التخطيط',fl_ret:'مُعادة للتصحيح',fl_appr:'معتمدة في آخر 7 أيام',
+la_startsN:n=>`${n} نشاط مخطط بدؤه`,la_finishesN:n=>`${n} نشاط مخطط انتهاؤه`,la_riskN:n=>`${n} نشاط ينتهي ومعرّض للخطر`,discLine:(n,d,m)=>`${n} نشاط · ${d} متأخر · ${m} بدون تحديث`,
+nuOpen:'+ إضافة مستخدم',nuClose:'إغلاق',nuTitle:'مستخدم جديد',nuName:'اسم المستخدم',nuPw:'كلمة المرور (8 أحرف على الأقل)',nuRole:'الدور',nuDisc:'التخصص',nuCreate:'إنشاء المستخدم',nuBusy:'جارٍ الإنشاء…',
+nuNote:'الزميل يدخل بنفس اسم المستخدم وكلمة المرور. لازم يكون «تأكيد البريد» مقفول في Supabase، وإلا حسابات اسم المستخدم مش هتقدر تدخل.',nuOk:'تم إنشاء المستخدم',nuOkConfirm:'تم إنشاء المستخدم — لكن Supabase لسه طالب تأكيد البريد. اقفل «تأكيد البريد» عشان يقدر يدخل.',
+uAll:'الكل',uPendingL:'بانتظار الصلاحيات',uDisabledL:'موقوف',uSearch:'ابحث باسم المستخدم',uPending:'محتاج تخصص أو مشروع',
+permTitle:'صلاحيات كل دور',perm_scope:'المشاريع الظاهرة',perm_update:'إدخال وإرسال التقدم',perm_cm:'المراجعة والتعديل والموافقة (الخطوة 1)',perm_pl:'الاعتماد النهائي (الخطوة 2)',perm_import:'استيراد جدول P6 (CSV)',perm_reports:'لوحة المتابعة ومنحنى S والتقارير',perm_users:'إدارة المستخدمين والصلاحيات',perm_chat:'محادثة الفريق',permAssigned:'المسندة',permAll:'الكل',
+chatBtn:'المحادثات',chatTitle:'المحادثات',chatNew:'محادثة جديدة',chatSearch:'ابحث في المحادثات',chatPh:'اكتب رسالة',chatGeneral:'فريق DMC',chatGeneralSub:'كل المستخدمين',chatProjSub:'مجموعة المشروع',chatEmpty:'اختر محادثة لبدء المراسلة',chatNoMsgs:'لا توجد رسائل بعد — ابدأ المحادثة.',chatPeople:'ابدأ محادثة مع',chatYesterday:'أمس',chatToday:'اليوم',chatYou:'أنت',chatPhoto:'صورة',chatClose:'إغلاق',chatBack:'→',
+chatErr:'المحادثة لسه مش متجهزة في قاعدة البيانات. لازم المسؤول يشغّل الملف db/03_chat.sql في محرر SQL في Supabase.',chatDemoNote:'محادثة تجريبية — محفوظة في هذا المتصفح فقط. غيّر الدور عشان ترد كشخص تاني.',chatNoPeople:'لا يوجد مستخدمون آخرون بعد.',
+returnedBy:n=>`أعاده ${n}`,photoNoteLive:'حتى 4 صور. يُسجل الوقت والموقع (إن سمحت). الصور تُضغط وتُحفظ في قاعدة البيانات المشتركة.',
+signUpOk:'تم إنشاء الحساب. اطلب من المسؤول تحديد الدور والتخصص والمشروع.',importJson:'استعادة نسخة احتياطية (JSON)',t_imported:'تمت استعادة النسخة الاحتياطية',t_badJson:'ملف النسخة الاحتياطية غير صالح',
+e_eng:'التخصص يجب أن يكون CIV أو ARC أو MEC أو ELE'});
+// Demo schedule: [project, P6 activity ID, name, name_ar, wbs, zone, building, discipline, start (days from today), duration, budget qty, unit, weight, approved %, actual start lag, days since last update, delay reason]
 const ROWS=[
-['P1','A1010','Mobilisation & site setup','التجهيز والتعبئة للموقع','1.1 Preliminaries',-120,20,1,'LS',2,'E1',100,0,0,''],
-['P1','A1020','Bulk excavation','الحفر العام','2.1 Substructure',-100,30,4500,'m3',6,'E1',100,3,0,''],
-['P1','A1030','Raft foundation concrete','خرسانة الأساس الحصيري','2.2 Substructure',-75,35,1200,'m3',12,'E1',92,5,4,'equipment'],
-['P1','A1040','Basement retaining walls','جدران القبو الاستنادية','2.3 Substructure',-45,70,650,'m3',10,'E1',55,4,6,''],
-['P1','A1050','Ground floor columns','أعمدة الدور الأرضي','3.1 Superstructure',-10,45,180,'m3',8,'E1',15,2,5,''],
-['P1','A1060','Basement waterproofing','العزل المائي للقبو','2.4 Substructure',-30,40,3800,'m2',5,'E1',30,6,12,'weather'],
-['P1','A1070','Electrical containment first fix','تمديدات المواسير الكهربائية – المرحلة الأولى','4.1 Electrical',5,60,1,'LS',15,'E1',0,0,0,''],
-['P1','A1080','Blockwork','أعمال البلوك','3.2 Superstructure',20,50,6200,'m2',9,'E1',0,0,0,''],
-['P2','B2010','Bored piling','الخوازيق المحفورة','2.1 Foundations',-140,40,320,'nos',10,'E2',100,5,0,''],
-['P2','B2020','Pile caps','قواعد الخوازيق','2.2 Foundations',-100,30,85,'nos',6,'E2',100,8,0,'subcon'],
-['P2','B2030','Tower slabs L1–L4','بلاطات البرج 1–4','3.1 Tower frame',-80,70,2400,'m3',18,'E2',62,10,5,'material'],
-['P2','B2040','Tower slabs L5–L8','بلاطات البرج 5–8','3.2 Tower frame',-10,70,2400,'m3',18,'E2',3,4,9,'design'],
-['P2','B2050','Façade anchor installation','تركيب مثبتات الواجهة','5.1 Envelope',-15,40,1400,'nos',6,'E2',0,0,0,''],
-['P2','B2060','Plumbing risers','صواعد السباكة','4.1 MEP',-10,45,900,'m',7,'E2',10,2,3,''],
-['P2','B2070','Lift shaft core walls','جدران بئر المصعد','3.3 Tower frame',-50,60,120,'m3',8,'E2',40,6,4,'manpower'],
-['P2','B2080','Podium landscaping','تنسيق حدائق المنصة','6.1 External',30,40,2600,'m2',4,'E2',0,0,0,''],
-['P3','C3010','Site grading','تسوية الموقع','1.1 Earthworks',-90,20,18000,'m2',5,'E3',100,-2,0,''],
-['P3','C3020','Isolated footings','القواعد المنفصلة','2.1 Substructure',-70,25,420,'m3',10,'E3',100,0,0,''],
-['P3','C3030','Structural steel erection','تركيب الهيكل الفولاذي','3.1 Superstructure',-45,50,860,'t',22,'E3',88,-3,3,''],
-['P3','C3040','Roof sheeting','تغطية السقف بالألواح','3.2 Envelope',-15,35,12000,'m2',12,'E3',40,-2,4,''],
-['P3','C3050','Slab on grade','البلاطة الأرضية','2.2 Substructure',-20,40,9500,'m2',14,'E3',52,0,2,''],
-['P3','C3060','LV power & lighting','الإنارة وتوزيع الجهد المنخفض','4.1 Electrical',-8,40,5200,'m',6,'E3',12,0,3,''],
-['P3','C3070','Fire sprinkler network','شبكة رشاشات الحريق','4.2 MEP',-5,50,7400,'m',9,'E1',10,0,2,''],
-['P3','C3080','External paving','الرصف الخارجي','5.1 External',25,30,6800,'m2',5,'E3',0,0,0,'']];
+['P1','A1010','Mobilisation & site setup','التجهيز والتعبئة للموقع','1.1 Preliminaries','—','SITE','CIV',-150,20,1,'LS',2,100,0,0,''],
+['P1','A1020','Bulk excavation','الحفر العام','2.1 Substructure','Z1','BLD-A','CIV',-130,30,4500,'m3',6,100,3,0,''],
+['P1','A1030','Raft foundation concrete','خرسانة اللبشة','2.2 Substructure','Z1','BLD-A','CIV',-100,35,1200,'m3',12,100,5,0,'equipment'],
+['P1','A1040','Basement retaining walls','جدران القبو الاستنادية','2.3 Substructure','Z1','BLD-A','CIV',-60,70,650,'m3',10,55,4,6,'material'],
+['P1','A1050','Ground floor columns','أعمدة الدور الأرضي','3.1 Superstructure','Z1','BLD-A','CIV',-15,45,180,'m3',8,15,2,5,'manpower'],
+['P1','A1060','Basement waterproofing','العزل المائي للقبو','2.4 Substructure','Z1','BLD-A','ARC',-35,40,3800,'m2',5,40,6,12,'weather'],
+['P1','A1070','Outpatient block foundations','أساسات مبنى العيادات','2.5 Substructure','Z2','BLD-B','CIV',-40,40,520,'m3',8,70,2,3,''],
+['P1','A1080','Outpatient block frame','هيكل مبنى العيادات','3.2 Superstructure','Z2','BLD-B','CIV',-5,60,610,'m3',9,5,1,2,''],
+['P1','A1090','Blockwork','أعمال البلوك','3.3 Superstructure','Z2','BLD-B','ARC',20,50,6200,'m2',9,0,0,0,''],
+['P1','A1100','Electrical containment first fix','تمديدات المواسير الكهربائية – المرحلة الأولى','4.1 Electrical','Z1','BLD-A','ELE',-8,60,1,'LS',10,8,0,4,''],
+['P1','A1110','Basement HVAC ductwork','مجاري التكييف في القبو','4.2 Mechanical','Z1','BLD-A','MEC',-12,50,2400,'m2',9,10,3,9,'design'],
+['P1','A1120','Medical gas pipework','شبكة الغازات الطبية','4.3 Mechanical','Z2','BLD-B','MEC',15,45,1800,'m',6,0,0,0,''],
+['P1','A1130','External drainage','الصرف الخارجي','5.1 External','—','SITE','CIV',35,30,950,'m',4,0,0,0,''],
+['P2','B2010','Bored piling','الخوازيق المحفورة','2.1 Foundations','Z1','TWR-1','CIV',-160,40,320,'nos',10,100,5,0,''],
+['P2','B2020','Pile caps','قواعد الخوازيق','2.2 Foundations','Z1','TWR-1','CIV',-115,30,85,'nos',6,100,8,0,'subcon'],
+['P2','B2030','Tower 1 slabs L1–L4','بلاطات البرج 1 – الأدوار 1–4','3.1 Tower frame','Z1','TWR-1','CIV',-85,70,2400,'m3',18,62,10,5,'material'],
+['P2','B2040','Tower 1 slabs L5–L8','بلاطات البرج 1 – الأدوار 5–8','3.2 Tower frame','Z1','TWR-1','CIV',-12,70,2400,'m3',18,3,4,9,'design'],
+['P2','B2050','Façade anchor installation','تركيب مثبتات الواجهة','5.1 Envelope','Z1','TWR-1','ARC',-18,40,1400,'nos',6,0,0,0,''],
+['P2','B2060','Plumbing risers – Tower 1','صواعد السباكة – البرج 1','4.1 MEP','Z1','TWR-1','MEC',-14,45,900,'m',7,12,2,3,''],
+['P2','B2070','Lift shaft core walls','جدران بئر المصعد','3.3 Tower frame','Z1','TWR-1','CIV',-55,60,120,'m3',8,40,6,4,'manpower'],
+['P2','B2080','Tower 2 raft','لبشة البرج 2','2.3 Foundations','Z2','TWR-2','CIV',-45,35,980,'m3',12,85,3,2,''],
+['P2','B2090','Tower 2 columns L1–L3','أعمدة البرج 2 – الأدوار 1–3','3.4 Tower frame','Z2','TWR-2','CIV',-5,40,210,'m3',8,6,1,2,''],
+['P2','B2100','Main LV panels','لوحات الجهد المنخفض الرئيسية','4.2 Electrical','Z2','TWR-2','ELE',10,40,12,'nos',5,0,0,0,''],
+['P2','B2110','Podium slab','بلاطة المنصة','3.5 Podium','Z2','PODIUM','CIV',-25,45,1500,'m3',10,50,2,3,''],
+['P2','B2120','Podium landscaping','تنسيق حدائق المنصة','6.1 External','Z2','PODIUM','ARC',40,40,2600,'m2',4,0,0,0,''],
+['P3','C3010','Site grading','تسوية الموقع','1.1 Earthworks','—','SITE','CIV',-110,20,18000,'m2',5,100,-2,0,''],
+['P3','C3020','Isolated footings','القواعد المنفصلة','2.1 Substructure','Z1','WH-1','CIV',-85,25,420,'m3',10,100,0,0,''],
+['P3','C3030','Structural steel erection','تركيب الهيكل الفولاذي','3.1 Superstructure','Z1','WH-1','CIV',-55,50,860,'t',22,95,-3,3,'subcon'],
+['P3','C3040','Roof sheeting','تغطية السقف بالألواح','3.2 Envelope','Z1','WH-1','ARC',-20,35,12000,'m2',12,45,-2,4,''],
+['P3','C3050','Slab on grade','البلاطة الأرضية','2.2 Substructure','Z2','WH-2','CIV',-25,40,9500,'m2',14,58,0,2,''],
+['P3','C3060','LV power & lighting','الإنارة وتوزيع الجهد المنخفض','4.1 Electrical','Z1','WH-1','ELE',-10,40,5200,'m',6,18,0,3,''],
+['P3','C3070','Fire sprinkler network','شبكة رشاشات الحريق','4.2 MEP','Z1','WH-1','MEC',-6,50,7400,'m',9,10,0,2,''],
+['P3','C3080','Dock levellers','منصات التحميل','5.1 Equipment','Z2','WH-2','MEC',12,25,16,'nos',5,0,0,0,''],
+['P3','C3090','External paving','الرصف الخارجي','6.1 External','—','SITE','CIV',30,30,6800,'m2',5,0,0,0,''],
+['P4','D4010','Site clearance','تنظيف الموقع','1.1 Enabling','—','SITE','CIV',-70,15,6000,'m2',3,100,0,0,''],
+['P4','D4020','Strip footings – Block 1','القواعد الشريطية – المبنى 1','2.1 Substructure','Z1','BLK-1','CIV',-55,25,260,'m3',10,100,2,0,''],
+['P4','D4030','Ground beams – Block 1','الجسور الأرضية – المبنى 1','2.2 Substructure','Z1','BLK-1','CIV',-30,25,140,'m3',8,80,2,2,''],
+['P4','D4040','Block 1 frame','هيكل المبنى 1','3.1 Superstructure','Z1','BLK-1','CIV',-8,55,620,'m3',14,10,0,2,''],
+['P4','D4050','Block 2 foundations','أساسات المبنى 2','2.3 Substructure','Z2','BLK-2','CIV',-20,30,180,'m3',8,40,3,10,'permit'],
+['P4','D4060','Sports hall steel frame','الهيكل الفولاذي للصالة الرياضية','3.2 Superstructure','Z2','SPORTS','CIV',18,45,210,'t',12,0,0,0,''],
+['P4','D4070','Classroom partitions','قواطع الفصول','3.3 Finishes','Z1','BLK-1','ARC',30,40,3100,'m2',8,0,0,0,''],
+['P4','D4080','Fire alarm system','نظام إنذار الحريق','4.1 Electrical','Z1','BLK-1','ELE',25,35,1,'LS',5,0,0,0,''],
+['P4','D4090','Chilled water piping','مواسير المياه المبردة','4.2 Mechanical','Z1','BLK-1','MEC',20,50,1600,'m',7,0,0,0,''],
+['P5','E5010','Shoring & dewatering','سند جوانب الحفر ونزح المياه','1.1 Enabling','Z1','BASEMENT','CIV',-200,45,1,'LS',6,100,4,0,''],
+['P5','E5020','Basement excavation','حفر القبو','2.1 Substructure','Z1','BASEMENT','CIV',-160,45,38000,'m3',10,100,6,0,'equipment'],
+['P5','E5030','Basement raft','لبشة القبو','2.2 Substructure','Z1','BASEMENT','CIV',-115,40,5200,'m3',14,100,5,0,''],
+['P5','E5040','Basement walls & slabs B2–B1','جدران وبلاطات القبو B2–B1','2.3 Substructure','Z1','BASEMENT','CIV',-75,60,4100,'m3',14,88,4,3,''],
+['P5','E5050','Podium structure','هيكل المنصة','3.1 Superstructure','Z2','PODIUM','CIV',-30,50,3600,'m3',12,30,6,4,'material'],
+['P5','E5060','Tower core L1–L10','قلب البرج – الأدوار 1–10','3.2 Superstructure','Z2','TWR','CIV',-10,80,2200,'m3',16,6,3,8,''],
+['P5','E5070','Curtain wall mock-up','عينة الحائط الستائري','5.1 Envelope','Z2','TWR','ARC',5,30,1,'LS',3,0,0,0,''],
+['P5','E5080','Basement MEP first fix','التمديدات الكهروميكانيكية للقبو','4.1 MEP','Z1','BASEMENT','MEC',-20,60,1,'LS',9,22,0,2,''],
+['P5','E5090','Substation building','مبنى المحطة الفرعية','4.2 Electrical','Z1','BASEMENT','ELE',-15,45,1,'LS',7,25,2,3,''],
+['P5','E5100','Façade glazing','زجاج الواجهات','5.2 Envelope','Z2','TWR','ARC',45,90,9800,'m2',10,0,0,0,'']];
+const GEO={P1:[24.7136,46.6753],P2:[21.5433,39.1728],P3:[26.4207,50.0888],P4:[24.5247,39.5692],P5:[26.2172,50.1971]};
+const PH_COL=[['#c9dbe6','#a8957c','#6f665b'],['#e6d9c4','#9c8b74','#585149'],['#d3e0d6','#8f8a7d','#4f5a52'],['#e3d3cf','#a38a7e','#5e4f4a']];
+
+// Fictional placeholder photo (SVG) — clearly labelled DEMO PHOTO. No parentheses, so it can sit in an unquoted CSS url.
+function demoPhoto(label,n){const c=PH_COL[n%4],v=n%3;
+  const scene=v===0?`<rect x="70" y="70" width="180" height="110" fill="none" stroke="${c[2]}" stroke-width="6"/><line x1="70" y1="107" x2="250" y2="107" stroke="${c[2]}" stroke-width="6"/><line x1="70" y1="144" x2="250" y2="144" stroke="${c[2]}" stroke-width="6"/><line x1="130" y1="70" x2="130" y2="180" stroke="${c[2]}" stroke-width="6"/><line x1="190" y1="70" x2="190" y2="180" stroke="${c[2]}" stroke-width="6"/>`
+    :v===1?`<line x1="230" y1="180" x2="230" y2="40" stroke="#c08a2b" stroke-width="7"/><line x1="120" y1="48" x2="290" y2="48" stroke="#c08a2b" stroke-width="7"/><line x1="140" y1="48" x2="140" y2="95" stroke="${c[2]}" stroke-width="2"/><rect x="128" y="95" width="24" height="16" fill="${c[2]}"/><rect x="40" y="120" width="90" height="60" fill="${c[2]}"/>`
+    :`<polygon points="0,170 60,150 260,150 320,170" fill="${c[2]}"/><rect x="200" y="122" width="70" height="28" fill="#c08a2b"/><line x1="200" y1="128" x2="160" y2="100" stroke="#c08a2b" stroke-width="6"/><rect x="40" y="135" width="50" height="15" fill="${c[1]}"/>`;
+  const svg=`<svg xmlns="http://www.w3.org/2000/svg" width="320" height="240" viewBox="0 0 320 240"><rect width="320" height="240" fill="${c[0]}"/><rect y="170" width="320" height="70" fill="${c[1]}"/>${scene}<rect width="320" height="26" fill="#1b1a17" opacity="0.7"/><text x="10" y="18" font-family="monospace" font-size="13" fill="#ffffff">DEMO PHOTO · ${label}</text></svg>`;
+  return 'data:image/svg+xml;charset=utf-8,'+encodeURIComponent(svg);}
 
 function plannedPct(a,d){if(d<a.ps)return 0;if(d>=a.pf)return 100;const t=dd(a.ps,a.pf);return t<=0?100:clamp(dd(a.ps,d)/t*100,0,100);}
 
@@ -902,10 +1168,12 @@ function seed(){
   const projects=[
     {id:'P1',code:'DMC-101',name:'Al Noor Medical Centre',nameAr:'مركز النور الطبي',loc:'Riyadh',locAr:'الرياض',value:48,src:'demo'},
     {id:'P2',code:'DMC-102',name:'Harbour View Residences',nameAr:'مساكن إطلالة الميناء',loc:'Jeddah',locAr:'جدة',value:92,src:'demo'},
-    {id:'P3',code:'DMC-103',name:'Logistics Warehouse Ph. 2',nameAr:'مستودع لوجستي – المرحلة 2',loc:'Dammam',locAr:'الدمام',value:31,src:'demo'}];
+    {id:'P3',code:'DMC-103',name:'Logistics Warehouse Ph. 2',nameAr:'مستودع لوجستي – المرحلة 2',loc:'Dammam',locAr:'الدمام',value:31,src:'demo'},
+    {id:'P4',code:'DMC-104',name:'Al Rawdah School Campus',nameAr:'مجمع مدارس الروضة',loc:'Madinah',locAr:'المدينة المنورة',value:37,src:'demo'},
+    {id:'P5',code:'DMC-105',name:'Corniche Office Tower',nameAr:'برج مكاتب الكورنيش',loc:'Al Khobar',locAr:'الخبر',value:120,src:'demo'}];
   const activities=[],updates=[];
-  ROWS.forEach(([pid,code,name,nameAr,wbs,s,d,qty,unit,w,eng,cur,lag,last,reason])=>{
-    eng=DISC[code]||eng;const ps=addD(TODAY,s),pf=addD(ps,d),a={id:'A_'+code,pid,code,name,nameAr,wbs,ps,pf,qty,unit,w,eng,bldg:locOf(code)[0],zone:locOf(code)[1],src:'demo'};
+  ROWS.forEach(([pid,code,name,nameAr,wbs,zone,bldg,eng,s,d,qty,unit,w,cur,lag,last,reason])=>{
+    const ps=addD(TODAY,s),pf=addD(ps,d),a={id:'A_'+code,pid,code,name,nameAr,wbs,ps,pf,qty,unit,w,eng,bldg,zone,src:'demo'};
     activities.push(a);
     if(!cur)return;
     const as=addD(ps,lag);
@@ -921,23 +1189,74 @@ function seed(){
       updates.push({id:`S_${code}_${i}`,actId:a.id,by:eng,pct,qty:Math.round(qty*pct)/100,aStart:as,aFinish:pct===100?dt:'',remarks:'',delay:behind&&reason?reason:(i===dates.length-1&&reason?reason:''),photos:[],status:'approved',created:dt+'T15:30',submitted:dt+'T15:30',reviewed:rv+'T09:10',reviewer:'PL',cmAt:dt+'T17:45',cmBy:'CM',cmComment:'',comment:'',prevId:'',src:'demo',log:[{at:dt+'T15:30',ev:'submitted',by:eng},{at:dt+'T17:45',ev:'endorsed',by:'CM'},{at:rv+'T09:10',ev:'approved',by:'PL'}]});
     });
   });
-  const P=(code,o)=>{const a=activities.find(x=>x.code===code);const ap=updates.filter(u=>u.actId===a.id).pop();const at=o.at;
-    updates.push(Object.assign({id:'S_'+code+'_p',actId:a.id,by:a.eng,qty:Math.round(a.qty*o.pct)/100,aStart:ap?ap.aStart:addD(TODAY,-3),aFinish:'',remarks:'',delay:'',photos:[],created:at,submitted:o.status==='draft'?'':at,reviewed:'',reviewer:'',comment:'',prevId:'',src:'demo',log:[{at,ev:o.status==='draft'?'saved':'submitted',by:a.eng}]},o));};
-  P('A1040',{pct:62,status:'submitted',at:addD(TODAY,-1)+'T16:05',remarks:'Wall panels W7–W9 poured. Formwork moved to grid C.'});
-  P('B2030',{pct:68,status:'endorsed',at:addD(TODAY,-2)+'T17:40',delay:'material',remarks:'Rebar delivery for L4 delayed 5 days. Pour rescheduled.'});
-  {const u=updates[updates.length-1];u.cmAt=addD(TODAY,-1)+'T08:30';u.cmBy='CM';u.cmComment='L4 pour only half complete — adjusted to 68%.';u.origPct=72;u.origQty=Math.round(2400*72)/100;u.adjBy='CM';u.adjAt=u.cmAt;u.adjNote=u.cmComment;u.log.push({at:u.cmAt,ev:'adjusted',by:'CM',detail:'72% → 68%'});u.log.push({at:u.cmAt,ev:'endorsed',by:'CM'});}
-  P('C3040',{pct:45,qty:4200,status:'submitted',at:TODAY+'T08:15',remarks:'Bays 1–6 sheeted, ridge capping pending.'});
-  const ret=addD(TODAY,-2);
-  P('A1050',{pct:25,qty:30,status:'returned',at:addD(TODAY,-3)+'T15:00',remarks:'Columns GF-C1 to C12 cast.',reviewed:ret+'T10:20',reviewer:'CM',comment:'30 m3 is about 17% of 180 m3, not 25%. Please check the quantity or the %.'});
-  updates[updates.length-1].log.push({at:ret+'T10:20',ev:'returned',by:'CM'});
+  const act=code=>activities.find(x=>x.code===code);
+  let phN=0;
+  const photo=(u,caption)=>{const a=activities.find(x=>x.id===u.actId),g=GEO[a.pid],n=phN++;
+    u.photos=u.photos.concat([{id:'ph_demo_'+n,src:demoPhoto(a.code,n),caption,at:(u.submitted||u.created).replace('T',' '),lat:r1(g[0]*1e4+n%7)/1e4,lng:r1(g[1]*1e4+n%5)/1e4,acc:6+n%9,geo:'ok'}]);return u;};
+  const P=(code,o)=>{const a=act(code);const ap=updates.filter(u=>u.actId===a.id).pop();const at=o.at;
+    const u=Object.assign({id:'S_'+code+'_p',actId:a.id,by:a.eng,qty:Math.round(a.qty*o.pct)/100,aStart:ap?ap.aStart:addD(TODAY,-3),aFinish:'',remarks:'',delay:'',photos:[],created:at,submitted:o.status==='draft'?'':at,reviewed:'',reviewer:'',comment:'',prevId:'',src:'demo',log:[{at,ev:o.status==='draft'?'saved':'submitted',by:a.eng}]},o);
+    updates.push(u);return u;};
+  const endorse=(u,at,comment)=>{Object.assign(u,{status:'endorsed',cmAt:at,cmBy:'CM',cmComment:comment||''});u.log.push({at,ev:'endorsed',by:'CM'});return u;};
+  const lastAppr=code=>updates.filter(u=>u.actId==='A_'+code&&u.status==='approved').pop();
+  const d=n=>addD(TODAY,-n);
+
+  // Waiting for the Construction Manager (step 1)
+  photo(photo(P('A1040',{pct:62,status:'submitted',at:d(1)+'T16:05',delay:'material',remarks:'Wall panels W7–W9 poured. Formwork moved to grid C.'}),'Wall W8 after stripping'),'Formwork at grid C');
+  photo(photo(P('C3040',{pct:52,qty:6240,status:'submitted',at:TODAY+'T08:15',remarks:'Bays 1–6 sheeted, ridge capping pending.'}),'Roof bays 1–6'),'Ridge capping material on site');
+  photo(P('B2110',{pct:58,status:'submitted',at:d(1)+'T14:20',remarks:'Podium slab pour 3 of 5 completed.'}),'Pour 3 finished surface');
+  photo(P('E5080',{pct:30,status:'submitted',at:d(1)+'T11:40',remarks:'Sleeves and hangers B2 complete, B1 started.'}),'B2 hangers and sleeves');
+  P('D4030',{pct:92,status:'submitted',at:TODAY+'T09:05',remarks:'All ground beams cast except GB-14.'});
+  P('E5090',{pct:32,status:'submitted',at:d(2)+'T15:10',remarks:'Substation walls up to roof level.'});
+  // Approved by CM, waiting for Planning (step 2)
+  {const u=P('B2030',{pct:68,status:'submitted',at:d(2)+'T17:40',delay:'material',remarks:'Rebar delivery for L4 delayed 5 days. Pour rescheduled.'});const at=d(1)+'T08:30',note='L4 pour only half complete — adjusted to 68%.';
+    Object.assign(u,{origPct:72,origQty:Math.round(2400*72)/100,adjBy:'CM',adjAt:at,adjNote:note});u.log.push({at,ev:'adjusted',by:'CM',detail:'72% → 68%'});endorse(u,at,note);}
+  endorse(P('E5050',{pct:36,status:'submitted',at:d(2)+'T13:00',delay:'material',remarks:'Level P1 slab cast. Rebar supply still behind schedule.'}),d(1)+'T10:15','Checked on site — OK.');
+  endorse(P('A1100',{pct:14,status:'submitted',at:d(2)+'T16:30',remarks:'Basement conduits complete in zone Z1.'}),d(1)+'T09:40','');
+  endorse(P('C3050',{pct:64,status:'submitted',at:d(1)+'T12:00',remarks:'Bays 7–9 poured.'}),d(1)+'T17:50','');
+  // Returned to the engineer
+  {const ret=d(2);P('A1050',{pct:25,qty:30,status:'returned',at:d(3)+'T15:00',delay:'manpower',remarks:'Columns GF-C1 to C12 cast.',reviewed:ret+'T10:20',reviewer:'CM',comment:'30 m3 is about 17% of 180 m3, not 25%. Please check the quantity or the %.'}).log.push({at:ret+'T10:20',ev:'returned',by:'CM'});}
+  {const ret=d(1);P('B2060',{pct:30,status:'returned',at:d(2)+'T12:30',remarks:'Risers installed to level 6.',reviewed:ret+'T09:00',reviewer:'PL',cmAt:d(2)+'T16:00',cmBy:'CM',comment:'Pressure test certificate missing — attach it and resubmit.'}).log.push({at:d(2)+'T16:00',ev:'endorsed',by:'CM'},{at:ret+'T09:00',ev:'returned',by:'PL'});}
+  // Drafts not yet submitted
   P('C3070',{pct:15,status:'draft',at:TODAY+'T07:50',remarks:'Zone A mains installed'});
-  const reminders=[{id:'R_seed',to:'ARC',from:'PL',at:addD(TODAY,-1)+'T09:00',actIds:['A_B2050'],type:'missing',done:false},{id:'R_seed2',to:'CIV',from:'CM',at:addD(TODAY,-1)+'T08:30',actIds:['A_B2030'],type:'adjusted',from_pct:72,to_pct:68,from_qty:1728,to_qty:1632,note:'L4 pour only half complete — adjusted to 68%.',done:false}];
-  return {projects,activities,updates,reminders,seededAt:stamp()};
+  P('D4050',{pct:48,status:'draft',at:d(1)+'T18:10',delay:'permit',remarks:'Excavation for F2 foundations waiting for municipality permit.'});
+  // Photos on recent approved updates (they appear in the weekly report)
+  [['A1030','Raft pour – final bay'],['B2080','Tower 2 raft rebar'],['C3050','Slab on grade bay 6'],['E5040','B1 wall formwork'],['A1070','Outpatient footings'],['C3030','Steel frame grid 4']].forEach(([c,cap])=>{const u=lastAppr(c);if(u)photo(u,cap);});
+  const reminders=[{id:'R_seed',to:'ARC',from:'PL',at:d(1)+'T09:00',actIds:['A_B2050','A_A1060'],type:'missing',done:false},
+    {id:'R_seed2',to:'CIV',from:'CM',at:d(1)+'T08:30',actIds:['A_B2030'],type:'adjusted',from_pct:72,to_pct:68,from_qty:1728,to_qty:1632,note:'L4 pour only half complete — adjusted to 68%.',done:false},
+    {id:'R_seed3',to:'MEC',from:'PL',at:d(1)+'T09:05',actIds:['A_A1110'],type:'missing',done:false}];
+  return {projects,activities,updates,reminders,chat:seedChat(),seededAt:stamp()};
 }
 
+// Demo chat: people are identified by discipline / role code (CIV, ARC, MEC, ELE, CM, PL, PM)
+function seedChat(){const now=Date.now(),M=[];let k=0;
+  const m=(room,from,minsAgo,body)=>M.push({id:'M_seed'+(k++),room,from,body,image:'',ts:now-minsAgo*60000});
+  m('general','PL',1500,'صباح الخير يا جماعة. آخر ميعاد لتحديثات الأسبوع الخميس الساعة 2 الضهر، يا ريت كل التحديثات تتبعت قبلها.');
+  m('general','CM',1490,'تمام. وأي نشاط متأخر لازم سبب التأخير يتكتب في التحديث.');
+  m('general','ELE',1440,'تمام، ماشي.');
+  m('general','PM',300,'Reminder: monthly client meeting on Sunday 10:00. Please make sure the S-curve is up to date.');
+  m('proj:P1','CIV',1300,'تم صب جدران W7 إلى W9 النهارده، الشدة هتتنقل لمحور C بكرة.');
+  m('proj:P1','CM',1280,'تمام، هعدي على الموقع الصبح وأراجع التحديث.');
+  m('proj:P1','PL',900,'A1050 رجعته لأن الكمية 30 م3 تساوي 17% مش 25%. راجع النسبة وابعته تاني.');
+  m('proj:P1','MEC',200,'مجاري التكييف في القبو واقفة لحد رد الاستشاري على الـ RFI رقم 14.');
+  m('proj:P2','CM',1250,'حديد الدور الرابع اتأخر 5 أيام، عدلت نسبة B2030 لـ 68%.');
+  m('proj:P2','CIV',1200,'تمام، هنعوض في الوردية الليلية الأسبوع ده.');
+  m('proj:P2','PM',240,'محتاج خطة استدراك للبرج 1 قبل اجتماع الأحد.');
+  m('proj:P5','PL',600,'E5060 مفيش تحديث بقاله أكتر من أسبوع، يا ريت تبعتوه النهارده.');
+  m('dm:CIV:PL','PL',400,'ممكن تبعتلي صور جدران القبو في التحديث الجاي؟');
+  m('dm:CIV:PL','CIV',380,'أكيد، هرفعها مع تحديث بكرة.');
+  m('dm:CIV:PL','PL',60,'شكراً. وكمان راجع A1050 قبل الخميس.');
+  m('dm:CM:MEC','CM',700,'مجاري الهواء في القبو متأخرة، إيه المشكلة؟');
+  m('dm:CM:MEC','MEC',650,'مستنيين رد الاستشاري على الـ RFI رقم 14، المفروض يرد بكرة.');
+  m('dm:PL:PM','PM',180,'Please send me the weekly report PDF for DMC-102 before Sunday.');
+  m('dm:PL:PM','PL',170,'Will do — it will be ready after tomorrow\'s approvals.');
+  const r=n=>now-n*60000;
+  return {messages:M,reads:{CIV:{general:r(1000),'proj:P1':r(1290),'proj:P2':r(1210),'dm:CIV:PL':r(390)},CM:{general:r(1000),'proj:P1':r(1000),'proj:P2':r(1000),'dm:CM:MEC':r(640)},PL:{general:r(1400),'proj:P1':r(800),'dm:CIV:PL':r(50),'dm:PL:PM':r(160)},PM:{general:r(290),'dm:PL:PM':r(160)},MEC:{'dm:CM:MEC':r(690)}}};
+}
+
+function svgToJpeg(src){return new Promise((res,rej)=>{const img=new Image();img.onload=()=>{const c=document.createElement('canvas');c.width=img.width||320;c.height=img.height||240;const x=c.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,c.width,c.height);x.drawImage(img,0,0,c.width,c.height);res(c.toDataURL('image/jpeg',0.75));};img.onerror=rej;img.src=src;});}
 function normPhoto(p,i){return typeof p==='string'?{id:'ph'+i,src:p,caption:'',at:'',lat:null,lng:null,acc:null,geo:'none'}:p;}
-function normalize(d){d.reminders=d.reminders||[];d.activities=d.activities.map(a=>Object.assign({bldg:locOf(a.code)[0],zone:locOf(a.code)[1]},a));d.updates=d.updates.map(u=>Object.assign({},u,{photos:(u.photos||[]).map(normPhoto)}));return d;}
-function load(){try{for(const k of [KEY,KEY3]){const r=localStorage.getItem(k);if(r){const d=JSON.parse(r);if(d&&d.data){d.data=normalize(d.data);return d;}}}}catch(e){}return null;}
+function normalize(d){d.reminders=d.reminders||[];d.chat=d.chat||{messages:[],reads:{}};d.activities=d.activities.map(a=>Object.assign({bldg:locOf(a.code)[0],zone:locOf(a.code)[1]},a));d.updates=d.updates.map(u=>Object.assign({},u,{photos:(u.photos||[]).map(normPhoto)}));return d;}
+function load(){try{for(const k of [KEY]){const r=localStorage.getItem(k);if(r){const d=JSON.parse(r);if(d&&d.data){d.data=normalize(d.data);return d;}}}}catch(e){}return null;}
 function makeUpdate(ups,f,status,eng){const ts=stamp(),ev=status==='submitted'?'submitted':'saved';
   const vals={pct:clamp(Math.round(Number(f.pct)||0),0,100),qty:Number(f.qty)||0,aStart:f.aStart||'',aFinish:f.aFinish||'',remarks:f.remarks||'',delay:f.delay||'',photos:f.photos||[]};
   let id=f.draftId;
@@ -997,12 +1316,12 @@ const toCSV=rows=>rows.map(r=>r.map(v=>{v=v==null?'':String(v);return /[",\r\n]/
 function download(name,text,type){const blob=new Blob([type==='application/json'?text:'\ufeff'+text],{type:type||'text/csv;charset=utf-8'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),2000);}
 function compress(file){return new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>{const img=new Image();img.onload=()=>{const sc=Math.min(1,800/Math.max(img.width,img.height));const c=document.createElement('canvas');c.width=Math.round(img.width*sc);c.height=Math.round(img.height*sc);c.getContext('2d').drawImage(img,0,0,c.width,c.height);res(c.toDataURL('image/jpeg',0.6));};img.onerror=rej;img.src=r.result;};r.onerror=rej;r.readAsDataURL(file);});}
 function sampleCSV(){const d=n=>addD(TODAY,n);return [CSV_COLS.join(','),
-`DMC-104,Coastal School Annex,D4010,Site clearance,تنظيف الموقع,1.1 Enabling,${d(-20)},${d(-5)},6000,m2,4,CIV`,
-`DMC-104,Coastal School Annex,D4020,Strip footings,القواعد الشريطية,2.1 Substructure,${d(-8)},${d(20)},260,m3,10,CIV`,
-`DMC-104,Coastal School Annex,D4030,Ground beams,الجسور الأرضية,2.2 Substructure,${d(10)},${d(35)},140,m3,8,CIV`,
-`DMC-104,Coastal School Annex,D4040,Steel frame,الهيكل الفولاذي,3.1 Superstructure,${d(30)},${d(75)},210,t,16,CIV`,
-`DMC-104,Coastal School Annex,D4050,Roof deck,سطح السقف,3.2 Superstructure,${d(80)},${d(70)},2400,m2,9,ARC`,
-`DMC-101,,A1080,Blockwork (re-baselined),أعمال البلوك,3.2 Superstructure,${d(25)},${d(80)},6400,m2,9,ARC`].map((l,i)=>i===0?l:l+','+['—,SITE','Z1,BLD-1','Z1,BLD-2','Z2,BLD-1','Z2,BLD-2','Z2,BLD-B'][i-1]).join('\n');}
+`DMC-106,Coastal School Annex,F6010,Site clearance,تنظيف الموقع,1.1 Enabling,${d(-20)},${d(-5)},6000,m2,4,CIV`,
+`DMC-106,Coastal School Annex,F6020,Strip footings,القواعد الشريطية,2.1 Substructure,${d(-8)},${d(20)},260,m3,10,CIV`,
+`DMC-106,Coastal School Annex,F6030,Ground beams,الجسور الأرضية,2.2 Substructure,${d(10)},${d(35)},140,m3,8,CIV`,
+`DMC-106,Coastal School Annex,F6040,Steel frame,الهيكل الفولاذي,3.1 Superstructure,${d(30)},${d(75)},210,t,16,CIV`,
+`DMC-106,Coastal School Annex,F6050,Roof deck,سطح السقف,3.2 Superstructure,${d(80)},${d(70)},2400,m2,9,ARC`,
+`DMC-101,,A1090,Blockwork (re-baselined),أعمال البلوك,3.3 Superstructure,${d(25)},${d(80)},6400,m2,9,ARC`].map((l,i)=>i===0?l:l+','+['—,SITE','Z1,BLD-1','Z1,BLD-2','Z2,BLD-1','Z2,BLD-2','Z2,BLD-B'][i-1]).join('\n');}
 
 // ───────── Data source adapter: DEMO (this browser) or LIVE (Supabase, shared) ─────────
 function connCfg(){const w=window.DMC_CONFIG||{};let l={};try{l=JSON.parse(localStorage.getItem(CONN_KEY)||'{}');}catch(e){}
@@ -1031,8 +1350,9 @@ const TABLE_ORDER=['projects','activities','updates','reminders'];
 
 class Component extends DCLogic {
   state=(()=>{const s=load();return{data:s?s.data:seed(),lang:(s&&s.prefs&&s.prefs.lang)||'en',role:(s&&s.prefs&&s.prefs.role)||'site',eng:(s&&s.prefs&&ENG.indexOf(s.prefs.eng)>=0&&s.prefs.eng)||'CIV',
-    tab:{site:'acts',cm:'review',planner:'review',pm:'portfolio'},detail:null,review:null,form:null,errors:[],q:'',sProj:'all',sFilter:'all',plProj:'P1',plFilter:'all',mode:'demo',auth:'none',user:null,profile:null,syncing:false,lastSync:'',loadErr:'',settingsDb:{},loginEmail:'',loginPw:'',loginErr:'',loginBusy:false,connUrl:connCfg().url,connKey:connCfg().key,wide:false,liveArm:'',pmProj:'all',dlProj:'all',
-    comment:'',importText:'',importRows:null,settings:false,toast:'',resetArm:false,bulk:false,bulkVals:{},bulkErr:{},sel:{},rvProj:'all',rvFlag:'all',sBldg:'all',sZone:'all',plBldg:'all',plZone:'all',adjPct:'',adjQty:'',laProj:'all',laDays:14,report:false,repProj:'all'};})();
+    tab:{site:'acts',cm:'review',planner:'review',pm:'dash'},detail:null,review:null,form:null,errors:[],q:'',sProj:'all',sFilter:'all',plProj:'P1',plFilter:'all',mode:'demo',auth:'none',user:null,profile:null,syncing:false,lastSync:'',loadErr:'',settingsDb:{},loginEmail:'',loginPw:'',loginErr:'',loginBusy:false,connUrl:connCfg().url,connKey:connCfg().key,wide:false,liveArm:'',pmProj:'all',dlProj:'all',
+    comment:'',importText:'',importRows:null,settings:false,toast:'',resetArm:false,bulk:false,bulkVals:{},bulkErr:{},sel:{},rvProj:'all',rvFlag:'all',sBldg:'all',sZone:'all',plBldg:'all',plZone:'all',adjPct:'',adjQty:'',laProj:'all',laDays:14,report:false,repProj:'all',dbProj:'all',uq:'',uFilter:'all',nuOpen:false,nu:{name:'',pw:'',role:'site',disc:'CIV'},nuBusy:false,
+    chatOpen:false,chatRoom:null,chatText:'',chatImg:null,chatNew:false,chatQ:'',chatMsgs:[],chatReads:[],chatDir:[],chatErr:''};})();
   live(){return this.state.mode==='live';}
   dbSet(k){const v=this.live()?this.state.settingsDb[k]:undefined;return v===undefined||v===null?undefined:v;}
   reqCM(){const v=this.dbSet('require_cm');return v!==undefined?(v===true||v==='true'):(this.props.requireCM!==false);}
@@ -1054,8 +1374,10 @@ class Component extends DCLogic {
     const prof=r.data;if(prof.active===false){this.setState({auth:'signedOut',loginErr:t.inactive});await sb.auth.signOut();return;}
     const role=prof.role==='admin'?(['site','cm','planner','pm'].indexOf(this.state.role)>=0?this.state.role:'planner'):prof.role;
     this.setState({user:{id:user.id,email:user.email},profile:prof,role,eng:prof.discipline||'CIV',auth:'ready',loginErr:''});
-    await this.reloadLive();
-    if(!this._ch){let tmr=null;this._ch=sb.channel('dmc-live').on('postgres_changes',{event:'*',schema:'public'},()=>{clearTimeout(tmr);tmr=setTimeout(()=>this.reloadLive(),700);}).subscribe();}}
+    await this.reloadLive();this.reloadChat();
+    if(!this._ch){let tmr=null,tc=null;this._ch=sb.channel('dmc-live').on('postgres_changes',{event:'*',schema:'public'},p=>{
+      if(p&&String(p.table||'').indexOf('chat_')===0){clearTimeout(tc);tc=setTimeout(()=>this.reloadChat(),250);return;}
+      clearTimeout(tmr);tmr=setTimeout(()=>this.reloadLive(),700);}).subscribe();}}
   async reloadLive(){const sb=this._sb;if(!sb||this.state.auth!=='ready')return;
     try{const q=n=>sb.from(n).select('*').limit(10000);
       const res=await Promise.all([q('projects'),q('activities'),q('progress_updates'),q('notifications'),q('app_settings')]);
@@ -1096,18 +1418,63 @@ class Component extends DCLogic {
     this.setState({loginBusy:true,loginErr:''});const r=await this._sb.auth.signUp({email:this.loginId(),password:s.loginPw,options:{data:{full_name:s.loginEmail.trim()}}});
     this.setState({loginBusy:false});if(r.error){this.setState({loginErr:r.error.message});return;}
     if(r.data&&r.data.session)await this.afterLogin(r.data.user);else this.setState({loginErr:t.signUpOk});}
-  async signOut(){try{await this._sb.auth.signOut();}catch(e){}this.setState({auth:'signedOut',user:null,profile:null,settings:false,data:{projects:[],activities:[],updates:[],reminders:[]}});}
+  async signOut(){try{await this._sb.auth.signOut();}catch(e){}this.setState({auth:'signedOut',user:null,profile:null,settings:false,chatOpen:false,chatRoom:null,chatMsgs:[],chatReads:[],chatDir:[],users:[],members:[],data:{projects:[],activities:[],updates:[],reminders:[]}});}
   connect(){const s=this.state,t=this.T();if(!/^https:\/\/.+/.test(s.connUrl.trim())||s.connKey.trim().length<20){this.toast(t.connBad);return;}
     try{localStorage.setItem(CONN_KEY,JSON.stringify({url:s.connUrl.trim(),key:s.connKey.trim()}));}catch(e){}this.setState({settings:false});this.initConn();}
   disconnect(){try{localStorage.removeItem(CONN_KEY);}catch(e){}if(this._ch&&this._sb)try{this._sb.removeChannel(this._ch);}catch(e){}this._ch=null;
     const d=load();this.setState({mode:'demo',auth:'none',user:null,profile:null,data:d?d.data:seed(),settings:false,detail:null,review:null});}
   openDemo(){const d=load();this.setState({mode:'demo',auth:'none',data:d?d.data:seed(),detail:null,review:null});}
   async loadDemoToDb(){const sb=this._sb,t=this.T();if(this.state.liveArm!=='load'){this.setState({liveArm:'load'});return;}this.setState({liveArm:'',syncing:true});
-    try{const d=seed();for(const k of TABLE_ORDER){const rows=(d[k]||[]).map(MAP[k].to);if(!rows.length)continue;const r=await sb.from(MAP[k].t).upsert(rows);if(r.error)throw r.error;}this.toast(t.demoLoaded);}
+    try{const d=seed();
+      for(const u of d.updates){if(!u.photos.length)continue;try{for(const p of u.photos)p.src=await svgToJpeg(p.src);await this.uploadPhotos(u);}catch(e){u.photos=[];}}
+      for(const k of TABLE_ORDER){const rows=(d[k]||[]).map(MAP[k].to);if(!rows.length)continue;const r=await sb.from(MAP[k].t).upsert(rows);if(r.error)throw r.error;}this.toast(t.demoLoaded);}
     catch(e){this.toast(t.syncErr+' '+(e.message||e));}this.setState({syncing:false});await this.reloadLive();}
   async removeDemoFromDb(){const sb=this._sb,t=this.T();if(this.state.liveArm!=='remove'){this.setState({liveArm:'remove'});return;}this.setState({liveArm:'',syncing:true});
     try{let r=await sb.from('notifications').delete().like('id','R_seed%');if(r.error)throw r.error;r=await sb.from('projects').delete().eq('is_demo',true);if(r.error)throw r.error;this.toast(t.demoRemoved);}
     catch(e){this.toast(t.syncErr+' '+(e.message||e));}this.setState({syncing:false});await this.reloadLive();}
+  async createUser(){const s=this.state,t=this.T(),f=s.nu,name=(f.name||'').trim();if(!name||(f.pw||'').length<8){this.toast(t.signUpNeed);return;}
+    const email=name.indexOf('@')<0?name.toLowerCase().replace(/\s+/g,'.')+'@dmc.local':name;this.setState({nuBusy:true});
+    try{const c=connCfg(),m=await import('https://esm.sh/@supabase/supabase-js@2');
+      // separate client without a stored session, so the administrator stays signed in
+      const tmp=m.createClient(c.url,c.key,{auth:{persistSession:false,autoRefreshToken:false,detectSessionInUrl:false,storageKey:'dmc-erp-newuser'}});
+      const r=await tmp.auth.signUp({email,password:f.pw,options:{data:{full_name:name}}});if(r.error)throw r.error;
+      const id=r.data&&r.data.user&&r.data.user.id;
+      if(id){const u=await this._sb.from('profiles').update({role:f.role,discipline:f.disc||null,full_name:name,active:true}).eq('id',id);if(u.error)throw u.error;}
+      this.setState({nu:{name:'',pw:'',role:'site',disc:'CIV'},nuOpen:false});this.toast(r.data&&r.data.session?t.nuOk:t.nuOkConfirm);}
+    catch(e){this.toast(t.syncErr+' '+(e.message||e));}
+    this.setState({nuBusy:false});await this.loadAdmin();}
+  importJson(e){const file=e.target.files&&e.target.files[0];e.target.value='';if(!file)return;const t=this.T(),r=new FileReader();
+    r.onload=()=>{try{const j=JSON.parse(String(r.result)),d=j&&j.data;if(!d||!Array.isArray(d.projects)||!Array.isArray(d.activities)||!Array.isArray(d.updates))throw 0;
+      this.set({data:normalize(d),settings:false,detail:null,review:null,form:null},()=>this.toast(t.t_imported));}catch(x){this.toast(t.t_badJson);}};r.readAsText(file);}
+  // ───────── Team chat: DEMO = this browser (people are role/discipline codes), LIVE = Supabase tables chat_messages / chat_reads ─────────
+  chatMe(){const s=this.state;if(this.live())return s.user?s.user.id:'';return s.role==='site'?s.eng:({cm:'CM',planner:'PL',pm:'PM'})[s.role];}
+  chatAll(){return this.live()?(this.state.chatMsgs||[]):((this.state.data.chat||{}).messages||[]);}
+  chatReadAt(user,room){if(this.live()){const r=(this.state.chatReads||[]).find(x=>x.user_id===user&&x.room===room);return r?Date.parse(r.last_read):0;}
+    return (((this.state.data.chat||{}).reads||{})[user]||{})[room]||0;}
+  async reloadChat(){const sb=this._sb;if(!sb||this.state.auth!=='ready')return;
+    try{const r=await Promise.all([sb.from('chat_messages').select('*').order('created_at',{ascending:false}).limit(1000),sb.from('chat_reads').select('*'),sb.rpc('chat_directory')]);
+      if(r[0].error)throw r[0].error;if(r[1].error)throw r[1].error;
+      const msgs=r[0].data.slice().reverse().map(x=>({id:x.id,room:x.room,from:x.sender,body:x.body||'',image:x.image||'',ts:Date.parse(x.created_at)}));
+      this.setState({chatMsgs:msgs,chatReads:r[1].data||[],chatDir:r[2].error?[]:(r[2].data||[]),chatErr:''},()=>{if(this.state.chatOpen&&this.state.chatRoom){this.chatMarkRead(this.state.chatRoom);this.chatScroll();}});}
+    catch(e){this.setState({chatErr:String(e.message||e)});}}
+  chatScroll(){setTimeout(()=>{const el=document.getElementById('dmc-chat-msgs');if(el)el.scrollTop=el.scrollHeight;},40);}
+  async chatMarkRead(room){const me=this.chatMe();if(!me||!room)return;
+    const last=this.chatAll().filter(m=>m.room===room&&m.from!==me).reduce((x,m)=>Math.max(x,m.ts),0);if(!last||last<=this.chatReadAt(me,room))return;
+    const at=Math.max(Date.now(),last);
+    if(this.live()){const iso=new Date(at).toISOString();this.setState(s=>({chatReads:(s.chatReads||[]).filter(r=>!(r.user_id===me&&r.room===room)).concat([{user_id:me,room,last_read:iso}])}));
+      try{await this._sb.from('chat_reads').upsert({user_id:me,room,last_read:iso});}catch(e){}return;}
+    const c=this.state.data.chat||{messages:[],reads:{}},reads=Object.assign({},c.reads,{[me]:Object.assign({},(c.reads||{})[me]||{},{[room]:at})});
+    this.set({data:Object.assign({},this.state.data,{chat:Object.assign({},c,{reads})})});}
+  chatOpenRoom(room){this.setState({chatRoom:room,chatNew:false,chatText:'',chatImg:null},()=>{this.chatMarkRead(room);this.chatScroll();});}
+  async chatSend(){const s=this.state,t=this.T(),room=s.chatRoom,me=this.chatMe(),body=(s.chatText||'').trim(),image=s.chatImg||'';if(!room||!me||(!body&&!image))return;
+    this.setState({chatText:'',chatImg:null});
+    if(this.live()){const tmp={id:uid('tmp'),room,from:me,body,image,ts:Date.now(),sending:true};this.setState(st=>({chatMsgs:(st.chatMsgs||[]).concat([tmp])}),()=>this.chatScroll());
+      const r=await this._sb.from('chat_messages').insert({room,sender:me,body,image:image||null});
+      if(r.error){this.toast(t.syncErr+' '+r.error.message);this.setState(st=>({chatMsgs:(st.chatMsgs||[]).filter(m=>m.id!==tmp.id),chatText:body,chatImg:image||null}));return;}
+      await this.reloadChat();return;}
+    const c=s.data.chat||{messages:[],reads:{}},m={id:uid('M'),room,from:me,body,image,ts:Date.now()};
+    this.set({data:Object.assign({},s.data,{chat:Object.assign({},c,{messages:(c.messages||[]).concat([m])})})},()=>this.chatScroll());}
+  onChatImg(e){const file=e.target.files&&e.target.files[0];e.target.value='';if(!file)return;compress(file).then(src=>this.setState({chatImg:src})).catch(()=>{});}
   persist(){try{localStorage.setItem(KEY,JSON.stringify({v:2,data:this.state.data,prefs:{lang:this.state.lang,role:this.state.role,eng:this.state.eng}}));return true;}catch(e){this.toast(I18N[this.state.lang].t_quota);return false;}}
   set(patch,cb){const prev=this.state.data;this.setState(patch,()=>{if(this.live()){this.savePrefs();if(patch.data&&patch.data!==prev)this.pushDiff(prev,patch.data);}else this.persist();cb&&cb();});}
   toast(m){clearTimeout(this._tt);this.setState({toast:m});this._tt=setTimeout(()=>this.setState({toast:''}),2800);}
@@ -1177,11 +1544,11 @@ class Component extends DCLogic {
     this.set({data:Object.assign({},s.data,{reminders:(s.data.reminders||[]).concat(rs)})},()=>this.toast(t.remindSent(rs.length)));}
   dismissReminder(id){const s=this.state;this.set({data:Object.assign({},s.data,{reminders:s.data.reminders.map(r=>r.id===id?Object.assign({},r,{done:true}):r)})});}
   runValidate(text){const t=I18N[this.state.lang],rows=parseCSV(text||'');if(!rows.length){this.setState({importRows:[]});return;}
-    const head=rows[0].map(h=>h.trim().toLowerCase()),need=['project_code','activity_id','activity_name','planned_start','planned_finish','budget_qty','unit','weight','assigned_to'];
+    const head=rows[0].map(h=>{h=h.trim().toLowerCase();return h==='assigned_to'?'discipline':h;}),need=['project_code','activity_id','activity_name','planned_start','planned_finish','budget_qty','unit','weight','discipline'];
     const miss=need.filter(c=>head.indexOf(c)<0);
     if(miss.length){this.setState({importRows:[{line:1,ok:false,code:'',name:'',errs:miss.map(t.e_col),rec:null}]});return;}
     const g=(r,c)=>{const i=head.indexOf(c);return i<0?'':String(r[i]||'').trim();};const seen={},data=this.state.data;
-    const out=rows.slice(1).map((r,i)=>{const errs=[],rec={project_code:g(r,'project_code'),project_name:g(r,'project_name'),code:g(r,'activity_id'),name:g(r,'activity_name'),nameAr:g(r,'activity_name_ar'),wbs:g(r,'wbs'),ps:g(r,'planned_start'),pf:g(r,'planned_finish'),qty:Number(g(r,'budget_qty')),unit:g(r,'unit'),w:Number(g(r,'weight')),bldg:g(r,'building')||'SITE',zone:g(r,'zone')||'—',eng:(x=>ALIAS[x]||x)(g(r,'assigned_to').toUpperCase().trim().split(/\s+/)[0])};
+    const out=rows.slice(1).map((r,i)=>{const errs=[],rec={project_code:g(r,'project_code'),project_name:g(r,'project_name'),code:g(r,'activity_id'),name:g(r,'activity_name'),nameAr:g(r,'activity_name_ar'),wbs:g(r,'wbs'),ps:g(r,'planned_start'),pf:g(r,'planned_finish'),qty:Number(g(r,'budget_qty')),unit:g(r,'unit'),w:Number(g(r,'weight')),bldg:g(r,'building')||'SITE',zone:g(r,'zone')||'—',eng:(x=>ALIAS[x]||x)(g(r,'discipline').toUpperCase().trim().split(/\s+/)[0])};
       if(!rec.project_code||!rec.code||!rec.name||!rec.unit)errs.push(t.e_req);
       if(!isDate(rec.ps)||!isDate(rec.pf))errs.push(t.e_date);else if(rec.pf<rec.ps)errs.push(t.e_order);
       if(!(rec.qty>0))errs.push(t.e_qty);if(!(rec.w>0))errs.push(t.e_w);if(ENG.indexOf(rec.eng)<0)errs.push(t.e_eng);
@@ -1231,18 +1598,29 @@ class Component extends DCLogic {
     const FIL={all:()=>true,needs:a=>a.missing||(!!a.returned&&!a.draft),returned:a=>!!a.returned,drafts:a=>!!a.draft,pending:a=>!!a.pending};
     const needsN=mine.filter(FIL.needs).length;
     const notifN=(s.data.reminders||[]).filter(r=>r.to===s.eng&&!r.done&&r.type==='adjusted').length;
-    const TABS={site:['acts','hist'],cm:['review','progress'],planner:['review','progress','import'],pm:['portfolio','trends','lookahead','delays']};
+    const TABS={site:['acts','hist'],cm:['review','progress','dash'],planner:['review','progress','import','dash'],pm:['dash','portfolio','trends','lookahead','delays']};
     const isAdm=this.live()&&s.profile&&s.profile.role==='admin';const tabs=TABS[role].concat(isAdm?['users']:[]).map(k=>{const bd=k==='review'?pendingAll.length:k==='acts'?needsN+notifN:0;return{label:t['tab_'+k],onClick:setTab(k),fg:k===tab?'#1b1a17':'#605a51',fw:k===tab?'700':'500',bg:k===tab?'oklch(0.93 0.05 70)':'transparent',hasBadge:bd>0,badge:bd};});
     const roles=['site','cm','planner','pm'].map(r=>({label:t['role_'+r],onClick:()=>{this.set({role:r,detail:null,review:null,errors:[],bulk:false,bulkVals:{},bulkErr:{},sel:{}});this.top();},bg:r===role?'oklch(0.76 0.14 65)':'transparent',fg:r===role?'#1b1a17':'#e9e4da'}));
     const inDetail=!!(s.detail&&D.actMap[s.detail]),inReview=isRev&&!!(s.review&&pendingAll.find(u=>u.id===s.review));
-    const show={users:!!isAdm&&tab==='users'&&!inDetail,siteList:role==='site'&&tab==='acts'&&!inDetail,siteHist:role==='site'&&tab==='hist'&&!inDetail,detail:inDetail,review:isRev&&tab==='review'&&!inReview&&!inDetail,reviewDetail:inReview&&!inDetail,progress:isRev&&tab==='progress'&&!inDetail,import:role==='planner'&&tab==='import'&&!inDetail,portfolio:role==='pm'&&tab==='portfolio'&&!inDetail,trends:role==='pm'&&tab==='trends'&&!inDetail,lookahead:role==='pm'&&tab==='lookahead'&&!inDetail,delays:role==='pm'&&tab==='delays'&&!inDetail};
+    const show={dash:role!=='site'&&tab==='dash'&&!inDetail,users:!!isAdm&&tab==='users'&&!inDetail,siteList:role==='site'&&tab==='acts'&&!inDetail,siteHist:role==='site'&&tab==='hist'&&!inDetail,detail:inDetail,review:isRev&&tab==='review'&&!inReview&&!inDetail,reviewDetail:inReview&&!inDetail,progress:isRev&&tab==='progress'&&!inDetail,import:role==='planner'&&tab==='import'&&!inDetail,portfolio:role==='pm'&&tab==='portfolio'&&!inDetail,trends:role==='pm'&&tab==='trends'&&!inDetail,lookahead:role==='pm'&&tab==='lookahead'&&!inDetail,delays:role==='pm'&&tab==='delays'&&!inDetail};
 
-    const usersList=show.users?(s.users||[]).map(u=>{const mem=new Set((s.members||[]).filter(m=>m.user_id===u.id).map(m=>m.project_id)),me=!!(s.user&&u.id===s.user.id);
-      return{name:(u.full_name||'—').replace('@dmc.local',''),hasMe:me,
+    const memOf=id=>new Set((s.members||[]).filter(m=>m.user_id===id).map(m=>m.project_id));
+    const allUsers=s.users||[],isPendU=u=>u.active!==false&&u.role==='site'&&(!u.discipline||!memOf(u.id).size),uQ=(s.uq||'').trim().toLowerCase();
+    const UF={all:()=>true,pending:isPendU,disabled:u=>u.active===false};['site','cm','planner','pm','admin'].forEach(r=>{UF[r]=u=>u.role===r;});
+    const uStats=!show.users?[]:[['all',t.uAll],['pending',t.uPendingL]].concat(['site','cm','planner','pm','admin'].map(r=>[r,t['prole_'+r]])).concat([['disabled',t.uDisabledL]]).map(([k,l])=>{const n=allUsers.filter(UF[k]).length,on=s.uFilter===k;
+      return{k,l,n,c:k==='pending'&&n?C.amber:k==='disabled'&&n?C.red:'#1b1a17',bg:on?'#fbf3e4':'#fff',bd:on?'#1b1a17':'#e4e0d8',onClick:()=>this.setState({uFilter:on?'all':k})};});
+    const usersList=show.users?allUsers.filter(u=>UF[s.uFilter]?UF[s.uFilter](u):true).filter(u=>!uQ||(u.full_name||'').toLowerCase().indexOf(uQ)>=0).map(u=>{const mem=memOf(u.id),me=!!(s.user&&u.id===s.user.id);
+      return{name:(u.full_name||'—').replace('@dmc.local',''),hasMe:me,hasPending:isPendU(u),
         roleChips:['site','cm','planner','pm','admin'].map(r=>chip(t['prole_'+r],u.role===r,()=>{if(me&&r!=='admin'){this.toast(t.cantDemoteSelf);return;}this.updProfile(u.id,{role:r});})),
         discChips:ENG.map(e=>chip(person(e),u.discipline===e,()=>this.updProfile(u.id,{discipline:e}))),
         projChips:D.projects.map(p=>chip((mem.has(p.id)?'✓ ':'')+p.code,mem.has(p.id),()=>this.toggleMember(p.id,u.id,mem.has(p.id)))),hasProj:D.projects.length>0,
-        activeLbl:u.active?t.uActive:t.uDisabled,activeBg:u.active?C.greenBg:C.redBg,activeFg:u.active?C.green:C.red,toggleActive:()=>{if(me)return;this.updProfile(u.id,{active:!u.active});}};}):[];
+        activeLbl:u.active!==false?t.uActive:t.uDisabled,activeBg:u.active!==false?C.greenBg:C.redBg,activeFg:u.active!==false?C.green:C.red,toggleActive:()=>{if(me)return;this.updProfile(u.id,{active:u.active===false});}};}):[];
+    const nu=s.nu,setNu=p=>this.setState(st=>({nu:Object.assign({},st.nu,p)}));
+    const nuV={name:nu.name,pw:nu.pw,onName:e=>setNu({name:e.target.value}),onPw:e=>setNu({pw:e.target.value}),roleChips:['site','cm','planner','pm','admin'].map(r=>chip(t['prole_'+r],nu.role===r,()=>setNu({role:r}))),
+      discChips:ENG.map(e=>chip(person(e),nu.disc===e,()=>setNu({disc:e}))),btn:s.nuBusy?t.nuBusy:t.nuCreate,create:()=>{if(!s.nuBusy)this.createUser();}};
+    const PERM=[['perm_scope',['permAssigned','permAssigned','permAll','permAll','permAll']],['perm_update',[1,0,0,0,1]],['perm_cm',[0,1,0,0,1]],['perm_pl',[0,0,1,0,1]],['perm_import',[0,0,1,0,1]],['perm_reports',[0,1,1,1,1]],['perm_users',[0,0,0,0,1]],['perm_chat',[1,1,1,1,1]]];
+    const permHead=[{l:''}].concat(['site','cm','planner','pm','admin'].map(r=>({l:t['prole_'+r]})));
+    const permCells=[];PERM.forEach(([k,v])=>{permCells.push({v:t[k],c:'#1b1a17',fw:'600',al:'start'});v.forEach(x=>permCells.push(typeof x==='string'?{v:t[x],c:'#3f3a33',fw:'500',al:'center'}:{v:x?'✓':'—',c:x?C.green:'#b3ac9f',fw:'700',al:'center'}));});
     // Site
     const q=s.q.trim().toLowerCase();
     const siteList=!show.siteList?[]:mine.filter(a=>(s.sProj==='all'||a.pid===s.sProj)&&FIL[s.sFilter](a)&&(s.sBldg==='all'||a.bldg===s.sBldg)&&(s.sZone==='all'||a.zone===s.sZone)&&(!q||(a.code+' '+a.name+' '+a.nameAr).toLowerCase().indexOf(q)>=0));
@@ -1273,7 +1651,7 @@ class Component extends DCLogic {
       d={code:a.code,name:nm(a),proj:nm(D.projMap[a.pid])+' ('+D.projMap[a.pid].code+')',wbs:a.wbs,loc:locL(a),gallery:gal,hasGallery:gal.length>0,galleryN:gal.length,src:srcL(a.src),stLabel:t[st[0]],stBg:st[1],stFg:st[2],ps:a.ps,pf:a.pf,aStart:a.aStart||'—',aFinish:a.aFinish||'—',
         qtyTxt:a.aQty.toLocaleString('en')+' / '+a.qty.toLocaleString('en')+' '+a.unit,w:a.w,assignee:person(a.eng),plannedW:W(a.planned),actualW:W(a.actual),plannedTxt:p0(a.planned),actualTxt:p0(a.actual),spi:spiTxt(spi),spiColor:spiC(spi),
         barColor:a.delayed?C.barBad:a.variance<-2?C.barWarn:C.barOk,varTxt:sg(a.variance),varColor:vc(a.variance),unit:a.unit,
-        showReturned:!!a.returned&&!a.pending,retComment:a.returned?a.returned.comment:'',retWhen:a.returned?a.returned.reviewed.replace('T',' '):'',
+        showReturned:!!a.returned&&!a.pending,retBy:a.returned&&a.returned.reviewer?person(a.returned.reviewer):'',retComment:a.returned?a.returned.comment:'',retWhen:a.returned?a.returned.reviewed.replace('T',' '):'',
         isPending:!!a.pending,canWithdraw:!!a.pending&&own&&a.pending.status==='submitted',awaitTxt:a.pending&&a.pending.status==='endorsed'?t.awaitingPL:t.awaiting,
         pend:a.pending?{pct:a.pending.pct+'%',qty:a.pending.qty+' '+a.unit,dates:(a.pending.aStart||'—')+' → '+(a.pending.aFinish||'—'),delay:a.pending.delay?t.delays[a.pending.delay]:'—',remarks:a.pending.remarks,hasAdj:!!a.pending.adjAt,adj:a.pending.adjAt?t.adjNoteTxt(a.pending.origPct,a.pending.pct)+(a.pending.adjNote?' — '+a.pending.adjNote:''):''}:{},
         canEdit,readOnly:!own,formSrc:fm.draftId?t.formDraft:fm.prevId?t.formRet:t.formNew,
@@ -1367,6 +1745,42 @@ class Component extends DCLogic {
     const reasons=DELAYS.filter(k=>counts[k]).sort((a,b)=>counts[b]-counts[a]).map(k=>({label:t.delays[k],n:t.reports(counts[k]),w:(counts[k]/mx*100)+'%'}));
     const delayedList=!show.delays?[]:D.acts.filter(a=>a.delayed&&(!dp||a.pid===dp.id)).sort((a,b)=>a.variance-b.variance).map(a=>{const lr=a.ups.slice().reverse().find(u=>u.delay);return{code:a.code,proj:D.projMap[a.pid].code,name:nm(a),varTxt:sg(a.variance),reason:lr?t.delays[lr.delay]:(a.missing?t.f_missing:'—'),open:()=>this.openDetail(a.id)};});
 
+    // Dashboard
+    let db={chips:[],kpis:[],weeks:[],health:[],disc:[],flow:[],reasons:[],behind:[],feed:[],ahead:[],chart:{planPts:'',actPts:'',tx:0},axis:{a:'',b:''}};
+    if(show.dash){const sp=D.projMap[s.dbProj]||null,acts=sp?sp.list:D.acts,ids=new Set(acts.map(a=>a.id));
+      const rollS=d=>{if(sp)return roll(sp.list,d);let Pp=0,Aa=0;D.projects.forEach(p=>{const x=roll(p.list,d);Pp+=p.value*x.p;Aa+=p.value*x.a;});return{p:Pp/V,a:Aa/V};};
+      const P=sp?sp.planned:pfP,A=sp?sp.actual:pfA,spx=spiOf(A,P),c=sp?curve([sp.list],[1]):curve(D.projects.map(p=>p.list),D.projects.map(p=>p.value));
+      const fc=spx&&A<100?addD(TODAY,Math.round(Math.max(0,dd(TODAY,c.end))/Math.max(spx,0.2))):c.end;
+      const ups=s.data.updates.filter(u=>ids.has(u.actId)),wk=addD(TODAY,-7);
+      const n=f=>acts.filter(f).length,started=a=>a.actual>0||(a.ps<=TODAY&&a.actual<100);
+      const cnt={draft:n(a=>!!a.draft),cm:ups.filter(u=>u.status==='submitted').length,pl:ups.filter(u=>u.status==='endorsed').length,ret:n(a=>!!a.returned&&!a.draft&&!a.pending),appr:ups.filter(u=>u.status==='approved'&&u.reviewed.slice(0,10)>=wk).length};
+      const RC=2*Math.PI*50,RP=2*Math.PI*36;
+      db={chips:[chip(t.allProjects,!sp,()=>this.setState({dbProj:'all'}))].concat(D.projects.map(p=>chip(p.code,!!sp&&sp.id===p.id,()=>this.setState({dbProj:p.id})))),
+        scopeNote:sp?nm(sp)+' · '+t.dashScopeOne(acts.length):t.dashScopeAll(D.projects.length),
+        actual:p1(A),planned:p1(P),variance:sg(A-P),varColor:A-P>=-2?'oklch(0.82 0.12 150)':'oklch(0.8 0.13 45)',spi:spiTxt(spx),fc,fcColor:fc>c.end?'oklch(0.8 0.13 45)':'oklch(0.82 0.12 150)',plFinish:c.end,
+        ringA:r1(RC*clamp(A,0,100)/100)+' '+r1(RC),ringP:r1(RP*clamp(P,0,100)/100)+' '+r1(RP),
+        kpis:[{l:t.k_total,v:acts.length,sub:t.kOfTotal(n(a=>a.actual>=100),acts.length)+' '+t.k_done.toLowerCase(),c:'#1b1a17'},{l:t.k_inprog,v:n(a=>started(a)&&a.actual<100),sub:t.k_notstarted+' '+n(a=>!started(a)&&a.actual<100),c:C.blue},
+          {l:t.k_delayed,v:n(a=>a.delayed),sub:t.kDelayedSub(cfg.thr),c:n(a=>a.delayed)?C.red:C.green},{l:t.k_missing,v:n(a=>a.missing),sub:t.kMissingSub(cfg.stale),c:n(a=>a.missing)?C.red:C.green},
+          {l:t.k_awaitCM,v:cnt.cm,sub:t.p_flow,c:cnt.cm?C.blue:'#1b1a17'},{l:t.k_awaitPL,v:cnt.pl,sub:t.p_flow,c:cnt.pl?C.blue:'#1b1a17'},{l:t.k_returnedN,v:cnt.ret,sub:t.fl_ret,c:cnt.ret?C.amber:'#1b1a17'},{l:t.k_appr7,v:cnt.appr,sub:t.fl_appr,c:C.green}].map(k=>Object.assign(k,{v:String(k.v)})),
+        chart:{planPts:c.plan,actPts:c.act,tx:c.tx},axis:{a:c.start,b:c.end}};
+      const wks=[];for(let k=7;k>=0;k--){const e=addD(TODAY,-7*k),r0=rollS(addD(e,-7)),r=rollS(e);wks.push({e,p:Math.max(0,r.p-r0.p),a:Math.max(0,r.a-r0.a)});}
+      const wm=Math.max(0.5,...wks.map(w=>Math.max(w.p,w.a)));
+      db.weeks=wks.map(w=>({lbl:w.e.slice(5),aT:r1(w.a).toFixed(1),pH:(w.p/wm*100)+'%',aH:(w.a/wm*100)+'%'}));
+      db.health=sp?bdown(sp.list,'','').map(b=>Object.assign(b,{isProj:false,isLoc:true})):D.projects.slice().sort((a,b)=>ORD[a.status]-ORD[b.status]||a.variance-b.variance).map(p=>({isProj:true,isLoc:false,code:p.code,name:nm(p),stLabel:t['st_'+p.status],stBg:STC[p.status][0],stFg:STC[p.status][1],pW:W(p.planned),aW:W(p.actual),bar:p.variance<-5?C.barBad:p.variance<-2?C.barWarn:C.barOk,
+        line:t.planned+' '+p1(p.planned)+' · '+t.actualShort+' '+p1(p.actual)+' · SPI '+spiTxt(spiOf(p.actual,p.planned)),v:sg(p.variance),vc:vc(p.variance),flags:t.flags(p.delayed,p.missing,p.pending),open:()=>this.setState({dbProj:p.id})}));
+      db.disc=ENG.map(e=>{const l=acts.filter(a=>a.eng===e);if(!l.length)return null;const r=roll(l,TODAY),v=r.a-r.p;
+        return{label:person(e),code:e,line:t.discLine(l.length,l.filter(a=>a.delayed).length,l.filter(a=>a.missing).length),pW:W(r.p),aW:W(r.a),v:sg(v),vc:vc(v),bar:v<-5?C.barBad:v<-2?C.barWarn:C.barOk};}).filter(Boolean);
+      const fl=[[t.fl_draft,cnt.draft,C.amber],[t.fl_cm,cnt.cm,C.blue],[t.fl_pl,cnt.pl,C.blue],[t.fl_ret,cnt.ret,C.red],[t.fl_appr,cnt.appr,C.green]],fm2=Math.max(1,...fl.map(x=>x[1]));
+      db.flow=fl.map(([l,v,col])=>({l,n:String(v),w:(v/fm2*100)+'%',c:col}));
+      const rc=countReasons(sp?sp.id:null),rm=Math.max(1,...Object.values(rc));
+      db.reasons=DELAYS.filter(k=>rc[k]).sort((a,b)=>rc[b]-rc[a]).slice(0,6).map(k=>({label:t.delays[k],n:t.reports(rc[k]),w:(rc[k]/rm*100)+'%'}));
+      db.behind=acts.filter(a=>a.actual<100&&a.ps<=TODAY&&a.variance<0).sort((a,b)=>a.variance-b.variance).slice(0,6).map(a=>({code:a.code,proj:D.projMap[a.pid].code+' · '+person(a.eng),name:nm(a),v:sg(a.variance),vc:vc(a.variance),aT:p0(a.actual)+' / '+p0(a.planned),open:()=>this.openDetail(a.id)}));
+      const lim=addD(TODAY,14),fin=acts.filter(a=>a.actual<100&&a.pf>=TODAY&&a.pf<=lim);
+      db.ahead=[{l:t.la_startsN(n(a=>a.actual===0&&a.ps>=TODAY&&a.ps<=lim)),c:'#1b1a17'},{l:t.la_finishesN(fin.length),c:'#1b1a17'},{l:t.la_riskN(fin.filter(a=>a.planned-a.actual>cfg.thr||(dd(TODAY,a.pf)<7&&a.actual<70)).length),c:C.red}];
+      const ev=[];ups.forEach(u=>(u.log||[]).forEach(l=>ev.push({l,u})));
+      db.feed=ev.sort((x,y)=>x.l.at<y.l.at?1:-1).slice(0,10).map(({l,u})=>{const a=D.actMap[u.actId];return{when:l.at.replace('T',' '),txt:person(l.by)+' · '+(t['ev_'+l.ev]||l.ev)+(l.detail?' '+l.detail:''),act:a.code+' · '+nm(a)+' · '+u.pct+'%',open:()=>this.openDetail(a.id)};});
+      db.hasReasons=db.reasons.length>0;db.noReasons=!db.reasons.length;db.hasBehind=db.behind.length>0;db.hasFeed=db.feed.length>0;db.healthTitle=sp?t.byLoc:t.p_health;}
+
     // Weekly report
     let rp={rows:[],projects:[],approved:[],reasons:[]};
     if(s.report){const wk0=addD(TODAY,-6),rP=D.projMap[s.repProj],rList=rP?[rP]:D.projects;
@@ -1379,6 +1793,45 @@ class Component extends DCLogic {
         reasons:DELAYS.filter(k=>rc[k]).sort((a,b)=>rc[b]-rc[a]).map(k=>({label:t.delays[k],n:t.reports(rc[k]),w:(rc[k]/rmx*100)+'%'}))};
       rp.projects.forEach(p=>{p.noPhotos=!p.photoActs.length;});rp.approvedEmpty=!rp.approved.length;rp.reasonsEmpty=!rp.reasons.length;
       rp.chips=[chip(t.allProjects,!rP,()=>this.setState({repProj:'all'}))].concat(D.projects.map(p=>chip(p.code,!!rP&&rP.id===p.id,()=>this.setState({repProj:p.id}))));}
+
+    // Chat
+    const cLive=this.live();
+    const me=this.chatMe(),cAll=this.chatAll(),dir=s.chatDir||[];
+    const AV=['oklch(0.55 0.13 150)','oklch(0.55 0.14 250)','oklch(0.6 0.15 50)','oklch(0.52 0.15 320)','oklch(0.55 0.12 200)','oklch(0.55 0.16 28)'];
+    const avC=k=>{let h=0;String(k).split('').forEach(ch=>{h=(h*31+ch.charCodeAt(0))>>>0;});return AV[h%AV.length];};
+    const cName=id=>{if(cLive){const u=dir.find(x=>x.id===id);return u?(u.full_name||'—').replace('@dmc.local',''):'—';}return person(id);};
+    const cSub=id=>{if(cLive){const u=dir.find(x=>x.id===id);return u?(t['prole_'+u.role]||u.role)+(u.discipline&&u.role==='site'?' · '+person(u.discipline):''):'';}return t['prole_'+(({CM:'cm',PL:'planner',PM:'pm'})[id]||'site')];};
+    const cIni=id=>{if(!cLive)return id;const w=cName(id).split(/[\s._-]+/).filter(Boolean);return ((w[0]||'?')[0]+((w[1]||'')[0]||'')).toUpperCase();};
+    const fmtT=ms=>{const d=new Date(ms);return p2(d.getHours())+':'+p2(d.getMinutes());},dayOf=ms=>fmtMs(ms).slice(0,10);
+    const dayL=dy=>dy===TODAY?t.chatToday:dy===addD(TODAY,-1)?t.chatYesterday:dy;
+    const myProjIds=new Set((role==='site'&&!cLive?D.projects.filter(p=>D.acts.some(a=>a.pid===p.id&&a.eng===s.eng)):D.projects).map(p=>p.id));
+    const roomMeta=id=>{if(id==='general')return{name:t.chatGeneral,sub:t.chatGeneralSub,ini:'DMC',col:'#1b1a17',group:true};
+      if(id.indexOf('proj:')===0){const p=D.projMap[id.slice(5)];return p?{name:p.code+' · '+nm(p),sub:t.chatProjSub,ini:p.code.slice(-3),col:avC(p.id),group:true}:null;}
+      const o=id.slice(3).split(':').find(x=>x!==me)||me;return{name:cName(o),sub:cSub(o),ini:cIni(o),col:avC(o),group:false,other:o};};
+    const roomIds=uniq(['general'].concat(D.projects.filter(p=>myProjIds.has(p.id)).map(p=>'proj:'+p.id)).concat(cAll.filter(m=>m.room.indexOf('dm:')===0&&m.room.slice(3).split(':').indexOf(me)>=0).map(m=>m.room)).concat(s.chatRoom?[s.chatRoom]:[]));
+    const rooms=roomIds.map(id=>{const mt=roomMeta(id);if(!mt)return null;const ms=cAll.filter(m=>m.room===id),last=ms[ms.length-1],rd=this.chatReadAt(me,id);
+      const unread=ms.filter(m=>m.from!==me&&m.ts>rd).length;
+      return Object.assign(mt,{id,last,unread,ts:last?last.ts:0,prev:last?((last.from===me?t.chatYou:mt.group?cName(last.from):'')+(last.from===me||mt.group?': ':'')+(last.body||t.chatPhoto)):mt.sub,
+        when:last?(dayOf(last.ts)===TODAY?fmtT(last.ts):dayL(dayOf(last.ts))):''});}).filter(Boolean).sort((a,b)=>b.ts-a.ts);
+    const chatUnread=rooms.reduce((x,r)=>x+r.unread,0),cq=(s.chatQ||'').trim().toLowerCase();
+    let ch={rooms:[],people:[],items:[]};
+    if(s.chatOpen){const cur=s.chatRoom?rooms.find(r=>r.id===s.chatRoom):null;
+      ch={rooms:rooms.filter(r=>!cq||r.name.toLowerCase().indexOf(cq)>=0).map(r=>({name:r.name,prev:r.prev,when:r.when,ini:r.ini,col:r.col,hasUnread:r.unread>0,unread:r.unread,whenC:r.unread?'oklch(0.48 0.12 150)':'#605a51',bg:cur&&cur.id===r.id?'#f2efe9':'#fff',open:()=>this.chatOpenRoom(r.id)})),
+        people:(cLive?dir.map(u=>u.id):['CIV','ARC','MEC','ELE','CM','PL','PM']).filter(id=>id&&id!==me).map(id=>({name:cName(id),sub:cSub(id),ini:cIni(id),col:avC(id),open:()=>{this.chatOpenRoom('dm:'+[me,id].sort().join(':'));}})),
+        newOpen:s.chatNew,toggleNew:()=>this.setState({chatNew:!s.chatNew}),q:s.chatQ,onQ:e=>this.setState({chatQ:e.target.value}),
+        err:cLive?s.chatErr:'',hasErr:cLive&&!!s.chatErr,isDemo:!cLive,
+        showList:s.wide||!cur,showConv:!!cur,showEmpty:s.wide&&!cur,listFlex:s.wide?'0 0 360px':'1 1 auto',hasBack:!s.wide,
+        close:()=>this.setState({chatOpen:false,chatRoom:null,chatNew:false}),back:()=>this.setState({chatRoom:null,chatText:'',chatImg:null}),
+        text:s.chatText,onText:e=>this.setState({chatText:e.target.value}),onKey:e=>{if(s.wide&&e.key==='Enter'&&!e.shiftKey&&!(e.nativeEvent&&e.nativeEvent.isComposing)){e.preventDefault();this.chatSend();}},
+        send:()=>this.chatSend(),onImg:e=>this.onChatImg(e),hasImg:!!s.chatImg,imgBg:s.chatImg?'url('+s.chatImg+')':'none',dropImg:()=>this.setState({chatImg:null}),sendFlip:L==='ar'?'scaleX(-1)':'none'};
+      ch.items=[];ch.hasPeople=ch.people.length>0;ch.noPeople=!ch.people.length;
+      if(cur){ch.name=cur.name;ch.sub=cur.sub;ch.ini=cur.ini;ch.col=cur.col;
+        const otherRead=cur.group?0:this.chatReadAt(cur.other,cur.id);let lastDay='';
+        cAll.filter(m=>m.room===cur.id).forEach(m=>{const dy=dayOf(m.ts);if(dy!==lastDay){ch.items.push({isSep:true,isMsg:false,sep:dayL(dy)});lastDay=dy;}
+          const mine=m.from===me,read=!cur.group&&otherRead>=m.ts;
+          ch.items.push({isSep:false,isMsg:true,align:mine?'flex-end':'flex-start',bg:mine?'#d9f2cf':'#fff',r1:mine?'4px':'12px',r2:mine?'12px':'4px',showName:!mine&&cur.group,name:cName(m.from),nameC:avC(m.from),
+            hasBody:!!m.body,body:m.body,hasImg:!!m.image,img:m.image?'url('+m.image+')':'none',time:fmtT(m.ts),ticks:mine?(m.sending?'…':read?'✓✓':'✓'):'',tickC:read?'oklch(0.55 0.14 250)':'#8a8378'});});
+        ch.empty=!ch.items.length;}}
 
     let kb=0;if(s.settings)try{kb=Math.round((localStorage.getItem(KEY)||'').length/1024);}catch(e){}
     const errors=(s.errors||[]).map(msg=>({msg}));
@@ -1396,7 +1849,9 @@ class Component extends DCLogic {
       loadDemoLbl:s.liveArm==='load'?t.resetConfirm:t.loadDemoDb,removeDemoLbl:s.liveArm==='remove'?t.resetConfirm:t.removeDemoDb,
       stor:live?{badge:t.storageBadgeLive,l1:t.storageLive1,l2:t.storageLive2,l3:t.storageLive3,bg:'oklch(0.94 0.05 150)',fg:'oklch(0.38 0.1 150)'}:{badge:t.storageBadge,l1:t.storage1,l2:t.storage2,l3:t.storage3,bg:'oklch(0.94 0.06 85)',fg:'oklch(0.4 0.09 70)'},
       sideTabs:tabs.map(b=>Object.assign({},b,{sbg:b.fw==='700'?'oklch(0.76 0.14 65)':'transparent',sfg:b.fw==='700'?'#1b1a17':'#e9e4da'})),roleLabel:t['role_'+role],srcTag:live?'LIVE':'DEMO',srcBg:live?'oklch(0.62 0.13 150)':'#f2c14e'};
-    return{...liveVals,usersList,usersEmpty:show.users&&!usersList.length,t,dir:L==='ar'?'rtl':'ltr',lang:L,today:TODAY,roles,tabs,show,toast:s.toast,hasToast:!!s.toast,
+    return{...liveVals,usersList,usersEmpty:show.users&&!usersList.length,uStats,uq:s.uq,onUq:e=>this.setState({uq:e.target.value}),nuOpen:s.nuOpen,nuBtn:s.nuOpen?t.nuClose:t.nuOpen,toggleNu:()=>this.setState({nuOpen:!s.nuOpen}),nuV,permHead,permCells,
+      db,ch,chatOpen:s.chatOpen,chatUnread,chatHasUnread:chatUnread>0,openChat:()=>{this.setState({chatOpen:true,settings:false});if(this.live())this.reloadChat();},
+      photoNote:live?t.photoNoteLive:t.photoNote,retTitle:d.retBy?t.returnedBy(d.retBy):t.returnedNote,importJson:e=>this.importJson(e),t,dir:L==='ar'?'rtl':'ltr',lang:L,today:TODAY,roles,tabs,show,toast:s.toast,hasToast:!!s.toast,
       settingsOpen:s.settings,openSettings:()=>this.setState({settings:true,resetArm:false}),closeSettings:()=>this.setState({settings:false}),
       toggleLang:()=>this.set({lang:L==='en'?'ar':'en'}),langChips:[chip('English',L==='en',()=>this.set({lang:'en'})),chip('العربية',L==='ar',()=>this.set({lang:'ar'}))],
       engChips,q:s.q,onSearch:e=>this.setState({q:e.target.value}),sProjChips,tiles,myRem,hasRem:myRem.length>0,filterOn:s.sFilter!=='all',clearFilter:()=>this.setState({sFilter:'all'}),
