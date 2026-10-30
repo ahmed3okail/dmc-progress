@@ -581,6 +581,31 @@ input,textarea{font:inherit;color:inherit}
   </div>
 </sc-if>
 
+<sc-if value="{{ show.report }}" hint-placeholder-val="{{ false }}"><div style="display:flex;flex-direction:column;gap:14px;padding:16px;max-width:720px;margin:0 auto;width:100%">
+  <div><div style="font-size:22px;font-weight:700">📄 {{ t.weeklyReport }}</div><div style="font-size:13px;color:#605a51;margin-top:2px">{{ rs.period }}</div></div>
+  <div style="background:#fff;border:1px solid #e2ded6;border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:10px">
+    <div style="font-weight:700;font-size:15px">{{ t.repStep1 }}</div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap"><sc-for list="{{ rs.projChips }}" as="c" hint-placeholder-count="4"><button onClick="{{ c.onClick }}" style="min-height:42px;padding:0 14px;border-radius:999px;border:1px solid {{ c.bd }};background:{{ c.bg }};color:{{ c.fg }};font-size:14px;white-space:nowrap">{{ c.label }}</button></sc-for></div>
+    <div style="font-size:13px;color:#605a51">{{ rs.projName }} · {{ t.actualShort }} <b style="color:#1b1a17">{{ rs.actual }}</b> · {{ t.planned }} {{ rs.planned }} · <b style="color:{{ rs.varC }};direction:ltr;unicode-bidi:isolate">{{ rs.variance }}</b></div>
+  </div>
+  <div style="background:#fff;border:1px solid #e2ded6;border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:10px">
+    <div style="font-weight:700;font-size:15px">{{ t.repStep2 }}</div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px"><sc-for list="{{ rs.modes }}" as="m" hint-placeholder-count="2"><button onClick="{{ m.onClick }}" style="text-align:start;background:{{ m.bg }};border:2px solid {{ m.bd }};border-radius:12px;padding:12px;display:flex;gap:10px;align-items:flex-start;color:inherit">
+      <span style="font-size:24px;line-height:1">{{ m.icon }}</span>
+      <span style="flex:1;display:flex;flex-direction:column;gap:3px"><span style="font-weight:700;font-size:15px">{{ m.title }}</span><span style="font-size:12.5px;color:#605a51;line-height:1.4">{{ m.desc }}</span></span>
+      <span style="flex:0 0 auto;width:18px;height:18px;border-radius:50%;border:2px solid {{ m.dotBd }};background:{{ m.dot }};box-shadow:inset 0 0 0 3px #fff"></span>
+    </button></sc-for></div>
+  </div>
+  <div style="background:#fff;border:1px solid #e2ded6;border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:10px">
+    <div style="font-weight:700;font-size:15px">{{ t.repStep3 }}</div>
+    <div style="display:flex;gap:8px"><sc-for list="{{ rs.langs }}" as="c" hint-placeholder-count="2"><button onClick="{{ c.onClick }}" style="flex:1;min-height:44px;border-radius:10px;border:1px solid {{ c.bd }};background:{{ c.bg }};color:{{ c.fg }};font-size:15px;font-weight:600">{{ c.label }}</button></sc-for></div>
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+    <button onClick="{{ rs.preview }}" style="min-height:54px;border:1px solid #0e5a4b;background:#fff;color:#0e5a4b;border-radius:12px;font-weight:700;font-size:16px">👁 {{ t.repPreview }}</button>
+    <button onClick="{{ rs.pdf }}" style="min-height:54px;border:none;background:#0e5a4b;color:#fff;border-radius:12px;font-weight:700;font-size:16px">🖨 {{ t.repPdf }}</button>
+  </div>
+  <div style="font-size:12.5px;color:#605a51;text-align:center">{{ t.printNote }}</div>
+</div></sc-if>
 <sc-if value="{{ show.lookahead }}" hint-placeholder-val="{{ false }}"><div style="display:flex;flex-direction:column;gap:12px;padding:16px 0"><div style="padding:0 16px;font-size:20px;font-weight:700">{{ t.tab_lookahead }}</div><div style="padding:0 16px;font-size:13px;color:#605a51">{{ t.laHelp }}</div><div style="display:flex;gap:8px;overflow-x:auto;padding:0 16px 2px"><sc-for list="{{ laChips }}" as="c" hint-placeholder-count="3"><button onClick="{{ c.onClick }}" style="flex:0 0 auto;min-height:40px;padding:0 14px;border-radius:999px;border:1px solid {{ c.bd }};background:{{ c.bg }};color:{{ c.fg }};font-size:14px;white-space:nowrap">{{ c.label }}</button></sc-for></div><div style="display:flex;gap:8px;overflow-x:auto;padding:0 16px 2px"><sc-for list="{{ laWin }}" as="c" hint-placeholder-count="3"><button onClick="{{ c.onClick }}" style="flex:0 0 auto;min-height:40px;padding:0 14px;border-radius:999px;border:1px solid {{ c.bd }};background:{{ c.bg }};color:{{ c.fg }};font-size:14px;white-space:nowrap">{{ c.label }}</button></sc-for></div><div style="padding:0 16px;font-size:16px;font-weight:700">{{ t.la_start }}</div><div style="padding:0 16px;display:flex;flex-direction:column;gap:8px"><sc-for list="{{ laStart }}" as="a" hint-placeholder-count="3"><button onClick="{{ a.open }}" style="text-align:start;width:100%;background:#fff;border:1px solid #e4e0d8;border-radius:12px;padding:12px 14px;display:flex;gap:12px;align-items:center;color:inherit"><div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:3px"><div style="display:flex;gap:8px"><span style="font-family:'IBM Plex Mono',monospace;font-size:12.5px;font-weight:600">{{ a.code }}</span><span style="font-size:12px;color:#605a51;white-space:nowrap">{{ a.proj }}</span><span style="font-size:12px;color:#605a51;white-space:nowrap">{{ a.eng }}</span></div><div style="font-size:15px;font-weight:600">{{ a.name }}</div><div style="font-size:12.5px;color:#605a51">{{ a.date }} · {{ a.when }} · {{ t.actualShort }} {{ a.actual }}</div></div><span style="font-size:12px;font-weight:700;padding:4px 9px;border-radius:999px;background:{{ a.stBg }};color:{{ a.stFg }};white-space:nowrap">{{ a.stLabel }}</span></button></sc-for><sc-if value="{{ laStartEmpty }}" hint-placeholder-val="{{ false }}"><div style="padding:16px;text-align:center;color:#605a51;border:1px dashed #cfc9bf;border-radius:12px">{{ t.noItems }}</div></sc-if></div><div style="padding:0 16px;font-size:16px;font-weight:700">{{ t.la_finish }}</div><div style="padding:0 16px;display:flex;flex-direction:column;gap:8px"><sc-for list="{{ laFinish }}" as="a" hint-placeholder-count="3"><button onClick="{{ a.open }}" style="text-align:start;width:100%;background:#fff;border:1px solid #e4e0d8;border-radius:12px;padding:12px 14px;display:flex;gap:12px;align-items:center;color:inherit"><div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:3px"><div style="display:flex;gap:8px"><span style="font-family:'IBM Plex Mono',monospace;font-size:12.5px;font-weight:600">{{ a.code }}</span><span style="font-size:12px;color:#605a51;white-space:nowrap">{{ a.proj }}</span><span style="font-size:12px;color:#605a51;white-space:nowrap">{{ a.eng }}</span></div><div style="font-size:15px;font-weight:600">{{ a.name }}</div><div style="font-size:12.5px;color:#605a51">{{ a.date }} · {{ a.when }} · {{ t.actualShort }} {{ a.actual }}</div></div><span style="font-size:12px;font-weight:700;padding:4px 9px;border-radius:999px;background:{{ a.stBg }};color:{{ a.stFg }};white-space:nowrap">{{ a.stLabel }}</span></button></sc-for><sc-if value="{{ laFinishEmpty }}" hint-placeholder-val="{{ false }}"><div style="padding:16px;text-align:center;color:#605a51;border:1px dashed #cfc9bf;border-radius:12px">{{ t.noItems }}</div></sc-if></div></div></sc-if>
 
 <sc-if value="{{ show.dash }}" hint-placeholder-val="{{ false }}">
@@ -610,6 +635,19 @@ input,textarea{font:inherit;color:inherit}
       <sc-for list="{{ db.kpis }}" as="k" hint-placeholder-count="8"><div style="background:#fff;border:1px solid #e2ded6;border-inline-start:4px solid {{ k.c }};border-radius:10px;padding:10px 12px;display:flex;flex-direction:column;gap:2px;min-height:76px"><span style="font-size:24px;font-weight:700;line-height:1.1;color:{{ k.c }}">{{ k.v }}</span><span style="font-size:13px;color:#2d2a25;font-weight:600">{{ k.l }}</span><span style="font-size:11.5px;color:#605a51;line-height:1.3">{{ k.sub }}</span></div></sc-for>
     </div>
     <div style="padding:0 16px;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr));gap:12px;align-items:start">
+      <div style="background:#fff;border:1px solid #e2ded6;border-inline-start:4px solid oklch(0.55 0.17 28);border-radius:12px;overflow:hidden;display:flex;flex-direction:column">
+        <div style="padding:14px 14px 6px;font-weight:700;font-size:15px">⚠️ {{ t.repRisks }}</div>
+        <sc-for list="{{ db.risks }}" as="r" hint-placeholder-count="5"><button onClick="{{ r.open }}" style="text-align:start;width:100%;background:transparent;border:none;border-top:1px solid #f0ede7;padding:10px 14px;display:flex;gap:10px;align-items:flex-start;color:inherit">
+          <span style="flex:0 0 auto;width:24px;height:24px;border-radius:50%;background:oklch(0.95 0.035 28);color:oklch(0.45 0.16 28);font-weight:700;font-size:13px;display:grid;place-items:center">{{ r.n }}</span>
+          <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:2px">
+            <div style="display:flex;gap:8px;flex-wrap:wrap"><span style="font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:600">{{ r.code }}</span><span style="font-size:12px;color:#605a51">{{ r.proj }}</span></div>
+            <div style="font-size:14.5px;font-weight:600">{{ r.name }}</div>
+            <div style="font-size:12.5px;color:oklch(0.45 0.16 28);font-weight:600">{{ r.why }}</div>
+            <div style="font-size:12px;color:#605a51">{{ r.cause }} · {{ t.fcAct }} <span style="font-family:'IBM Plex Mono',monospace;font-weight:700;color:{{ r.fcC }}">{{ r.fc }}</span></div>
+          </div>
+        </button></sc-for>
+        <sc-if value="{{ db.noRisks }}" hint-placeholder-val="{{ false }}"><div style="color:#5f5a52;text-align:center;padding:14px">{{ t.noRisks }}</div></sc-if>
+      </div>
       <div style="background:#fff;border:1px solid #e2ded6;border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:10px">
         <div style="font-weight:700;font-size:15px">{{ t.p_scurve }}</div>
         <div style="display:flex;gap:16px;font-size:12.5px;flex-wrap:wrap"><span style="display:flex;align-items:center;gap:6px"><span style="width:18px;height:3px;background:#8f887c"></span>{{ t.planned }}</span><span style="display:flex;align-items:center;gap:6px"><span style="width:18px;height:4px;background:oklch(0.62 0.16 50)"></span>{{ t.actual }}</span><span style="display:flex;align-items:center;gap:6px"><span style="width:2px;height:14px;background:#0b4a3e"></span>{{ t.todayL }}</span></div>
@@ -688,6 +726,14 @@ input,textarea{font:inherit;color:inherit}
           <div style="height:10px;background:#ece9e3;border-radius:5px;overflow:hidden"><div style="height:100%;width:{{ r.w }};background:oklch(0.62 0.16 50);border-radius:5px"></div></div>
         </div></sc-for>
         <sc-if value="{{ db.noReasons }}" hint-placeholder-val="{{ false }}"><div style="color:#5f5a52;text-align:center;padding:12px">{{ t.noItems }}</div></sc-if>
+      </div>
+      <div style="background:#fff;border:1px solid #e2ded6;border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:10px">
+        <div style="font-weight:700;font-size:15px">{{ t.repByParty }}</div>
+        <sc-for list="{{ db.parties }}" as="r" hint-placeholder-count="4"><div style="display:flex;flex-direction:column;gap:4px">
+          <div style="display:flex;justify-content:space-between;gap:8px;font-size:13.5px"><span style="font-weight:600">{{ r.label }}</span><span style="color:#5f5a52;direction:ltr;unicode-bidi:isolate">{{ r.n }}</span></div>
+          <div style="height:10px;background:#ece9e3;border-radius:5px;overflow:hidden"><div style="height:100%;width:{{ r.w }};background:{{ r.c }};border-radius:5px"></div></div>
+        </div></sc-for>
+        <sc-if value="{{ db.noParties }}" hint-placeholder-val="{{ false }}"><div style="color:#5f5a52;text-align:center;padding:12px">{{ t.noItems }}</div></sc-if>
       </div>
       <div style="background:#fff;border:1px solid #e2ded6;border-radius:12px;overflow:hidden;display:flex;flex-direction:column">
         <div style="padding:14px 14px 6px;font-weight:700;font-size:15px">{{ t.p_behind }}</div>
@@ -799,9 +845,7 @@ input,textarea{font:inherit;color:inherit}
 <sc-if value="{{ showBulkBar }}" hint-placeholder-val="{{ false }}"><div data-noprint="1" style="position:fixed;left:0;right:0;bottom:calc(66px + env(safe-area-inset-bottom));z-index:35;padding:0 12px"><div style="max-width:736px;margin:0 auto;background:#0b4a3e;color:#fff;border-radius:14px;padding:10px;display:flex;gap:8px;align-items:center;box-shadow:0 8px 24px rgba(0,0,0,.25)"><span style="flex:1;padding:0 6px;font-size:13.5px;font-weight:600">{{ bulkCountTxt }}</span><button onClick="{{ bulkCancel }}" style="min-height:48px;padding:0 14px;border:1px solid #4f8478;background:transparent;color:#fff;border-radius:10px;font-weight:600">{{ t.bulkCancel }}</button><button onClick="{{ bulkSubmit }}" style="min-height:48px;padding:0 16px;border:none;background:#c5a45a;color:#1b1a17;border-radius:10px;font-weight:700;white-space:nowrap">{{ bulkSubmitTxt }}</button></div></div></sc-if>
 <sc-if value="{{ showSelBar }}" hint-placeholder-val="{{ false }}"><div data-noprint="1" style="position:fixed;left:0;right:0;bottom:calc(66px + env(safe-area-inset-bottom));z-index:35;padding:0 12px"><div style="max-width:736px;margin:0 auto;background:#0b4a3e;color:#fff;border-radius:14px;padding:10px;display:flex;gap:8px;align-items:center;box-shadow:0 8px 24px rgba(0,0,0,.25)"><span style="flex:1;padding:0 6px;font-size:13.5px;font-weight:600">{{ selCountTxt }}</span><button onClick="{{ approveSel }}" style="min-height:48px;padding:0 16px;border:none;background:#c5a45a;color:#1b1a17;border-radius:10px;font-weight:700;white-space:nowrap">{{ approveSelTxt }}</button></div></div></sc-if>
 <sc-if value="{{ reportOpen }}" hint-placeholder-val="{{ false }}"><div id="dmc-report" style="position:fixed;inset:0;z-index:60;background:#e7e3dc;overflow-y:auto">
-<div data-noprint="1" style="position:sticky;top:0;z-index:2;background:#0b4a3e;color:#fff;padding:10px 12px;display:flex;gap:8px;align-items:center;flex-wrap:wrap"><button onClick="{{ closeReport }}" style="min-height:44px;padding:0 14px;border:1px solid #4f8478;background:transparent;color:#fff;border-radius:10px;font-weight:600">{{ t.close }}</button><button onClick="{{ printReport }}" style="min-height:44px;padding:0 16px;border:none;background:#c5a45a;color:#1b1a17;border-radius:10px;font-weight:700">{{ t.print }}</button><span style="font-size:12px;color:#c9c3b8">{{ t.printNote }}</span>
-<div style="flex-basis:100%;display:flex;gap:8px;overflow-x:auto;padding-top:4px;align-items:center"><span style="font-size:12px;color:#c9c3b8;white-space:nowrap">{{ t.repFor }}</span><sc-for list="{{ rp.modeChips }}" as="c" hint-placeholder-count="2"><button onClick="{{ c.onClick }}" style="flex:0 0 auto;min-height:40px;padding:0 14px;border-radius:999px;border:1px solid {{ c.bd }};background:{{ c.bg }};color:{{ c.fg }};font-size:14px;font-weight:600;white-space:nowrap">{{ c.label }}</button></sc-for><span style="width:1px;height:26px;background:#4f8478;flex:0 0 auto"></span><sc-for list="{{ rp.langChips }}" as="c" hint-placeholder-count="2"><button onClick="{{ c.onClick }}" style="flex:0 0 auto;min-height:40px;padding:0 14px;border-radius:999px;border:1px solid {{ c.bd }};background:{{ c.bg }};color:{{ c.fg }};font-size:14px;white-space:nowrap">{{ c.label }}</button></sc-for></div>
-<div style="flex-basis:100%;display:flex;gap:8px;overflow-x:auto;padding-top:2px"><sc-for list="{{ rp.chips }}" as="c" hint-placeholder-count="4"><button onClick="{{ c.onClick }}" style="flex:0 0 auto;min-height:40px;padding:0 14px;border-radius:999px;border:1px solid {{ c.bd }};background:{{ c.bg }};color:{{ c.fg }};font-size:14px;white-space:nowrap">{{ c.label }}</button></sc-for></div></div>
+<div data-noprint="1" style="position:sticky;top:0;z-index:2;background:#0b4a3e;color:#fff;padding:10px 12px;display:flex;gap:8px;align-items:center"><button onClick="{{ closeReport }}" style="min-height:44px;padding:0 14px;border:1px solid #4f8478;background:transparent;color:#fff;border-radius:10px;font-weight:600;white-space:nowrap">{{ t.backArrow }}</button><span style="flex:1;min-width:0;font-size:13px;color:#e9e4da;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ repSum }}</span><button onClick="{{ printReport }}" style="min-height:44px;padding:0 16px;border:none;background:#c5a45a;color:#1b1a17;border-radius:10px;font-weight:700;white-space:nowrap">🖨 {{ t.repPdf }}</button></div>
 <div data-sheet="1" style="max-width:860px;margin:16px auto;background:#fff;padding:26px 28px;font-size:11.5px;line-height:1.45;display:flex;flex-direction:column;gap:14px;box-shadow:0 2px 10px rgba(0,0,0,.08);color:#1d1b18">
 <div style="display:flex;align-items:center;gap:14px;border-bottom:3px solid #0b4a3e;padding-bottom:10px;flex-wrap:wrap"><img src="logo.png" alt="DMC | CURVE" style="height:54px;width:auto;display:block"><div style="flex:1;min-width:180px"><div style="font-size:20px;font-weight:700;color:#0b4a3e;line-height:1.2">{{ t.repTitle }}</div><div style="font-size:13.5px;font-weight:600;margin-top:2px">{{ rp.scope }}</div></div><div style="text-align:end;font-size:11px;line-height:1.6"><div><b>{{ t.repNo }}:</b> <span style="direction:ltr;unicode-bidi:isolate;font-family:'IBM Plex Mono',monospace">{{ rp.no }}</span></div><div><b>{{ t.repPeriod }}:</b> {{ rp.week }}</div><div><b>{{ t.dataDate }}</b> <span style="font-family:'IBM Plex Mono',monospace">{{ today }}</span></div></div></div>
 <div style="background:{{ rp.clsBg }};color:#fff;font-weight:700;font-size:11px;letter-spacing:.08em;text-align:center;padding:5px 8px">{{ rp.cls }}</div>
@@ -985,7 +1029,7 @@ const r1=v=>Math.round(v*10)/10;
 const uid=p=>p+Date.now().toString(36)+Math.random().toString(36).slice(2,6);
 const isDate=s=>/^\d{4}-\d{2}-\d{2}$/.test(s)&&!isNaN(Date.parse(s));
 const DELAYS=['material','manpower','equipment','weather','design','client','subcon','permit','other'];
-const TAB_ICON={acts:'📋',hist:'📤',lookahead:'📅',review:'✅',progress:'📈',import:'📥',dash:'📊',portfolio:'💼',trends:'📉',delays:'⏱️',users:'👥'};
+const TAB_ICON={acts:'📋',hist:'📤',lookahead:'📅',review:'✅',progress:'📈',import:'📥',dash:'📊',report:'📄',portfolio:'💼',trends:'📉',delays:'⏱️',users:'👥'};
 const PARTIES=['contractor','owner','consultant','subcon','other'];
 const DPARTY={material:'contractor',manpower:'contractor',equipment:'contractor',weather:'other',design:'consultant',client:'owner',subcon:'subcon',permit:'owner',other:'other'};
 const ENG=['CIV','ARC','MEC','ELE'];
@@ -1003,7 +1047,7 @@ en:{title:'DMC Site Progress',otherLang:'عربي',dataShort:'Data',dataDate:'Da
 demo:'DEMO DATA — fictional sample projects. Saved only in this browser on this device. Tap for details.',
 role_site:'Site Engineer',role_planner:'Planning Engineer',role_pm:'Project Manager',actingAs:'Acting as site engineer',
 refreshBtn:'Refresh',dows:['Sun','Mon','Tue','Wed','Thu','Fri','Sat'],compTitle:'Weekly update compliance',compAll:'All disciplines',compLine:(u,n)=>`${u} of ${n} activities updated this cycle`,cutLine:(d,c,f)=>`Cut-off: ${d} ${c} · cycle from ${f}`,cutPick:'Cut-off day',cutAuto:'Engineers who have not updated get an automatic reminder the day before and on the cut-off day.',cutAdminOnly:'Only the admin can change the cut-off day.',
-prodTitle:'Productivity & forecast',remDaysLbl:'Remaining duration to finish the activity',daysWord:'days',remHint:d=>`Your estimate of working days left. Planned finish: ${d}`,err_remD:'Enter the remaining duration (days) to finish the activity',remSrcSite:(n,d)=>`Remaining duration from the site engineer: ${n} days (as of ${d})`,remSrcPend:'not yet approved',remSrcCalc:'Calculated from the actual production rate (no estimate from site)',remQty:'Remaining quantity',rateAct:'Actual rate / day',rateReq:'Required rate / day',remDur:'Remaining duration',fcAct:'Forecast finish',daysN:n=>`${n} days`,notStartedRate:'Not started',overduePf:'Past planned finish',fcLate:n=>`${n} days after planned finish`,fcOk:'On or before planned finish',perDay:'/day',
+prodTitle:'Productivity & forecast',tab_report:'Report',repStep1:'1. Project',repStep2:'2. Who is it for?',repStep3:'3. Language',repPreview:'Preview',repPdf:'Download PDF',repModeExtD:'Formal report for the consultant / client. No contract values or internal workflow.',repModeIntD:'For management. Adds contract values, approvals and missing updates.',k_comp:'Update compliance',k_compSub:d=>`this cycle · cut-off ${d}`,k_gain:'Progress this week',k_gainSub:v=>`last week ${v}`,k_fcLate:'Forecast to finish late',k_fcLateSub:'activities after planned finish',remDaysLbl:'Remaining duration to finish the activity',daysWord:'days',remHint:d=>`Your estimate of working days left. Planned finish: ${d}`,err_remD:'Enter the remaining duration (days) to finish the activity',remSrcSite:(n,d)=>`Remaining duration from the site engineer: ${n} days (as of ${d})`,remSrcPend:'not yet approved',remSrcCalc:'Calculated from the actual production rate (no estimate from site)',remQty:'Remaining quantity',rateAct:'Actual rate / day',rateReq:'Required rate / day',remDur:'Remaining duration',fcAct:'Forecast finish',daysN:n=>`${n} days`,notStartedRate:'Not started',overduePf:'Past planned finish',fcLate:n=>`${n} days after planned finish`,fcOk:'On or before planned finish',perDay:'/day',
 repCmp:'Compared with last week',repMetric:'Indicator',repCmpPrev:'Last week',repCmpNow:'This week',repCmpChg:'Change',cmpPlanned:'Planned progress',cmpActual:'Actual progress (approved)',cmpVar:'Variance',cmpSpi:'SPI',cmpBehind:'Activities behind schedule',cmpDone:'Activities completed',cmpGain:'Progress gained in the week',
 repRisks:'Top 5 risks',riskCols:['#','Activity','Risk','Cause / responsibility','Forecast finish'],riskBehind:v=>`Behind plan by ${v}`,riskDueSoon:d=>`Due ${d} — not finished`,riskOverdue:'Past planned finish',riskNoUpd:'No recent site update',noRisks:'No significant risks this week.',
 weekSec:'This week — before the cut-off',weekSecHelp:(d,u,n)=>`Cut-off ${d} · ${u} of ${n} updated`,otherSec:'Other activities',wkDone:'✓ Updated this week',wkTodo:'Needs update this week',partyLabel:'Who is responsible for the delay?',parties:{contractor:'DMC (us)',owner:'Owner / client',consultant:'Consultant',subcon:'Subcontractor',other:'Other / force majeure'},repByParty:'Delays by responsibility',repParty:'Responsibility',returnCm:'Return to CM',plRetShort:'Returned by Planning',t_returnedCm:'Returned to the Construction Manager',plRetLine:d=>`Returned by Planning ${d}`,ev_returned_cm:'returned to CM by Planning',repNo:'Report No.',repPeriod:'Period',repFor:'Report for:',repModeExt:'Consultant / Client',repModeInt:'Internal',repClsExt:'FOR CONSULTANT REVIEW',repClsInt:'INTERNAL — CONFIDENTIAL — NOT FOR EXTERNAL DISTRIBUTION',
@@ -1059,7 +1103,7 @@ ar:{title:'DMC تقدم الموقع',otherLang:'English',dataShort:'البيا�
 demo:'بيانات تجريبية — مشاريع وهمية للعرض. محفوظة في هذا المتصفح على هذا الجهاز فقط. اضغط للتفاصيل.',
 role_site:'مهندس موقع',role_planner:'مهندس تخطيط',role_pm:'مدير المشروع',actingAs:'تعمل باسم مهندس الموقع',
 refreshBtn:'تحديث',dows:['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'],compTitle:'الالتزام بالتحديث الأسبوعي',compAll:'كل التخصصات',compLine:(u,n)=>`${u} من ${n} نشاط اتحدّث في الدورة دي`,cutLine:(d,c,f)=>`يوم القفل: ${d} ${c} · الدورة من ${f}`,cutPick:'يوم القفل',cutAuto:'المهندس اللي ماحدّثش بيوصله تذكير أوتوماتيك قبل يوم القفل بيوم وفي يوم القفل.',cutAdminOnly:'الأدمن بس هو اللي يقدر يغيّر يوم القفل.',
-prodTitle:'الإنتاجية والتوقع',remDaysLbl:'المدة المتبقية لإنهاء النشاط',daysWord:'يوم',remHint:d=>`تقديرك لعدد الأيام الباقية. تاريخ الانتهاء المخطط: ${d}`,err_remD:'اكتب المدة المتبقية (بالأيام) لإنهاء النشاط',remSrcSite:(n,d)=>`المدة المتبقية من مهندس الموقع: ${n} يوم (بتاريخ ${d})`,remSrcPend:'لسه ما اتعتمدتش',remSrcCalc:'محسوبة من معدل الإنتاج الفعلي (مفيش تقدير من الموقع)',remQty:'الكمية المتبقية',rateAct:'معدل الإنتاج الفعلي / يوم',rateReq:'المعدل المطلوب / يوم',remDur:'المدة المتبقية',fcAct:'تاريخ الانتهاء المتوقع',daysN:n=>`${n} يوم`,notStartedRate:'لم يبدأ',overduePf:'عدّى تاريخ الانتهاء المخطط',fcLate:n=>`متأخر ${n} يوم عن المخطط`,fcOk:'في الميعاد أو قبله',perDay:'/يوم',
+prodTitle:'الإنتاجية والتوقع',tab_report:'التقرير',repStep1:'١. المشروع',repStep2:'٢. التقرير لمين؟',repStep3:'٣. اللغة',repPreview:'معاينة',repPdf:'تحميل PDF',repModeExtD:'تقرير رسمي للاستشاري / المالك. من غير قيم العقود ولا دورة الاعتماد الداخلية.',repModeIntD:'للإدارة. فيه قيم العقود والاعتمادات والتحديثات المتأخرة.',k_comp:'الالتزام بالتحديث',k_compSub:d=>`الدورة دي · القفل ${d}`,k_gain:'تقدم الأسبوع ده',k_gainSub:v=>`الأسبوع اللي فات ${v}`,k_fcLate:'متوقع يخلص متأخر',k_fcLateSub:'نشاط بعد تاريخ الانتهاء المخطط',remDaysLbl:'المدة المتبقية لإنهاء النشاط',daysWord:'يوم',remHint:d=>`تقديرك لعدد الأيام الباقية. تاريخ الانتهاء المخطط: ${d}`,err_remD:'اكتب المدة المتبقية (بالأيام) لإنهاء النشاط',remSrcSite:(n,d)=>`المدة المتبقية من مهندس الموقع: ${n} يوم (بتاريخ ${d})`,remSrcPend:'لسه ما اتعتمدتش',remSrcCalc:'محسوبة من معدل الإنتاج الفعلي (مفيش تقدير من الموقع)',remQty:'الكمية المتبقية',rateAct:'معدل الإنتاج الفعلي / يوم',rateReq:'المعدل المطلوب / يوم',remDur:'المدة المتبقية',fcAct:'تاريخ الانتهاء المتوقع',daysN:n=>`${n} يوم`,notStartedRate:'لم يبدأ',overduePf:'عدّى تاريخ الانتهاء المخطط',fcLate:n=>`متأخر ${n} يوم عن المخطط`,fcOk:'في الميعاد أو قبله',perDay:'/يوم',
 repCmp:'مقارنة بالأسبوع السابق',repMetric:'المؤشر',repCmpPrev:'الأسبوع السابق',repCmpNow:'هذا الأسبوع',repCmpChg:'التغيير',cmpPlanned:'التقدم المخطط',cmpActual:'التقدم الفعلي (المعتمد)',cmpVar:'الانحراف',cmpSpi:'مؤشر أداء الجدول',cmpBehind:'أنشطة متأخرة عن المخطط',cmpDone:'أنشطة مكتملة',cmpGain:'التقدم المحقق في الأسبوع',
 repRisks:'أهم ٥ مخاطر',riskCols:['#','النشاط','الخطر','السبب / المسؤول','الانتهاء المتوقع'],riskBehind:v=>`متأخر عن المخطط ${v}`,riskDueSoon:d=>`ينتهي ${d} — لم يكتمل`,riskOverdue:'تجاوز تاريخ الانتهاء المخطط',riskNoUpd:'لا يوجد تحديث حديث من الموقع',noRisks:'لا توجد مخاطر مؤثرة هذا الأسبوع.',
 weekSec:'أنشطة الأسبوع ده — قبل يوم القفل',weekSecHelp:(d,u,n)=>`يوم القفل ${d} · ${u} من ${n} اتحدّث`,otherSec:'باقي الأنشطة',wkDone:'✓ اتحدّث الأسبوع ده',wkTodo:'محتاج تحديث الأسبوع ده',partyLabel:'مين المسؤول عن التأخير؟',parties:{contractor:'إحنا (DMC)',owner:'المالك',consultant:'الاستشاري',subcon:'مقاول الباطن',other:'أخرى / قوة قاهرة'},repByParty:'التأخيرات حسب المسؤولية',repParty:'المسؤولية',returnCm:'إرجاع لمدير الإنشاءات',plRetShort:'مرتجع من التخطيط',t_returnedCm:'اترجع لمدير الإنشاءات',plRetLine:d=>`مرتجع من التخطيط ${d}`,ev_returned_cm:'رجّعه التخطيط لمدير الإنشاءات',repNo:'رقم التقرير',repPeriod:'الفترة',repFor:'التقرير لـ:',repModeExt:'الاستشاري / المالك',repModeInt:'داخلي',repClsExt:'للمراجعة من الاستشاري',repClsInt:'داخلي — سري — غير مخصص للتوزيع الخارجي',
@@ -1728,7 +1772,7 @@ class Component extends DCLogic {
     const nm=o=>o?(L==='ar'?(o.nameAr||o.name):o.name):'';
     const bl=b=>!b||b==='SITE'?t.siteWide:b,zl=z=>!z||z==='—'?t.siteWide:t.zoneL+' '+z,locL=a=>a.zone&&a.zone!=='—'?zl(a.zone)+(a.bldg&&a.bldg!=='SITE'?' · '+a.bldg:''):bl(a.bldg);
     const person=id=>PEOPLE[id]?PEOPLE[id][L]:id;
-    const dlP=u=>u&&u.delay?t.delays[u.delay]+(u.party||DPARTY[u.delay]?' · '+t.parties[u.party||DPARTY[u.delay]]:''):'—';
+    const dlP=u=>{if(!u||!u.delay)return '—';const r=t.delays[u.delay],pk=u.party||DPARTY[u.delay],pl=pk?t.parties[pk]:'';return pl&&pl!==r&&!(u.delay==='subcon'&&pk==='subcon')?r+' · '+pl:r;};
     const p0=v=>Math.round(v)+'%',p1=v=>r1(v).toFixed(1)+'%',sg=v=>(v>0?'+':'')+r1(v).toFixed(1)+'%';
     const W=v=>clamp(v,0,100)+'%';
     const vc=v=>v>=-2?C.green:v>=-cfg.thr/2?C.amber:C.red;
@@ -1749,11 +1793,11 @@ class Component extends DCLogic {
     const FIL={all:()=>true,needs:a=>a.missing||(!!a.returned&&!a.draft),returned:a=>!!a.returned,drafts:a=>!!a.draft,pending:a=>!!a.pending};
     const needsN=mine.filter(FIL.needs).length;
     const notifN=(s.data.reminders||[]).filter(r=>r.to===s.eng&&!r.done&&r.type==='adjusted').length;
-    const TABS={site:['acts','hist','lookahead'],cm:['review','progress','dash','lookahead'],planner:['review','progress','import','dash','lookahead'],pm:['dash','portfolio','trends','lookahead','delays']};
+    const TABS={site:['acts','hist','lookahead'],cm:['review','progress','dash','report','lookahead'],planner:['review','progress','import','dash','report','lookahead'],pm:['dash','portfolio','trends','report','lookahead','delays']};
     const isAdm=this.live()&&s.profile&&s.profile.role==='admin';const tabs=TABS[role].concat(isAdm?['users']:[]).map(k=>{const bd=k==='review'?pendingAll.length:k==='acts'?needsN+notifN:0;return{label:t['tab_'+k],icon:TAB_ICON[k]||'•',onClick:setTab(k),fg:k===tab?'#1b1a17':'#605a51',fw:k===tab?'700':'500',bg:k===tab?'#f1e8cf':'transparent',hasBadge:bd>0,badge:bd};});
     const roles=['site','cm','planner','pm'].map(r=>({label:t['role_'+r],onClick:()=>{this.set({role:r,detail:null,review:null,errors:[],bulk:false,bulkVals:{},bulkErr:{},sel:{}});this.top();},bg:r===role?'#c5a45a':'transparent',fg:r===role?'#1b1a17':'#e9e4da'}));
     const inDetail=!!(s.detail&&D.actMap[s.detail]),inReview=isRev&&!!(s.review&&pendingAll.find(u=>u.id===s.review));
-    const show={dash:role!=='site'&&tab==='dash'&&!inDetail,users:!!isAdm&&tab==='users'&&!inDetail,siteList:role==='site'&&tab==='acts'&&!inDetail,siteHist:role==='site'&&tab==='hist'&&!inDetail,detail:inDetail,review:isRev&&tab==='review'&&!inReview&&!inDetail,reviewDetail:inReview&&!inDetail,progress:isRev&&tab==='progress'&&!inDetail,import:role==='planner'&&tab==='import'&&!inDetail,portfolio:role==='pm'&&tab==='portfolio'&&!inDetail,trends:role==='pm'&&tab==='trends'&&!inDetail,lookahead:tab==='lookahead'&&!inDetail,delays:role==='pm'&&tab==='delays'&&!inDetail};
+    const show={dash:role!=='site'&&tab==='dash'&&!inDetail,users:!!isAdm&&tab==='users'&&!inDetail,siteList:role==='site'&&tab==='acts'&&!inDetail,siteHist:role==='site'&&tab==='hist'&&!inDetail,detail:inDetail,review:isRev&&tab==='review'&&!inReview&&!inDetail,reviewDetail:inReview&&!inDetail,progress:isRev&&tab==='progress'&&!inDetail,import:role==='planner'&&tab==='import'&&!inDetail,portfolio:role==='pm'&&tab==='portfolio'&&!inDetail,trends:role==='pm'&&tab==='trends'&&!inDetail,lookahead:tab==='lookahead'&&!inDetail,report:role!=='site'&&tab==='report'&&!inDetail,delays:role==='pm'&&tab==='delays'&&!inDetail};
 
     const memOf=id=>new Set((s.members||[]).filter(m=>m.user_id===id).map(m=>m.project_id));
     const allUsers=s.users||[],isPendU=u=>u.active!==false&&u.role==='site'&&(!u.discipline||!memOf(u.id).size),uQ=(s.uq||'').trim().toLowerCase();
@@ -1899,8 +1943,16 @@ class Component extends DCLogic {
     const reasons=DELAYS.filter(k=>counts[k]).sort((a,b)=>counts[b]-counts[a]).map(k=>({label:t.delays[k],n:t.reports(counts[k]),w:(counts[k]/mx*100)+'%'}));
     const delayedList=!show.delays?[]:D.acts.filter(a=>a.delayed&&(!dp||a.pid===dp.id)).sort((a,b)=>a.variance-b.variance).map(a=>{const lr=a.ups.slice().reverse().find(u=>u.delay);return{code:a.code,proj:D.projMap[a.pid].code,name:nm(a),varTxt:sg(a.variance),reason:lr?dlP(lr):(a.missing?t.f_missing:'—'),open:()=>this.openDetail(a.id)};});
 
+    // Shared: top risks and delays by responsibility (dashboard + weekly report)
+    const lastReasonA=a=>{const lr=a.ups.slice().reverse().find(u=>u.delay);return lr?dlP(lr):(a.missing?t.f_missing:'—');};
+    const risksOf=(acts,k)=>{const lim14=addD(TODAY,14);return acts.filter(a=>a.actual<100&&a.ps<=lim14).map(a=>{const pr=prodOf(a),gap=Math.max(0,a.planned-a.actual),over=a.pf<TODAY,soon=!over&&a.pf<=lim14,noUpd=a.missing;
+        const sc=a.w*(gap+(over?30:soon&&a.planned-a.actual>0?15:0)+Math.min(30,pr.late)+(noUpd?5:0));
+        const why=[gap>0.5?t.riskBehind(p0(gap)):'',over?t.riskOverdue:soon?t.riskDueSoon(a.pf):'',noUpd?t.riskNoUpd:''].filter(Boolean).join(' · ');
+        return{a,pr,sc,why};}).filter(x=>x.sc>0&&x.why).sort((x,y)=>y.sc-x.sc).slice(0,k||5);};
+    const partyCounts=pid=>{const c={},since=addD(TODAY,-70);s.data.updates.forEach(u=>{const a=D.actMap[u.actId];if(!a||!u.delay||['approved','submitted','endorsed'].indexOf(u.status)<0||(u.submitted||u.created).slice(0,10)<since||(pid&&a.pid!==pid))return;const k=u.party||DPARTY[u.delay]||'other';c[k]=(c[k]||0)+1;});return c;};
+
     // Dashboard
-    let db={chips:[],kpis:[],weeks:[],health:[],disc:[],comp:[],cutChips:[],flow:[],reasons:[],behind:[],feed:[],ahead:[],chart:{planPts:'',actPts:'',tx:0},axis:{a:'',b:''}};
+    let db={chips:[],kpis:[],weeks:[],health:[],disc:[],comp:[],cutChips:[],risks:[],parties:[],flow:[],reasons:[],behind:[],feed:[],ahead:[],chart:{planPts:'',actPts:'',tx:0},axis:{a:'',b:''}};
     if(show.dash){const sp=D.projMap[s.dbProj]||null,acts=sp?sp.list:D.acts,ids=new Set(acts.map(a=>a.id));
       const rollS=d=>{if(sp)return roll(sp.list,d);let Pp=0,Aa=0;D.projects.forEach(p=>{const x=roll(p.list,d);Pp+=p.value*x.p;Aa+=p.value*x.a;});return{p:Pp/V,a:Aa/V};};
       const P=sp?sp.planned:pfP,A=sp?sp.actual:pfA,spx=spiOf(A,P),c=sp?curve([sp.list],[1]):curve(D.projects.map(p=>p.list),D.projects.map(p=>p.value));
@@ -1929,6 +1981,16 @@ class Component extends DCLogic {
       db.comp=[cmpRow(dueL,t.compAll,'ALL')].concat(ENG.map(e=>{const l=dueL.filter(a=>a.eng===e);return l.length?cmpRow(l,person(e),e):null;}).filter(Boolean));
       db.cutTxt=t.cutLine(t.dows[cfg.cut],D.nextCut,D.cycStart);db.canCut=this.canCut();db.cutHelp=t.cutAuto+(db.canCut?'':' '+t.cutAdminOnly);
       db.cutChips=t.dows.map((x,i)=>chip(x,i===cfg.cut,()=>this.setCut(i)));
+      const cAll=dueL.length?dueL.filter(a=>a.updW).length/dueL.length*100:100,lateN=acts.filter(a=>a.actual<100&&prodOf(a).late>0).length,g0=rollS(addD(TODAY,-7)),g1=rollS(addD(TODAY,-14)),gNow=A-g0.a,gPrev=g0.a-g1.a;
+      db.kpis.unshift({l:t.k_comp,v:p0(cAll),sub:t.k_compSub(t.dows[cfg.cut]+' '+D.nextCut),c:cAll>=90?C.green:cAll>=70?C.amber:C.red},
+        {l:t.k_gain,v:(gNow>=gPrev?'▲ ':'▼ ')+sg(gNow),sub:t.k_gainSub(sg(gPrev)),c:gNow>=gPrev?C.green:C.red},{l:t.k_fcLate,v:String(lateN),sub:t.k_fcLateSub,c:lateN?C.red:C.green});
+      db.kpis=db.kpis.filter(k=>k.l!==t.k_awaitCM&&k.l!==t.k_awaitPL&&k.l!==t.k_returnedN);
+      db.risks=risksOf(acts,5).map((x,i)=>({n:String(i+1),code:x.a.code,proj:D.projMap[x.a.pid].code+' · '+person(x.a.eng),name:nm(x.a),why:x.why,cause:lastReasonA(x.a),fc:x.pr.fc,fcC:x.pr.late?C.red:C.green,open:()=>this.openDetail(x.a.id)}));
+      db.hasRisks=db.risks.length>0;db.noRisks=!db.risks.length;
+      const pc=partyCounts(sp?sp.id:null),pt=Object.values(pc).reduce((x,y)=>x+y,0),pm2=Math.max(1,...Object.values(pc));
+      const PC={contractor:'#0e5a4b',owner:'oklch(0.55 0.14 250)',consultant:'oklch(0.6 0.15 50)',subcon:'oklch(0.52 0.15 320)',other:'#8f887c'};
+      db.parties=PARTIES.filter(k=>pc[k]).sort((a,b)=>pc[b]-pc[a]).map(k=>({label:t.parties[k],n:pc[k]+' · '+p0(pc[k]/pt*100),w:(pc[k]/pm2*100)+'%',c:PC[k]}));
+      db.hasParties=db.parties.length>0;db.noParties=!db.parties.length;
       const fl=[[t.fl_draft,cnt.draft,C.amber],[t.fl_cm,cnt.cm,C.blue],[t.fl_pl,cnt.pl,C.blue],[t.fl_ret,cnt.ret,C.red],[t.fl_appr,cnt.appr,C.green]],fm2=Math.max(1,...fl.map(x=>x[1]));
       db.flow=fl.map(([l,v,col])=>({l,n:String(v),w:(v/fm2*100)+'%',c:col}));
       const rc=countReasons(sp?sp.id:null),rm=Math.max(1,...Object.values(rc));
@@ -1951,7 +2013,7 @@ class Component extends DCLogic {
       const rc=countReasons(rP?rP.id:null),rmx=Math.max(1,...Object.values(rc));
       const isoW=(()=>{const d=new Date(TODAY+'T00:00:00Z'),dn=(d.getUTCDay()+6)%7;d.setUTCDate(d.getUTCDate()-dn+3);const y=d.getUTCFullYear(),f=new Date(Date.UTC(y,0,4));return y+'-W'+p2(1+Math.round(((d-f)/864e5-3+((f.getUTCDay()+6)%7))/7));})();
       const delayedActs=acts.filter(a=>a.delayed).sort((a,b)=>a.variance-b.variance);
-      const lastReason=a=>{const lr=a.ups.slice().reverse().find(u=>u.delay);return lr?dlP(lr):(a.missing?t.f_missing:'—');};
+      const lastReason=lastReasonA;
       const prog=s.data.updates.filter(u=>u.status==='approved'&&u.reviewed&&u.reviewed.slice(0,10)>=wk0&&D.actMap[u.actId]&&(!rP||D.actMap[u.actId].pid===rP.id)).sort((a,b)=>a.reviewed<b.reviewed?1:-1);
       const lim=addD(TODAY,14),ahead=acts.filter(a=>a.actual<100&&((a.actual===0&&a.ps>=TODAY&&a.ps<=lim)||(a.pf>=TODAY&&a.pf<=lim))).sort((x,y)=>(x.actual===0?x.ps:x.pf)<(y.actual===0?y.ps:y.pf)?-1:1);
       const anyDemo=rList.some(p=>p.src==='demo');
@@ -1988,11 +2050,7 @@ class Component extends DCLogic {
         [t.repCode].concat(rP?[]:[t.repProject]).concat([t.repActivity,t.repLoc,t.repPrev,t.repNow,t.repGain]),
         prog.map(u=>{const a=D.actMap[u.actId],i=a.appr.indexOf(u),prev=i>0?a.appr[i-1].pct:0;return[N(a.code,{fw:'600'})].concat(rP?[]:[N(D.projMap[a.pid].code)]).concat([Cl(nm(a)),Cl(locL(a)),N(prev+'%'),N(u.pct+'%',{fw:'700'}),N('+'+(u.pct-prev)+'%',{fg:C.green,fw:'700'})]);}),t.repT_weekNote));
       // Top 5 risks: weighted slippage + overdue / finishing soon + forecast late + no update this cycle
-      const lim14=addD(TODAY,14);
-      const risks=acts.filter(a=>a.actual<100&&a.ps<=lim14).map(a=>{const pr=prodOf(a),gap=Math.max(0,a.planned-a.actual),over=a.pf<TODAY,soon=!over&&a.pf<=lim14,noUpd=a.missing;
-        const sc=a.w*(gap+(over?30:soon&&a.planned-a.actual>0?15:0)+Math.min(30,pr.late)+(noUpd?5:0));
-        const why=[gap>0.5?t.riskBehind(p0(gap)):'',over?t.riskOverdue:soon?t.riskDueSoon(a.pf):'',noUpd?t.riskNoUpd:''].filter(Boolean).join(' · ');
-        return{a,pr,sc,why};}).filter(x=>x.sc>0&&x.why).sort((x,y)=>y.sc-x.sc).slice(0,5);
+      const risks=risksOf(acts,5);
       tables.push(tbl(t.repRisks,'minmax(0,0.4fr) minmax(0,2.4fr) minmax(0,2fr) minmax(0,1.8fr) minmax(0,1.1fr)',t.riskCols,
         risks.map((x,i)=>[N(i+1,{fw:'700'}),Cl(x.a.code+' · '+(rP?'':D.projMap[x.a.pid].code+' · ')+nm(x.a),{fw:'600'}),Cl(x.why,{fg:C.red}),Cl(lastReason(x.a)),N(x.pr.fc,{fg:x.pr.late?C.red:C.green,fw:'700'})]),risks.length?'':t.noRisks));
       tables.push(tbl(t.repT_delay,rP?'minmax(0,0.9fr) minmax(0,2.4fr) minmax(0,1.4fr) repeat(3,minmax(0,0.8fr)) minmax(0,1.5fr)':'minmax(0,0.9fr) minmax(0,0.9fr) minmax(0,2.2fr) minmax(0,1.2fr) repeat(3,minmax(0,0.75fr)) minmax(0,1.3fr)',
@@ -2004,7 +2062,7 @@ class Component extends DCLogic {
         ahead.slice(0,20).map(a=>{const st=a.actual===0&&a.ps>=TODAY&&a.ps<=lim;return[N(a.code,{fw:'600'})].concat(rP?[]:[N(D.projMap[a.pid].code)]).concat([Cl(nm(a)),Cl(locL(a)),Cl(st?t.repStart:t.repFinish,{fg:st?C.blue:C.green,fw:'700'}),N(st?a.ps:a.pf),N(p0(a.actual))]);})));
       tables.push(tbl(t.repReasons,'minmax(0,3fr) minmax(0,1fr) minmax(0,1fr)',[t.repReason,t.repCount,t.repShare],
         DELAYS.filter(k=>rc[k]).sort((a,b)=>rc[b]-rc[a]).map(k=>{const tot=Object.values(rc).reduce((x,y)=>x+y,0)||1;return[Cl(t.delays[k]),N(rc[k]),N(p0(rc[k]/tot*100))];})));
-      const rpc={},since70=addD(TODAY,-70);s.data.updates.forEach(u=>{const a=D.actMap[u.actId];if(!a||!u.delay||['approved','submitted','endorsed'].indexOf(u.status)<0||(u.submitted||u.created).slice(0,10)<since70||(rP&&a.pid!==rP.id))return;const k=u.party||DPARTY[u.delay]||'other';rpc[k]=(rpc[k]||0)+1;});
+      const rpc=partyCounts(rP?rP.id:null);
       const rpTot=Object.values(rpc).reduce((x,y)=>x+y,0)||1;
       tables.push(tbl(t.repByParty,'minmax(0,3fr) minmax(0,1fr) minmax(0,1fr)',[t.repParty,t.repCount,t.repShare],
         PARTIES.filter(k=>rpc[k]).sort((a,b)=>rpc[b]-rpc[a]).map(k=>[Cl(t.parties[k],{fw:'600'}),N(rpc[k]),N(p0(rpc[k]/rpTot*100))])));
@@ -2077,7 +2135,16 @@ class Component extends DCLogic {
 
     let kb=0;if(s.settings)try{kb=Math.round((localStorage.getItem(KEY)||'').length/1024);}catch(e){}
     const errors=(s.errors||[]).map(msg=>({msg}));
-    const openReport=()=>this.setState({report:true,repNotes:null,repProj:show.progress?pp.id:(show.trends&&tp?tp.id:'all')});
+    const openReport=()=>{this.setState({tab:Object.assign({},s.tab,{[role]:'report'}),report:false,repNotes:null,repProj:show.progress?pp.id:(show.trends&&tp?tp.id:'all')});this.top();};
+    // Weekly report tab: simple setup (project, audience, language) then preview / PDF
+    const rs=(()=>{if(!show.report)return{projChips:[],modes:[],langs:[]};const rP=D.projMap[s.repProj],ext=s.repMode!=='int',r=rP?{p:rP.planned,a:rP.actual}:{p:pfP,a:pfA};
+      const opt=(k,on,icon,title,desc,go)=>({k,icon,title,desc,onClick:go,bd:on?'#0e5a4b':'#e2ded6',bg:on?'#eef5f2':'#fff',dot:on?'#0e5a4b':'#fff',dotBd:on?'#0e5a4b':'#b3ac9f'});
+      return{projChips:[chip(t.allProjects,!rP,()=>this.setState({repProj:'all',repNotes:null}))].concat(D.projects.map(p=>chip(p.code,!!rP&&rP.id===p.id,()=>this.setState({repProj:p.id,repNotes:null})))),
+        projName:rP?rP.code+' · '+nm(rP):t.repAllN(D.projects.length),
+        modes:[opt('ext',ext,'🤝',t.repModeExt,t.repModeExtD,()=>this.setState({repMode:'ext',repNotes:null})),opt('int',!ext,'🔒',t.repModeInt,t.repModeIntD,()=>this.setState({repMode:'int',repNotes:null}))],
+        langs:[chip('English',L==='en',()=>this.set({lang:'en'})),chip('العربية',L==='ar',()=>this.set({lang:'ar'}))],
+        period:t.repWeek(addD(TODAY,-6),TODAY),actual:p1(r.a),planned:p1(r.p),variance:sg(r.a-r.p),varC:vc(r.a-r.p),
+        preview:()=>this.setState({report:true}),pdf:()=>this.setState({report:true},()=>setTimeout(()=>{try{window.print();}catch(e){}},500))};})();
     const live=this.live(),host=(()=>{try{return new URL(s.connUrl).host;}catch(e){return '';}})(),prof=s.profile;
     const liveVals={isDemo:!live,isLive:live,wide:s.wide,notWide:!s.wide,showRoleBar:this.canSwitch()&&!s.wide,showSideRoles:this.canSwitch(),
       showLogin:live&&s.auth!=='ready',authChecking:live&&s.auth==='checking',authForm:live&&s.auth==='signedOut',
@@ -2122,7 +2189,7 @@ class Component extends DCLogic {
       validateImport:()=>this.runValidate(s.importText),imp,doImport:()=>this.doImport(),csvCols:CSV_COLS.join(', '),
       pf,pmProjects,chart,axis,scStats,trendRows,pmChips,laChips,laWin,laStart,laFinish,laStartEmpty:!laStart.length,laFinishEmpty:!laFinish.length,
       dlChips,reasons,reasonsEmpty:show.delays&&!reasons.length,delayedList,delayedEmpty:show.delays&&!delayedList.length,
-      reportOpen:s.report,rp,closeReport:()=>this.setState({report:false}),printReport:()=>{try{window.print();}catch(e){}},
+      reportOpen:s.report,rp,rs,repSum:(D.projMap[s.repProj]?D.projMap[s.repProj].code:t.allProjects)+' · '+(s.repMode==='int'?t.repModeInt:t.repModeExt),closeReport:()=>this.setState({report:false}),printReport:()=>{try{window.print();}catch(e){}},
       stats:t.stats(s.data.projects.length,s.data.activities.length,s.data.updates.length,kb),
       exportJson:()=>{download('DMC_backup_'+TODAY+'.json',JSON.stringify({v:2,exported:stamp(),storage:'browser-localStorage (personal)',data:s.data},null,1),'application/json');this.toast(t.t_exported);},
       resetLabel:s.resetArm?t.resetConfirm:t.reset,
