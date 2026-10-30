@@ -37,6 +37,7 @@ Supabase (free): PostgreSQL + Auth + Storage (bucket site-photos, private) + Rea
 - `db/03_chat.sql` — team chat tables (`chat_messages`, `chat_reads`), `chat_room_visible()`, `chat_directory()`, RLS, realtime; also confirms + promotes `admin@dmc.local`.
 - `db/04_demo_data.sql` — loads the demo data directly (generated from `seed()` + `MAP.*.to`; no photos). Re-runnable: deletes old demo rows first; pauses user triggers inside one transaction.
 - `db/05_push.sql` — push notifications: `push_subscriptions`, `private.push_config` (VAPID keys + hook secret, set via MCP, **not in repo**), RPCs `push_subscribe/unsubscribe/public_key/config_get`, trigger `push_notify()` (pg_net → Edge Function). Applied 2026-10-29.
+- `db/07_cutoff_delay_party.sql` — weekly cut-off: `progress_updates.delay_party` (contractor/owner/consultant/subcon/other), `app_settings.cutoff_dow` (0=Sun…4=Thu, default Thu), `cutoff_due()`, `send_cutoff_reminders()` + pg_cron `dmc-cutoff-reminders` (06:00 UTC daily → reminder to each discipline with un-updated activities on the eve and on the cut-off day; goes to phone via the notifications push trigger). Applied 2026-10-30.
 - `supabase/functions/push/index.ts` — Edge Function `push` (verify_jwt off; checks `x-hook-secret`, or a user JWT for `{test:true}`). Decides recipients: submitted→CM of project (or Planning if `require_cm` off), endorsed→Planning, returned/approved→engineer, notifications→engineers of discipline, chat→room members. Skips demo inserts.
 - `sw.js` (service worker: show push + open app), `manifest.json`, `icon-192.png`, `icon-512.png` — installable app (PWA). iPhone needs “Add to Home Screen” before push works.
 - **Two modes:** DEMO (no config → data in browser localStorage only) and LIVE (Supabase, shared, real-time).
@@ -99,3 +100,10 @@ update profiles set role='admin', discipline='CIV' where id=(select id from auth
 - Data load capped at 10,000 rows per table — add pagination before large projects.
 - Vercel Hobby is non-commercial; company adoption needs IT approval or a paid/internal host.
 - Don't upload real project data without company approval.
+
+## Features added 2026-10-30
+- Weekly cut-off cycle (7 days ending on the cut-off day). `derive()` sets `a.due` (planned start ≤ cut-off and not complete) and `a.updW` (non-draft, non-returned update in the cycle). Dashboard card "Weekly update compliance" per discipline + cut-off day chips (admin in LIVE writes `app_settings.cutoff_dow`; DEMO saves to localStorage `dmc-erp:cutDow`).
+- Delay responsibility (`party`, default from `DPARTY` by reason) chosen with the delay reason; shown wherever the reason is shown (`dlP()`).
+- Activity detail "Productivity & forecast": remaining qty, actual and required rate per day, remaining duration, forecast finish (`prodOf()`), red when after planned finish.
+- Weekly report: section numbers are assigned automatically; new tables "Compared with last week" (▲/▼), "Top 5 risks" (weighted slippage + overdue/finishing in 14 days + forecast late + no recent update), "Delays by responsibility".
+- Bottom nav / sidebar tab icons (`TAB_ICON`). Site engineer list starts with a "This week — before the cut-off" section (not-updated first), then other activities.

@@ -39,7 +39,7 @@ input,textarea{font:inherit;color:inherit}
     </div>
     <div style="display:flex;flex-direction:column;gap:4px">
       <div style="font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:#8f887c;font-weight:700;padding:0 8px 4px">{{ t.modules }}</div>
-      <sc-for list="{{ sideTabs }}" as="b" hint-placeholder-count="3"><button onClick="{{ b.onClick }}" style="min-height:44px;display:flex;align-items:center;gap:8px;padding:0 12px;border:none;border-radius:9px;background:{{ b.sbg }};color:{{ b.sfg }};font-size:14.5px;font-weight:{{ b.fw }};text-align:start"><span style="flex:1">{{ b.label }}</span><sc-if value="{{ b.hasBadge }}" hint-placeholder-val="{{ false }}"><span style="min-width:22px;padding:1px 6px;border-radius:999px;background:oklch(0.55 0.17 28);color:#fff;font-size:12px;font-weight:700;text-align:center">{{ b.badge }}</span></sc-if></button></sc-for>
+      <sc-for list="{{ sideTabs }}" as="b" hint-placeholder-count="3"><button onClick="{{ b.onClick }}" style="min-height:44px;display:flex;align-items:center;gap:8px;padding:0 12px;border:none;border-radius:9px;background:{{ b.sbg }};color:{{ b.sfg }};font-size:14.5px;font-weight:{{ b.fw }};text-align:start"><span style="width:22px;text-align:center;font-size:16px">{{ b.icon }}</span><span style="flex:1">{{ b.label }}</span><sc-if value="{{ b.hasBadge }}" hint-placeholder-val="{{ false }}"><span style="min-width:22px;padding:1px 6px;border-radius:999px;background:oklch(0.55 0.17 28);color:#fff;font-size:12px;font-weight:700;text-align:center">{{ b.badge }}</span></sc-if></button></sc-for>
       <button onClick="{{ openChat }}" style="min-height:44px;margin-top:6px;display:flex;align-items:center;gap:8px;padding:0 12px;border:1px solid #3f7468;border-radius:9px;background:transparent;color:#e9e4da;font-size:14.5px;font-weight:600;text-align:start"><span style="flex:1">{{ t.chatBtn }}</span><sc-if value="{{ chatHasUnread }}" hint-placeholder-val="{{ false }}"><span style="min-width:22px;padding:1px 6px;border-radius:999px;background:oklch(0.55 0.15 150);color:#fff;font-size:12px;font-weight:700;text-align:center">{{ chatUnread }}</span></sc-if></button>
     </div>
     <sc-if value="{{ showSideRoles }}" hint-placeholder-val="{{ true }}">
@@ -120,8 +120,10 @@ input,textarea{font:inherit;color:inherit}
     <sc-if value="{{ hasSZone }}" hint-placeholder-val="{{ false }}"><div style="display:flex;gap:8px;overflow-x:auto;padding:0 16px 2px"><sc-for list="{{ sZoneChips }}" as="c" hint-placeholder-count="3"><button onClick="{{ c.onClick }}" style="flex:0 0 auto;min-height:40px;padding:0 14px;border-radius:999px;border:1px solid {{ c.bd }};background:{{ c.bg }};color:{{ c.fg }};font-size:14px;white-space:nowrap">{{ c.label }}</button></sc-for></div></sc-if>
     <sc-if value="{{ hasSBldg }}" hint-placeholder-val="{{ false }}"><div style="display:flex;gap:8px;overflow-x:auto;padding:0 16px 2px"><sc-for list="{{ sBldgChips }}" as="c" hint-placeholder-count="3"><button onClick="{{ c.onClick }}" style="flex:0 0 auto;min-height:40px;padding:0 14px;border-radius:999px;border:1px solid {{ c.bd }};background:{{ c.bg }};color:{{ c.fg }};font-size:14px;white-space:nowrap">{{ c.label }}</button></sc-for></div></sc-if>
     <div style="padding:0 16px;display:flex;justify-content:space-between;gap:8px;font-size:12px;color:#605a51;flex-wrap:wrap"><span>{{ siteCountTxt }}</span><span>{{ t.legendBar }}</span></div>
+    <sc-for list="{{ siteSecs }}" as="sec" hint-placeholder-count="2"><div style="display:flex;flex-direction:column;gap:8px">
+    <sc-if value="{{ sec.hasTitle }}" hint-placeholder-val="{{ true }}"><div style="margin:4px 16px 0;padding:10px 12px;border-radius:10px;background:{{ sec.bg }};border:1px solid {{ sec.bd }};display:flex;flex-direction:column;gap:2px"><span style="font-weight:700;font-size:15px;color:{{ sec.fg }}">{{ sec.title }}</span><span style="font-size:12.5px;color:#605a51">{{ sec.help }}</span></div></sc-if>
     <div style="padding:0 16px;display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,360px),1fr));gap:10px;align-items:start">
-      <sc-for list="{{ siteActs }}" as="a" hint-placeholder-count="4">
+      <sc-for list="{{ sec.acts }}" as="a" hint-placeholder-count="4">
         <div style="background:#fff;border:1px solid #e4e0d8;border-inline-start:4px solid {{ a.stFg }};border-radius:14px;overflow:hidden;box-shadow:0 1px 2px rgba(27,26,23,.04)">
           <button onClick="{{ a.open }}" style="text-align:start;width:100%;background:transparent;border:none;padding:14px 14px 12px;display:flex;flex-direction:column;gap:10px;color:inherit">
             <div style="display:flex;gap:8px;align-items:center;width:100%">
@@ -139,6 +141,7 @@ input,textarea{font:inherit;color:inherit}
               <div style="position:absolute;top:-4px;bottom:-4px;inset-inline-start:{{ a.plannedW }};width:2px;margin-inline-start:-1px;background:#0b4a3e;border-radius:1px"></div>
             </div>
             <div style="font-size:12px;color:#605a51;direction:inherit">{{ a.meta }}</div>
+            <sc-if value="{{ a.hasWk }}" hint-placeholder-val="{{ false }}"><span style="font-size:12px;font-weight:700;color:{{ a.wkC }}">{{ a.wkTxt }}</span></sc-if>
           </button>
           <sc-if value="{{ a.bulkOn }}" hint-placeholder-val="{{ false }}">
             <div style="display:grid;grid-template-columns:52px minmax(0,1fr) 52px 56px 64px;gap:6px;align-items:center;padding:10px 12px;border-top:1px dashed #e4e0d8;background:#faf8f4;direction:ltr">
@@ -152,8 +155,9 @@ input,textarea{font:inherit;color:inherit}
           </sc-if>
         </div>
       </sc-for>
-      <sc-if value="{{ siteEmpty }}" hint-placeholder-val="{{ false }}"><div style="padding:28px;text-align:center;color:#605a51;border:1px dashed #cfc9bf;border-radius:12px">{{ t.noItems }}</div></sc-if>
     </div>
+    </div></sc-for>
+    <sc-if value="{{ siteEmpty }}" hint-placeholder-val="{{ false }}"><div style="margin:0 16px;padding:28px;text-align:center;color:#605a51;border:1px dashed #cfc9bf;border-radius:12px">{{ t.noItems }}</div></sc-if>
   </div>
 </sc-if>
 
@@ -193,6 +197,14 @@ input,textarea{font:inherit;color:inherit}
       <div style="display:grid;grid-template-columns:auto minmax(0,1fr) 48px;gap:8px 10px;align-items:center;font-size:13px">
         <span style="color:#5f5a52">{{ t.planned }}</span><div style="height:10px;background:#ece9e3;border-radius:5px;overflow:hidden"><div style="height:100%;width:{{ d.plannedW }};background:#a59e92"></div></div><span style="text-align:end;font-weight:700">{{ d.plannedTxt }}</span>
         <span style="color:#5f5a52">{{ t.actual }}</span><div style="height:10px;background:#ece9e3;border-radius:5px;overflow:hidden"><div style="height:100%;width:{{ d.actualW }};background:{{ d.barColor }}"></div></div><span style="text-align:end;font-weight:700">{{ d.actualTxt }}</span>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px 14px;font-size:13px;border-top:1px solid #ece9e3;padding-top:12px">
+        <div style="grid-column:1 / -1;font-weight:700;font-size:14px">📈 {{ t.prodTitle }}</div>
+        <div><div style="color:#5f5a52">{{ t.remQty }}</div><div style="font-weight:700">{{ d.pr.rem }}</div></div>
+        <div><div style="color:#5f5a52">{{ t.remDur }}</div><div style="font-weight:700">{{ d.pr.remD }}</div></div>
+        <div><div style="color:#5f5a52">{{ t.rateAct }}</div><div style="font-weight:600">{{ d.pr.rate }}</div></div>
+        <div><div style="color:#5f5a52">{{ t.rateReq }}</div><div style="font-weight:600;color:{{ d.pr.reqC }}">{{ d.pr.req }}</div></div>
+        <div style="grid-column:1 / -1"><div style="color:#5f5a52">{{ t.fcAct }}</div><div><span style="font-family:'IBM Plex Mono',monospace;font-size:14px;font-weight:700;color:{{ d.pr.fcC }}">{{ d.pr.fc }}</span> <span style="font-size:12px;color:{{ d.pr.fcC }}">· {{ d.pr.fcNote }}</span></div></div>
       </div>
       <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px 14px;font-size:13px;border-top:1px solid #ece9e3;padding-top:12px">
         <div><div style="color:#5f5a52">{{ t.plannedDates }}</div><div style="font-family:'IBM Plex Mono',monospace;font-size:12.5px">{{ d.ps }} → {{ d.pf }}</div></div>
@@ -266,6 +278,10 @@ input,textarea{font:inherit;color:inherit}
           <div style="display:flex;gap:8px;flex-wrap:wrap">
             <sc-for list="{{ delayChips }}" as="c" hint-placeholder-count="6"><button onClick="{{ c.onClick }}" style="min-height:44px;padding:0 14px;border-radius:999px;border:1px solid {{ c.bd }};background:{{ c.bg }};color:{{ c.fg }};font-size:14px">{{ c.label }}</button></sc-for>
           </div>
+          <sc-if value="{{ hasParty }}" hint-placeholder-val="{{ false }}"><div style="display:flex;flex-direction:column;gap:8px;background:#f7f5f1;border:1px solid #e4e0d8;border-radius:10px;padding:10px">
+            <label style="font-size:13.5px;font-weight:600">{{ t.partyLabel }}</label>
+            <div style="display:flex;gap:8px;flex-wrap:wrap"><sc-for list="{{ partyChips }}" as="c" hint-placeholder-count="5"><button onClick="{{ c.onClick }}" style="min-height:42px;padding:0 14px;border-radius:999px;border:1px solid {{ c.bd }};background:{{ c.bg }};color:{{ c.fg }};font-size:14px">{{ c.label }}</button></sc-for></div>
+          </div></sc-if>
         </div>
         <div style="display:flex;flex-direction:column;gap:8px">
           <label style="font-size:14px;font-weight:600">{{ t.remarks }}</label>
@@ -630,6 +646,20 @@ input,textarea{font:inherit;color:inherit}
         </sc-for>
       </div>
       <div style="background:#fff;border:1px solid #e2ded6;border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:12px">
+        <div style="font-weight:700;font-size:15px">⏰ {{ t.compTitle }}</div>
+        <div style="font-size:12.5px;color:#605a51;font-weight:600">{{ db.cutTxt }}</div>
+        <sc-for list="{{ db.comp }}" as="x" hint-placeholder-count="5"><div style="display:flex;flex-direction:column;gap:5px">
+          <div style="display:flex;gap:8px;align-items:baseline"><span style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;font-weight:700;padding:1px 6px;border-radius:4px;background:#f2efe9">{{ x.code }}</span><span style="flex:1;font-weight:600;font-size:14px">{{ x.label }}</span><span style="font-weight:700;font-size:13.5px;color:{{ x.vc }};direction:ltr;unicode-bidi:isolate">{{ x.v }}</span></div>
+          <div style="height:8px;background:#ece9e3;border-radius:4px;overflow:hidden"><div style="height:100%;width:{{ x.w }};background:{{ x.bar }};border-radius:4px"></div></div>
+          <div style="font-size:12px;color:#605a51">{{ x.line }}</div>
+        </div></sc-for>
+        <sc-if value="{{ db.canCut }}" hint-placeholder-val="{{ true }}"><div style="display:flex;flex-direction:column;gap:6px;border-top:1px solid #f0ede7;padding-top:10px">
+          <div style="font-size:12.5px;font-weight:700">{{ t.cutPick }}</div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap"><sc-for list="{{ db.cutChips }}" as="c" hint-placeholder-count="7"><button onClick="{{ c.onClick }}" style="min-height:36px;padding:0 10px;border-radius:999px;border:1px solid {{ c.bd }};background:{{ c.bg }};color:{{ c.fg }};font-size:12.5px;white-space:nowrap">{{ c.label }}</button></sc-for></div>
+        </div></sc-if>
+        <div style="font-size:11.5px;color:#605a51;line-height:1.45">{{ db.cutHelp }}</div>
+      </div>
+      <div style="background:#fff;border:1px solid #e2ded6;border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:12px">
         <div style="font-weight:700;font-size:15px">{{ t.p_disc }}</div>
         <sc-for list="{{ db.disc }}" as="x" hint-placeholder-count="4"><div style="display:flex;flex-direction:column;gap:5px">
           <div style="display:flex;gap:8px;align-items:baseline"><span style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;font-weight:700;padding:1px 6px;border-radius:4px;background:#f2efe9">{{ x.code }}</span><span style="flex:1;font-weight:600;font-size:14px">{{ x.label }}</span><span style="font-weight:700;font-size:13.5px;color:{{ x.vc }};direction:ltr;unicode-bidi:isolate">{{ x.v }}</span></div>
@@ -750,8 +780,9 @@ input,textarea{font:inherit;color:inherit}
 <sc-if value="{{ notWide }}" hint-placeholder-val="{{ true }}"><nav data-noprint="1" style="position:fixed;bottom:0;left:0;right:0;z-index:30;background:#fff;border-top:1px solid #d8d3ca;padding-bottom:env(safe-area-inset-bottom)">
   <div style="max-width:760px;margin:0 auto;display:flex;overflow-x:auto;padding:0 2px">
     <sc-for list="{{ tabs }}" as="b" hint-placeholder-count="3">
-      <button onClick="{{ b.onClick }}" style="position:relative;flex:1 1 0;min-width:54px;padding:0 3px;white-space:normal;line-height:1.15;text-align:center;min-height:58px;margin:4px 2px;border:none;border-radius:12px;background:{{ b.bg }};color:{{ b.fg }};font-size:12.5px;font-weight:{{ b.fw }};display:flex;align-items:center;justify-content:center">
-        <span>{{ b.label }}</span>
+      <button onClick="{{ b.onClick }}" style="position:relative;flex:1 1 0;min-width:54px;padding:0 3px;white-space:normal;line-height:1.15;text-align:center;min-height:58px;margin:4px 2px;border:none;border-radius:12px;background:{{ b.bg }};color:{{ b.fg }};font-size:12.5px;font-weight:{{ b.fw }};display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px">
+        <span style="font-size:19px;line-height:1">{{ b.icon }}</span>
+        <span style="font-size:11.5px">{{ b.label }}</span>
         <sc-if value="{{ b.hasBadge }}" hint-placeholder-val="{{ false }}"><span style="position:absolute;top:2px;inset-inline-end:2px;min-width:18px;padding:0 5px;border-radius:999px;background:oklch(0.52 0.17 28);color:#fff;font-size:11px;line-height:18px;font-weight:700">{{ b.badge }}</span></sc-if>
       </button>
     </sc-for>
@@ -947,6 +978,9 @@ const r1=v=>Math.round(v*10)/10;
 const uid=p=>p+Date.now().toString(36)+Math.random().toString(36).slice(2,6);
 const isDate=s=>/^\d{4}-\d{2}-\d{2}$/.test(s)&&!isNaN(Date.parse(s));
 const DELAYS=['material','manpower','equipment','weather','design','client','subcon','permit','other'];
+const TAB_ICON={acts:'📋',hist:'📤',lookahead:'📅',review:'✅',progress:'📈',import:'📥',dash:'📊',portfolio:'💼',trends:'📉',delays:'⏱️',users:'👥'};
+const PARTIES=['contractor','owner','consultant','subcon','other'];
+const DPARTY={material:'contractor',manpower:'contractor',equipment:'contractor',weather:'other',design:'consultant',client:'owner',subcon:'subcon',permit:'owner',other:'other'};
 const ENG=['CIV','ARC','MEC','ELE'];
 const PEOPLE={CIV:{en:'Civil Engineer',ar:'المهندس المدني'},ARC:{en:'Architectural Engineer',ar:'المهندس المعماري'},MEC:{en:'Mechanical Engineer',ar:'المهندس الميكانيكي'},ELE:{en:'Electrical Engineer',ar:'المهندس الكهربائي'},CM:{en:'Construction Manager',ar:'مدير الإنشاءات'},PL:{en:'Planning Engineer',ar:'مهندس التخطيط'},PM:{en:'Project Manager',ar:'مدير المشروع'}};
 const ALIAS={CIVIL:'CIV',ARCH:'ARC',ARCHITECTURAL:'ARC',MECH:'MEC',MECHANICAL:'MEC',ELEC:'ELE',ELECTRICAL:'ELE'};
@@ -961,7 +995,11 @@ const I18N={
 en:{title:'DMC Site Progress',otherLang:'عربي',dataShort:'Data',dataDate:'Data date',
 demo:'DEMO DATA — fictional sample projects. Saved only in this browser on this device. Tap for details.',
 role_site:'Site Engineer',role_planner:'Planning Engineer',role_pm:'Project Manager',actingAs:'Acting as site engineer',
-refreshBtn:'Refresh',returnCm:'Return to CM',plRetShort:'Returned by Planning',t_returnedCm:'Returned to the Construction Manager',plRetLine:d=>`Returned by Planning ${d}`,ev_returned_cm:'returned to CM by Planning',repNo:'Report No.',repPeriod:'Period',repFor:'Report for:',repModeExt:'Consultant / Client',repModeInt:'Internal',repClsExt:'FOR CONSULTANT REVIEW',repClsInt:'INTERNAL — CONFIDENTIAL — NOT FOR EXTERNAL DISTRIBUTION',
+refreshBtn:'Refresh',dows:['Sun','Mon','Tue','Wed','Thu','Fri','Sat'],compTitle:'Weekly update compliance',compAll:'All disciplines',compLine:(u,n)=>`${u} of ${n} activities updated this cycle`,cutLine:(d,c,f)=>`Cut-off: ${d} ${c} · cycle from ${f}`,cutPick:'Cut-off day',cutAuto:'Engineers who have not updated get an automatic reminder the day before and on the cut-off day.',cutAdminOnly:'Only the admin can change the cut-off day.',
+prodTitle:'Productivity & forecast',remQty:'Remaining quantity',rateAct:'Actual rate / day',rateReq:'Required rate / day',remDur:'Remaining duration',fcAct:'Forecast finish',daysN:n=>`${n} days`,notStartedRate:'Not started',overduePf:'Past planned finish',fcLate:n=>`${n} days after planned finish`,fcOk:'On or before planned finish',perDay:'/day',
+repCmp:'Compared with last week',repMetric:'Indicator',repCmpPrev:'Last week',repCmpNow:'This week',repCmpChg:'Change',cmpPlanned:'Planned progress',cmpActual:'Actual progress (approved)',cmpVar:'Variance',cmpSpi:'SPI',cmpBehind:'Activities behind schedule',cmpDone:'Activities completed',cmpGain:'Progress gained in the week',
+repRisks:'Top 5 risks',riskCols:['#','Activity','Risk','Cause / responsibility','Forecast finish'],riskBehind:v=>`Behind plan by ${v}`,riskDueSoon:d=>`Due ${d} — not finished`,riskOverdue:'Past planned finish',riskNoUpd:'No recent site update',noRisks:'No significant risks this week.',
+weekSec:'This week — before the cut-off',weekSecHelp:(d,u,n)=>`Cut-off ${d} · ${u} of ${n} updated`,otherSec:'Other activities',wkDone:'✓ Updated this week',wkTodo:'Needs update this week',partyLabel:'Who is responsible for the delay?',parties:{contractor:'DMC (us)',owner:'Owner / client',consultant:'Consultant',subcon:'Subcontractor',other:'Other / force majeure'},repByParty:'Delays by responsibility',repParty:'Responsibility',returnCm:'Return to CM',plRetShort:'Returned by Planning',t_returnedCm:'Returned to the Construction Manager',plRetLine:d=>`Returned by Planning ${d}`,ev_returned_cm:'returned to CM by Planning',repNo:'Report No.',repPeriod:'Period',repFor:'Report for:',repModeExt:'Consultant / Client',repModeInt:'Internal',repClsExt:'FOR CONSULTANT REVIEW',repClsInt:'INTERNAL — CONFIDENTIAL — NOT FOR EXTERNAL DISTRIBUTION',
 repLocL:'Location',repPrepared:'Prepared by',repRev:'Revision',repValue:'Contract value',repWeightBy:'Weighting',repByWeight:'Activity weights',repAllN:n=>`All projects (${n})`,
 repExec:'1. Executive summary',repToDate:'Cumulative to date',repApprovedOnly:'Approved updates only',repVsPlan:'Actual − planned',repSpiS:'Actual ÷ planned',repWeekGain:'Progress this week',repPlannedGain:g=>`Planned ${g}`,
 repNarr:o=>`Overall progress reached ${o.a} against ${o.p} planned (variance ${o.v}, SPI ${o.spi}). Progress achieved this week is ${o.g} against ${o.gp} planned, from ${o.n} approved site updates. ${o.d} activities are currently behind schedule${o.r?`; the main reported cause is “${o.r}”`:''}. At the current rate the forecast finish is ${o.fc} (planned ${o.end}).`,
@@ -1013,7 +1051,11 @@ stats:(p,a,u,kb)=>`${p} projects · ${a} activities · ${u} updates · ${kb} KB 
 ar:{title:'DMC تقدم الموقع',otherLang:'English',dataShort:'البيانات',dataDate:'تاريخ البيانات',
 demo:'بيانات تجريبية — مشاريع وهمية للعرض. محفوظة في هذا المتصفح على هذا الجهاز فقط. اضغط للتفاصيل.',
 role_site:'مهندس موقع',role_planner:'مهندس تخطيط',role_pm:'مدير المشروع',actingAs:'تعمل باسم مهندس الموقع',
-refreshBtn:'تحديث',returnCm:'إرجاع لمدير الإنشاءات',plRetShort:'مرتجع من التخطيط',t_returnedCm:'اترجع لمدير الإنشاءات',plRetLine:d=>`مرتجع من التخطيط ${d}`,ev_returned_cm:'رجّعه التخطيط لمدير الإنشاءات',repNo:'رقم التقرير',repPeriod:'الفترة',repFor:'التقرير لـ:',repModeExt:'الاستشاري / المالك',repModeInt:'داخلي',repClsExt:'للمراجعة من الاستشاري',repClsInt:'داخلي — سري — غير مخصص للتوزيع الخارجي',
+refreshBtn:'تحديث',dows:['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'],compTitle:'الالتزام بالتحديث الأسبوعي',compAll:'كل التخصصات',compLine:(u,n)=>`${u} من ${n} نشاط اتحدّث في الدورة دي`,cutLine:(d,c,f)=>`يوم القفل: ${d} ${c} · الدورة من ${f}`,cutPick:'يوم القفل',cutAuto:'المهندس اللي ماحدّثش بيوصله تذكير أوتوماتيك قبل يوم القفل بيوم وفي يوم القفل.',cutAdminOnly:'الأدمن بس هو اللي يقدر يغيّر يوم القفل.',
+prodTitle:'الإنتاجية والتوقع',remQty:'الكمية المتبقية',rateAct:'معدل الإنتاج الفعلي / يوم',rateReq:'المعدل المطلوب / يوم',remDur:'المدة المتبقية',fcAct:'تاريخ الانتهاء المتوقع',daysN:n=>`${n} يوم`,notStartedRate:'لم يبدأ',overduePf:'عدّى تاريخ الانتهاء المخطط',fcLate:n=>`متأخر ${n} يوم عن المخطط`,fcOk:'في الميعاد أو قبله',perDay:'/يوم',
+repCmp:'مقارنة بالأسبوع السابق',repMetric:'المؤشر',repCmpPrev:'الأسبوع السابق',repCmpNow:'هذا الأسبوع',repCmpChg:'التغيير',cmpPlanned:'التقدم المخطط',cmpActual:'التقدم الفعلي (المعتمد)',cmpVar:'الانحراف',cmpSpi:'مؤشر أداء الجدول',cmpBehind:'أنشطة متأخرة عن المخطط',cmpDone:'أنشطة مكتملة',cmpGain:'التقدم المحقق في الأسبوع',
+repRisks:'أهم ٥ مخاطر',riskCols:['#','النشاط','الخطر','السبب / المسؤول','الانتهاء المتوقع'],riskBehind:v=>`متأخر عن المخطط ${v}`,riskDueSoon:d=>`ينتهي ${d} — لم يكتمل`,riskOverdue:'تجاوز تاريخ الانتهاء المخطط',riskNoUpd:'لا يوجد تحديث حديث من الموقع',noRisks:'لا توجد مخاطر مؤثرة هذا الأسبوع.',
+weekSec:'أنشطة الأسبوع ده — قبل يوم القفل',weekSecHelp:(d,u,n)=>`يوم القفل ${d} · ${u} من ${n} اتحدّث`,otherSec:'باقي الأنشطة',wkDone:'✓ اتحدّث الأسبوع ده',wkTodo:'محتاج تحديث الأسبوع ده',partyLabel:'مين المسؤول عن التأخير؟',parties:{contractor:'إحنا (DMC)',owner:'المالك',consultant:'الاستشاري',subcon:'مقاول الباطن',other:'أخرى / قوة قاهرة'},repByParty:'التأخيرات حسب المسؤولية',repParty:'المسؤولية',returnCm:'إرجاع لمدير الإنشاءات',plRetShort:'مرتجع من التخطيط',t_returnedCm:'اترجع لمدير الإنشاءات',plRetLine:d=>`مرتجع من التخطيط ${d}`,ev_returned_cm:'رجّعه التخطيط لمدير الإنشاءات',repNo:'رقم التقرير',repPeriod:'الفترة',repFor:'التقرير لـ:',repModeExt:'الاستشاري / المالك',repModeInt:'داخلي',repClsExt:'للمراجعة من الاستشاري',repClsInt:'داخلي — سري — غير مخصص للتوزيع الخارجي',
 repLocL:'الموقع',repPrepared:'إعداد',repRev:'الإصدار',repValue:'قيمة العقد',repWeightBy:'الترجيح',repByWeight:'أوزان الأنشطة',repAllN:n=>`كل المشاريع (${n})`,
 repExec:'١. الملخص التنفيذي',repToDate:'تراكمي حتى تاريخه',repApprovedOnly:'التحديثات المعتمدة فقط',repVsPlan:'الفعلي − المخطط',repSpiS:'الفعلي ÷ المخطط',repWeekGain:'تقدم هذا الأسبوع',repPlannedGain:g=>`المخطط ${g}`,
 repNarr:o=>`بلغ التقدم الكلي ${o.a} مقابل ${o.p} مخطط (انحراف ${o.v}، مؤشر أداء الجدول ${o.spi}). التقدم المحقق هذا الأسبوع ${o.g} مقابل ${o.gp} مخطط، من ${o.n} تحديث معتمد من الموقع. عدد الأنشطة المتأخرة حالياً ${o.d}${o.r?`، وأكثر سبب مُبلغ عنه «${o.r}»`:''}. بالمعدل الحالي تاريخ الانتهاء المتوقع ${o.fc} (المخطط ${o.end}).`,
@@ -1280,6 +1322,7 @@ function seed(){
   const reminders=[{id:'R_seed',to:'ARC',from:'PL',at:d(1)+'T09:00',actIds:['A_B2050','A_A1060'],type:'missing',done:false},
     {id:'R_seed2',to:'CIV',from:'CM',at:d(1)+'T08:30',actIds:['A_B2030'],type:'adjusted',from_pct:72,to_pct:68,from_qty:1728,to_qty:1632,note:'L4 pour only half complete — adjusted to 68%.',done:false},
     {id:'R_seed3',to:'MEC',from:'PL',at:d(1)+'T09:05',actIds:['A_A1110'],type:'missing',done:false}];
+  updates.forEach(u=>{if(u.delay&&!u.party)u.party=DPARTY[u.delay]||'other';});
   return {projects,activities,updates,reminders,chat:seedChat(),seededAt:stamp()};
 }
 
@@ -1311,10 +1354,10 @@ function seedChat(){const now=Date.now(),M=[];let k=0;
 
 function svgToJpeg(src){return new Promise((res,rej)=>{const img=new Image();img.onload=()=>{const c=document.createElement('canvas');c.width=img.width||320;c.height=img.height||240;const x=c.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,c.width,c.height);x.drawImage(img,0,0,c.width,c.height);res(c.toDataURL('image/jpeg',0.75));};img.onerror=rej;img.src=src;});}
 function normPhoto(p,i){return typeof p==='string'?{id:'ph'+i,src:p,caption:'',at:'',lat:null,lng:null,acc:null,geo:'none'}:p;}
-function normalize(d){d.reminders=d.reminders||[];d.chat=d.chat||{messages:[],reads:{}};d.activities=d.activities.map(a=>Object.assign({bldg:locOf(a.code)[0],zone:locOf(a.code)[1]},a));d.updates=d.updates.map(u=>Object.assign({},u,{photos:(u.photos||[]).map(normPhoto)}));return d;}
+function normalize(d){d.reminders=d.reminders||[];d.chat=d.chat||{messages:[],reads:{}};d.activities=d.activities.map(a=>Object.assign({bldg:locOf(a.code)[0],zone:locOf(a.code)[1]},a));d.updates=d.updates.map(u=>Object.assign({},u,{photos:(u.photos||[]).map(normPhoto),party:u.party||(u.delay?DPARTY[u.delay]||'other':'')}));return d;}
 function load(){try{for(const k of [KEY]){const r=localStorage.getItem(k);if(r){const d=JSON.parse(r);if(d&&d.data){d.data=normalize(d.data);return d;}}}}catch(e){}return null;}
 function makeUpdate(ups,f,status,eng){const ts=stamp(),ev=status==='submitted'?'submitted':'saved';
-  const vals={pct:clamp(Math.round(Number(f.pct)||0),0,100),qty:Number(f.qty)||0,aStart:f.aStart||'',aFinish:f.aFinish||'',remarks:f.remarks||'',delay:f.delay||'',photos:f.photos||[]};
+  const vals={pct:clamp(Math.round(Number(f.pct)||0),0,100),qty:Number(f.qty)||0,aStart:f.aStart||'',aFinish:f.aFinish||'',remarks:f.remarks||'',delay:f.delay||'',party:f.delay?(f.party||DPARTY[f.delay]||'other'):'',photos:f.photos||[]};
   let id=f.draftId;
   if(id&&ups.some(u=>u.id===id&&u.status==='draft'))return{id,ups:ups.map(u=>u.id===id?Object.assign({},u,vals,{status,submitted:status==='submitted'?ts:'',log:u.log.concat([{at:ts,ev,by:eng}])}):u)};
   id=uid('U');return{id,ups:ups.concat([Object.assign({id,actId:f.actId,by:eng},vals,{status,created:ts,submitted:status==='submitted'?ts:'',reviewed:'',reviewer:'',comment:'',prevId:f.prevId||'',src:'user',log:[{at:ts,ev,by:eng}]})])};}
@@ -1330,6 +1373,7 @@ const fmtMs=ms=>{const d=new Date(ms);return `${d.getFullYear()}-${p2(d.getMonth
 
 function derive(data,cfg){
   const byAct={};
+  const nextCut=addD(TODAY,((cfg.cut??4)-new Date(TODAY+'T00:00:00Z').getUTCDay()+7)%7),cycStart=addD(nextCut,-6);
   data.updates.forEach(u=>{(byAct[u.actId]=byAct[u.actId]||[]).push(u);});
   Object.values(byAct).forEach(l=>l.sort((a,b)=>a.created<b.created?-1:1));
   const acts=data.activities.map(a=>{
@@ -1345,7 +1389,8 @@ function derive(data,cfg){
     const lastDate=lastSub?(lastSub.submitted||lastSub.created).slice(0,10):'';
     const missing=a.ps<=TODAY&&actual<100&&(!lastDate||dd(lastDate,TODAY)>cfg.stale);
     const delayed=actual<100&&(planned-actual>cfg.thr||a.pf<TODAY);
-    return Object.assign({},a,{ups,appr,off,planned,actual,pending,draft,returned,lastDate,missing,delayed,variance:actual-planned,aStart:off?off.aStart:'',aFinish:off?off.aFinish:'',aQty:off?off.qty:0});
+    const due=a.ps<=nextCut&&actual<100,updW=nd.some(u=>u.status!=='returned'&&(u.submitted||u.created).slice(0,10)>=cycStart);
+    return Object.assign({},a,{ups,appr,off,planned,actual,pending,draft,returned,lastDate,missing,delayed,due,updW,variance:actual-planned,aStart:off?off.aStart:'',aFinish:off?off.aFinish:'',aQty:off?off.qty:0});
   });
   const actMap={};acts.forEach(a=>actMap[a.id]=a);
   const projects=data.projects.map(p=>{
@@ -1355,9 +1400,17 @@ function derive(data,cfg){
     return Object.assign({},p,{list,planned:r.p,actual:r.a,variance:v,missing,delayed,pending,status});
   });
   const projMap={};projects.forEach(p=>projMap[p.id]=p);
-  return {acts,actMap,projects,projMap};
+  return {acts,actMap,projects,projMap,nextCut,cycStart};
 }
 function actualAt(a,at){let v=0;for(const u of a.appr){if(u.reviewed.slice(0,10)<=at)v=u.pct;else break;}return v;}
+// Productivity: remaining qty, actual / required rate per day, remaining duration, forecast finish
+function prodOf(a){const rem=Math.max(0,(a.qty||0)-(a.aQty||0)),dur=Math.max(1,dd(a.ps,a.pf)+1);
+  if(a.actual>=100)return{rem:0,rate:null,req:0,remD:0,fc:a.aFinish||a.lastDate||TODAY,late:0,done:true};
+  let rate=null,remD;
+  if(a.actual>0&&a.aStart){const days=Math.max(1,dd(a.aStart,TODAY)+1);rate=(a.aQty||0)/days;remD=Math.ceil((100-a.actual)/(a.actual/days));}
+  else remD=Math.ceil(dur*(100-a.actual)/100);
+  const fc=addD(a.actual>0||a.ps<=TODAY?TODAY:a.ps,remD),left=dd(TODAY,a.pf);
+  return{rem,rate,req:left>0?rem/left:null,remD,fc,late:Math.max(0,dd(a.pf,fc)),done:false,over:left<=0};}
 function roll(list,at){let W=0,P=0,A=0;list.forEach(a=>{W+=a.w;P+=a.w*plannedPct(a,at);A+=a.w*actualAt(a,at);});return W?{p:P/W,a:A/W}:{p:0,a:0};}
 
 function parseCSV(text){text=text.replace(/^\ufeff/,'');const rows=[];let row=[],cell='',q=false;
@@ -1393,11 +1446,11 @@ const MAP={
   from:r=>({id:r.id,code:r.code,name:r.name,nameAr:r.name_ar||r.name,loc:r.location||'—',locAr:r.location_ar||r.location||'—',value:Number(r.contract_value)||0,src:r.source||'imported'})},
  activities:{t:'activities',to:a=>({id:a.id,project_id:a.pid,code:a.code,name:a.name,name_ar:a.nameAr,wbs:a.wbs,zone:a.zone||'—',building:a.bldg||'SITE',planned_start:a.ps,planned_finish:a.pf,budget_qty:a.qty,unit:a.unit,weight:a.w,discipline:a.eng,source:a.src,is_demo:a.src==='demo'}),
   from:r=>({id:r.id,pid:r.project_id,code:r.code,name:r.name,nameAr:r.name_ar||r.name,wbs:r.wbs||'—',zone:r.zone||'—',bldg:r.building||'SITE',ps:r.planned_start,pf:r.planned_finish,qty:Number(r.budget_qty),unit:r.unit,w:Number(r.weight),eng:r.discipline,src:r.source||'imported'})},
- updates:{t:'progress_updates',to:u=>({id:u.id,activity_id:u.actId,discipline:u.by,pct:u.pct,qty:u.qty,actual_start:u.aStart||null,actual_finish:u.aFinish||null,remarks:u.remarks||'',delay_reason:u.delay||null,
+ updates:{t:'progress_updates',to:u=>({id:u.id,activity_id:u.actId,discipline:u.by,pct:u.pct,qty:u.qty,actual_start:u.aStart||null,actual_finish:u.aFinish||null,remarks:u.remarks||'',delay_reason:u.delay||null,delay_party:u.delay?(u.party||DPARTY[u.delay]||'other'):null,
    photos:(u.photos||[]).map(p=>({id:p.id,path:p.path||null,caption:p.caption||'',at:p.at||'',lat:p.lat==null?null:p.lat,lng:p.lng==null?null:p.lng,acc:p.acc==null?null:p.acc,geo:p.geo||'none'})),
    status:u.status,created_at:toTs(u.created),submitted_at:toTs(u.submitted),cm_at:toTs(u.cmAt),cm_comment:u.cmComment||'',orig_pct:u.origPct==null?null:u.origPct,orig_qty:u.origQty==null?null:u.origQty,adj_at:toTs(u.adjAt),adj_note:u.adjNote||'',
    reviewed_at:toTs(u.reviewed),reviewer_role:u.reviewer||null,review_comment:u.comment||'',prev_id:u.prevId||null,source:u.src||'user',log:u.log||[]}),
-  from:r=>({id:r.id,actId:r.activity_id,by:r.discipline,pct:r.pct,qty:Number(r.qty),aStart:r.actual_start||'',aFinish:r.actual_finish||'',remarks:r.remarks||'',delay:r.delay_reason||'',photos:(r.photos||[]).map(p=>Object.assign({src:''},p)),
+  from:r=>({id:r.id,actId:r.activity_id,by:r.discipline,pct:r.pct,qty:Number(r.qty),aStart:r.actual_start||'',aFinish:r.actual_finish||'',remarks:r.remarks||'',delay:r.delay_reason||'',party:r.delay_party||'',photos:(r.photos||[]).map(p=>Object.assign({src:''},p)),
    status:r.status,created:fromTs(r.created_at),submitted:fromTs(r.submitted_at),cmAt:fromTs(r.cm_at),cmBy:r.cm_at?'CM':'',cmComment:r.cm_comment||'',origPct:r.orig_pct==null?undefined:r.orig_pct,origQty:r.orig_qty==null?undefined:Number(r.orig_qty),adjAt:fromTs(r.adj_at),adjNote:r.adj_note||'',adjBy:r.adj_at?'CM':'',
    reviewed:fromTs(r.reviewed_at),reviewer:r.reviewer_role||'',comment:r.review_comment||'',prevId:r.prev_id||'',src:r.source||'user',log:r.log||[]})},
  reminders:{t:'notifications',to:r=>({id:r.id,to_discipline:r.to,from_role:r.from,type:r.type,activity_ids:r.actIds||[],from_pct:r.from_pct==null?null:r.from_pct,to_pct:r.to_pct==null?null:r.to_pct,from_qty:r.from_qty==null?null:r.from_qty,to_qty:r.to_qty==null?null:r.to_qty,note:r.note||'',done:!!r.done,created_at:toTs(r.at)}),
@@ -1406,13 +1459,15 @@ const TABLE_ORDER=['projects','activities','updates','reminders'];
 
 class Component extends DCLogic {
   state=(()=>{const s=load();return{data:s?s.data:seed(),lang:(s&&s.prefs&&s.prefs.lang)||'en',role:(s&&s.prefs&&s.prefs.role)||'site',eng:(s&&s.prefs&&ENG.indexOf(s.prefs.eng)>=0&&s.prefs.eng)||'CIV',
-    tab:{site:'acts',cm:'review',planner:'review',pm:'dash'},repMode:'ext',repNotes:null,push:'',pushAskHidden:(()=>{try{return localStorage.getItem('dmc-erp:pushAsk')==='no';}catch(e){return false;}})(),detail:null,review:null,form:null,errors:[],q:'',sProj:'all',sFilter:'all',plProj:'P1',plFilter:'all',mode:'demo',auth:'none',user:null,profile:null,syncing:false,lastSync:'',loadErr:'',settingsDb:{},loginEmail:'',loginPw:'',loginErr:'',loginBusy:false,connUrl:connCfg().url,connKey:connCfg().key,wide:false,liveArm:'',pmProj:'all',dlProj:'all',
+    tab:{site:'acts',cm:'review',planner:'review',pm:'dash'},repMode:'ext',repNotes:null,cutDow:(()=>{try{const v=localStorage.getItem('dmc-erp:cutDow');return v==null?4:Number(v);}catch(e){return 4;}})(),push:'',pushAskHidden:(()=>{try{return localStorage.getItem('dmc-erp:pushAsk')==='no';}catch(e){return false;}})(),detail:null,review:null,form:null,errors:[],q:'',sProj:'all',sFilter:'all',plProj:'P1',plFilter:'all',mode:'demo',auth:'none',user:null,profile:null,syncing:false,lastSync:'',loadErr:'',settingsDb:{},loginEmail:'',loginPw:'',loginErr:'',loginBusy:false,connUrl:connCfg().url,connKey:connCfg().key,wide:false,liveArm:'',pmProj:'all',dlProj:'all',
     comment:'',importText:'',importRows:null,settings:false,toast:'',resetArm:false,bulk:false,bulkVals:{},bulkErr:{},sel:{},rvProj:'all',rvFlag:'all',sBldg:'all',sZone:'all',plBldg:'all',plZone:'all',adjPct:'',adjQty:'',laProj:'all',laDays:14,report:false,repProj:'all',dbProj:'all',uq:'',uFilter:'all',nuOpen:false,nu:{name:'',pw:'',role:'site',disc:'CIV'},nuBusy:false,
     chatOpen:false,chatRoom:null,chatText:'',chatImg:null,chatNew:false,chatQ:'',chatMsgs:[],chatReads:[],chatDir:[],chatErr:''};})();
   live(){return this.state.mode==='live';}
   dbSet(k){const v=this.live()?this.state.settingsDb[k]:undefined;return v===undefined||v===null?undefined:v;}
   reqCM(){const v=this.dbSet('require_cm');return v!==undefined?(v===true||v==='true'):(this.props.requireCM!==false);}
-  cfg(){return{stale:Number(this.dbSet('stale_days')??this.props.staleDays??7),thr:Number(this.dbSet('delay_threshold')??this.props.delayThreshold??10)};}
+  cfg(){const c=Number(this.dbSet('cutoff_dow')??this.state.cutDow??4);return{stale:Number(this.dbSet('stale_days')??this.props.staleDays??7),thr:Number(this.dbSet('delay_threshold')??this.props.delayThreshold??10),cut:c>=0&&c<=6?c:4};}
+  canCut(){return !this.live()||(this.state.profile&&this.state.profile.role==='admin');}
+  async setCut(n){if(!this.canCut())return;if(this.live()){const sb=this._sb;const {error}=await sb.from('app_settings').upsert({key:'cutoff_dow',value:n});if(error){this.toast(error.message);return;}this.setState({settingsDb:Object.assign({},this.state.settingsDb,{cutoff_dow:n})});}else{try{localStorage.setItem('dmc-erp:cutDow',String(n));}catch(e){}this.setState({cutDow:n});}}
   canSwitch(){return !this.live()||(this.state.profile&&this.state.profile.role==='admin');}
   savePrefs(){try{localStorage.setItem(PREF_KEY,JSON.stringify({lang:this.state.lang}));}catch(e){}}
   componentDidMount(){this._onResize=()=>{const w=window.innerWidth>=1024;if(w!==this.state.wide)this.setState({wide:w});};window.addEventListener('resize',this._onResize);this._onResize();
@@ -1562,11 +1617,11 @@ class Component extends DCLogic {
   async pushTest(){const t=this.T();try{const r=await this._sb.functions.invoke('push',{body:{test:true}});if(r.error)throw r.error;this.toast(r.data&&r.data.sent?t.pushTestSent:t.pushTestNone);}catch(e){this.toast(t.pushErr+' '+(e.message||e));}}
   pushDismiss(){try{localStorage.setItem('dmc-erp:pushAsk','no');}catch(e){}this.setState({pushAskHidden:true});}
   toast(m){clearTimeout(this._tt);this.setState({toast:m});this._tt=setTimeout(()=>this.setState({toast:''}),2800);}
-  D(){const c=this.cfg(),m=this._memo;if(m&&m.data===this.state.data&&m.stale===c.stale&&m.thr===c.thr)return m.D;const D=derive(this.state.data,c);this._memo={data:this.state.data,stale:c.stale,thr:c.thr,D};return D;}
+  D(){const c=this.cfg(),m=this._memo;if(m&&m.data===this.state.data&&m.stale===c.stale&&m.thr===c.thr&&m.cut===c.cut)return m.D;const D=derive(this.state.data,c);this._memo={data:this.state.data,stale:c.stale,thr:c.thr,cut:c.cut,D};return D;}
   top(){try{window.scrollTo(0,0);}catch(e){}}
   formFrom(a){const src=a.draft||a.returned;
-    if(src)return{actId:a.id,draftId:a.draft?a.draft.id:null,prevId:a.draft?(a.draft.prevId||''):a.returned.id,pct:String(src.pct),qty:String(src.qty),aStart:src.aStart||'',aFinish:src.aFinish||'',remarks:src.remarks||'',delay:src.delay||'',photos:src.photos||[]};
-    return{actId:a.id,draftId:null,prevId:'',pct:String(a.actual),qty:String(a.aQty),aStart:a.aStart||'',aFinish:a.aFinish||'',remarks:'',delay:'',photos:[]};}
+    if(src)return{actId:a.id,draftId:a.draft?a.draft.id:null,prevId:a.draft?(a.draft.prevId||''):a.returned.id,pct:String(src.pct),qty:String(src.qty),aStart:src.aStart||'',aFinish:src.aFinish||'',remarks:src.remarks||'',delay:src.delay||'',party:src.party||'',photos:src.photos||[]};
+    return{actId:a.id,draftId:null,prevId:'',pct:String(a.actual),qty:String(a.aQty),aStart:a.aStart||'',aFinish:a.aFinish||'',remarks:'',delay:'',party:'',photos:[]};}
   openDetail(id){const a=this.D().actMap[id];if(!a)return;this.setState({detail:id,form:this.formFrom(a),errors:[]});this.top();}
   setF(k,v){this.setState(s=>({form:Object.assign({},s.form,{[k]:v})}));}
   validate(f,a){const t=I18N[this.state.lang],e=[],pct=Number(f.pct),qty=Number(f.qty);
@@ -1662,6 +1717,7 @@ class Component extends DCLogic {
     const nm=o=>o?(L==='ar'?(o.nameAr||o.name):o.name):'';
     const bl=b=>!b||b==='SITE'?t.siteWide:b,zl=z=>!z||z==='—'?t.siteWide:t.zoneL+' '+z,locL=a=>a.zone&&a.zone!=='—'?zl(a.zone)+(a.bldg&&a.bldg!=='SITE'?' · '+a.bldg:''):bl(a.bldg);
     const person=id=>PEOPLE[id]?PEOPLE[id][L]:id;
+    const dlP=u=>u&&u.delay?t.delays[u.delay]+(u.party||DPARTY[u.delay]?' · '+t.parties[u.party||DPARTY[u.delay]]:''):'—';
     const p0=v=>Math.round(v)+'%',p1=v=>r1(v).toFixed(1)+'%',sg=v=>(v>0?'+':'')+r1(v).toFixed(1)+'%';
     const W=v=>clamp(v,0,100)+'%';
     const vc=v=>v>=-2?C.green:v>=-cfg.thr/2?C.amber:C.red;
@@ -1683,7 +1739,7 @@ class Component extends DCLogic {
     const needsN=mine.filter(FIL.needs).length;
     const notifN=(s.data.reminders||[]).filter(r=>r.to===s.eng&&!r.done&&r.type==='adjusted').length;
     const TABS={site:['acts','hist','lookahead'],cm:['review','progress','dash','lookahead'],planner:['review','progress','import','dash','lookahead'],pm:['dash','portfolio','trends','lookahead','delays']};
-    const isAdm=this.live()&&s.profile&&s.profile.role==='admin';const tabs=TABS[role].concat(isAdm?['users']:[]).map(k=>{const bd=k==='review'?pendingAll.length:k==='acts'?needsN+notifN:0;return{label:t['tab_'+k],onClick:setTab(k),fg:k===tab?'#1b1a17':'#605a51',fw:k===tab?'700':'500',bg:k===tab?'#f1e8cf':'transparent',hasBadge:bd>0,badge:bd};});
+    const isAdm=this.live()&&s.profile&&s.profile.role==='admin';const tabs=TABS[role].concat(isAdm?['users']:[]).map(k=>{const bd=k==='review'?pendingAll.length:k==='acts'?needsN+notifN:0;return{label:t['tab_'+k],icon:TAB_ICON[k]||'•',onClick:setTab(k),fg:k===tab?'#1b1a17':'#605a51',fw:k===tab?'700':'500',bg:k===tab?'#f1e8cf':'transparent',hasBadge:bd>0,badge:bd};});
     const roles=['site','cm','planner','pm'].map(r=>({label:t['role_'+r],onClick:()=>{this.set({role:r,detail:null,review:null,errors:[],bulk:false,bulkVals:{},bulkErr:{},sel:{}});this.top();},bg:r===role?'#c5a45a':'transparent',fg:r===role?'#1b1a17':'#e9e4da'}));
     const inDetail=!!(s.detail&&D.actMap[s.detail]),inReview=isRev&&!!(s.review&&pendingAll.find(u=>u.id===s.review));
     const show={dash:role!=='site'&&tab==='dash'&&!inDetail,users:!!isAdm&&tab==='users'&&!inDetail,siteList:role==='site'&&tab==='acts'&&!inDetail,siteHist:role==='site'&&tab==='hist'&&!inDetail,detail:inDetail,review:isRev&&tab==='review'&&!inReview&&!inDetail,reviewDetail:inReview&&!inDetail,progress:isRev&&tab==='progress'&&!inDetail,import:role==='planner'&&tab==='import'&&!inDetail,portfolio:role==='pm'&&tab==='portfolio'&&!inDetail,trends:role==='pm'&&tab==='trends'&&!inDetail,lookahead:tab==='lookahead'&&!inDetail,delays:role==='pm'&&tab==='delays'&&!inDetail};
@@ -1727,25 +1783,28 @@ class Component extends DCLogic {
     const mapUrl=p=>p.geo==='ok'?'https://www.openstreetmap.org/?mlat='+p.lat+'&mlon='+p.lng+'#map=18/'+p.lat+'/'+p.lng:'';
 
     // Detail
-    let d={pend:{}},fm={},f={},quick=[],delayChips=[],photos=[],detailHist=[];
+    let d={pend:{},pr:{}},fm={},f={},quick=[],delayChips=[],partyChips=[],photos=[],detailHist=[];
     if(inDetail){const a=D.actMap[s.detail],st=stOf(a),fmS=s.form||this.formFrom(a);fm=fmS;
       const own=role==='site'&&a.eng===s.eng,canEdit=own&&!a.pending&&(a.actual<100||!!a.draft);
       const pctN=Number(fm.pct)||0,qtyN=Number(fm.qty)||0,spi=spiOf(a.actual,a.planned);
       const gal=[];a.ups.filter(u=>u.status!=='draft').slice().reverse().forEach(u=>(u.photos||[]).forEach(x=>gal.push({bg:'url('+x.src+')',cap:x.caption||'—',meta:(x.at||(u.submitted||u.created).replace('T',' '))+' · '+u.pct+'% · '+t[upSt[u.status][0]]+(x.geo==='ok'?' · GPS '+x.lat.toFixed(5)+', '+x.lng.toFixed(5):'')})));
       d={code:a.code,name:nm(a),proj:nm(D.projMap[a.pid])+' ('+D.projMap[a.pid].code+')',wbs:a.wbs,loc:locL(a),gallery:gal,hasGallery:gal.length>0,galleryN:gal.length,src:srcL(a.src),stLabel:t[st[0]],stBg:st[1],stFg:st[2],ps:a.ps,pf:a.pf,aStart:a.aStart||'—',aFinish:a.aFinish||'—',
         qtyTxt:a.aQty.toLocaleString('en')+' / '+a.qty.toLocaleString('en')+' '+a.unit,w:a.w,assignee:person(a.eng),plannedW:W(a.planned),actualW:W(a.actual),plannedTxt:p0(a.planned),actualTxt:p0(a.actual),spi:spiTxt(spi),spiColor:spiC(spi),
-        barColor:a.delayed?C.barBad:a.variance<-2?C.barWarn:C.barOk,varTxt:sg(a.variance),varColor:vc(a.variance),unit:a.unit,
+        barColor:a.delayed?C.barBad:a.variance<-2?C.barWarn:C.barOk,varTxt:sg(a.variance),varColor:vc(a.variance),unit:a.unit,pr:(()=>{const x=prodOf(a),q=v=>(Math.round(v*10)/10).toLocaleString('en')+' '+a.unit;
+          return{rem:q(x.rem),remD:x.done?'—':t.daysN(x.remD),rate:x.rate==null?t.notStartedRate:q(x.rate)+t.perDay,req:x.done?'—':x.req==null?t.overduePf:q(x.req)+t.perDay,reqC:x.rate!=null&&x.req!=null&&x.req>x.rate*1.1?C.red:'#1b1a17',
+            fc:x.fc,fcC:x.late?C.red:C.green,fcNote:x.done?t.k_done:x.late?t.fcLate(x.late):t.fcOk};})(),
         showReturned:!!a.returned&&!a.pending,retBy:a.returned&&a.returned.reviewer?person(a.returned.reviewer):'',retComment:a.returned?a.returned.comment:'',retWhen:a.returned?a.returned.reviewed.replace('T',' '):'',
         isPending:!!a.pending,canWithdraw:!!a.pending&&own&&a.pending.status==='submitted',awaitTxt:a.pending&&a.pending.status==='endorsed'?t.awaitingPL:t.awaiting,
-        pend:a.pending?{pct:a.pending.pct+'%',qty:a.pending.qty+' '+a.unit,dates:(a.pending.aStart||'—')+' → '+(a.pending.aFinish||'—'),delay:a.pending.delay?t.delays[a.pending.delay]:'—',remarks:a.pending.remarks,hasAdj:!!a.pending.adjAt,adj:a.pending.adjAt?t.adjNoteTxt(a.pending.origPct,a.pending.pct)+(a.pending.adjNote?' — '+a.pending.adjNote:''):''}:{},
+        pend:a.pending?{pct:a.pending.pct+'%',qty:a.pending.qty+' '+a.unit,dates:(a.pending.aStart||'—')+' → '+(a.pending.aFinish||'—'),delay:dlP(a.pending),remarks:a.pending.remarks,hasAdj:!!a.pending.adjAt,adj:a.pending.adjAt?t.adjNoteTxt(a.pending.origPct,a.pending.pct)+(a.pending.adjNote?' — '+a.pending.adjNote:''):''}:{},
         canEdit,readOnly:!own,formSrc:fm.draftId?t.formDraft:fm.prevId?t.formRet:t.formNew,
         pctHint:t.pctHint(a.actual,Math.round(a.planned)),impliedTxt:t.implied(a.qty?r1(qtyN/a.qty*100):0),needDelay:a.planned-pctN>cfg.thr};
       const setPct=v=>{v=clamp(Math.round(v),0,100);this.setF('pct',String(v));};
       f={pct:e=>this.setF('pct',e.target.value),qty:e=>this.setF('qty',e.target.value),aStart:e=>this.setF('aStart',e.target.value),aFinish:e=>this.setF('aFinish',e.target.value),remarks:e=>this.setF('remarks',e.target.value),qtyFromPct:()=>this.setF('qty',String(Math.round(a.qty*pctN)/100))};
       quick=[['−5',-5],['+5',5],['+10',10],['100%',null]].map(([l,v])=>({label:l,onClick:()=>{if(v===null){setPct(100);if(!this.state.form.aFinish)this.setF('aFinish',TODAY);}else setPct((Number(this.state.form.pct)||0)+v);}}));
-      delayChips=DELAYS.map(k=>chip(t.delays[k],fm.delay===k,()=>this.setF('delay',fm.delay===k?'':k)));
+      delayChips=DELAYS.map(k=>chip(t.delays[k],fm.delay===k,()=>this.setState(st=>({form:Object.assign({},st.form,fm.delay===k?{delay:'',party:''}:{delay:k,party:DPARTY[k]||'other'})}))));
+      partyChips=fm.delay?PARTIES.map(k=>chip(t.parties[k],(fm.party||DPARTY[fm.delay])===k,()=>this.setF('party',k))):[];
       photos=(fm.photos||[]).map(p=>({bg:'url('+p.src+')',time:p.at?p.at.slice(5):'',caption:p.caption||'',geo:geoTxt(p),onCaption:e=>this.patchPhoto(p.id,{caption:e.target.value}),remove:()=>this.setF('photos',this.state.form.photos.filter(x=>x.id!==p.id))}));
-      detailHist=a.ups.slice().reverse().map(u=>{const st=upSt[u.status];const note=[u.delay?t.delayReason+': '+t.delays[u.delay]:'',u.remarks,(u.photos||[]).length?t.photos+': '+u.photos.length:''].filter(Boolean).join(' · ');
+      detailHist=a.ups.slice().reverse().map(u=>{const st=upSt[u.status];const note=[u.delay?t.delayReason+': '+dlP(u):'',u.remarks,(u.photos||[]).length?t.photos+': '+u.photos.length:''].filter(Boolean).join(' · ');
         return{pctTxt:u.pct+'%',qtyTxt:u.qty+' '+a.unit,stLabel:t[st[0]],stBg:st[1],stFg:st[2],byLine:person(u.by)+' · '+srcL(u.src),hasNote:!!note,note,hasAdj:!!u.adjAt,adjTxt:u.adjAt?t.adjNoteTxt(u.origPct,u.pct)+' ('+u.origQty+' → '+u.qty+' '+a.unit+')'+(u.adjNote?' — '+u.adjNote:''):'',hasComment:!!u.comment,comment:u.comment,log:u.log.map(l=>l.at.replace('T',' ')+' '+(t['ev_'+l.ev]||l.ev)+(l.detail?' '+l.detail:'')+' · '+person(l.by)).join('\n')};});
     }
 
@@ -1754,16 +1813,16 @@ class Component extends DCLogic {
     const rvF=withW.filter(x=>(s.rvProj==='all'||x.a.pid===s.rvProj)&&(s.rvFlag==='all'||(s.rvFlag==='flagged'?x.w.length>0:x.w.length===0)));
     const selIds=Object.keys(s.sel).filter(id=>s.sel[id]&&pendingAll.some(u=>u.id===id));
     const cleanIds=rvF.filter(x=>!x.w.length).map(x=>x.u.id);
-    const reviewList=!show.review?[]:rvF.map(({u,a,w})=>{const on=!!s.sel[u.id];return{code:a.code,proj:D.projMap[a.pid].code+' · '+locL(a),name:nm(a),eng:person(u.by),age:t.ago(dd(u.submitted,TODAY)),change:a.actual+'% → '+u.pct+'%',hasPlRet:u.status==='submitted'&&u.reviewer==='PL'&&!!u.comment,plRet:t.plRetShort,hasFlag:w.length>0,flag:w.join(' · '),hasDelay:!!u.delay,delay:u.delay?t.delays[u.delay]:'',
+    const reviewList=!show.review?[]:rvF.map(({u,a,w})=>{const on=!!s.sel[u.id];return{code:a.code,proj:D.projMap[a.pid].code+' · '+locL(a),name:nm(a),eng:person(u.by),age:t.ago(dd(u.submitted,TODAY)),change:a.actual+'% → '+u.pct+'%',hasPlRet:u.status==='submitted'&&u.reviewer==='PL'&&!!u.comment,plRet:t.plRetShort,hasFlag:w.length>0,flag:w.join(' · '),hasDelay:!!u.delay,delay:u.delay?dlP(u):'',
       open:()=>{this.setState({review:u.id,comment:'',errors:[],adjPct:String(u.pct),adjQty:String(u.qty)});this.top();},toggle:()=>this.setState(st=>({sel:Object.assign({},st.sel,{[u.id]:!st.sel[u.id]})})),check:on?'✓':'',ckBg:on?'#1b1a17':'#fff',ckBd:on?'#1b1a17':'#a59e92',bd:on?'#1b1a17':'#e4e0d8'};});
     const rvProjChips=[chip(t.allProjects,s.rvProj==='all',()=>this.setState({rvProj:'all'}))].concat(D.projects.filter(p=>withW.some(x=>x.a.pid===p.id)).map(p=>chip(p.code,s.rvProj===p.id,()=>this.setState({rvProj:p.id}))));
     const rvFlagChips=[['all','f_all'],['flagged','f_flagged'],['clean','f_clean']].map(([k,l])=>chip(t[l]+' · '+withW.filter(x=>k==='all'||(k==='flagged'?x.w.length:!x.w.length)).length,s.rvFlag===k,()=>this.setState({rvFlag:k})));
     let rv={rows:[],photos:[],warnings:[]};
-    if(inReview){const u=pendingAll.find(x=>x.id===s.review),a=D.actMap[u.actId],o=a.off||{},dl=k=>k?t.delays[k]:'—';
+    if(inReview){const u=pendingAll.find(x=>x.id===s.review),a=D.actMap[u.actId],o=a.off||{},dl=x=>dlP(x);
       const row=(l,x,y)=>({l,a:x,b:y,fw:String(x)!==String(y)?'700':'400',bg:String(x)!==String(y)?'oklch(0.96 0.04 85)':'transparent'});
       const warn=warnsOf(u,a,t);
       rv={hasPlRet:u.status==='submitted'&&u.reviewer==='PL'&&!!u.comment,plRetLine:u.reviewed?t.plRetLine(u.reviewed.replace('T',' '))+' — “'+(u.comment||'')+'”':'',hasCm:!!u.cmAt,cmLine:u.cmAt?t.cmLine(u.cmAt.replace('T',' '))+(u.adjAt?' · '+t.adjNoteTxt(u.origPct,u.pct):'')+(u.cmComment?' — “'+u.cmComment+'”':''):'',code:a.code,proj:D.projMap[a.pid].code,name:nm(a),byLine:person(u.by)+' · '+u.submitted.replace('T',' ')+' · '+srcL(u.src),
-        rows:[row(t.progressPct,(o.pct||0)+'%',u.pct+'%'),row(t.qtyShort+' ('+a.unit+')',o.qty||0,u.qty),row(t.actualStart,o.aStart||'—',u.aStart||'—'),row(t.actualFinish,o.aFinish||'—',u.aFinish||'—'),row(t.delayReason,dl(o.delay),dl(u.delay))],
+        rows:[row(t.progressPct,(o.pct||0)+'%',u.pct+'%'),row(t.qtyShort+' ('+a.unit+')',o.qty||0,u.qty),row(t.actualStart,o.aStart||'—',u.aStart||'—'),row(t.actualFinish,o.aFinish||'—',u.aFinish||'—'),row(t.delayReason,dl(o),dl(u))],
         plannedLine:t.plannedLine(Math.round(a.planned),a.actual),hasRemarks:!!u.remarks,remarks:u.remarks,hasPhotos:(u.photos||[]).length>0,
         photos:(u.photos||[]).map(p=>({bg:'url('+p.src+')',caption:p.caption||'—',meta:(p.at||'')+' · '+geoTxt(p),hasMap:p.geo==='ok',map:mapUrl(p)})),hasWarnings:warn.length>0,warnings:warn.map(msg=>({msg}))};}
 
@@ -1827,10 +1886,10 @@ class Component extends DCLogic {
     const counts=show.delays||s.report?countReasons(show.delays&&dp?dp.id:null):{};
     const mx=Math.max(1,...Object.values(counts));
     const reasons=DELAYS.filter(k=>counts[k]).sort((a,b)=>counts[b]-counts[a]).map(k=>({label:t.delays[k],n:t.reports(counts[k]),w:(counts[k]/mx*100)+'%'}));
-    const delayedList=!show.delays?[]:D.acts.filter(a=>a.delayed&&(!dp||a.pid===dp.id)).sort((a,b)=>a.variance-b.variance).map(a=>{const lr=a.ups.slice().reverse().find(u=>u.delay);return{code:a.code,proj:D.projMap[a.pid].code,name:nm(a),varTxt:sg(a.variance),reason:lr?t.delays[lr.delay]:(a.missing?t.f_missing:'—'),open:()=>this.openDetail(a.id)};});
+    const delayedList=!show.delays?[]:D.acts.filter(a=>a.delayed&&(!dp||a.pid===dp.id)).sort((a,b)=>a.variance-b.variance).map(a=>{const lr=a.ups.slice().reverse().find(u=>u.delay);return{code:a.code,proj:D.projMap[a.pid].code,name:nm(a),varTxt:sg(a.variance),reason:lr?dlP(lr):(a.missing?t.f_missing:'—'),open:()=>this.openDetail(a.id)};});
 
     // Dashboard
-    let db={chips:[],kpis:[],weeks:[],health:[],disc:[],flow:[],reasons:[],behind:[],feed:[],ahead:[],chart:{planPts:'',actPts:'',tx:0},axis:{a:'',b:''}};
+    let db={chips:[],kpis:[],weeks:[],health:[],disc:[],comp:[],cutChips:[],flow:[],reasons:[],behind:[],feed:[],ahead:[],chart:{planPts:'',actPts:'',tx:0},axis:{a:'',b:''}};
     if(show.dash){const sp=D.projMap[s.dbProj]||null,acts=sp?sp.list:D.acts,ids=new Set(acts.map(a=>a.id));
       const rollS=d=>{if(sp)return roll(sp.list,d);let Pp=0,Aa=0;D.projects.forEach(p=>{const x=roll(p.list,d);Pp+=p.value*x.p;Aa+=p.value*x.a;});return{p:Pp/V,a:Aa/V};};
       const P=sp?sp.planned:pfP,A=sp?sp.actual:pfA,spx=spiOf(A,P),c=sp?curve([sp.list],[1]):curve(D.projects.map(p=>p.list),D.projects.map(p=>p.value));
@@ -1854,6 +1913,11 @@ class Component extends DCLogic {
         line:t.planned+' '+p1(p.planned)+' · '+t.actualShort+' '+p1(p.actual)+' · SPI '+spiTxt(spiOf(p.actual,p.planned)),v:sg(p.variance),vc:vc(p.variance),flags:t.flags(p.delayed,p.missing,p.pending),open:()=>this.setState({dbProj:p.id})}));
       db.disc=ENG.map(e=>{const l=acts.filter(a=>a.eng===e);if(!l.length)return null;const r=roll(l,TODAY),v=r.a-r.p;
         return{label:person(e),code:e,line:t.discLine(l.length,l.filter(a=>a.delayed).length,l.filter(a=>a.missing).length),pW:W(r.p),aW:W(r.a),v:sg(v),vc:vc(v),bar:v<-5?C.barBad:v<-2?C.barWarn:C.barOk};}).filter(Boolean);
+      const cmpRow=(l,label,code)=>{const u=l.filter(a=>a.updW).length,pc=l.length?u/l.length*100:100;return{code,label,v:p0(pc),vc:pc>=90?C.green:pc>=70?C.amber:C.red,w:W(pc),bar:pc>=90?C.barOk:pc>=70?C.barWarn:C.barBad,line:t.compLine(u,l.length)};};
+      const dueL=acts.filter(a=>a.due);
+      db.comp=[cmpRow(dueL,t.compAll,'ALL')].concat(ENG.map(e=>{const l=dueL.filter(a=>a.eng===e);return l.length?cmpRow(l,person(e),e):null;}).filter(Boolean));
+      db.cutTxt=t.cutLine(t.dows[cfg.cut],D.nextCut,D.cycStart);db.canCut=this.canCut();db.cutHelp=t.cutAuto+(db.canCut?'':' '+t.cutAdminOnly);
+      db.cutChips=t.dows.map((x,i)=>chip(x,i===cfg.cut,()=>this.setCut(i)));
       const fl=[[t.fl_draft,cnt.draft,C.amber],[t.fl_cm,cnt.cm,C.blue],[t.fl_pl,cnt.pl,C.blue],[t.fl_ret,cnt.ret,C.red],[t.fl_appr,cnt.appr,C.green]],fm2=Math.max(1,...fl.map(x=>x[1]));
       db.flow=fl.map(([l,v,col])=>({l,n:String(v),w:(v/fm2*100)+'%',c:col}));
       const rc=countReasons(sp?sp.id:null),rm=Math.max(1,...Object.values(rc));
@@ -1876,7 +1940,7 @@ class Component extends DCLogic {
       const rc=countReasons(rP?rP.id:null),rmx=Math.max(1,...Object.values(rc));
       const isoW=(()=>{const d=new Date(TODAY+'T00:00:00Z'),dn=(d.getUTCDay()+6)%7;d.setUTCDate(d.getUTCDate()-dn+3);const y=d.getUTCFullYear(),f=new Date(Date.UTC(y,0,4));return y+'-W'+p2(1+Math.round(((d-f)/864e5-3+((f.getUTCDay()+6)%7))/7));})();
       const delayedActs=acts.filter(a=>a.delayed).sort((a,b)=>a.variance-b.variance);
-      const lastReason=a=>{const lr=a.ups.slice().reverse().find(u=>u.delay);return lr?t.delays[lr.delay]:(a.missing?t.f_missing:'—');};
+      const lastReason=a=>{const lr=a.ups.slice().reverse().find(u=>u.delay);return lr?dlP(lr):(a.missing?t.f_missing:'—');};
       const prog=s.data.updates.filter(u=>u.status==='approved'&&u.reviewed&&u.reviewed.slice(0,10)>=wk0&&D.actMap[u.actId]&&(!rP||D.actMap[u.actId].pid===rP.id)).sort((a,b)=>a.reviewed<b.reviewed?1:-1);
       const lim=addD(TODAY,14),ahead=acts.filter(a=>a.actual<100&&((a.actual===0&&a.ps>=TODAY&&a.ps<=lim)||(a.pf>=TODAY&&a.pf<=lim))).sort((x,y)=>(x.actual===0?x.ps:x.pf)<(y.actual===0?y.ps:y.pf)?-1:1);
       const anyDemo=rList.some(p=>p.src==='demo');
@@ -1887,6 +1951,20 @@ class Component extends DCLogic {
       const N=(v,o)=>Cl(v,Object.assign({al:'center',dir:'ltr'},o||{}));
       const tbl=(title,cols,head,rows,note)=>({title,cols,cells:head.map(H).concat([].concat(...rows)),empty:!rows.length,note:note||'',hasNote:!!note});
       const tables=[];
+      // Week-on-week comparison with ▲ / ▼ arrows
+      const thrR=cfg.thr,bef2=rollR(addD(TODAY,-14));
+      const behindAt=d=>acts.filter(a=>{const x=actualAt(a,d);return x<100&&(plannedPct(a,d)-x>thrR||a.pf<d);}).length,doneAt=d=>acts.filter(a=>actualAt(a,d)>=100).length;
+      const arrow=(x,y,good,fmt,dec)=>{const ch=x==null||y==null?null:y-x,e=dec==null?0.05:dec;if(ch==null)return N('—');
+        const up=ch>e,dn=ch<-e,col=!up&&!dn||good===0?'#5f5a52':(up===(good>0)?C.green:C.red);return N((up?'▲ ':dn?'▼ ':'● ')+fmt(ch),{fg:col,fw:'700'});};
+      const pp=v=>(v>0?'+':'')+r1(v).toFixed(1),spB=spiOf(bef.a,bef.p),spN=spiOf(now.a,now.p);
+      tables.push(tbl(t.repCmp,'minmax(0,2.4fr) repeat(3,minmax(0,1fr))',[t.repMetric,t.repCmpPrev,t.repCmpNow,t.repCmpChg],[
+        [Cl(t.cmpPlanned,{fw:'600'}),N(p1(bef.p)),N(p1(now.p),{fw:'700'}),arrow(bef.p,now.p,0,v=>pp(v)+'%')],
+        [Cl(t.cmpActual,{fw:'600'}),N(p1(bef.a)),N(p1(now.a),{fw:'700'}),arrow(bef.a,now.a,1,v=>pp(v)+'%')],
+        [Cl(t.cmpVar,{fw:'600'}),N(sg(bef.a-bef.p),{fg:vc(bef.a-bef.p)}),N(sg(now.a-now.p),{fg:vc(now.a-now.p),fw:'700'}),arrow(bef.a-bef.p,now.a-now.p,1,v=>pp(v)+'%')],
+        [Cl(t.cmpSpi,{fw:'600'}),N(spiTxt(spB)),N(spiTxt(spN),{fw:'700'}),arrow(spB,spN,1,v=>(v>0?'+':'')+v.toFixed(2),0.005)],
+        [Cl(t.cmpGain,{fw:'600'}),N(sg(bef.a-bef2.a)),N(sg(now.a-bef.a),{fw:'700'}),arrow(bef.a-bef2.a,now.a-bef.a,1,v=>pp(v)+'%')],
+        [Cl(t.cmpBehind,{fw:'600'}),N(behindAt(prevD)),N(behindAt(TODAY),{fw:'700'}),arrow(behindAt(prevD),behindAt(TODAY),-1,v=>(v>0?'+':'')+v,0.5)],
+        [Cl(t.cmpDone,{fw:'600'}),N(doneAt(prevD)),N(doneAt(TODAY),{fw:'700'}),arrow(doneAt(prevD),doneAt(TODAY),1,v=>(v>0?'+':'')+v,0.5)]]));
       if(!rP)tables.push(tbl(t.repT_proj,ext?'minmax(0,2.6fr) repeat(5,minmax(0,1fr))':'minmax(0,2.4fr) repeat(6,minmax(0,1fr))',
         [t.repProject].concat(ext?[]:[t.repValue]).concat([t.planned,t.actualShort,t.variance,'SPI',t.repStatus]),
         rList.map(p=>[Cl(p.code+' · '+nm(p),{fw:'600'})].concat(ext?[]:[N('SAR '+p.value+'M')]).concat([N(p1(p.planned)),N(p1(p.actual),{fw:'700'}),N(sg(p.variance),{fg:vc(p.variance),fw:'700'}),N(spiTxt(spiOf(p.actual,p.planned))),Cl(t['st_'+p.status],{fg:STC[p.status][1],fw:'700'})]))));
@@ -1898,6 +1976,14 @@ class Component extends DCLogic {
       tables.push(tbl(t.repT_week,rP?'minmax(0,0.9fr) minmax(0,2.6fr) minmax(0,1.5fr) repeat(3,minmax(0,0.8fr))':'minmax(0,0.9fr) minmax(0,0.9fr) minmax(0,2.4fr) minmax(0,1.3fr) repeat(3,minmax(0,0.75fr))',
         [t.repCode].concat(rP?[]:[t.repProject]).concat([t.repActivity,t.repLoc,t.repPrev,t.repNow,t.repGain]),
         prog.map(u=>{const a=D.actMap[u.actId],i=a.appr.indexOf(u),prev=i>0?a.appr[i-1].pct:0;return[N(a.code,{fw:'600'})].concat(rP?[]:[N(D.projMap[a.pid].code)]).concat([Cl(nm(a)),Cl(locL(a)),N(prev+'%'),N(u.pct+'%',{fw:'700'}),N('+'+(u.pct-prev)+'%',{fg:C.green,fw:'700'})]);}),t.repT_weekNote));
+      // Top 5 risks: weighted slippage + overdue / finishing soon + forecast late + no update this cycle
+      const lim14=addD(TODAY,14);
+      const risks=acts.filter(a=>a.actual<100&&a.ps<=lim14).map(a=>{const pr=prodOf(a),gap=Math.max(0,a.planned-a.actual),over=a.pf<TODAY,soon=!over&&a.pf<=lim14,noUpd=a.missing;
+        const sc=a.w*(gap+(over?30:soon&&a.planned-a.actual>0?15:0)+Math.min(30,pr.late)+(noUpd?5:0));
+        const why=[gap>0.5?t.riskBehind(p0(gap)):'',over?t.riskOverdue:soon?t.riskDueSoon(a.pf):'',noUpd?t.riskNoUpd:''].filter(Boolean).join(' · ');
+        return{a,pr,sc,why};}).filter(x=>x.sc>0&&x.why).sort((x,y)=>y.sc-x.sc).slice(0,5);
+      tables.push(tbl(t.repRisks,'minmax(0,0.4fr) minmax(0,2.4fr) minmax(0,2fr) minmax(0,1.8fr) minmax(0,1.1fr)',t.riskCols,
+        risks.map((x,i)=>[N(i+1,{fw:'700'}),Cl(x.a.code+' · '+(rP?'':D.projMap[x.a.pid].code+' · ')+nm(x.a),{fw:'600'}),Cl(x.why,{fg:C.red}),Cl(lastReason(x.a)),N(x.pr.fc,{fg:x.pr.late?C.red:C.green,fw:'700'})]),risks.length?'':t.noRisks));
       tables.push(tbl(t.repT_delay,rP?'minmax(0,0.9fr) minmax(0,2.4fr) minmax(0,1.4fr) repeat(3,minmax(0,0.8fr)) minmax(0,1.5fr)':'minmax(0,0.9fr) minmax(0,0.9fr) minmax(0,2.2fr) minmax(0,1.2fr) repeat(3,minmax(0,0.75fr)) minmax(0,1.3fr)',
         [t.repCode].concat(rP?[]:[t.repProject]).concat([t.repActivity,t.repLoc,t.planned,t.actualShort,t.variance,t.repReason]),
         delayedActs.slice(0,ext?15:30).map(a=>[N(a.code,{fw:'600'})].concat(rP?[]:[N(D.projMap[a.pid].code)]).concat([Cl(nm(a)),Cl(locL(a)),N(p0(a.planned)),N(p0(a.actual),{fw:'700'}),N(sg(a.variance),{fg:C.red,fw:'700'}),Cl(lastReason(a))])),
@@ -1907,6 +1993,10 @@ class Component extends DCLogic {
         ahead.slice(0,20).map(a=>{const st=a.actual===0&&a.ps>=TODAY&&a.ps<=lim;return[N(a.code,{fw:'600'})].concat(rP?[]:[N(D.projMap[a.pid].code)]).concat([Cl(nm(a)),Cl(locL(a)),Cl(st?t.repStart:t.repFinish,{fg:st?C.blue:C.green,fw:'700'}),N(st?a.ps:a.pf),N(p0(a.actual))]);})));
       tables.push(tbl(t.repReasons,'minmax(0,3fr) minmax(0,1fr) minmax(0,1fr)',[t.repReason,t.repCount,t.repShare],
         DELAYS.filter(k=>rc[k]).sort((a,b)=>rc[b]-rc[a]).map(k=>{const tot=Object.values(rc).reduce((x,y)=>x+y,0)||1;return[Cl(t.delays[k]),N(rc[k]),N(p0(rc[k]/tot*100))];})));
+      const rpc={},since70=addD(TODAY,-70);s.data.updates.forEach(u=>{const a=D.actMap[u.actId];if(!a||!u.delay||['approved','submitted','endorsed'].indexOf(u.status)<0||(u.submitted||u.created).slice(0,10)<since70||(rP&&a.pid!==rP.id))return;const k=u.party||DPARTY[u.delay]||'other';rpc[k]=(rpc[k]||0)+1;});
+      const rpTot=Object.values(rpc).reduce((x,y)=>x+y,0)||1;
+      tables.push(tbl(t.repByParty,'minmax(0,3fr) minmax(0,1fr) minmax(0,1fr)',[t.repParty,t.repCount,t.repShare],
+        PARTIES.filter(k=>rpc[k]).sort((a,b)=>rpc[b]-rpc[a]).map(k=>[Cl(t.parties[k],{fw:'600'}),N(rpc[k]),N(p0(rpc[k]/rpTot*100))])));
       if(!ext){const ups=s.data.updates.filter(u=>D.actMap[u.actId]&&(!rP||D.actMap[u.actId].pid===rP.id));
         tables.push(tbl(t.repT_flow,'repeat(4,minmax(0,1fr))',[t.repFlowSub,t.repFlowEnd,t.repFlowRet,t.repFlowDraft],
           [[N(ups.filter(u=>u.status==='submitted').length,{fw:'700'}),N(ups.filter(u=>u.status==='endorsed').length,{fw:'700'}),N(ups.filter(u=>u.status==='returned').length,{fw:'700',fg:C.red}),N(ups.filter(u=>u.status==='draft').length,{fw:'700'})]]));
@@ -1914,6 +2004,8 @@ class Component extends DCLogic {
         tables.push(tbl(t.repT_miss,rP?'minmax(0,0.9fr) minmax(0,2.6fr) minmax(0,1.6fr) minmax(0,1.6fr)':'minmax(0,0.9fr) minmax(0,0.9fr) minmax(0,2.4fr) minmax(0,1.5fr) minmax(0,1.5fr)',
           [t.repCode].concat(rP?[]:[t.repProject]).concat([t.repActivity,t.repLoc,t.repResp]),
           miss.map(a=>[N(a.code,{fw:'600'})].concat(rP?[]:[N(D.projMap[a.pid].code)]).concat([Cl(nm(a)),Cl(locL(a)),Cl(person(a.eng))]))));}
+      const digs=n=>L==='ar'?String(n).replace(/[0-9]/g,d=>'٠١٢٣٤٥٦٧٨٩'[d]):String(n);
+      tables.forEach((tb,i)=>{tb.title=digs(i+3)+'. '+tb.title.replace(/^[0-9٠-٩]+\.\s*/,'');});
       const nKey='dmc-erp:repNotes:'+(rP?rP.id:'all')+':'+(ext?'ext':'int');
       rp={no:'WPR-'+(rP?rP.code:'PORTFOLIO')+'-'+isoW+(ext?'':'-INT'),week:t.repWeek(wk0,TODAY),scope:rP?rP.code+' · '+nm(rP):t.allProjects,
         cls:ext?t.repClsExt:t.repClsInt,clsBg:ext?'#0e5a4b':'#7a1f1f',
@@ -1998,11 +2090,14 @@ class Component extends DCLogic {
       settingsOpen:s.settings,openSettings:()=>{this.setState({settings:true,resetArm:false});this.pushCheck();},closeSettings:()=>this.setState({settings:false}),
       toggleLang:()=>this.set({lang:L==='en'?'ar':'en'}),refresh:()=>window.location.reload(),langChips:[chip('English',L==='en',()=>this.set({lang:'en'})),chip('العربية',L==='ar',()=>this.set({lang:'ar'}))],
       engChips,q:s.q,onSearch:e=>this.setState({q:e.target.value}),sProjChips,tiles,myRem,hasRem:myRem.length>0,filterOn:s.sFilter!=='all',clearFilter:()=>this.setState({sFilter:'all'}),
-      siteCountTxt:t.siteCount(siteList.length,mine.length),siteActs:siteList.map(a=>card(a,s.bulk)),siteEmpty:show.siteList&&!siteList.length,
+      siteCountTxt:t.siteCount(siteList.length,mine.length),siteSecs:(()=>{const wkL=siteList.filter(a=>a.due).sort((x,y)=>(x.updW-y.updW)||(x.pf<y.pf?-1:1)),rest=siteList.filter(a=>!a.due),cw=a=>Object.assign(card(a,s.bulk),{hasWk:true,wkTxt:a.updW?t.wkDone:'⏳ '+t.wkTodo,wkC:a.updW?C.green:C.red});
+        if(!wkL.length)return rest.length?[{hasTitle:false,acts:rest.map(a=>card(a,s.bulk))}]:[];const u=wkL.filter(a=>a.updW).length;
+        return [{hasTitle:true,title:'📅 '+t.weekSec,help:t.weekSecHelp(t.dows[cfg.cut]+' '+D.nextCut,u,wkL.length),bg:u===wkL.length?'oklch(0.95 0.04 150)':'#fbf3e4',bd:u===wkL.length?'oklch(0.82 0.08 150)':'#e8d6a8',fg:'#0b4a3e',acts:wkL.map(cw)}]
+          .concat(rest.length?[{hasTitle:true,title:t.otherSec,help:t.siteCount(rest.length,mine.length),bg:'#f7f5f1',bd:'#e4e0d8',fg:'#1b1a17',acts:rest.map(a=>card(a,s.bulk))}]:[]);})(),siteEmpty:show.siteList&&!siteList.length,
       bulk:s.bulk,bulkBtn:s.bulk?{label:t.bulkOff,bg:'#1b1a17',fg:'#fff'}:{label:t.bulkMode,bg:'#fff',fg:'#1b1a17'},toggleBulk:()=>this.setState({bulk:!s.bulk,bulkVals:{},bulkErr:{}}),
       showBulkBar:show.siteList&&s.bulk,bulkCountTxt:t.bulkCount(bulkChanged),bulkSubmitTxt:t.bulkSubmit(bulkChanged),bulkSubmit:()=>this.bulkSubmit(),bulkCancel:()=>this.setState({bulk:false,bulkVals:{},bulkErr:{}}),
       myHist,myHistEmpty:show.siteHist&&!myHist.length,
-      d,fm,f,quick,delayChips,photos,canAddPhoto:photos.length<4,onPhotos:e=>this.onPhotos(e),errors,hasErrors:errors.length>0,
+      d,fm,f,quick,delayChips,partyChips,hasParty:partyChips.length>0,photos,canAddPhoto:photos.length<4,onPhotos:e=>this.onPhotos(e),errors,hasErrors:errors.length>0,
       saveDraft:()=>this.writeUpdate('draft'),submit:()=>this.writeUpdate('submitted'),withdraw:()=>this.withdraw(),closeDetail:()=>{this.setState({detail:null,form:null,errors:[]});this.top();},detailHist,
       reviewList,reviewEmpty:show.review&&!reviewList.length,rvProjChips,rvFlagChips,selectClean:()=>this.setState({sel:Object.fromEntries(cleanIds.map(id=>[id,true]))}),selectCleanTxt:t.selectClean(cleanIds.length),hasClean:cleanIds.length>0,clearSel:()=>this.setState({sel:{}}),
       showSelBar:show.review&&selIds.length>0,selCountTxt:t.selCount(selIds.length),approveSelTxt:t.approveSel(selIds.length),approveSel:()=>this.approveMany(selIds),
