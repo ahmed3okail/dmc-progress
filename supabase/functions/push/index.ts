@@ -89,6 +89,13 @@ async function forUpdate(type: string, rec: any, old: any): Promise<[Prof[], Msg
       to = cms.filter((p) => mem.has(p.id));
       if (!to.length) to = cms;
     } else to = await profiles((q) => q.eq("role", "planner"));
+    if (was === "endorsed") {
+      const why = rec.review_comment || "";
+      return [to, {
+        ar: { title: `مرتجع من التخطيط — ${act}`, body: `${nAr}${why ? " — " + why : ""}` },
+        en: { title: `Returned by Planning — ${act}`, body: `${nEn}${why ? " — " + why : ""}` }, tag: `pu-${rec.id}`,
+      }];
+    }
     return [to, {
       ar: { title: `تحديث جديد للمراجعة — ${act}`, body: `${dAr} بعت${pct}: ${nAr}` },
       en: { title: `New update to review — ${act}`, body: `${dEn} submitted${pct}: ${nEn}` }, tag: `pu-${rec.id}`,

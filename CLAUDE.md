@@ -51,7 +51,7 @@ Supabase (free): PostgreSQL + Auth + Storage (bucket site-photos, private) + Rea
 ## Business rules (enforced in DB triggers + RLS, mirror them in UI)
 - Roles: `site` (site engineer), `cm` (Construction Manager), `planner` (Planning Engineer), `pm` (Project Manager), `admin`.
 - Site engineers are identified by **discipline**, not names: `CIV`, `ARC`, `MEC`, `ELE`.
-- Workflow: `draft → submitted` (site) `→ endorsed` (CM, may adjust %/qty with a note; original values kept, engineer is notified) `→ approved` (Planning). CM or Planning can `returned`. Setting `require_cm` in `app_settings`.
+- Workflow: `draft → submitted` (site) `→ endorsed` (CM, may adjust %/qty with a note; original values kept, engineer is notified) `→ approved` (Planning). CM can `returned` (to engineer). Planning's return goes back to the CM (`endorsed → submitted`, note in `review_comment`, `reviewer_role='PL'`) — `db/06_return_to_cm.sql`. If `require_cm` is off, Planning returns to the engineer.
 - **Only approved updates affect official actual progress.** Approved rows are immutable. History is preserved (`prev_id`, `log`, `audit_log`).
 - Project progress = weighted by activity `weight`. Portfolio = weighted by `contract_value`.
 - Location hierarchy: **Zone first, then Building**.
@@ -80,6 +80,7 @@ update profiles set role='admin', discipline='CIV' where id=(select id from auth
 - Team chat (header "Chat" button): general room, one group per project, private chats, unread badges, read ticks in private chats, photo attach. DEMO = browser only; LIVE needs `db/03_chat.sql`.
 - CSV import column is `discipline` (old `assigned_to` still accepted).
 - Look-ahead tab is available to every role (site, CM, Planning, PM, admin).
+- Site "Quick update" (bulk) button removed from the activity list (2026-10-30); bulk code still in the file but unreachable.
 - Weekly report redesigned (formal A4): two modes — Consultant/Client (external) and Internal (adds contract values, approval workflow, missing updates, internal sign-off); report no. `WPR-<code>-<ISO week>`, executive summary + KPIs, S-curve, zone/discipline tables, progressed this week, behind schedule, 2-week look-ahead, delay reasons, photos, remarks box (saved per device), sign-off block. Language chips in the report toolbar.
 - Branding: `logo.png` (DMC | CURVE, cropped from the company image) in sidebar, header and login; brand green `#0b4a3e`/`#0e5a4b` for dark surfaces and primary buttons, gold `#c5a45a` accent, `#f1e8cf` light gold. Header ↻ refresh button (full page reload). Mobile bottom nav fits all tabs without scrolling.
 

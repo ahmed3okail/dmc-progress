@@ -111,7 +111,6 @@ input,textarea{font:inherit;color:inherit}
     </div>
     <div style="padding:0 16px;display:flex;gap:8px">
       <input type="search" value="{{ q }}" onChange="{{ onSearch }}" placeholder="{{ t.search }}" style="flex:1;min-width:0;min-height:48px;padding:0 14px;border:1px solid #cfc9bf;border-radius:10px;background:#fff;font-size:16px">
-      <button onClick="{{ toggleBulk }}" style="flex:0 0 auto;min-height:48px;padding:0 16px;border:1.5px solid #1b1a17;background:{{ bulkBtn.bg }};color:{{ bulkBtn.fg }};border-radius:10px;font-weight:700;font-size:14px;white-space:nowrap">⚡ {{ bulkBtn.label }}</button>
     </div>
     <sc-if value="{{ bulk }}" hint-placeholder-val="{{ false }}"><div style="margin:0 16px;padding:10px 12px;background:oklch(0.95 0.025 250);border:1px solid oklch(0.85 0.05 250);border-radius:10px;font-size:13px;line-height:1.45;color:oklch(0.35 0.1 250)">{{ t.bulkHelp }}</div></sc-if>
     <div style="display:flex;gap:8px;overflow-x:auto;padding:0 16px 2px">
@@ -320,6 +319,7 @@ input,textarea{font:inherit;color:inherit}
     <sc-for list="{{ reviewList }}" as="r" hint-placeholder-count="3"><div style="display:flex;gap:8px;align-items:stretch"><button onClick="{{ r.toggle }}" aria-label="select" style="flex:0 0 48px;border-radius:12px;border:1.5px solid {{ r.ckBd }};background:{{ r.ckBg }};color:#fff;font-size:20px;font-weight:700">{{ r.check }}</button>
       <button onClick="{{ r.open }}" style="text-align:start;width:100%;background:#fff;border:1px solid #e2ded6;border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:8px;color:inherit">
         <div style="display:flex;gap:8px;align-items:center;width:100%"><span style="font-family:'IBM Plex Mono',monospace;font-size:13px;font-weight:600">{{ r.code }}</span><span style="font-size:12px;color:#5f5a52;white-space:nowrap">{{ r.proj }}</span><span style="margin-inline-start:auto;font-size:12px;color:#5f5a52;white-space:nowrap">{{ r.age }}</span></div>
+        <sc-if value="{{ r.hasPlRet }}" hint-placeholder-val="{{ false }}"><span style="align-self:flex-start;font-size:12px;font-weight:700;padding:3px 9px;border-radius:999px;background:oklch(0.95 0.035 28);color:oklch(0.45 0.16 28)">↩ {{ r.plRet }}</span></sc-if>
         <div style="font-weight:600;font-size:16px;line-height:1.3">{{ r.name }}</div>
         <div style="display:flex;align-items:center;gap:10px;width:100%"><span style="font-size:13px;color:#5f5a52;flex:1">{{ r.eng }}</span><span style="font-size:18px;font-weight:700;direction:ltr;unicode-bidi:isolate;white-space:nowrap">{{ r.change }}</span></div>
         <sc-if value="{{ r.hasFlag }}" hint-placeholder-val="{{ false }}"><div style="font-size:12.5px;font-weight:600;color:oklch(0.45 0.13 70)">⚠ {{ r.flag }}</div></sc-if>
@@ -336,6 +336,7 @@ input,textarea{font:inherit;color:inherit}
       <div style="display:flex;gap:8px;align-items:center"><span style="font-family:'IBM Plex Mono',monospace;font-size:14px;font-weight:600">{{ rv.code }}</span><span style="font-size:12px;color:#5f5a52;white-space:nowrap">{{ rv.proj }}</span></div>
       <div style="font-size:20px;font-weight:700;line-height:1.25">{{ rv.name }}</div>
       <div style="font-size:13px;color:#5f5a52">{{ rv.byLine }}</div>
+      <sc-if value="{{ rv.hasPlRet }}" hint-placeholder-val="{{ false }}"><div style="font-size:13.5px;font-weight:600;color:oklch(0.42 0.16 28);background:oklch(0.95 0.035 28);border-radius:8px;padding:8px 10px">↩ {{ rv.plRetLine }}</div></sc-if>
       <sc-if value="{{ rv.hasCm }}" hint-placeholder-val="{{ false }}"><div style="font-size:13.5px;font-weight:600;color:oklch(0.4 0.11 150);background:oklch(0.95 0.035 150);border-radius:8px;padding:8px 10px">✓ {{ rv.cmLine }}</div></sc-if>
       <div style="display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr) minmax(0,1fr);border:1px solid #ece9e3;border-radius:10px;overflow:hidden;font-size:13.5px">
         <div style="padding:8px 10px;background:#f2efe9;font-weight:600"></div>
@@ -375,7 +376,7 @@ input,textarea{font:inherit;color:inherit}
       <textarea rows="3" value="{{ comment }}" onChange="{{ onComment }}" placeholder="{{ t.reviewCommentPh }}" style="padding:12px 14px;font-size:16px;border:1px solid #cfc9bf;border-radius:10px;background:#fff;resize:vertical"></textarea>
       <sc-if value="{{ hasErrors }}" hint-placeholder-val="{{ false }}"><div style="color:oklch(0.42 0.16 28);font-weight:600;font-size:14px"><sc-for list="{{ errors }}" as="e" hint-placeholder-count="1"><div>• {{ e.msg }}</div></sc-for></div></sc-if>
       <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px">
-        <button onClick="{{ ret }}" style="min-height:54px;border:1px solid oklch(0.52 0.17 28);color:oklch(0.45 0.16 28);background:#fff;border-radius:10px;font-weight:700;font-size:15px">{{ t.returnBtn }}</button>
+        <button onClick="{{ ret }}" style="min-height:54px;border:1px solid oklch(0.52 0.17 28);color:oklch(0.45 0.16 28);background:#fff;border-radius:10px;font-weight:700;font-size:15px">{{ retLabel }}</button>
         <button onClick="{{ approve }}" style="min-height:54px;border:none;background:oklch(0.48 0.12 150);color:#fff;border-radius:10px;font-weight:700;font-size:15px">{{ approveLbl }}</button>
       </div>
       <div style="font-size:12.5px;color:#5f5a52">{{ t.approveNote }}</div>
@@ -949,7 +950,8 @@ const DELAYS=['material','manpower','equipment','weather','design','client','sub
 const ENG=['CIV','ARC','MEC','ELE'];
 const PEOPLE={CIV:{en:'Civil Engineer',ar:'المهندس المدني'},ARC:{en:'Architectural Engineer',ar:'المهندس المعماري'},MEC:{en:'Mechanical Engineer',ar:'المهندس الميكانيكي'},ELE:{en:'Electrical Engineer',ar:'المهندس الكهربائي'},CM:{en:'Construction Manager',ar:'مدير الإنشاءات'},PL:{en:'Planning Engineer',ar:'مهندس التخطيط'},PM:{en:'Project Manager',ar:'مدير المشروع'}};
 const ALIAS={CIVIL:'CIV',ARCH:'ARC',ARCHITECTURAL:'ARC',MECH:'MEC',MECHANICAL:'MEC',ELEC:'ELE',ELECTRICAL:'ELE'};
-function decideU(u,ok,role,c,ts){const cm=role==='cm',by=cm?'CM':'PL';
+function decideU(u,ok,role,c,ts,toCm){const cm=role==='cm',by=cm?'CM':'PL';
+  if(!ok&&!cm&&toCm)return Object.assign({},u,{status:'submitted',cmAt:'',cmBy:'',reviewed:ts,reviewer:'PL',comment:c,log:u.log.concat([{at:ts,ev:'returned_cm',by}])});
   if(ok&&cm)return Object.assign({},u,{status:'endorsed',cmAt:ts,cmBy:'CM',cmComment:c,log:u.log.concat([{at:ts,ev:'endorsed',by}])});
   return Object.assign({},u,{status:ok?'approved':'returned',reviewed:ts,reviewer:by,comment:c,log:u.log.concat([{at:ts,ev:ok?'approved':'returned',by}])});}
 const C={green:'oklch(0.48 0.12 150)',greenBg:'oklch(0.94 0.04 150)',red:'oklch(0.48 0.17 28)',redBg:'oklch(0.95 0.035 28)',amber:'oklch(0.45 0.1 70)',amberBg:'oklch(0.94 0.06 85)',blue:'oklch(0.45 0.12 250)',blueBg:'oklch(0.94 0.03 250)',grey:'#5f5a52',greyBg:'#ece9e3',barOk:'oklch(0.58 0.13 150)',barWarn:'oklch(0.68 0.14 70)',barBad:'oklch(0.56 0.18 28)'};
@@ -959,7 +961,7 @@ const I18N={
 en:{title:'DMC Site Progress',otherLang:'عربي',dataShort:'Data',dataDate:'Data date',
 demo:'DEMO DATA — fictional sample projects. Saved only in this browser on this device. Tap for details.',
 role_site:'Site Engineer',role_planner:'Planning Engineer',role_pm:'Project Manager',actingAs:'Acting as site engineer',
-refreshBtn:'Refresh',repNo:'Report No.',repPeriod:'Period',repFor:'Report for:',repModeExt:'Consultant / Client',repModeInt:'Internal',repClsExt:'FOR CONSULTANT REVIEW',repClsInt:'INTERNAL — CONFIDENTIAL — NOT FOR EXTERNAL DISTRIBUTION',
+refreshBtn:'Refresh',returnCm:'Return to CM',plRetShort:'Returned by Planning',t_returnedCm:'Returned to the Construction Manager',plRetLine:d=>`Returned by Planning ${d}`,ev_returned_cm:'returned to CM by Planning',repNo:'Report No.',repPeriod:'Period',repFor:'Report for:',repModeExt:'Consultant / Client',repModeInt:'Internal',repClsExt:'FOR CONSULTANT REVIEW',repClsInt:'INTERNAL — CONFIDENTIAL — NOT FOR EXTERNAL DISTRIBUTION',
 repLocL:'Location',repPrepared:'Prepared by',repRev:'Revision',repValue:'Contract value',repWeightBy:'Weighting',repByWeight:'Activity weights',repAllN:n=>`All projects (${n})`,
 repExec:'1. Executive summary',repToDate:'Cumulative to date',repApprovedOnly:'Approved updates only',repVsPlan:'Actual − planned',repSpiS:'Actual ÷ planned',repWeekGain:'Progress this week',repPlannedGain:g=>`Planned ${g}`,
 repNarr:o=>`Overall progress reached ${o.a} against ${o.p} planned (variance ${o.v}, SPI ${o.spi}). Progress achieved this week is ${o.g} against ${o.gp} planned, from ${o.n} approved site updates. ${o.d} activities are currently behind schedule${o.r?`; the main reported cause is “${o.r}”`:''}. At the current rate the forecast finish is ${o.fc} (planned ${o.end}).`,
@@ -1011,7 +1013,7 @@ stats:(p,a,u,kb)=>`${p} projects · ${a} activities · ${u} updates · ${kb} KB 
 ar:{title:'DMC تقدم الموقع',otherLang:'English',dataShort:'البيانات',dataDate:'تاريخ البيانات',
 demo:'بيانات تجريبية — مشاريع وهمية للعرض. محفوظة في هذا المتصفح على هذا الجهاز فقط. اضغط للتفاصيل.',
 role_site:'مهندس موقع',role_planner:'مهندس تخطيط',role_pm:'مدير المشروع',actingAs:'تعمل باسم مهندس الموقع',
-refreshBtn:'تحديث',repNo:'رقم التقرير',repPeriod:'الفترة',repFor:'التقرير لـ:',repModeExt:'الاستشاري / المالك',repModeInt:'داخلي',repClsExt:'للمراجعة من الاستشاري',repClsInt:'داخلي — سري — غير مخصص للتوزيع الخارجي',
+refreshBtn:'تحديث',returnCm:'إرجاع لمدير الإنشاءات',plRetShort:'مرتجع من التخطيط',t_returnedCm:'اترجع لمدير الإنشاءات',plRetLine:d=>`مرتجع من التخطيط ${d}`,ev_returned_cm:'رجّعه التخطيط لمدير الإنشاءات',repNo:'رقم التقرير',repPeriod:'الفترة',repFor:'التقرير لـ:',repModeExt:'الاستشاري / المالك',repModeInt:'داخلي',repClsExt:'للمراجعة من الاستشاري',repClsInt:'داخلي — سري — غير مخصص للتوزيع الخارجي',
 repLocL:'الموقع',repPrepared:'إعداد',repRev:'الإصدار',repValue:'قيمة العقد',repWeightBy:'الترجيح',repByWeight:'أوزان الأنشطة',repAllN:n=>`كل المشاريع (${n})`,
 repExec:'١. الملخص التنفيذي',repToDate:'تراكمي حتى تاريخه',repApprovedOnly:'التحديثات المعتمدة فقط',repVsPlan:'الفعلي − المخطط',repSpiS:'الفعلي ÷ المخطط',repWeekGain:'تقدم هذا الأسبوع',repPlannedGain:g=>`المخطط ${g}`,
 repNarr:o=>`بلغ التقدم الكلي ${o.a} مقابل ${o.p} مخطط (انحراف ${o.v}، مؤشر أداء الجدول ${o.spi}). التقدم المحقق هذا الأسبوع ${o.g} مقابل ${o.gp} مخطط، من ${o.n} تحديث معتمد من الموقع. عدد الأنشطة المتأخرة حالياً ${o.d}${o.r?`، وأكثر سبب مُبلغ عنه «${o.r}»`:''}. بالمعدل الحالي تاريخ الانتهاء المتوقع ${o.fc} (المخطط ${o.end}).`,
@@ -1080,13 +1082,13 @@ captionPh:'وصف، مثل: محور C3 الواجهة الشرقية',geoOk:(a,
 la_start:'تبدأ',la_finish:'تنتهي',la_win:n=>`الـ ${n} يوماً القادمة`,la_in:n=>n<0?`متأخر ${-n} يوم`:n===0?'اليوم':`بعد ${n} يوم`,lateStart:'بداية متأخرة',atRisk:'معرّض للخطر',ready:'مخطط',onTrackS:'ضمن الخطة',laHelp:'الأنشطة المخطط بدؤها أو انتهاؤها قريباً، مع تقييم الخطر حسب التقدم المعتمد.'});
 Object.assign(I18N.en,{role_cm:'Construction Manager',actingAs:'Acting as discipline engineer',st_submitted:'Awaiting CM',st_endorsed:'Awaiting Planning',ev_endorsed:'approved by CM',
 awaiting:'Submitted — waiting for Construction Manager approval (step 1 of 2). Official progress changes only after Planning approves.',awaitingPL:'Approved by Construction Manager — waiting for Planning Engineer review (step 2 of 2). Official progress changes only after Planning approves.',
-cmLine:w=>`Approved by Construction Manager · ${w}`,reviewQueue:'Updates approved by Construction Manager',reviewHelp:'Step 2 of 2: these updates were already checked and approved by the Construction Manager. Your approval makes them official actual progress. Returned updates go back to the engineer.',
+cmLine:w=>`Approved by Construction Manager · ${w}`,reviewQueue:'Updates approved by Construction Manager',reviewHelp:'Step 2 of 2: these updates were already checked and approved by the Construction Manager. Your approval makes them official actual progress. Returned updates go back to the Construction Manager with your note.',
 readOnly:'Read-only: only the assigned discipline engineer can submit updates for this activity.',e_eng:'assigned_to must be CIV, ARC, MEC or ELE (or Civil, Architectural, Mechanical, Electrical)',
 storage2:'Other people, phones or browsers will not see these updates. The role switch in the header only simulates the four roles on one device — nothing is synchronised between users.',
 cm:{reviewQueue:'Updates awaiting your approval',reviewHelp:'Step 1 of 2: check the work on site. Approving forwards the update to the Planning Engineer; official progress changes only after Planning approves. Returned updates go back to the engineer.',approveNote:'Your approval is logged and the update is forwarded to Planning.',t_approved:'Approved — forwarded to Planning',bulkApproved:n=>`Approved ${n} — forwarded to Planning`}});
 Object.assign(I18N.ar,{role_cm:'مدير الإنشاءات',actingAs:'تعمل باسم مهندس التخصص',st_submitted:'بانتظار مدير الإنشاءات',st_endorsed:'بانتظار التخطيط',ev_endorsed:'وافق مدير الإنشاءات',
 awaiting:'تم الإرسال — بانتظار موافقة مدير الإنشاءات (الخطوة 1 من 2). لا يتغير التقدم الرسمي إلا بعد اعتماد التخطيط.',awaitingPL:'وافق مدير الإنشاءات — بانتظار مراجعة مهندس التخطيط (الخطوة 2 من 2). لا يتغير التقدم الرسمي إلا بعد اعتماد التخطيط.',
-cmLine:w=>`وافق مدير الإنشاءات · ${w}`,reviewQueue:'تحديثات وافق عليها مدير الإنشاءات',reviewHelp:'الخطوة 2 من 2: هذه التحديثات تمت مراجعتها والموافقة عليها من مدير الإنشاءات. اعتمادك يجعلها التقدم الفعلي الرسمي. التحديثات المعادة ترجع للمهندس.',
+cmLine:w=>`وافق مدير الإنشاءات · ${w}`,reviewQueue:'تحديثات وافق عليها مدير الإنشاءات',reviewHelp:'الخطوة 2 من 2: هذه التحديثات تمت مراجعتها والموافقة عليها من مدير الإنشاءات. اعتمادك يجعلها التقدم الفعلي الرسمي. التحديثات المعادة ترجع لمدير الإنشاءات مع ملاحظتك.',
 readOnly:'للعرض فقط: مهندس التخصص المسند إليه النشاط هو من يرسل التحديثات.',e_eng:'المسند إليه يجب أن يكون CIV أو ARC أو MEC أو ELE',
 storage2:'لن يرى الآخرون أو الهواتف أو المتصفحات الأخرى هذه التحديثات. مفتاح الأدوار في الأعلى يحاكي الأدوار الأربعة على جهاز واحد فقط — لا توجد مزامنة بين المستخدمين.',
 cm:{reviewQueue:'تحديثات بانتظار موافقتك',reviewHelp:'الخطوة 1 من 2: تحقق من العمل في الموقع. الموافقة ترسل التحديث إلى مهندس التخطيط، ولا يتغير التقدم الرسمي إلا بعد اعتماد التخطيط. التحديثات المعادة ترجع للمهندس.',approveNote:'تُسجل موافقتك ويُحال التحديث إلى التخطيط.',t_approved:'تمت الموافقة — أُحيل إلى التخطيط',bulkApproved:n=>`تمت الموافقة على ${n} — أُحيلت إلى التخطيط`}});
@@ -1600,10 +1602,10 @@ class Component extends DCLogic {
         if(e.length){this.setState({errors:e});return;}adj={pct:np,qty:nq};}}
     const ups=s.data.updates.map(u=>{if(u.id!==s.review)return u;let x=u;
       if(adj)x=Object.assign({},u,{origPct:u.pct,origQty:u.qty,pct:adj.pct,qty:adj.qty,aFinish:adj.pct<100?'':u.aFinish,adjBy:'CM',adjAt:ts,adjNote:c,log:u.log.concat([{at:ts,ev:'adjusted',by:'CM',detail:u.pct+'% → '+adj.pct+'%'}])});
-      return decideU(x,ok,s.role,c,ts);});
+      return decideU(x,ok,s.role,c,ts,s.role==='planner'&&this.reqCM());});
     let reminders=s.data.reminders||[];
     if(adj)reminders=reminders.concat([{id:uid('R'),to:u0.by,from:'CM',at:ts,actIds:[u0.actId],type:'adjusted',from_pct:u0.pct,to_pct:adj.pct,from_qty:u0.qty,to_qty:adj.qty,note:c,done:false}]);
-    this.set({data:Object.assign({},s.data,{updates:ups,reminders}),review:null,comment:'',errors:[]},()=>{this.toast(adj?t.t_adjusted:(ok?t.t_approved:t.t_returned));this.top();});}
+    this.set({data:Object.assign({},s.data,{updates:ups,reminders}),review:null,comment:'',errors:[]},()=>{this.toast(adj?t.t_adjusted:(ok?t.t_approved:(s.role==='planner'&&this.reqCM()?t.t_returnedCm:t.t_returned)));this.top();});}
   onPhotos(e){const files=Array.from(e.target.files||[]);e.target.value='';const room=4-((this.state.form&&this.state.form.photos)||[]).length;
     files.slice(0,Math.max(0,room)).forEach(file=>compress(file).then(src=>{const id=uid('ph');const ph={id,src,caption:'',at:fmtMs(file.lastModified||Date.now()),lat:null,lng:null,acc:null,geo:'pending'};
       this.setState(s=>s.form?{form:Object.assign({},s.form,{photos:s.form.photos.concat([ph]).slice(0,4)})}:null);this.locate(id);}).catch(()=>{}));}
@@ -1752,7 +1754,7 @@ class Component extends DCLogic {
     const rvF=withW.filter(x=>(s.rvProj==='all'||x.a.pid===s.rvProj)&&(s.rvFlag==='all'||(s.rvFlag==='flagged'?x.w.length>0:x.w.length===0)));
     const selIds=Object.keys(s.sel).filter(id=>s.sel[id]&&pendingAll.some(u=>u.id===id));
     const cleanIds=rvF.filter(x=>!x.w.length).map(x=>x.u.id);
-    const reviewList=!show.review?[]:rvF.map(({u,a,w})=>{const on=!!s.sel[u.id];return{code:a.code,proj:D.projMap[a.pid].code+' · '+locL(a),name:nm(a),eng:person(u.by),age:t.ago(dd(u.submitted,TODAY)),change:a.actual+'% → '+u.pct+'%',hasFlag:w.length>0,flag:w.join(' · '),hasDelay:!!u.delay,delay:u.delay?t.delays[u.delay]:'',
+    const reviewList=!show.review?[]:rvF.map(({u,a,w})=>{const on=!!s.sel[u.id];return{code:a.code,proj:D.projMap[a.pid].code+' · '+locL(a),name:nm(a),eng:person(u.by),age:t.ago(dd(u.submitted,TODAY)),change:a.actual+'% → '+u.pct+'%',hasPlRet:u.status==='submitted'&&u.reviewer==='PL'&&!!u.comment,plRet:t.plRetShort,hasFlag:w.length>0,flag:w.join(' · '),hasDelay:!!u.delay,delay:u.delay?t.delays[u.delay]:'',
       open:()=>{this.setState({review:u.id,comment:'',errors:[],adjPct:String(u.pct),adjQty:String(u.qty)});this.top();},toggle:()=>this.setState(st=>({sel:Object.assign({},st.sel,{[u.id]:!st.sel[u.id]})})),check:on?'✓':'',ckBg:on?'#1b1a17':'#fff',ckBd:on?'#1b1a17':'#a59e92',bd:on?'#1b1a17':'#e4e0d8'};});
     const rvProjChips=[chip(t.allProjects,s.rvProj==='all',()=>this.setState({rvProj:'all'}))].concat(D.projects.filter(p=>withW.some(x=>x.a.pid===p.id)).map(p=>chip(p.code,s.rvProj===p.id,()=>this.setState({rvProj:p.id}))));
     const rvFlagChips=[['all','f_all'],['flagged','f_flagged'],['clean','f_clean']].map(([k,l])=>chip(t[l]+' · '+withW.filter(x=>k==='all'||(k==='flagged'?x.w.length:!x.w.length)).length,s.rvFlag===k,()=>this.setState({rvFlag:k})));
@@ -1760,7 +1762,7 @@ class Component extends DCLogic {
     if(inReview){const u=pendingAll.find(x=>x.id===s.review),a=D.actMap[u.actId],o=a.off||{},dl=k=>k?t.delays[k]:'—';
       const row=(l,x,y)=>({l,a:x,b:y,fw:String(x)!==String(y)?'700':'400',bg:String(x)!==String(y)?'oklch(0.96 0.04 85)':'transparent'});
       const warn=warnsOf(u,a,t);
-      rv={hasCm:!!u.cmAt,cmLine:u.cmAt?t.cmLine(u.cmAt.replace('T',' '))+(u.adjAt?' · '+t.adjNoteTxt(u.origPct,u.pct):'')+(u.cmComment?' — “'+u.cmComment+'”':''):'',code:a.code,proj:D.projMap[a.pid].code,name:nm(a),byLine:person(u.by)+' · '+u.submitted.replace('T',' ')+' · '+srcL(u.src),
+      rv={hasPlRet:u.status==='submitted'&&u.reviewer==='PL'&&!!u.comment,plRetLine:u.reviewed?t.plRetLine(u.reviewed.replace('T',' '))+' — “'+(u.comment||'')+'”':'',hasCm:!!u.cmAt,cmLine:u.cmAt?t.cmLine(u.cmAt.replace('T',' '))+(u.adjAt?' · '+t.adjNoteTxt(u.origPct,u.pct):'')+(u.cmComment?' — “'+u.cmComment+'”':''):'',code:a.code,proj:D.projMap[a.pid].code,name:nm(a),byLine:person(u.by)+' · '+u.submitted.replace('T',' ')+' · '+srcL(u.src),
         rows:[row(t.progressPct,(o.pct||0)+'%',u.pct+'%'),row(t.qtyShort+' ('+a.unit+')',o.qty||0,u.qty),row(t.actualStart,o.aStart||'—',u.aStart||'—'),row(t.actualFinish,o.aFinish||'—',u.aFinish||'—'),row(t.delayReason,dl(o.delay),dl(u.delay))],
         plannedLine:t.plannedLine(Math.round(a.planned),a.actual),hasRemarks:!!u.remarks,remarks:u.remarks,hasPhotos:(u.photos||[]).length>0,
         photos:(u.photos||[]).map(p=>({bg:'url('+p.src+')',caption:p.caption||'—',meta:(p.at||'')+' · '+geoTxt(p),hasMap:p.geo==='ok',map:mapUrl(p)})),hasWarnings:warn.length>0,warnings:warn.map(msg=>({msg}))};}
@@ -2006,7 +2008,7 @@ class Component extends DCLogic {
       showSelBar:show.review&&selIds.length>0,selCountTxt:t.selCount(selIds.length),approveSelTxt:t.approveSel(selIds.length),approveSel:()=>this.approveMany(selIds),
       sBldgChips,sZoneChips,hasSBldg:sBldgChips.length>0,hasSZone:sZoneChips.length>0,plBreak,hasPlBreak:plBreak.length>1,tpBreak:show.trends&&tp?bdown(tp.list,'',''):[],hasTpBreak:!!(show.trends&&tp),
       canAdjust:inReview&&role==='cm',adjPct:s.adjPct,adjQty:s.adjQty,onAdjPct:e=>this.setState({adjPct:e.target.value}),onAdjQty:e=>this.setState({adjQty:e.target.value}),adjQtyFromPct:adjV.fromPct,adjChanged:adjV.changed,adjChangedTxt:adjV.txt,adjQtyLabel:adjV.qtyLabel,adjQuick,approveLbl:adjV.changed?t.approveAdj:t.approve,
-      rv,comment:s.comment,onComment:e=>this.setState({comment:e.target.value}),approve:()=>this.decide(true),ret:()=>this.decide(false),closeReview:()=>this.setState({review:null,errors:[]}),
+      rv,comment:s.comment,onComment:e=>this.setState({comment:e.target.value}),approve:()=>this.decide(true),ret:()=>this.decide(false),retLabel:s.role==='planner'&&this.reqCM()?t.returnCm:t.returnBtn,closeReview:()=>this.setState({review:null,errors:[]}),
       plChips,kpis,plFilterChips,plActs,plEmpty:show.progress&&!plActs.length,plSummary:t.plSummary(pp.list.length,pp.value),exportProgress:()=>this.exportProgress(),exportHistory:()=>this.exportHistory(),
       hasMissing:pp.missing>0,remindTxt:t.remind(pp.missing),sendReminders:()=>this.sendReminders(pp.id),openReport,
       importText:s.importText,onImportText:e=>this.setState({importText:e.target.value,importRows:null}),loadSample:()=>{const x=sampleCSV();this.setState({importText:x});this.runValidate(x);},
