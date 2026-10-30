@@ -198,14 +198,15 @@ input,textarea{font:inherit;color:inherit}
         <span style="color:#5f5a52">{{ t.planned }}</span><div style="height:10px;background:#ece9e3;border-radius:5px;overflow:hidden"><div style="height:100%;width:{{ d.plannedW }};background:#a59e92"></div></div><span style="text-align:end;font-weight:700">{{ d.plannedTxt }}</span>
         <span style="color:#5f5a52">{{ t.actual }}</span><div style="height:10px;background:#ece9e3;border-radius:5px;overflow:hidden"><div style="height:100%;width:{{ d.actualW }};background:{{ d.barColor }}"></div></div><span style="text-align:end;font-weight:700">{{ d.actualTxt }}</span>
       </div>
-      <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px 14px;font-size:13px;border-top:1px solid #ece9e3;padding-top:12px">
+      <sc-if value="{{ d.showProd }}" hint-placeholder-val="{{ false }}"><div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px 14px;font-size:13px;border-top:1px solid #ece9e3;padding-top:12px">
         <div style="grid-column:1 / -1;font-weight:700;font-size:14px">📈 {{ t.prodTitle }}</div>
+        <div style="grid-column:1 / -1;font-size:12px;color:#5f5a52">{{ d.pr.src }}</div>
         <div><div style="color:#5f5a52">{{ t.remQty }}</div><div style="font-weight:700">{{ d.pr.rem }}</div></div>
         <div><div style="color:#5f5a52">{{ t.remDur }}</div><div style="font-weight:700">{{ d.pr.remD }}</div></div>
         <div><div style="color:#5f5a52">{{ t.rateAct }}</div><div style="font-weight:600">{{ d.pr.rate }}</div></div>
         <div><div style="color:#5f5a52">{{ t.rateReq }}</div><div style="font-weight:600;color:{{ d.pr.reqC }}">{{ d.pr.req }}</div></div>
         <div style="grid-column:1 / -1"><div style="color:#5f5a52">{{ t.fcAct }}</div><div><span style="font-family:'IBM Plex Mono',monospace;font-size:14px;font-weight:700;color:{{ d.pr.fcC }}">{{ d.pr.fc }}</span> <span style="font-size:12px;color:{{ d.pr.fcC }}">· {{ d.pr.fcNote }}</span></div></div>
-      </div>
+      </div></sc-if>
       <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px 14px;font-size:13px;border-top:1px solid #ece9e3;padding-top:12px">
         <div><div style="color:#5f5a52">{{ t.plannedDates }}</div><div style="font-family:'IBM Plex Mono',monospace;font-size:12.5px">{{ d.ps }} → {{ d.pf }}</div></div>
         <div><div style="color:#5f5a52">{{ t.aDates }}</div><div style="font-family:'IBM Plex Mono',monospace;font-size:12.5px">{{ d.aStart }} → {{ d.aFinish }}</div></div>
@@ -238,6 +239,7 @@ input,textarea{font:inherit;color:inherit}
           <div><div style="color:#5f5a52">{{ t.qtyShort }}</div><div style="font-size:16px;font-weight:600">{{ d.pend.qty }}</div></div>
           <div><div style="color:#5f5a52">{{ t.aDates }}</div><div style="font-family:'IBM Plex Mono',monospace;font-size:12.5px">{{ d.pend.dates }}</div></div>
           <div><div style="color:#5f5a52">{{ t.delayReason }}</div><div>{{ d.pend.delay }}</div></div>
+          <div><div style="color:#5f5a52">{{ t.remDaysLbl }}</div><div style="font-weight:600">{{ d.pend.remD }}</div></div>
         </div>
         <div style="font-size:14px">{{ d.pend.remarks }}</div>
         <sc-if value="{{ d.pend.hasAdj }}" hint-placeholder-val="{{ false }}"><div style="font-size:13.5px;font-weight:600;color:oklch(0.4 0.1 70);background:oklch(0.95 0.05 85);border-radius:8px;padding:8px 10px">✎ {{ d.pend.adj }}</div></sc-if>
@@ -271,6 +273,11 @@ input,textarea{font:inherit;color:inherit}
         <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px">
           <div style="display:flex;flex-direction:column;gap:8px"><label style="font-size:14px;font-weight:600">{{ t.actualStart }}</label><input type="date" max="{{ today }}" value="{{ fm.aStart }}" onChange="{{ f.aStart }}" style="min-height:52px;padding:0 10px;font-size:16px;border:1px solid #cfc9bf;border-radius:10px;background:#fff;width:100%"></div>
           <div style="display:flex;flex-direction:column;gap:8px"><label style="font-size:14px;font-weight:600">{{ t.actualFinish }}</label><input type="date" max="{{ today }}" value="{{ fm.aFinish }}" onChange="{{ f.aFinish }}" style="min-height:52px;padding:0 10px;font-size:16px;border:1px solid #cfc9bf;border-radius:10px;background:#fff;width:100%"></div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <label style="font-size:14px;font-weight:600">{{ t.remDaysLbl }}</label>
+          <div style="display:flex;gap:8px;align-items:center"><input type="number" min="0" step="1" inputmode="numeric" value="{{ fm.remD }}" onChange="{{ f.remD }}" style="flex:1;min-width:0;min-height:52px;padding:0 14px;font-size:18px;border:1px solid #cfc9bf;border-radius:10px;background:#fff"><span style="font-size:15px;font-weight:600;color:#5f5a52">{{ t.daysWord }}</span></div>
+          <div style="font-size:12.5px;color:#5f5a52">{{ d.remHint }}</div>
         </div>
         <div style="display:flex;flex-direction:column;gap:8px">
           <label style="font-size:14px;font-weight:600">{{ t.delayReason }}</label>
@@ -996,7 +1003,7 @@ en:{title:'DMC Site Progress',otherLang:'عربي',dataShort:'Data',dataDate:'Da
 demo:'DEMO DATA — fictional sample projects. Saved only in this browser on this device. Tap for details.',
 role_site:'Site Engineer',role_planner:'Planning Engineer',role_pm:'Project Manager',actingAs:'Acting as site engineer',
 refreshBtn:'Refresh',dows:['Sun','Mon','Tue','Wed','Thu','Fri','Sat'],compTitle:'Weekly update compliance',compAll:'All disciplines',compLine:(u,n)=>`${u} of ${n} activities updated this cycle`,cutLine:(d,c,f)=>`Cut-off: ${d} ${c} · cycle from ${f}`,cutPick:'Cut-off day',cutAuto:'Engineers who have not updated get an automatic reminder the day before and on the cut-off day.',cutAdminOnly:'Only the admin can change the cut-off day.',
-prodTitle:'Productivity & forecast',remQty:'Remaining quantity',rateAct:'Actual rate / day',rateReq:'Required rate / day',remDur:'Remaining duration',fcAct:'Forecast finish',daysN:n=>`${n} days`,notStartedRate:'Not started',overduePf:'Past planned finish',fcLate:n=>`${n} days after planned finish`,fcOk:'On or before planned finish',perDay:'/day',
+prodTitle:'Productivity & forecast',remDaysLbl:'Remaining duration to finish the activity',daysWord:'days',remHint:d=>`Your estimate of working days left. Planned finish: ${d}`,err_remD:'Enter the remaining duration (days) to finish the activity',remSrcSite:(n,d)=>`Remaining duration from the site engineer: ${n} days (as of ${d})`,remSrcPend:'not yet approved',remSrcCalc:'Calculated from the actual production rate (no estimate from site)',remQty:'Remaining quantity',rateAct:'Actual rate / day',rateReq:'Required rate / day',remDur:'Remaining duration',fcAct:'Forecast finish',daysN:n=>`${n} days`,notStartedRate:'Not started',overduePf:'Past planned finish',fcLate:n=>`${n} days after planned finish`,fcOk:'On or before planned finish',perDay:'/day',
 repCmp:'Compared with last week',repMetric:'Indicator',repCmpPrev:'Last week',repCmpNow:'This week',repCmpChg:'Change',cmpPlanned:'Planned progress',cmpActual:'Actual progress (approved)',cmpVar:'Variance',cmpSpi:'SPI',cmpBehind:'Activities behind schedule',cmpDone:'Activities completed',cmpGain:'Progress gained in the week',
 repRisks:'Top 5 risks',riskCols:['#','Activity','Risk','Cause / responsibility','Forecast finish'],riskBehind:v=>`Behind plan by ${v}`,riskDueSoon:d=>`Due ${d} — not finished`,riskOverdue:'Past planned finish',riskNoUpd:'No recent site update',noRisks:'No significant risks this week.',
 weekSec:'This week — before the cut-off',weekSecHelp:(d,u,n)=>`Cut-off ${d} · ${u} of ${n} updated`,otherSec:'Other activities',wkDone:'✓ Updated this week',wkTodo:'Needs update this week',partyLabel:'Who is responsible for the delay?',parties:{contractor:'DMC (us)',owner:'Owner / client',consultant:'Consultant',subcon:'Subcontractor',other:'Other / force majeure'},repByParty:'Delays by responsibility',repParty:'Responsibility',returnCm:'Return to CM',plRetShort:'Returned by Planning',t_returnedCm:'Returned to the Construction Manager',plRetLine:d=>`Returned by Planning ${d}`,ev_returned_cm:'returned to CM by Planning',repNo:'Report No.',repPeriod:'Period',repFor:'Report for:',repModeExt:'Consultant / Client',repModeInt:'Internal',repClsExt:'FOR CONSULTANT REVIEW',repClsInt:'INTERNAL — CONFIDENTIAL — NOT FOR EXTERNAL DISTRIBUTION',
@@ -1052,7 +1059,7 @@ ar:{title:'DMC تقدم الموقع',otherLang:'English',dataShort:'البيا�
 demo:'بيانات تجريبية — مشاريع وهمية للعرض. محفوظة في هذا المتصفح على هذا الجهاز فقط. اضغط للتفاصيل.',
 role_site:'مهندس موقع',role_planner:'مهندس تخطيط',role_pm:'مدير المشروع',actingAs:'تعمل باسم مهندس الموقع',
 refreshBtn:'تحديث',dows:['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'],compTitle:'الالتزام بالتحديث الأسبوعي',compAll:'كل التخصصات',compLine:(u,n)=>`${u} من ${n} نشاط اتحدّث في الدورة دي`,cutLine:(d,c,f)=>`يوم القفل: ${d} ${c} · الدورة من ${f}`,cutPick:'يوم القفل',cutAuto:'المهندس اللي ماحدّثش بيوصله تذكير أوتوماتيك قبل يوم القفل بيوم وفي يوم القفل.',cutAdminOnly:'الأدمن بس هو اللي يقدر يغيّر يوم القفل.',
-prodTitle:'الإنتاجية والتوقع',remQty:'الكمية المتبقية',rateAct:'معدل الإنتاج الفعلي / يوم',rateReq:'المعدل المطلوب / يوم',remDur:'المدة المتبقية',fcAct:'تاريخ الانتهاء المتوقع',daysN:n=>`${n} يوم`,notStartedRate:'لم يبدأ',overduePf:'عدّى تاريخ الانتهاء المخطط',fcLate:n=>`متأخر ${n} يوم عن المخطط`,fcOk:'في الميعاد أو قبله',perDay:'/يوم',
+prodTitle:'الإنتاجية والتوقع',remDaysLbl:'المدة المتبقية لإنهاء النشاط',daysWord:'يوم',remHint:d=>`تقديرك لعدد الأيام الباقية. تاريخ الانتهاء المخطط: ${d}`,err_remD:'اكتب المدة المتبقية (بالأيام) لإنهاء النشاط',remSrcSite:(n,d)=>`المدة المتبقية من مهندس الموقع: ${n} يوم (بتاريخ ${d})`,remSrcPend:'لسه ما اتعتمدتش',remSrcCalc:'محسوبة من معدل الإنتاج الفعلي (مفيش تقدير من الموقع)',remQty:'الكمية المتبقية',rateAct:'معدل الإنتاج الفعلي / يوم',rateReq:'المعدل المطلوب / يوم',remDur:'المدة المتبقية',fcAct:'تاريخ الانتهاء المتوقع',daysN:n=>`${n} يوم`,notStartedRate:'لم يبدأ',overduePf:'عدّى تاريخ الانتهاء المخطط',fcLate:n=>`متأخر ${n} يوم عن المخطط`,fcOk:'في الميعاد أو قبله',perDay:'/يوم',
 repCmp:'مقارنة بالأسبوع السابق',repMetric:'المؤشر',repCmpPrev:'الأسبوع السابق',repCmpNow:'هذا الأسبوع',repCmpChg:'التغيير',cmpPlanned:'التقدم المخطط',cmpActual:'التقدم الفعلي (المعتمد)',cmpVar:'الانحراف',cmpSpi:'مؤشر أداء الجدول',cmpBehind:'أنشطة متأخرة عن المخطط',cmpDone:'أنشطة مكتملة',cmpGain:'التقدم المحقق في الأسبوع',
 repRisks:'أهم ٥ مخاطر',riskCols:['#','النشاط','الخطر','السبب / المسؤول','الانتهاء المتوقع'],riskBehind:v=>`متأخر عن المخطط ${v}`,riskDueSoon:d=>`ينتهي ${d} — لم يكتمل`,riskOverdue:'تجاوز تاريخ الانتهاء المخطط',riskNoUpd:'لا يوجد تحديث حديث من الموقع',noRisks:'لا توجد مخاطر مؤثرة هذا الأسبوع.',
 weekSec:'أنشطة الأسبوع ده — قبل يوم القفل',weekSecHelp:(d,u,n)=>`يوم القفل ${d} · ${u} من ${n} اتحدّث`,otherSec:'باقي الأنشطة',wkDone:'✓ اتحدّث الأسبوع ده',wkTodo:'محتاج تحديث الأسبوع ده',partyLabel:'مين المسؤول عن التأخير؟',parties:{contractor:'إحنا (DMC)',owner:'المالك',consultant:'الاستشاري',subcon:'مقاول الباطن',other:'أخرى / قوة قاهرة'},repByParty:'التأخيرات حسب المسؤولية',repParty:'المسؤولية',returnCm:'إرجاع لمدير الإنشاءات',plRetShort:'مرتجع من التخطيط',t_returnedCm:'اترجع لمدير الإنشاءات',plRetLine:d=>`مرتجع من التخطيط ${d}`,ev_returned_cm:'رجّعه التخطيط لمدير الإنشاءات',repNo:'رقم التقرير',repPeriod:'الفترة',repFor:'التقرير لـ:',repModeExt:'الاستشاري / المالك',repModeInt:'داخلي',repClsExt:'للمراجعة من الاستشاري',repClsInt:'داخلي — سري — غير مخصص للتوزيع الخارجي',
@@ -1357,7 +1364,7 @@ function normPhoto(p,i){return typeof p==='string'?{id:'ph'+i,src:p,caption:'',a
 function normalize(d){d.reminders=d.reminders||[];d.chat=d.chat||{messages:[],reads:{}};d.activities=d.activities.map(a=>Object.assign({bldg:locOf(a.code)[0],zone:locOf(a.code)[1]},a));d.updates=d.updates.map(u=>Object.assign({},u,{photos:(u.photos||[]).map(normPhoto),party:u.party||(u.delay?DPARTY[u.delay]||'other':'')}));return d;}
 function load(){try{for(const k of [KEY]){const r=localStorage.getItem(k);if(r){const d=JSON.parse(r);if(d&&d.data){d.data=normalize(d.data);return d;}}}}catch(e){}return null;}
 function makeUpdate(ups,f,status,eng){const ts=stamp(),ev=status==='submitted'?'submitted':'saved';
-  const vals={pct:clamp(Math.round(Number(f.pct)||0),0,100),qty:Number(f.qty)||0,aStart:f.aStart||'',aFinish:f.aFinish||'',remarks:f.remarks||'',delay:f.delay||'',party:f.delay?(f.party||DPARTY[f.delay]||'other'):'',photos:f.photos||[]};
+  const vals={pct:clamp(Math.round(Number(f.pct)||0),0,100),qty:Number(f.qty)||0,aStart:f.aStart||'',aFinish:f.aFinish||'',remD:f.remD===''||f.remD==null?null:Math.max(0,Math.round(Number(f.remD))),remarks:f.remarks||'',delay:f.delay||'',party:f.delay?(f.party||DPARTY[f.delay]||'other'):'',photos:f.photos||[]};
   let id=f.draftId;
   if(id&&ups.some(u=>u.id===id&&u.status==='draft'))return{id,ups:ups.map(u=>u.id===id?Object.assign({},u,vals,{status,submitted:status==='submitted'?ts:'',log:u.log.concat([{at:ts,ev,by:eng}])}):u)};
   id=uid('U');return{id,ups:ups.concat([Object.assign({id,actId:f.actId,by:eng},vals,{status,created:ts,submitted:status==='submitted'?ts:'',reviewed:'',reviewer:'',comment:'',prevId:f.prevId||'',src:'user',log:[{at:ts,ev,by:eng}]})])};}
@@ -1389,8 +1396,9 @@ function derive(data,cfg){
     const lastDate=lastSub?(lastSub.submitted||lastSub.created).slice(0,10):'';
     const missing=a.ps<=TODAY&&actual<100&&(!lastDate||dd(lastDate,TODAY)>cfg.stale);
     const delayed=actual<100&&(planned-actual>cfg.thr||a.pf<TODAY);
+    const rr=nd.slice().reverse().find(u=>u.status!=='returned'&&u.remD!=null&&u.remD!=='');const remRep=rr?{days:Number(rr.remD),at:(rr.submitted||rr.created).slice(0,10),pending:rr.status!=='approved'}:null;
     const due=a.ps<=nextCut&&actual<100,updW=nd.some(u=>u.status!=='returned'&&(u.submitted||u.created).slice(0,10)>=cycStart);
-    return Object.assign({},a,{ups,appr,off,planned,actual,pending,draft,returned,lastDate,missing,delayed,due,updW,variance:actual-planned,aStart:off?off.aStart:'',aFinish:off?off.aFinish:'',aQty:off?off.qty:0});
+    return Object.assign({},a,{ups,appr,off,planned,actual,pending,draft,returned,lastDate,missing,delayed,due,updW,remRep,variance:actual-planned,aStart:off?off.aStart:'',aFinish:off?off.aFinish:'',aQty:off?off.qty:0});
   });
   const actMap={};acts.forEach(a=>actMap[a.id]=a);
   const projects=data.projects.map(p=>{
@@ -1409,8 +1417,10 @@ function prodOf(a){const rem=Math.max(0,(a.qty||0)-(a.aQty||0)),dur=Math.max(1,d
   let rate=null,remD;
   if(a.actual>0&&a.aStart){const days=Math.max(1,dd(a.aStart,TODAY)+1);rate=(a.aQty||0)/days;remD=Math.ceil((100-a.actual)/(a.actual/days));}
   else remD=Math.ceil(dur*(100-a.actual)/100);
-  const fc=addD(a.actual>0||a.ps<=TODAY?TODAY:a.ps,remD),left=dd(TODAY,a.pf);
-  return{rem,rate,req:left>0?rem/left:null,remD,fc,late:Math.max(0,dd(a.pf,fc)),done:false,over:left<=0};}
+  let fc=addD(a.actual>0||a.ps<=TODAY?TODAY:a.ps,remD),site=false;
+  if(a.remRep){fc=addD(a.remRep.at,a.remRep.days);remD=Math.max(0,dd(TODAY,fc));site=true;}
+  const left=dd(TODAY,a.pf);
+  return{rem,rate,req:left>0?rem/left:null,remD,fc,late:Math.max(0,dd(a.pf,fc)),done:false,over:left<=0,site};}
 function roll(list,at){let W=0,P=0,A=0;list.forEach(a=>{W+=a.w;P+=a.w*plannedPct(a,at);A+=a.w*actualAt(a,at);});return W?{p:P/W,a:A/W}:{p:0,a:0};}
 
 function parseCSV(text){text=text.replace(/^\ufeff/,'');const rows=[];let row=[],cell='',q=false;
@@ -1446,11 +1456,11 @@ const MAP={
   from:r=>({id:r.id,code:r.code,name:r.name,nameAr:r.name_ar||r.name,loc:r.location||'—',locAr:r.location_ar||r.location||'—',value:Number(r.contract_value)||0,src:r.source||'imported'})},
  activities:{t:'activities',to:a=>({id:a.id,project_id:a.pid,code:a.code,name:a.name,name_ar:a.nameAr,wbs:a.wbs,zone:a.zone||'—',building:a.bldg||'SITE',planned_start:a.ps,planned_finish:a.pf,budget_qty:a.qty,unit:a.unit,weight:a.w,discipline:a.eng,source:a.src,is_demo:a.src==='demo'}),
   from:r=>({id:r.id,pid:r.project_id,code:r.code,name:r.name,nameAr:r.name_ar||r.name,wbs:r.wbs||'—',zone:r.zone||'—',bldg:r.building||'SITE',ps:r.planned_start,pf:r.planned_finish,qty:Number(r.budget_qty),unit:r.unit,w:Number(r.weight),eng:r.discipline,src:r.source||'imported'})},
- updates:{t:'progress_updates',to:u=>({id:u.id,activity_id:u.actId,discipline:u.by,pct:u.pct,qty:u.qty,actual_start:u.aStart||null,actual_finish:u.aFinish||null,remarks:u.remarks||'',delay_reason:u.delay||null,delay_party:u.delay?(u.party||DPARTY[u.delay]||'other'):null,
+ updates:{t:'progress_updates',to:u=>({id:u.id,activity_id:u.actId,discipline:u.by,pct:u.pct,qty:u.qty,actual_start:u.aStart||null,actual_finish:u.aFinish||null,remarks:u.remarks||'',delay_reason:u.delay||null,delay_party:u.delay?(u.party||DPARTY[u.delay]||'other'):null,remaining_days:u.remD==null||u.remD===''?null:u.remD,
    photos:(u.photos||[]).map(p=>({id:p.id,path:p.path||null,caption:p.caption||'',at:p.at||'',lat:p.lat==null?null:p.lat,lng:p.lng==null?null:p.lng,acc:p.acc==null?null:p.acc,geo:p.geo||'none'})),
    status:u.status,created_at:toTs(u.created),submitted_at:toTs(u.submitted),cm_at:toTs(u.cmAt),cm_comment:u.cmComment||'',orig_pct:u.origPct==null?null:u.origPct,orig_qty:u.origQty==null?null:u.origQty,adj_at:toTs(u.adjAt),adj_note:u.adjNote||'',
    reviewed_at:toTs(u.reviewed),reviewer_role:u.reviewer||null,review_comment:u.comment||'',prev_id:u.prevId||null,source:u.src||'user',log:u.log||[]}),
-  from:r=>({id:r.id,actId:r.activity_id,by:r.discipline,pct:r.pct,qty:Number(r.qty),aStart:r.actual_start||'',aFinish:r.actual_finish||'',remarks:r.remarks||'',delay:r.delay_reason||'',party:r.delay_party||'',photos:(r.photos||[]).map(p=>Object.assign({src:''},p)),
+  from:r=>({id:r.id,actId:r.activity_id,by:r.discipline,pct:r.pct,qty:Number(r.qty),aStart:r.actual_start||'',aFinish:r.actual_finish||'',remarks:r.remarks||'',delay:r.delay_reason||'',party:r.delay_party||'',remD:r.remaining_days==null?null:r.remaining_days,photos:(r.photos||[]).map(p=>Object.assign({src:''},p)),
    status:r.status,created:fromTs(r.created_at),submitted:fromTs(r.submitted_at),cmAt:fromTs(r.cm_at),cmBy:r.cm_at?'CM':'',cmComment:r.cm_comment||'',origPct:r.orig_pct==null?undefined:r.orig_pct,origQty:r.orig_qty==null?undefined:Number(r.orig_qty),adjAt:fromTs(r.adj_at),adjNote:r.adj_note||'',adjBy:r.adj_at?'CM':'',
    reviewed:fromTs(r.reviewed_at),reviewer:r.reviewer_role||'',comment:r.review_comment||'',prevId:r.prev_id||'',src:r.source||'user',log:r.log||[]})},
  reminders:{t:'notifications',to:r=>({id:r.id,to_discipline:r.to,from_role:r.from,type:r.type,activity_ids:r.actIds||[],from_pct:r.from_pct==null?null:r.from_pct,to_pct:r.to_pct==null?null:r.to_pct,from_qty:r.from_qty==null?null:r.from_qty,to_qty:r.to_qty==null?null:r.to_qty,note:r.note||'',done:!!r.done,created_at:toTs(r.at)}),
@@ -1620,14 +1630,15 @@ class Component extends DCLogic {
   D(){const c=this.cfg(),m=this._memo;if(m&&m.data===this.state.data&&m.stale===c.stale&&m.thr===c.thr&&m.cut===c.cut)return m.D;const D=derive(this.state.data,c);this._memo={data:this.state.data,stale:c.stale,thr:c.thr,cut:c.cut,D};return D;}
   top(){try{window.scrollTo(0,0);}catch(e){}}
   formFrom(a){const src=a.draft||a.returned;
-    if(src)return{actId:a.id,draftId:a.draft?a.draft.id:null,prevId:a.draft?(a.draft.prevId||''):a.returned.id,pct:String(src.pct),qty:String(src.qty),aStart:src.aStart||'',aFinish:src.aFinish||'',remarks:src.remarks||'',delay:src.delay||'',party:src.party||'',photos:src.photos||[]};
-    return{actId:a.id,draftId:null,prevId:'',pct:String(a.actual),qty:String(a.aQty),aStart:a.aStart||'',aFinish:a.aFinish||'',remarks:'',delay:'',party:'',photos:[]};}
+    if(src)return{actId:a.id,draftId:a.draft?a.draft.id:null,prevId:a.draft?(a.draft.prevId||''):a.returned.id,pct:String(src.pct),qty:String(src.qty),aStart:src.aStart||'',aFinish:src.aFinish||'',remD:src.remD==null?'':String(src.remD),remarks:src.remarks||'',delay:src.delay||'',party:src.party||'',photos:src.photos||[]};
+    return{actId:a.id,draftId:null,prevId:'',pct:String(a.actual),qty:String(a.aQty),aStart:a.aStart||'',aFinish:a.aFinish||'',remD:'',remarks:'',delay:'',party:'',photos:[]};}
   openDetail(id){const a=this.D().actMap[id];if(!a)return;this.setState({detail:id,form:this.formFrom(a),errors:[]});this.top();}
   setF(k,v){this.setState(s=>({form:Object.assign({},s.form,{[k]:v})}));}
   validate(f,a){const t=I18N[this.state.lang],e=[],pct=Number(f.pct),qty=Number(f.qty);
     if(f.pct===''||isNaN(pct)||pct<0||pct>100)e.push(t.err_pct);
     if(pct<a.actual&&!f.remarks.trim())e.push(t.err_lower);
     if(pct>0&&!f.aStart)e.push(t.err_start);
+    const rd=f.remD==null?'':String(f.remD).trim();if(pct>0&&pct<100&&(rd===''||isNaN(Number(rd))||Number(rd)<0))e.push(t.err_remD);
     if(pct===100&&!f.aFinish)e.push(t.err_finish);
     if(pct<100&&f.aFinish)e.push(t.err_finishEarly);
     if(f.aStart&&f.aFinish&&f.aFinish<f.aStart)e.push(t.err_order);
@@ -1792,14 +1803,14 @@ class Component extends DCLogic {
         qtyTxt:a.aQty.toLocaleString('en')+' / '+a.qty.toLocaleString('en')+' '+a.unit,w:a.w,assignee:person(a.eng),plannedW:W(a.planned),actualW:W(a.actual),plannedTxt:p0(a.planned),actualTxt:p0(a.actual),spi:spiTxt(spi),spiColor:spiC(spi),
         barColor:a.delayed?C.barBad:a.variance<-2?C.barWarn:C.barOk,varTxt:sg(a.variance),varColor:vc(a.variance),unit:a.unit,pr:(()=>{const x=prodOf(a),q=v=>(Math.round(v*10)/10).toLocaleString('en')+' '+a.unit;
           return{rem:q(x.rem),remD:x.done?'—':t.daysN(x.remD),rate:x.rate==null?t.notStartedRate:q(x.rate)+t.perDay,req:x.done?'—':x.req==null?t.overduePf:q(x.req)+t.perDay,reqC:x.rate!=null&&x.req!=null&&x.req>x.rate*1.1?C.red:'#1b1a17',
-            fc:x.fc,fcC:x.late?C.red:C.green,fcNote:x.done?t.k_done:x.late?t.fcLate(x.late):t.fcOk};})(),
+            fc:x.fc,fcC:x.late?C.red:C.green,fcNote:x.done?t.k_done:x.late?t.fcLate(x.late):t.fcOk,src:x.done?'':x.site?t.remSrcSite(a.remRep.days,a.remRep.at)+(a.remRep.pending?' · '+t.remSrcPend:''):t.remSrcCalc};})(),showProd:role!=='site',remHint:t.remHint(a.pf),
         showReturned:!!a.returned&&!a.pending,retBy:a.returned&&a.returned.reviewer?person(a.returned.reviewer):'',retComment:a.returned?a.returned.comment:'',retWhen:a.returned?a.returned.reviewed.replace('T',' '):'',
         isPending:!!a.pending,canWithdraw:!!a.pending&&own&&a.pending.status==='submitted',awaitTxt:a.pending&&a.pending.status==='endorsed'?t.awaitingPL:t.awaiting,
-        pend:a.pending?{pct:a.pending.pct+'%',qty:a.pending.qty+' '+a.unit,dates:(a.pending.aStart||'—')+' → '+(a.pending.aFinish||'—'),delay:dlP(a.pending),remarks:a.pending.remarks,hasAdj:!!a.pending.adjAt,adj:a.pending.adjAt?t.adjNoteTxt(a.pending.origPct,a.pending.pct)+(a.pending.adjNote?' — '+a.pending.adjNote:''):''}:{},
+        pend:a.pending?{pct:a.pending.pct+'%',qty:a.pending.qty+' '+a.unit,dates:(a.pending.aStart||'—')+' → '+(a.pending.aFinish||'—'),remD:a.pending.remD==null||a.pending.remD===''?'—':t.daysN(a.pending.remD),delay:dlP(a.pending),remarks:a.pending.remarks,hasAdj:!!a.pending.adjAt,adj:a.pending.adjAt?t.adjNoteTxt(a.pending.origPct,a.pending.pct)+(a.pending.adjNote?' — '+a.pending.adjNote:''):''}:{},
         canEdit,readOnly:!own,formSrc:fm.draftId?t.formDraft:fm.prevId?t.formRet:t.formNew,
         pctHint:t.pctHint(a.actual,Math.round(a.planned)),impliedTxt:t.implied(a.qty?r1(qtyN/a.qty*100):0),needDelay:a.planned-pctN>cfg.thr};
       const setPct=v=>{v=clamp(Math.round(v),0,100);this.setF('pct',String(v));};
-      f={pct:e=>this.setF('pct',e.target.value),qty:e=>this.setF('qty',e.target.value),aStart:e=>this.setF('aStart',e.target.value),aFinish:e=>this.setF('aFinish',e.target.value),remarks:e=>this.setF('remarks',e.target.value),qtyFromPct:()=>this.setF('qty',String(Math.round(a.qty*pctN)/100))};
+      f={pct:e=>this.setF('pct',e.target.value),qty:e=>this.setF('qty',e.target.value),aStart:e=>this.setF('aStart',e.target.value),aFinish:e=>this.setF('aFinish',e.target.value),remarks:e=>this.setF('remarks',e.target.value),remD:e=>this.setF('remD',e.target.value),qtyFromPct:()=>this.setF('qty',String(Math.round(a.qty*pctN)/100))};
       quick=[['−5',-5],['+5',5],['+10',10],['100%',null]].map(([l,v])=>({label:l,onClick:()=>{if(v===null){setPct(100);if(!this.state.form.aFinish)this.setF('aFinish',TODAY);}else setPct((Number(this.state.form.pct)||0)+v);}}));
       delayChips=DELAYS.map(k=>chip(t.delays[k],fm.delay===k,()=>this.setState(st=>({form:Object.assign({},st.form,fm.delay===k?{delay:'',party:''}:{delay:k,party:DPARTY[k]||'other'})}))));
       partyChips=fm.delay?PARTIES.map(k=>chip(t.parties[k],(fm.party||DPARTY[fm.delay])===k,()=>this.setF('party',k))):[];
@@ -1822,7 +1833,7 @@ class Component extends DCLogic {
       const row=(l,x,y)=>({l,a:x,b:y,fw:String(x)!==String(y)?'700':'400',bg:String(x)!==String(y)?'oklch(0.96 0.04 85)':'transparent'});
       const warn=warnsOf(u,a,t);
       rv={hasPlRet:u.status==='submitted'&&u.reviewer==='PL'&&!!u.comment,plRetLine:u.reviewed?t.plRetLine(u.reviewed.replace('T',' '))+' — “'+(u.comment||'')+'”':'',hasCm:!!u.cmAt,cmLine:u.cmAt?t.cmLine(u.cmAt.replace('T',' '))+(u.adjAt?' · '+t.adjNoteTxt(u.origPct,u.pct):'')+(u.cmComment?' — “'+u.cmComment+'”':''):'',code:a.code,proj:D.projMap[a.pid].code,name:nm(a),byLine:person(u.by)+' · '+u.submitted.replace('T',' ')+' · '+srcL(u.src),
-        rows:[row(t.progressPct,(o.pct||0)+'%',u.pct+'%'),row(t.qtyShort+' ('+a.unit+')',o.qty||0,u.qty),row(t.actualStart,o.aStart||'—',u.aStart||'—'),row(t.actualFinish,o.aFinish||'—',u.aFinish||'—'),row(t.delayReason,dl(o),dl(u))],
+        rows:[row(t.progressPct,(o.pct||0)+'%',u.pct+'%'),row(t.qtyShort+' ('+a.unit+')',o.qty||0,u.qty),row(t.actualStart,o.aStart||'—',u.aStart||'—'),row(t.actualFinish,o.aFinish||'—',u.aFinish||'—'),row(t.remDaysLbl,o.remD==null||o.remD===''?'—':o.remD,u.remD==null||u.remD===''?'—':u.remD),row(t.delayReason,dl(o),dl(u))],
         plannedLine:t.plannedLine(Math.round(a.planned),a.actual),hasRemarks:!!u.remarks,remarks:u.remarks,hasPhotos:(u.photos||[]).length>0,
         photos:(u.photos||[]).map(p=>({bg:'url('+p.src+')',caption:p.caption||'—',meta:(p.at||'')+' · '+geoTxt(p),hasMap:p.geo==='ok',map:mapUrl(p)})),hasWarnings:warn.length>0,warnings:warn.map(msg=>({msg}))};}
 
