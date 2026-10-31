@@ -1225,7 +1225,7 @@ signIn:'Sign in',signUp:'Create account',signOut:'Sign out',wait:'Please wait…
 signUpNote:'New accounts start without access until an administrator assigns a role and project.',loginNeed:'Enter username and password',signUpNeed:'Enter a username and a password of at least 8 characters',signUpOk:'Account created — confirm your email, then sign in.',
 noProfile:'No profile found for this account. Ask the administrator.',inactive:'Your account is disabled.',openDemo:'Open demo mode instead',connecting:'Connecting…',
 liveBar:(h,s)=>'LIVE · Shared database'+(s?' · '+s:''),syncing:'Saving…',syncedAt:x=>'synced '+x,syncErr:'Not saved:',loadErrTxt:'Could not load data',
-adminTools:'Administrator tools',adminHelp:'Demo rows are marked is_demo and can be removed at any time without touching real data.',loadDemoDb:'Load demo data into database',removeDemoDb:'Remove demo data',demoLoaded:'Demo data loaded',demoRemoved:'Demo data removed',
+adminTools:'Administrator tools',adminHelp:'Demo rows are marked is_demo and can be removed at any time without touching real data.',demoLoading:'Loading sample data… keep this page open',loadDemoDb:'Load demo data into database',removeDemoDb:'Remove demo data',demoLoaded:'Demo data loaded',demoRemoved:'Demo data removed',
 storageBadgeLive:'Shared · Supabase PostgreSQL · real-time',storageLive1:'Data is stored in a shared PostgreSQL database (Supabase). Every signed-in user sees the same data, and changes appear for others within seconds.',
 storageLive2:'Workflow rules (CM → Planning approval, approved updates locked, roles per discipline) are enforced by the database itself, not only by this screen. Every change is written to an audit log.',
 storageLive3:'Free plan limits apply (database size, file storage, inactive projects may pause). Photos are stored in a private bucket and shown with temporary links.',
@@ -1236,7 +1236,7 @@ signIn:'تسجيل الدخول',signUp:'إنشاء حساب',signOut:'تسجي�
 signUpNote:'الحسابات الجديدة لا تملك صلاحيات حتى يحدد المسؤول الدور والمشروع.',loginNeed:'أدخل البريد وكلمة المرور',signUpNeed:'أدخل البريد وكلمة مرور 8 أحرف على الأقل',signUpOk:'تم إنشاء الحساب — أكّد بريدك ثم سجّل الدخول.',
 noProfile:'لا يوجد ملف لهذا الحساب. تواصل مع المسؤول.',inactive:'حسابك موقوف.',openDemo:'فتح الوضع التجريبي بدلاً من ذلك',connecting:'جارٍ الاتصال…',
 liveBar:(h,s)=>'مباشر · قاعدة بيانات مشتركة'+(s?' · '+s:''),syncing:'جارٍ الحفظ…',syncedAt:x=>'آخر مزامنة '+x,syncErr:'لم يُحفظ:',loadErrTxt:'تعذر تحميل البيانات',
-adminTools:'أدوات المسؤول',adminHelp:'الصفوف التجريبية معلّمة is_demo ويمكن حذفها في أي وقت دون المساس بالبيانات الحقيقية.',loadDemoDb:'تحميل بيانات تجريبية في القاعدة',removeDemoDb:'حذف البيانات التجريبية',demoLoaded:'تم تحميل البيانات التجريبية',demoRemoved:'تم حذف البيانات التجريبية',
+adminTools:'أدوات المسؤول',adminHelp:'الصفوف التجريبية معلّمة is_demo ويمكن حذفها في أي وقت دون المساس بالبيانات الحقيقية.',demoLoading:'جارٍ تحميل البيانات التجريبية… لا تغلق الصفحة',loadDemoDb:'تحميل بيانات تجريبية في القاعدة',removeDemoDb:'حذف البيانات التجريبية',demoLoaded:'تم تحميل البيانات التجريبية',demoRemoved:'تم حذف البيانات التجريبية',
 storageBadgeLive:'مشترك · Supabase PostgreSQL · لحظي',storageLive1:'البيانات محفوظة في قاعدة بيانات PostgreSQL مشتركة (Supabase). كل المستخدمين المسجلين يرون نفس البيانات، والتغييرات تظهر للآخرين خلال ثوانٍ.',
 storageLive2:'قواعد سير العمل (موافقة مدير الإنشاءات ثم التخطيط، قفل التحديثات المعتمدة، الصلاحيات حسب التخصص) تفرضها قاعدة البيانات نفسها وليس الشاشة فقط. كل تغيير يُسجَّل في سجل تدقيق.',
 storageLive3:'تنطبق حدود الخطة المجانية (حجم القاعدة، تخزين الملفات، وقد يتوقف المشروع غير النشط مؤقتاً). الصور في مخزن خاص وتُعرض بروابط مؤقتة.',
@@ -1618,18 +1618,20 @@ class Component extends DCLogic {
   disconnect(){try{localStorage.removeItem(CONN_KEY);}catch(e){}if(this._ch&&this._sb)try{this._sb.removeChannel(this._ch);}catch(e){}this._ch=null;
     const d=load();this.setState({mode:'demo',auth:'none',user:null,profile:null,data:d?d.data:seed(),settings:false,detail:null,review:null});}
   openDemo(){const d=load();this.setState({mode:'demo',auth:'none',data:d?d.data:seed(),detail:null,review:null});}
-  async loadDemoToDb(){const sb=this._sb,t=this.T();if(this.state.liveArm!=='load'){this.setState({liveArm:'load'});return;}this.setState({liveArm:'',syncing:true});
+  async loadDemoToDb(){const sb=this._sb,t=this.T();if(this._demoBusy||this.state.syncing)return;if(this.state.liveArm!=='load'){this.setState({liveArm:'load'});return;}this._demoBusy=true;this.setState({liveArm:'',syncing:true});
     try{const d=seed();
       // replace: old demo rows go first (cascades to activities / updates / members)
       let r0=await sb.from('notifications').delete().like('id','R_seed%');if(r0.error)throw r0.error;r0=await sb.from('projects').delete().eq('is_demo',true);if(r0.error)throw r0.error;
       for(const u of d.updates){if(!u.photos.length)continue;try{for(const p of u.photos)p.src=await svgToJpeg(p.src);await this.uploadPhotos(u);}catch(e){u.photos=[];}}
-      for(const k of TABLE_ORDER){const rows=(d[k]||[]).map(MAP[k].to);if(!rows.length)continue;const r=await sb.from(MAP[k].t).upsert(rows);if(r.error)throw r.error;}
+      // small batches: one big request can time out (each row runs the workflow / audit triggers)
+      const all=TABLE_ORDER.map(k=>[k,(d[k]||[]).map(MAP[k].to)]),tot=all.reduce((n,x)=>n+x[1].length,0);let done=0;
+      for(const [k,rows] of all){for(let i=0;i<rows.length;i+=200){const r=await sb.from(MAP[k].t).upsert(rows.slice(i,i+200));if(r.error)throw r.error;done+=Math.min(200,rows.length-i);this.toast(t.demoLoading+' '+Math.round(done*100/tot)+'%');}}
       // site engineers and CMs see the sample project
       const pr=await sb.from('profiles').select('id,role').in('role',['site','cm']);
       const mem=[];(pr.data||[]).forEach(u=>d.projects.forEach(p=>mem.push({project_id:p.id,user_id:u.id})));if(mem.length){const r=await sb.from('project_members').upsert(mem);if(r.error)throw r.error;}
       this.toast(t.demoLoaded);}
-    catch(e){this.toast(t.syncErr+' '+(e.message||e));}this.setState({syncing:false});await this.reloadLive();}
-  async removeDemoFromDb(){const sb=this._sb,t=this.T();if(this.state.liveArm!=='remove'){this.setState({liveArm:'remove'});return;}this.setState({liveArm:'',syncing:true});
+    catch(e){this.toast(t.syncErr+' '+(e.message||e));}this._demoBusy=false;this.setState({syncing:false});await this.reloadLive();}
+  async removeDemoFromDb(){const sb=this._sb,t=this.T();if(this._demoBusy||this.state.syncing)return;if(this.state.liveArm!=='remove'){this.setState({liveArm:'remove'});return;}this.setState({liveArm:'',syncing:true});
     try{let r=await sb.from('notifications').delete().like('id','R_seed%');if(r.error)throw r.error;r=await sb.from('projects').delete().eq('is_demo',true);if(r.error)throw r.error;this.toast(t.demoRemoved);}
     catch(e){this.toast(t.syncErr+' '+(e.message||e));}this.setState({syncing:false});await this.reloadLive();}
   async createUser(){const s=this.state,t=this.T(),f=s.nu,name=(f.name||'').trim();if(!name||(f.pw||'').length<8){this.toast(t.signUpNeed);return;}
