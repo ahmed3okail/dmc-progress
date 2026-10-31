@@ -1,5 +1,5 @@
 -- DMC Progress ERP — 09: weekly reports issued by Planning (snapshot) to CM / PM / Consultant
--- Safe to run again. Applied via the Supabase MCP on 2026-10-31.
+-- Safe to run again. Applied via the Supabase MCP on 2026-10-31 (policies and trigger created directly; same result).
 create table if not exists public.weekly_reports (
   id text primary key,
   project_id text references public.projects(id) on delete cascade,   -- null = all projects (portfolio)
