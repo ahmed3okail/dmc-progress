@@ -439,8 +439,10 @@ input,textarea{font:inherit;color:inherit}
     <div style="display:flex;gap:8px;overflow-x:auto;padding:0 16px 2px">
       <sc-for list="{{ plFilterChips }}" as="c" hint-placeholder-count="4"><button onClick="{{ c.onClick }}" style="flex:0 0 auto;min-height:40px;padding:0 14px;border-radius:999px;border:1px solid {{ c.bd }};background:{{ c.bg }};color:{{ c.fg }};font-size:14px;white-space:nowrap">{{ c.label }}</button></sc-for>
     </div>
-    <div style="padding:0 16px;display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,360px),1fr));gap:10px;align-items:start">
-      <sc-for list="{{ plActs }}" as="a" hint-placeholder-count="4">
+    <sc-for list="{{ plSecs }}" as="sec" hint-placeholder-count="2"><div style="display:flex;flex-direction:column;gap:{{ sec.gap }}">
+    <sc-if value="{{ sec.hasTitle }}" hint-placeholder-val="{{ true }}"><div onClick="{{ sec.toggle }}" style="margin:{{ sec.mg }};padding:{{ sec.pd }};border-radius:10px;background:{{ sec.bg }};border:1px solid {{ sec.bd }};display:flex;align-items:center;gap:10px;cursor:{{ sec.cur }}"><span style="font-size:13px;color:#605a51;width:12px;flex:0 0 auto">{{ sec.caret }}</span><div style="display:flex;flex-direction:column;gap:2px;min-width:0;flex:1"><span style="font-weight:700;font-size:{{ sec.fs }};color:{{ sec.fg }}">{{ sec.title }}</span><span style="font-size:12.5px;color:#605a51">{{ sec.help }}</span></div></div></sc-if>
+    <div style="padding:0 16px;padding-inline-start:{{ sec.ind }};display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,360px),1fr));gap:10px;align-items:start">
+      <sc-for list="{{ sec.acts }}" as="a" hint-placeholder-count="4">
         <div style="background:#fff;border:1px solid #e4e0d8;border-inline-start:4px solid {{ a.stFg }};border-radius:14px;overflow:hidden;box-shadow:0 1px 2px rgba(27,26,23,.04)">
           <button onClick="{{ a.open }}" style="text-align:start;width:100%;background:transparent;border:none;padding:14px 14px 12px;display:flex;flex-direction:column;gap:10px;color:inherit">
             <div style="display:flex;gap:8px;align-items:center;width:100%">
@@ -461,8 +463,8 @@ input,textarea{font:inherit;color:inherit}
           </button>
         </div>
       </sc-for>
-      <sc-if value="{{ plEmpty }}" hint-placeholder-val="{{ false }}"><div style="padding:28px;text-align:center;color:#5f5a52;border:1px dashed #cfc9bf;border-radius:12px">{{ t.noItems }}</div></sc-if>
-    </div>
+    </div></div></sc-for>
+    <sc-if value="{{ plEmpty }}" hint-placeholder-val="{{ false }}"><div style="margin:0 16px;padding:28px;text-align:center;color:#5f5a52;border:1px dashed #cfc9bf;border-radius:12px">{{ t.noItems }}</div></sc-if>
     <div style="padding:4px 16px 0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px">
       <sc-if value="{{ hasMissing }}" hint-placeholder-val="{{ false }}"><button onClick="{{ sendReminders }}" style="min-height:50px;border:1px solid #1b1a17;background:#fff;border-radius:10px;font-weight:700;font-size:14px;padding:0 12px;grid-column:1 / -1;background:#fff6e0;border-color:#cdb67a">🔔 {{ remindTxt }}</button></sc-if><button onClick="{{ openReport }}" style="min-height:50px;border:1px solid #1b1a17;background:#fff;border-radius:10px;font-weight:700;font-size:14px;padding:0 12px;grid-column:1 / -1;background:#0b4a3e;color:#fff">{{ t.weeklyReport }}</button>
       <button onClick="{{ exportProgress }}" style="min-height:52px;border:1px solid #1d1b18;background:#fff;border-radius:10px;font-weight:700;font-size:14px">↓ {{ t.exportProgress }}</button>
@@ -1503,7 +1505,7 @@ const TABLE_ORDER=['projects','activities','updates','reminders'];
 class Component extends DCLogic {
   state=(()=>{const s=load();return{data:s?s.data:seed(),lang:(s&&s.prefs&&s.prefs.lang)||'en',role:(s&&s.prefs&&s.prefs.role)||'site',eng:(s&&s.prefs&&ENG.indexOf(s.prefs.eng)>=0&&s.prefs.eng)||'CIV',
     tab:{site:'acts',cm:'review',planner:'review',pm:'dash'},repMode:'ext',repNotes:null,repGhost:false,pdfBusy:false,wrList:[],wrOpen:false,wrTo:{cm:true,pm:true,consultant:false},wrNote:'',wrBusy:false,cutDow:(()=>{try{const v=localStorage.getItem('dmc-erp:cutDow');return v==null?4:Number(v);}catch(e){return 4;}})(),push:'',pushAskHidden:(()=>{try{return localStorage.getItem('dmc-erp:pushAsk')==='no';}catch(e){return false;}})(),detail:null,review:null,form:null,errors:[],q:'',sProj:'all',sFilter:'all',plProj:'P1',plFilter:'all',mode:'demo',auth:'none',user:null,profile:null,syncing:false,lastSync:'',loadErr:'',settingsDb:{},loginEmail:'',loginPw:'',loginErr:'',loginBusy:false,connUrl:connCfg().url,connKey:connCfg().key,wide:false,liveArm:'',pmProj:'all',dlProj:'all',
-    comment:'',importText:'',importRows:null,settings:false,toast:'',resetArm:false,bulk:false,bulkVals:{},bulkErr:{},sel:{},rvProj:'all',rvFlag:'all',sBldg:'all',sZone:'all',sRegion:'all',sType:'all',sWbsOpen:{},plBldg:'all',plZone:'all',plType:'all',adjPct:'',adjQty:'',laProj:'all',laDays:14,report:false,repProj:'all',dbProj:'all',uq:'',uFilter:'all',nuOpen:false,nu:{name:'',pw:'',role:'site',disc:'CIV'},nuBusy:false,
+    comment:'',importText:'',importRows:null,settings:false,toast:'',resetArm:false,bulk:false,bulkVals:{},bulkErr:{},sel:{},rvProj:'all',rvFlag:'all',sBldg:'all',sZone:'all',sRegion:'all',sType:'all',sWbsOpen:{},plWbsOpen:{},plBldg:'all',plZone:'all',plType:'all',adjPct:'',adjQty:'',laProj:'all',laDays:14,report:false,repProj:'all',dbProj:'all',uq:'',uFilter:'all',nuOpen:false,nu:{name:'',pw:'',role:'site',disc:'CIV'},nuBusy:false,
     chatOpen:false,chatRoom:null,chatText:'',chatImg:null,chatNew:false,chatQ:'',chatMsgs:[],chatReads:[],chatDir:[],chatErr:''};})();
   live(){return this.state.mode==='live';}
   dbSet(k){const v=this.live()?this.state.settingsDb[k]:undefined;return v===undefined||v===null?undefined:v;}
@@ -1576,8 +1578,9 @@ class Component extends DCLogic {
       if(p&&String(p.table||'').indexOf('chat_')===0){clearTimeout(tc);tc=setTimeout(()=>this.reloadChat(),250);return;}
       clearTimeout(tmr);tmr=setTimeout(()=>this.reloadLive(),700);}).subscribe();}}
   async reloadLive(){const sb=this._sb;if(!sb||this.state.auth!=='ready')return;
-    try{const q=n=>sb.from(n).select('*').limit(10000);
-      const res=await Promise.all([q('projects'),q('activities'),q('progress_updates'),q('notifications'),q('app_settings')]);
+    try{// the API returns at most 1000 rows per request, so read in pages (up to 20,000 rows per table)
+      const q=async(n,ord)=>{let all=[];for(let i=0;i<20000;i+=1000){const r=await sb.from(n).select('*').order(ord||'id').range(i,i+999);if(r.error)return r;all=all.concat(r.data||[]);if(!r.data||r.data.length<1000)break;}return{data:all,error:null};};
+      const res=await Promise.all([q('projects'),q('activities'),q('progress_updates'),q('notifications'),q('app_settings','key')]);
       res.forEach(x=>{if(x.error)throw x.error;});
       const updates=res[2].data.map(MAP.updates.from),cache=this._signed||{},need=[];
       updates.forEach(x=>x.photos.forEach(p=>{if(p.path&&!cache[p.path])need.push(p.path);}));
@@ -1943,7 +1946,26 @@ class Component extends DCLogic {
     const plBreak=show.progress?bdown(pp.list,s.plZone,s.plBldg,z=>this.setState(st=>({plZone:st.plZone===z&&st.plBldg==='all'&&st.plType==='all'?'all':z,plBldg:'all',plType:'all'})),(z,b,ty)=>this.setState(st=>({plZone:z,plType:ty||'all',plBldg:st.plZone===z&&st.plBldg===b?'all':b})),s.plType,(z,ty)=>this.setState(st=>({plZone:z,plBldg:'all',plType:st.plZone===z&&st.plType===ty&&st.plBldg==='all'?'all':ty}))):[];
     const PF={all:()=>true,delayed:a=>a.delayed,missing:a=>a.missing,pending:a=>!!a.pending};
     const plFilterChips=[['all','f_all'],['delayed','f_delayed'],['missing','f_missing'],['pending','f_pending']].map(([k,l])=>chip(t[l]+' · '+plPool.filter(PF[k]).length,s.plFilter===k,()=>this.setState({plFilter:k})));
-    const plActs=show.progress?plPool.filter(PF[s.plFilter]).map(a=>card(a,false)):[];
+    // activity list grouped by building (when several are listed), then WBS under each building, in schedule order; headers open / close (state key stKey)
+    const wbsGroups=(rest,stKey,Q,bulkOn)=>{
+        // grouped by building (when several are listed), then WBS under each building, in schedule order; tap a header to open / close it
+        const minPs=L=>L.reduce((m,v)=>v.ps<m?v.ps:m,'9999'),byPs=(g)=>(x,y)=>{const a=minPs(g[x]),b=minPs(g[y]);return a<b?-1:a>b?1:x<y?-1:1;};
+        const isOpen=(k,def)=>s[stKey][k]==null?def:s[stKey][k],tog=(k,op)=>()=>this.setState(st=>({[stKey]:Object.assign({},st[stKey],{[k]:!op})}));
+        const wbsOf=(list,pre,mg,def)=>{const grp={};list.forEach(a=>{const k=a.wbs&&a.wbs!=='—'?a.wbs:t.siteWide;(grp[k]=grp[k]||[]).push(a);});
+          return Object.keys(grp).sort(byPs(grp)).map(k=>{const key=pre+k,L2=grp[k].sort((x,y)=>x.ps<y.ps?-1:x.ps>y.ps?1:x.code<y.code?-1:1),op=isOpen(key,def),r=roll(L2,TODAY),late=L2.filter(a=>a.delayed).length;
+            return{hasTitle:true,title:k,help:t.wbsHelp(L2.length,p1(r.a),late),bg:'#fff',bd:'#e4e0d8',fg:'#0b4a3e',mg,ind:pre.indexOf('W|')===0&&pre.length>2?'36px':'16px',pd:'9px 12px',fs:'14px',caret:op?'▾':'▸',cur:'pointer',toggle:tog(key,op),gap:op?'8px':'0',acts:op?L2.map(a=>card(a,bulkOn)):[]};});};
+        const bKey=a=>a.pid+'|'+a.bldg,bks=uniq(rest.map(bKey)),multiB=bks.length>1;
+        let wbsSecs;
+        if(!multiB)wbsSecs=wbsOf(rest,'W|','2px 16px 0',!!Q||rest.length<=30);
+        else{const bg={};rest.forEach(a=>{(bg[bKey(a)]=bg[bKey(a)]||[]).push(a);});
+          const bLbl=k=>{const a=bg[k][0],p=D.projMap[a.pid];return(multiP&&p?p.code+' · ':'')+(a.btype?a.btype+' · ':'')+bl(a.bldg);};
+          const multiP=uniq(rest.map(a=>a.pid)).length>1;
+          const order=bks.sort((x,y)=>{const a=bg[x][0],b=bg[y][0];return (a.pid+'|'+(a.btype||'')).localeCompare(b.pid+'|'+(b.btype||''),undefined,{numeric:true})||bLbl(x).localeCompare(bLbl(y),undefined,{numeric:true});});
+          wbsSecs=[].concat(...order.map(k=>{const L1=bg[k],key='B|'+k,op=isOpen(key,!!Q),r=roll(L1,TODAY),late=L1.filter(a=>a.delayed).length;
+            return[{hasTitle:true,title:'🏢 '+bLbl(k),help:t.wbsHelp(L1.length,p1(r.a),late),bg:'#f1e8cf',bd:'#e3d3a6',fg:'#0b4a3e',mg:'6px 16px 0',pd:'11px 12px',fs:'15px',caret:op?'▾':'▸',cur:'pointer',toggle:tog(key,op),gap:'0',acts:[]}]
+              .concat(op?wbsOf(L1,'W|'+k+'|','2px 16px 0;margin-inline-start:36px',!!Q):[]);}));}
+        return wbsSecs;};
+    const plList=show.progress?plPool.filter(PF[s.plFilter]):[],plSecs=show.progress?wbsGroups(plList,'plWbsOpen','',false):[],plActs=plList;
     const ppSpi=spiOf(pp.actual,pp.planned);
     const kpis=[{l:t.k_planned,v:p1(pp.planned),c:'#1b1a17'},{l:t.k_actual,v:p1(pp.actual),c:'#1b1a17'},{l:t.spi,v:spiTxt(ppSpi),c:spiC(ppSpi)},{l:t.k_pending,v:String(pp.pending),c:pp.pending?C.blue:'#1b1a17'},{l:t.k_missing,v:String(pp.missing),c:pp.missing?C.red:'#1b1a17'},{l:t.k_delayed,v:String(pp.delayed),c:pp.delayed?C.red:'#1b1a17'}];
 
@@ -2225,22 +2247,7 @@ class Component extends DCLogic {
       siteCountTxt:t.siteCount(siteList.length,mine.length),siteSecs:(()=>{// no separate "this week" section (Ahmed 2026-10-31: execution priority can change) — everything goes under WBS
         const wkL=[],rest=siteList,cw=a=>Object.assign(card(a,s.bulk),{hasWk:true,wkTxt:a.updW?t.wkDone:'⏳ '+t.wkTodo,wkC:a.updW?C.green:C.red});
         const H={ind:'16px',gap:'8px',mg:'4px 16px 0',pd:'10px 12px',fs:'15px',caret:'',cur:'default',toggle:()=>{}};
-        // grouped by building (when several are listed), then WBS under each building, in schedule order; tap a header to open / close it
-        const minPs=L=>L.reduce((m,v)=>v.ps<m?v.ps:m,'9999'),byPs=(g)=>(x,y)=>{const a=minPs(g[x]),b=minPs(g[y]);return a<b?-1:a>b?1:x<y?-1:1;};
-        const isOpen=(k,def)=>s.sWbsOpen[k]==null?def:s.sWbsOpen[k],tog=(k,op)=>()=>this.setState(st=>({sWbsOpen:Object.assign({},st.sWbsOpen,{[k]:!op})}));
-        const wbsOf=(list,pre,mg,def)=>{const grp={};list.forEach(a=>{const k=a.wbs&&a.wbs!=='—'?a.wbs:t.siteWide;(grp[k]=grp[k]||[]).push(a);});
-          return Object.keys(grp).sort(byPs(grp)).map(k=>{const key=pre+k,L2=grp[k].sort((x,y)=>x.ps<y.ps?-1:x.ps>y.ps?1:x.code<y.code?-1:1),op=isOpen(key,def),r=roll(L2,TODAY),late=L2.filter(a=>a.delayed).length;
-            return{hasTitle:true,title:k,help:t.wbsHelp(L2.length,p1(r.a),late),bg:'#fff',bd:'#e4e0d8',fg:'#0b4a3e',mg,ind:pre.indexOf('W|')===0&&pre.length>2?'36px':'16px',pd:'9px 12px',fs:'14px',caret:op?'▾':'▸',cur:'pointer',toggle:tog(key,op),gap:op?'8px':'0',acts:op?L2.map(a=>card(a,s.bulk)):[]};});};
-        const bKey=a=>a.pid+'|'+a.bldg,bks=uniq(rest.map(bKey)),multiB=bks.length>1;
-        let wbsSecs;
-        if(!multiB)wbsSecs=wbsOf(rest,'W|','2px 16px 0',!!q||rest.length<=30);
-        else{const bg={};rest.forEach(a=>{(bg[bKey(a)]=bg[bKey(a)]||[]).push(a);});
-          const bLbl=k=>{const a=bg[k][0],p=D.projMap[a.pid];return(multiP&&p?p.code+' · ':'')+(a.btype?a.btype+' · ':'')+bl(a.bldg);};
-          const multiP=uniq(rest.map(a=>a.pid)).length>1;
-          const order=bks.sort((x,y)=>{const a=bg[x][0],b=bg[y][0];return (a.pid+'|'+(a.btype||'')).localeCompare(b.pid+'|'+(b.btype||''),undefined,{numeric:true})||bLbl(x).localeCompare(bLbl(y),undefined,{numeric:true});});
-          wbsSecs=[].concat(...order.map(k=>{const L1=bg[k],key='B|'+k,op=isOpen(key,!!q),r=roll(L1,TODAY),late=L1.filter(a=>a.delayed).length;
-            return[{hasTitle:true,title:'🏢 '+bLbl(k),help:t.wbsHelp(L1.length,p1(r.a),late),bg:'#f1e8cf',bd:'#e3d3a6',fg:'#0b4a3e',mg:'6px 16px 0',pd:'11px 12px',fs:'15px',caret:op?'▾':'▸',cur:'pointer',toggle:tog(key,op),gap:'0',acts:[]}]
-              .concat(op?wbsOf(L1,'W|'+k+'|','2px 16px 0;margin-inline-start:36px',!!q):[]);}));}
+        const wbsSecs=wbsGroups(rest,'sWbsOpen',q,s.bulk);
         const otherHead=rest.length?[Object.assign({},H,{hasTitle:true,title:t.allActsSec,help:t.siteCount(rest.length,mine.length)+' · '+t.wbsTap,bg:'#f7f5f1',bd:'#e4e0d8',fg:'#1b1a17',acts:[]})]:[];
         otherHead.forEach(h=>h.gap='0');if(!wkL.length)return otherHead.concat(wbsSecs);const u=wkL.filter(a=>a.updW).length;
         return [Object.assign({},H,{hasTitle:true,title:'📅 '+t.weekSec,help:t.weekSecHelp(t.dows[cfg.cut]+' '+D.nextCut,u,wkL.length),bg:u===wkL.length?'oklch(0.95 0.04 150)':'#fbf3e4',bd:u===wkL.length?'oklch(0.82 0.08 150)':'#e8d6a8',fg:'#0b4a3e',acts:wkL.map(cw)})]
@@ -2255,7 +2262,7 @@ class Component extends DCLogic {
       sBldgChips,sZoneChips,sRegionChips,sTypeChips,hasSRegion:sRegionChips.length>0,hasSType:sTypeChips.length>0,hasSBldg:sBldgChips.length>0,hasSZone:sZoneChips.length>0,plBreak,hasPlBreak:plBreak.length>1,tpBreak:show.trends&&tp?bdown(tp.list,'',''):[],hasTpBreak:!!(show.trends&&tp),
       canAdjust:inReview&&role==='cm',adjPct:s.adjPct,adjQty:s.adjQty,onAdjPct:e=>this.setState({adjPct:e.target.value}),onAdjQty:e=>this.setState({adjQty:e.target.value}),adjQtyFromPct:adjV.fromPct,adjChanged:adjV.changed,adjChangedTxt:adjV.txt,adjQtyLabel:adjV.qtyLabel,adjQuick,approveLbl:adjV.changed?t.approveAdj:t.approve,
       rv,comment:s.comment,onComment:e=>this.setState({comment:e.target.value}),approve:()=>this.decide(true),ret:()=>this.decide(false),retLabel:s.role==='planner'&&this.reqCM()?t.returnCm:t.returnBtn,closeReview:()=>this.setState({review:null,errors:[]}),
-      plChips,kpis,plFilterChips,plActs,plEmpty:show.progress&&!plActs.length,plSummary:t.plSummary(pp.list.length,pp.value),exportProgress:()=>this.exportProgress(),exportHistory:()=>this.exportHistory(),
+      plChips,kpis,plFilterChips,plSecs,plEmpty:show.progress&&!plActs.length,plSummary:t.plSummary(pp.list.length,pp.value),exportProgress:()=>this.exportProgress(),exportHistory:()=>this.exportHistory(),
       hasMissing:pp.missing>0,remindTxt:t.remind(pp.missing),sendReminders:()=>this.sendReminders(pp.id),openReport,
       importText:s.importText,onImportText:e=>this.setState({importText:e.target.value,importRows:null}),loadSample:()=>{const x=sampleCSV();this.setState({importText:x});this.runValidate(x);},
       onCsvFile:e=>{const file=e.target.files&&e.target.files[0];e.target.value='';if(!file)return;const r=new FileReader();r.onload=()=>{this.setState({importText:String(r.result)});this.runValidate(String(r.result));};r.readAsText(file);},
