@@ -101,7 +101,7 @@ input,textarea{font:inherit;color:inherit}
         </sc-for>
       </div>
     </sc-if>
-    <div style="padding:0 16px;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px">
+    <div style="padding:0 16px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px">
       <sc-for list="{{ tiles }}" as="x" hint-placeholder-count="4">
         <button onClick="{{ x.onClick }}" style="background:{{ x.bg }};border:1.5px solid {{ x.bd }};border-radius:12px;padding:10px 10px 9px;min-height:76px;display:flex;flex-direction:column;align-items:flex-start;justify-content:space-between;gap:4px;text-align:start">
           <span style="font-size:26px;font-weight:700;line-height:1;color:{{ x.c }}">{{ x.n }}</span>
@@ -1831,7 +1831,7 @@ class Component extends DCLogic {
     const needsN=mine.filter(FIL.needs).length;
     const notifN=(s.data.reminders||[]).filter(r=>r.to===s.eng&&!r.done&&r.type==='adjusted').length;
     const TABS={site:['acts','hist','lookahead'],cm:['review','progress','dash','report','lookahead'],planner:['review','progress','import','dash','report','lookahead'],pm:['dash','portfolio','trends','report','lookahead','delays']};
-    const isAdm=this.live()&&s.profile&&s.profile.role==='admin';const tabs=TABS[role].concat(isAdm?['users']:[]).map(k=>{const bd=k==='review'?pendingAll.length:k==='acts'?needsN+notifN:0;return{label:t['tab_'+k],icon:TAB_ICON[k]||'•',onClick:setTab(k),fg:k===tab?'#1b1a17':'#605a51',fw:k===tab?'700':'500',bg:k===tab?'#f1e8cf':'transparent',hasBadge:bd>0,badge:bd};});
+    const isAdm=this.live()&&s.profile&&s.profile.role==='admin';const tabs=TABS[role].concat(isAdm?['users']:[]).map(k=>{const bd=k==='review'?pendingAll.length:k==='acts'?notifN:0;return{label:t['tab_'+k],icon:TAB_ICON[k]||'•',onClick:setTab(k),fg:k===tab?'#1b1a17':'#605a51',fw:k===tab?'700':'500',bg:k===tab?'#f1e8cf':'transparent',hasBadge:bd>0,badge:bd};});
     const roles=['site','cm','planner','pm'].map(r=>({label:t['role_'+r],onClick:()=>{this.set({role:r,detail:null,review:null,errors:[],bulk:false,bulkVals:{},bulkErr:{},sel:{}});this.top();},bg:r===role?'#c5a45a':'transparent',fg:r===role?'#1b1a17':'#e9e4da'}));
     const inDetail=!!(s.detail&&D.actMap[s.detail]),inReview=isRev&&!!(s.review&&pendingAll.find(u=>u.id===s.review));
     const show={dash:role!=='site'&&tab==='dash'&&!inDetail,users:!!isAdm&&tab==='users'&&!inDetail,siteList:role==='site'&&tab==='acts'&&!inDetail,siteHist:role==='site'&&tab==='hist'&&!inDetail,detail:inDetail,review:isRev&&tab==='review'&&!inReview&&!inDetail,reviewDetail:inReview&&!inDetail,progress:isRev&&tab==='progress'&&!inDetail,import:role==='planner'&&tab==='import'&&!inDetail,portfolio:role==='pm'&&tab==='portfolio'&&!inDetail,trends:role==='pm'&&tab==='trends'&&!inDetail,lookahead:tab==='lookahead'&&!inDetail,report:role!=='site'&&tab==='report'&&!inDetail,delays:role==='pm'&&tab==='delays'&&!inDetail};
@@ -1869,7 +1869,7 @@ class Component extends DCLogic {
     const sB=s.sProj==='all'||(s.sZone==='all'&&s.sType==='all')?[]:uniq(zPool.filter(a=>s.sType==='all'||a.btype===s.sType).map(a=>a.bldg)).filter(b=>b!=='SITE');
     const sBldgChips=sB.length>1?[chip(t.allBldg,s.sBldg==='all',()=>this.setState({sBldg:'all'}))].concat(sB.map(b=>chip(bl(b),s.sBldg===b,()=>this.setState({sBldg:b})))):[];
     const TC={needs:C.red,returned:C.red,drafts:C.amber,pending:C.blue};
-    const tiles=['needs','returned','drafts','pending'].map(k=>{const n=mine.filter(FIL[k]).length,on=s.sFilter===k;return{n,l:t['f_'+k],c:n?TC[k]:'#8a8378',bd:on?'#1b1a17':'#e4e0d8',bg:on?'#fbf3e4':'#fff',onClick:()=>this.setState({sFilter:on?'all':k})};});
+    const tiles=['returned','drafts','pending'].map(k=>{const n=mine.filter(FIL[k]).length,on=s.sFilter===k;return{n,l:t['f_'+k],c:n?TC[k]:'#8a8378',bd:on?'#1b1a17':'#e4e0d8',bg:on?'#fbf3e4':'#fff',onClick:()=>this.setState({sFilter:on?'all':k})};});
     const myRem=show.siteList?(s.data.reminders||[]).filter(r=>r.to===s.eng&&!r.done).map(r=>{
       if(r.type==='adjusted'){const a=D.actMap[r.actIds[0]];if(!a)return null;return{title:t.adjTitle,when:r.at.replace('T',' '),msg:t.adjMsg(r.from_pct,r.to_pct,r.from_qty,r.to_qty,a.unit)+(r.note?' — “'+r.note+'”':''),codes:a.code+' · '+nm(a)+' · '+locL(a),showLbl:t.openAct,show:()=>{this.dismissReminder(r.id);this.openDetail(a.id);},dismiss:()=>this.dismissReminder(r.id)};}
       const left=r.actIds.filter(id=>D.actMap[id]&&D.actMap[id].missing);if(!left.length)return null;
