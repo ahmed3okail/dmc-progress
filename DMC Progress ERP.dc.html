@@ -1859,15 +1859,17 @@ class Component extends DCLogic {
     const engChips=(this.canSwitch()?ENG:[s.eng]).map(e=>chip(person(e),e===s.eng,()=>this.set({eng:e,detail:null,bulk:false,bulkVals:{},bulkErr:{}})));
     const myProj=D.projects.filter(p=>mine.some(a=>a.pid===p.id)),RST={sProj:'all',sZone:'all',sType:'all',sBldg:'all'};
     const myRg=REGIONS.slice().concat(myProj.some(p=>!REGIONS.includes(p.region))&&myProj.some(p=>REGIONS.includes(p.region))?['']:[]);
-    const sRegionChips=myRg.length?[chip(t.allRegions,s.sRegion==='all',()=>this.setState(Object.assign({sRegion:'all'},RST)))].concat(myRg.map(k=>chip(rgL(k)+' · '+myProj.filter(p=>(p.region||'')===k).length,s.sRegion===k,()=>this.setState(Object.assign({sRegion:k},RST))))):[];
+    const sRegionChips=myRg.length?[chip(t.allRegions,s.sRegion==='all',()=>this.setState(Object.assign({sRegion:'all'},RST)))].concat(myRg.map(k=>{const inR=myProj.filter(p=>(p.region||'')===k);return chip(rgL(k)+' · '+inR.length,s.sRegion===k,()=>this.setState(Object.assign({sRegion:k},RST,inR.length===1?{sProj:inR[0].id}:{})));})):[];
     const rgProj=myProj.filter(p=>s.sRegion==='all'||(p.region||'')===s.sRegion);
-    const sProjChips=[chip(t.allProjects,s.sProj==='all',()=>this.setState(RST))].concat(rgProj.map(p=>chip(p.code,s.sProj===p.id,()=>this.setState(Object.assign({},RST,{sProj:p.id})))));
+    const sProjChips=[chip(t.allProjects,s.sProj==='all',()=>this.setState(RST))].concat(rgProj.map(p=>chip(p.code,s.sProj===p.id,()=>this.setState(Object.assign({},RST,{sProj:p.id,sRegion:p.region||''})))));
     const sPool=s.sProj==='all'?[]:mine.filter(a=>a.pid===s.sProj),sZ=uniq(sPool.map(a=>a.zone));
     const sZoneChips=sZ.length>1||(sZ.length===1&&sZ[0]!=='—')?[chip(t.allZones,s.sZone==='all',()=>this.setState({sZone:'all',sType:'all',sBldg:'all'}))].concat(sZ.map(z=>chip(zl(z),s.sZone===z,()=>this.setState({sZone:z,sType:'all',sBldg:'all'})))):[];
-    const zPool=sPool.filter(a=>s.sZone==='all'||a.zone===s.sZone),sT=uniq(zPool.map(a=>a.btype).filter(Boolean));
-    const sTypeChips=sT.length?[chip(t.allTypes,s.sType==='all',()=>this.setState({sType:'all',sBldg:'all'}))].concat(sT.map(y=>chip(y,s.sType===y,()=>this.setState({sType:y,sBldg:'all'})))):[];
-    const sB=s.sProj==='all'||(s.sZone==='all'&&s.sType==='all')?[]:uniq(zPool.filter(a=>s.sType==='all'||a.btype===s.sType).map(a=>a.bldg)).filter(b=>b!=='SITE');
-    const sBldgChips=sB.length>1?[chip(t.allBldg,s.sBldg==='all',()=>this.setState({sBldg:'all'}))].concat(sB.map(b=>chip(bl(b),s.sBldg===b,()=>this.setState({sBldg:b})))):[];
+    const zPool=sPool.filter(a=>s.sZone==='all'||a.zone===s.sZone),sT=uniq(zPool.map(a=>a.btype).filter(Boolean)).sort((x,y)=>x.localeCompare(y,undefined,{numeric:true}));
+    const zOf=f=>{const zs=uniq(sPool.filter(f).map(a=>a.zone));return zs.length===1?zs[0]:s.sZone;};
+    const sTypeChips=sT.length?[chip(t.allTypes,s.sType==='all',()=>this.setState({sType:'all',sBldg:'all'}))].concat(sT.map(y=>chip(y,s.sType===y,()=>this.setState({sType:y,sBldg:'all',sZone:zOf(a=>a.btype===y)})))):[];
+    const sB=s.sProj==='all'?[]:uniq(zPool.filter(a=>s.sType==='all'||a.btype===s.sType).map(a=>a.bldg)).filter(b=>b!=='SITE').sort((x,y)=>x.localeCompare(y,undefined,{numeric:true}));
+    const tOf=b=>{const ts=uniq(sPool.filter(a=>a.bldg===b).map(a=>a.btype||''));return ts.length===1&&ts[0]?ts[0]:s.sType;};
+    const sBldgChips=sB.length>1?[chip(t.allBldg,s.sBldg==='all',()=>this.setState({sBldg:'all'}))].concat(sB.map(b=>chip(bl(b),s.sBldg===b,()=>this.setState({sBldg:b,sType:tOf(b),sZone:zOf(a=>a.bldg===b)})))):[];
     const TC={needs:C.red,returned:C.red,drafts:C.amber,pending:C.blue};
     const tiles=['returned','drafts','pending'].map(k=>{const n=mine.filter(FIL[k]).length,on=s.sFilter===k;return{n,l:t['f_'+k],c:n?TC[k]:'#8a8378',bd:on?'#1b1a17':'#e4e0d8',bg:on?'#fbf3e4':'#fff',onClick:()=>this.setState({sFilter:on?'all':k})};});
     const myRem=show.siteList?(s.data.reminders||[]).filter(r=>r.to===s.eng&&!r.done).map(r=>{
