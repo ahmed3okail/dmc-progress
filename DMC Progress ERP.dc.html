@@ -113,11 +113,13 @@ input,textarea{font:inherit;color:inherit}
       <input type="search" value="{{ q }}" onChange="{{ onSearch }}" placeholder="{{ t.search }}" style="flex:1;min-width:0;min-height:48px;padding:0 14px;border:1px solid #cfc9bf;border-radius:10px;background:#fff;font-size:16px">
     </div>
     <sc-if value="{{ bulk }}" hint-placeholder-val="{{ false }}"><div style="margin:0 16px;padding:10px 12px;background:oklch(0.95 0.025 250);border:1px solid oklch(0.85 0.05 250);border-radius:10px;font-size:13px;line-height:1.45;color:oklch(0.35 0.1 250)">{{ t.bulkHelp }}</div></sc-if>
+    <sc-if value="{{ hasSRegion }}" hint-placeholder-val="{{ false }}"><div style="display:flex;gap:8px;overflow-x:auto;padding:0 16px 2px"><sc-for list="{{ sRegionChips }}" as="c" hint-placeholder-count="3"><button onClick="{{ c.onClick }}" style="flex:0 0 auto;min-height:40px;padding:0 14px;border-radius:999px;border:1px solid {{ c.bd }};background:{{ c.bg }};color:{{ c.fg }};font-size:14px;white-space:nowrap">{{ c.label }}</button></sc-for></div></sc-if>
     <div style="display:flex;gap:8px;overflow-x:auto;padding:0 16px 2px">
       <sc-for list="{{ sProjChips }}" as="c" hint-placeholder-count="4"><button onClick="{{ c.onClick }}" style="flex:0 0 auto;min-height:40px;padding:0 14px;border-radius:999px;border:1px solid {{ c.bd }};background:{{ c.bg }};color:{{ c.fg }};font-size:14px;white-space:nowrap">{{ c.label }}</button></sc-for>
       <sc-if value="{{ filterOn }}" hint-placeholder-val="{{ false }}"><button onClick="{{ clearFilter }}" style="flex:0 0 auto;min-height:40px;padding:0 14px;border-radius:999px;border:1px dashed #1b1a17;background:#fbf3e4;font-size:14px;white-space:nowrap">{{ t.showAll }}</button></sc-if>
     </div>
     <sc-if value="{{ hasSZone }}" hint-placeholder-val="{{ false }}"><div style="display:flex;gap:8px;overflow-x:auto;padding:0 16px 2px"><sc-for list="{{ sZoneChips }}" as="c" hint-placeholder-count="3"><button onClick="{{ c.onClick }}" style="flex:0 0 auto;min-height:40px;padding:0 14px;border-radius:999px;border:1px solid {{ c.bd }};background:{{ c.bg }};color:{{ c.fg }};font-size:14px;white-space:nowrap">{{ c.label }}</button></sc-for></div></sc-if>
+    <sc-if value="{{ hasSType }}" hint-placeholder-val="{{ false }}"><div style="display:flex;gap:8px;overflow-x:auto;padding:0 16px 2px"><sc-for list="{{ sTypeChips }}" as="c" hint-placeholder-count="3"><button onClick="{{ c.onClick }}" style="flex:0 0 auto;min-height:40px;padding:0 14px;border-radius:999px;border:1px solid {{ c.bd }};background:{{ c.bg }};color:{{ c.fg }};font-size:14px;white-space:nowrap">{{ c.label }}</button></sc-for></div></sc-if>
     <sc-if value="{{ hasSBldg }}" hint-placeholder-val="{{ false }}"><div style="display:flex;gap:8px;overflow-x:auto;padding:0 16px 2px"><sc-for list="{{ sBldgChips }}" as="c" hint-placeholder-count="3"><button onClick="{{ c.onClick }}" style="flex:0 0 auto;min-height:40px;padding:0 14px;border-radius:999px;border:1px solid {{ c.bd }};background:{{ c.bg }};color:{{ c.fg }};font-size:14px;white-space:nowrap">{{ c.label }}</button></sc-for></div></sc-if>
     <div style="padding:0 16px;display:flex;justify-content:space-between;gap:8px;font-size:12px;color:#605a51;flex-wrap:wrap"><span>{{ siteCountTxt }}</span><span>{{ t.legendBar }}</span></div>
     <sc-for list="{{ siteSecs }}" as="sec" hint-placeholder-count="2"><div style="display:flex;flex-direction:column;gap:8px">
@@ -1039,7 +1041,7 @@ input,textarea{font:inherit;color:inherit}
 </div>
 </x-dc>
 <script type="text/x-dc" data-dc-script data-props="{&quot;requireCM&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Rules&quot;},&quot;staleDays&quot;:{&quot;editor&quot;:&quot;int&quot;,&quot;default&quot;:7,&quot;min&quot;:1,&quot;max&quot;:30,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Rules&quot;},&quot;delayThreshold&quot;:{&quot;editor&quot;:&quot;int&quot;,&quot;default&quot;:10,&quot;min&quot;:1,&quot;max&quot;:40,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Rules&quot;}}">
-const KEY='dmc-erp:demo:v4',PREF_KEY='dmc-erp:prefs',CONN_KEY='dmc-erp:conn';
+const KEY='dmc-erp:demo:v5',PREF_KEY='dmc-erp:prefs',CONN_KEY='dmc-erp:conn';
 const locOf=()=>['SITE','—'];
 const uniq=arr=>Array.from(new Set(arr));
 const DAY=864e5;
@@ -1064,7 +1066,9 @@ function decideU(u,ok,role,c,ts,toCm){const cm=role==='cm',by=cm?'CM':'PL';
   if(ok&&cm)return Object.assign({},u,{status:'endorsed',cmAt:ts,cmBy:'CM',cmComment:c,log:u.log.concat([{at:ts,ev:'endorsed',by}])});
   return Object.assign({},u,{status:ok?'approved':'returned',reviewed:ts,reviewer:by,comment:c,log:u.log.concat([{at:ts,ev:ok?'approved':'returned',by}])});}
 const C={green:'oklch(0.48 0.12 150)',greenBg:'oklch(0.94 0.04 150)',red:'oklch(0.48 0.17 28)',redBg:'oklch(0.95 0.035 28)',amber:'oklch(0.45 0.1 70)',amberBg:'oklch(0.94 0.06 85)',blue:'oklch(0.45 0.12 250)',blueBg:'oklch(0.94 0.03 250)',grey:'#5f5a52',greyBg:'#ece9e3',barOk:'oklch(0.58 0.13 150)',barWarn:'oklch(0.68 0.14 70)',barBad:'oklch(0.56 0.18 28)'};
-const CSV_COLS=['project_code','project_name','activity_id','activity_name','activity_name_ar','wbs','planned_start','planned_finish','budget_qty','unit','weight','discipline','zone','building'];
+const CSV_COLS=['project_code','project_name','region','activity_id','activity_name','activity_name_ar','wbs','planned_start','planned_finish','budget_qty','unit','weight','discipline','zone','building_type','building'];
+const REGIONS=['nc','wc','ec'];
+const regionKey=v=>{v=String(v||'').toLowerCase().replace(/[^a-z]/g,'');return v==='nc'||v==='northcoast'?'nc':v==='wc'||v==='westcairo'?'wc':v==='ec'||v==='eastcairo'?'ec':'';};
 
 const I18N={
 en:{title:'DMC Site Progress',otherLang:'عربي',dataShort:'Data',dataDate:'Data date',
@@ -1209,12 +1213,12 @@ cmLine:w=>`وافق مدير الإنشاءات · ${w}`,reviewQueue:'تحديث
 readOnly:'للعرض فقط: مهندس التخصص المسند إليه النشاط هو من يرسل التحديثات.',e_eng:'المسند إليه يجب أن يكون CIV أو ARC أو MEC أو ELE',
 storage2:'لن يرى الآخرون أو الهواتف أو المتصفحات الأخرى هذه التحديثات. مفتاح الأدوار في الأعلى يحاكي الأدوار الأربعة على جهاز واحد فقط — لا توجد مزامنة بين المستخدمين.',
 cm:{reviewQueue:'تحديثات بانتظار موافقتك',reviewHelp:'الخطوة 1 من 2: تحقق من العمل في الموقع. الموافقة ترسل التحديث إلى مهندس التخطيط، ولا يتغير التقدم الرسمي إلا بعد اعتماد التخطيط. التحديثات المعادة ترجع للمهندس.',approveNote:'تُسجل موافقتك ويُحال التحديث إلى التخطيط.',t_approved:'تمت الموافقة — أُحيل إلى التخطيط',bulkApproved:n=>`تمت الموافقة على ${n} — أُحيلت إلى التخطيط`}});
-Object.assign(I18N.en,{siteWide:'Site-wide',allBldg:'All buildings',allZones:'All zones',zoneL:'Zone',byLoc:'Progress by zone & building',byLocHint:'Tap a zone or building to filter the list below.',actsShort:'act.',
+Object.assign(I18N.en,{allRegions:'All regions',regions:{nc:'North Coast',wc:'West Cairo',ec:'East Cairo'},noRegion:'No region',allTypes:'All building types',btypeL:'Building type',siteWide:'Site-wide',allBldg:'All buildings',allZones:'All zones',zoneL:'Zone',byLoc:'Progress by zone & building',byLocHint:'Tap a zone or building to filter the list below.',actsShort:'act.',
 adjTitle:'Construction Manager adjusted your update',adjMsg:(a,b,qa,qb,u)=>`Progress ${a}% → ${b}% · qty ${qa} → ${qb} ${u}`,adjNoteTxt:(a,b)=>`Adjusted by Construction Manager: ${a}% → ${b}%`,openAct:'Open activity',
 adjTitleCM:'Adjust before approving (optional)',adjHelp:'If the site check differs from what was submitted, change the % or quantity. The engineer gets a notification and the change is kept in the history as a note. A comment is required.',
 adjPreview:(p0,p1,q0,q1,u)=>`Will be approved as ${p1}% (submitted ${p0}%) · ${q1} ${u} (submitted ${q0})`,adjReset:'Reset',approveAdj:'Approve with changes',
 err_adjComment:'A comment is required when adjusting',err_adjFinish:'Cannot adjust to 100% — the engineer has not entered an actual finish date. Return it instead.',t_adjusted:'Adjusted & approved — engineer notified',repProjSummary:'Project summary',repPhotos:'Site photos this week',repNoPhotos:'No photos attached this week.',actPhotos:'Activity photos',ev_adjusted:'adjusted'});
-Object.assign(I18N.ar,{siteWide:'عام للموقع',allBldg:'كل المباني',allZones:'كل المناطق',zoneL:'منطقة',byLoc:'التقدم حسب المنطقة والمبنى',byLocHint:'اضغط على منطقة أو مبنى لتصفية القائمة بالأسفل.',actsShort:'نشاط',
+Object.assign(I18N.ar,{allRegions:'كل المناطق الجغرافية',regions:{nc:'الساحل الشمالي',wc:'غرب القاهرة',ec:'شرق القاهرة'},noRegion:'بدون منطقة',allTypes:'كل أنواع المباني',btypeL:'نوع المبنى',siteWide:'عام للموقع',allBldg:'كل المباني',allZones:'كل المناطق',zoneL:'منطقة',byLoc:'التقدم حسب المنطقة والمبنى',byLocHint:'اضغط على منطقة أو مبنى لتصفية القائمة بالأسفل.',actsShort:'نشاط',
 adjTitle:'عدّل مدير الإنشاءات تحديثك',adjMsg:(a,b,qa,qb,u)=>`النسبة من ${a}% إلى ${b}% · الكمية من ${qa} إلى ${qb} ${u}`,adjNoteTxt:(a,b)=>`عدّله مدير الإنشاءات: من ${a}% إلى ${b}%`,openAct:'فتح النشاط',
 adjTitleCM:'تعديل قبل الموافقة (اختياري)',adjHelp:'إذا اختلف التحقق في الموقع عن المرسل، عدّل النسبة أو الكمية. يصل إشعار للمهندس ويُحفظ التعديل في السجل كملاحظة. التعليق مطلوب.',
 adjPreview:(p0,p1,q0,q1,u)=>`سيُعتمد بنسبة ${p1}% (المرسل ${p0}%) · ${q1} ${u} (المرسل ${q0})`,adjReset:'استعادة',approveAdj:'موافقة مع التعديل',
@@ -1279,7 +1283,7 @@ const ROWS=(()=>{const S=SAMPLE_P6,EN=['CIV','ARC','MEC','ELE'],LAG=[0,2,6,4,0,8
   S.a.forEach(([code,bi,ni,wi,e,s0,d],ix)=>{const [bn,ty]=S.b[bi],eng=EN[e]||'ARC',lag=LAG[bi%LAG.length],s=s0-shift,at=-lag;
     let cur=0;if(s+d+lag<-3)cur=100;else if(s<=at){cur=Math.round(clamp((at-s+1)/(d+1),0,1)*100/5)*5;if(cur>=100)cur=95;}
     const pl=clamp((1-s)/(d+1),0,1)*100,behind=pl-cur>10,last=cur>0&&cur<100?(ix%9===0?9:2+ix%4):0;
-    out.push(['P1',code,S.n[ni],S.n[ni],S.w[wi],ty,'Blot '+bn,eng,s,d,1,'LS',d+1,cur,cur?lag:0,last,behind&&cur<100?RS[eng][(k++)%3]:'']);});
+    out.push(['P1',code,S.n[ni],S.n[ni],S.w[wi],'Milestone 4','Plot '+bn,eng,s,d,1,'LS',d+1,cur,cur?lag:0,last,behind&&cur<100?RS[eng][(k++)%3]:'',ty]);});
   return out;})();
 const GEO={P1:[24.7136,46.6753],P2:[21.5433,39.1728],P3:[26.4207,50.0888],P4:[24.5247,39.5692],P5:[26.2172,50.1971]};
 const PH_COL=[['#c9dbe6','#a8957c','#6f665b'],['#e6d9c4','#9c8b74','#585149'],['#d3e0d6','#8f8a7d','#4f5a52'],['#e3d3cf','#a38a7e','#5e4f4a']];
@@ -1295,10 +1299,10 @@ function demoPhoto(label,n){const c=PH_COL[n%4],v=n%3;
 function plannedPct(a,d){if(d<a.ps)return 0;if(d>=a.pf)return 100;const t=dd(a.ps,a.pf);return t<=0?100:clamp(dd(a.ps,d)/t*100,0,100);}
 
 function seed(){
-  const projects=[{id:'P1',code:'MS#4.2',name:'MS#4.2 Construction Works',nameAr:'MS#4.2 أعمال الإنشاءات',loc:'Sample data',locAr:'بيانات تجريبية',value:85,src:'demo'}];
+  const projects=[{id:'P1',code:'Evia',name:'Evia',nameAr:'Evia',loc:'North Coast',locAr:'الساحل الشمالي',region:'nc',value:85,src:'demo'}];
   const activities=[],updates=[];
-  ROWS.forEach(([pid,code,name,nameAr,wbs,zone,bldg,eng,s,d,qty,unit,w,cur,lag,last,reason])=>{
-    const ps=addD(TODAY,s),pf=addD(ps,d),a={id:'A_'+code,pid,code,name,nameAr,wbs,ps,pf,qty,unit,w,eng,bldg,zone,src:'demo'};
+  ROWS.forEach(([pid,code,name,nameAr,wbs,zone,bldg,eng,s,d,qty,unit,w,cur,lag,last,reason,btype])=>{
+    const ps=addD(TODAY,s),pf=addD(ps,d),a={id:'A_'+code,pid,code,name,nameAr,wbs,ps,pf,qty,unit,w,eng,bldg,zone,btype:btype||'',src:'demo'};
     activities.push(a);
     if(!cur)return;
     const as=addD(ps,lag);
@@ -1481,10 +1485,10 @@ const toTs=s=>s?new Date(s.length<=10?s+'T00:00':s).toISOString():null;
 const fromTs=s=>s?fmtMs(Date.parse(s)).replace(' ','T'):'';
 const EMPTYP={id:'',code:'—',name:'—',nameAr:'—',list:[],planned:0,actual:0,variance:0,missing:0,delayed:0,pending:0,value:0,status:'ok',src:'user'};
 const MAP={
- projects:{t:'projects',to:p=>({id:p.id,code:p.code,name:p.name,name_ar:p.nameAr,location:p.loc,location_ar:p.locAr,contract_value:p.value,source:p.src,is_demo:p.src==='demo'}),
-  from:r=>({id:r.id,code:r.code,name:r.name,nameAr:r.name_ar||r.name,loc:r.location||'—',locAr:r.location_ar||r.location||'—',value:Number(r.contract_value)||0,src:r.source||'imported'})},
- activities:{t:'activities',to:a=>({id:a.id,project_id:a.pid,code:a.code,name:a.name,name_ar:a.nameAr,wbs:a.wbs,zone:a.zone||'—',building:a.bldg||'SITE',planned_start:a.ps,planned_finish:a.pf,budget_qty:a.qty,unit:a.unit,weight:a.w,discipline:a.eng,source:a.src,is_demo:a.src==='demo'}),
-  from:r=>({id:r.id,pid:r.project_id,code:r.code,name:r.name,nameAr:r.name_ar||r.name,wbs:r.wbs||'—',zone:r.zone||'—',bldg:r.building||'SITE',ps:r.planned_start,pf:r.planned_finish,qty:Number(r.budget_qty),unit:r.unit,w:Number(r.weight),eng:r.discipline,src:r.source||'imported'})},
+ projects:{t:'projects',to:p=>({id:p.id,code:p.code,name:p.name,name_ar:p.nameAr,location:p.loc,location_ar:p.locAr,region:p.region||null,contract_value:p.value,source:p.src,is_demo:p.src==='demo'}),
+  from:r=>({id:r.id,code:r.code,name:r.name,nameAr:r.name_ar||r.name,loc:r.location||'—',locAr:r.location_ar||r.location||'—',region:r.region||'',value:Number(r.contract_value)||0,src:r.source||'imported'})},
+ activities:{t:'activities',to:a=>({id:a.id,project_id:a.pid,code:a.code,name:a.name,name_ar:a.nameAr,wbs:a.wbs,zone:a.zone||'—',building_type:a.btype||null,building:a.bldg||'SITE',planned_start:a.ps,planned_finish:a.pf,budget_qty:a.qty,unit:a.unit,weight:a.w,discipline:a.eng,source:a.src,is_demo:a.src==='demo'}),
+  from:r=>({id:r.id,pid:r.project_id,code:r.code,name:r.name,nameAr:r.name_ar||r.name,wbs:r.wbs||'—',zone:r.zone||'—',btype:r.building_type||'',bldg:r.building||'SITE',ps:r.planned_start,pf:r.planned_finish,qty:Number(r.budget_qty),unit:r.unit,w:Number(r.weight),eng:r.discipline,src:r.source||'imported'})},
  updates:{t:'progress_updates',to:u=>({id:u.id,activity_id:u.actId,discipline:u.by,pct:u.pct,qty:u.qty,actual_start:u.aStart||null,actual_finish:u.aFinish||null,remarks:u.remarks||'',delay_reason:u.delay||null,delay_party:u.delay?(u.party||DPARTY[u.delay]||'other'):null,remaining_days:u.remD==null||u.remD===''?null:u.remD,
    photos:(u.photos||[]).map(p=>({id:p.id,path:p.path||null,caption:p.caption||'',at:p.at||'',lat:p.lat==null?null:p.lat,lng:p.lng==null?null:p.lng,acc:p.acc==null?null:p.acc,geo:p.geo||'none'})),
    status:u.status,created_at:toTs(u.created),submitted_at:toTs(u.submitted),cm_at:toTs(u.cmAt),cm_comment:u.cmComment||'',orig_pct:u.origPct==null?null:u.origPct,orig_qty:u.origQty==null?null:u.origQty,adj_at:toTs(u.adjAt),adj_note:u.adjNote||'',
@@ -1499,7 +1503,7 @@ const TABLE_ORDER=['projects','activities','updates','reminders'];
 class Component extends DCLogic {
   state=(()=>{const s=load();return{data:s?s.data:seed(),lang:(s&&s.prefs&&s.prefs.lang)||'en',role:(s&&s.prefs&&s.prefs.role)||'site',eng:(s&&s.prefs&&ENG.indexOf(s.prefs.eng)>=0&&s.prefs.eng)||'CIV',
     tab:{site:'acts',cm:'review',planner:'review',pm:'dash'},repMode:'ext',repNotes:null,repGhost:false,pdfBusy:false,wrList:[],wrOpen:false,wrTo:{cm:true,pm:true,consultant:false},wrNote:'',wrBusy:false,cutDow:(()=>{try{const v=localStorage.getItem('dmc-erp:cutDow');return v==null?4:Number(v);}catch(e){return 4;}})(),push:'',pushAskHidden:(()=>{try{return localStorage.getItem('dmc-erp:pushAsk')==='no';}catch(e){return false;}})(),detail:null,review:null,form:null,errors:[],q:'',sProj:'all',sFilter:'all',plProj:'P1',plFilter:'all',mode:'demo',auth:'none',user:null,profile:null,syncing:false,lastSync:'',loadErr:'',settingsDb:{},loginEmail:'',loginPw:'',loginErr:'',loginBusy:false,connUrl:connCfg().url,connKey:connCfg().key,wide:false,liveArm:'',pmProj:'all',dlProj:'all',
-    comment:'',importText:'',importRows:null,settings:false,toast:'',resetArm:false,bulk:false,bulkVals:{},bulkErr:{},sel:{},rvProj:'all',rvFlag:'all',sBldg:'all',sZone:'all',plBldg:'all',plZone:'all',adjPct:'',adjQty:'',laProj:'all',laDays:14,report:false,repProj:'all',dbProj:'all',uq:'',uFilter:'all',nuOpen:false,nu:{name:'',pw:'',role:'site',disc:'CIV'},nuBusy:false,
+    comment:'',importText:'',importRows:null,settings:false,toast:'',resetArm:false,bulk:false,bulkVals:{},bulkErr:{},sel:{},rvProj:'all',rvFlag:'all',sBldg:'all',sZone:'all',sRegion:'all',sType:'all',plBldg:'all',plZone:'all',plType:'all',adjPct:'',adjQty:'',laProj:'all',laDays:14,report:false,repProj:'all',dbProj:'all',uq:'',uFilter:'all',nuOpen:false,nu:{name:'',pw:'',role:'site',disc:'CIV'},nuBusy:false,
     chatOpen:false,chatRoom:null,chatText:'',chatImg:null,chatNew:false,chatQ:'',chatMsgs:[],chatReads:[],chatDir:[],chatErr:''};})();
   live(){return this.state.mode==='live';}
   dbSet(k){const v=this.live()?this.state.settingsDb[k]:undefined;return v===undefined||v===null?undefined:v;}
@@ -1774,7 +1778,7 @@ class Component extends DCLogic {
     const miss=need.filter(c=>head.indexOf(c)<0);
     if(miss.length){this.setState({importRows:[{line:1,ok:false,code:'',name:'',errs:miss.map(t.e_col),rec:null}]});return;}
     const g=(r,c)=>{const i=head.indexOf(c);return i<0?'':String(r[i]||'').trim();};const seen={},data=this.state.data;
-    const out=rows.slice(1).map((r,i)=>{const errs=[],rec={project_code:g(r,'project_code'),project_name:g(r,'project_name'),code:g(r,'activity_id'),name:g(r,'activity_name'),nameAr:g(r,'activity_name_ar'),wbs:g(r,'wbs'),ps:g(r,'planned_start'),pf:g(r,'planned_finish'),qty:Number(g(r,'budget_qty')),unit:g(r,'unit'),w:Number(g(r,'weight')),bldg:g(r,'building')||'SITE',zone:g(r,'zone')||'—',eng:(x=>ALIAS[x]||x)(g(r,'discipline').toUpperCase().trim().split(/\s+/)[0])};
+    const out=rows.slice(1).map((r,i)=>{const errs=[],rec={project_code:g(r,'project_code'),project_name:g(r,'project_name'),code:g(r,'activity_id'),name:g(r,'activity_name'),nameAr:g(r,'activity_name_ar'),wbs:g(r,'wbs'),ps:g(r,'planned_start'),pf:g(r,'planned_finish'),qty:Number(g(r,'budget_qty')),unit:g(r,'unit'),w:Number(g(r,'weight')),bldg:g(r,'building')||'SITE',zone:g(r,'zone')||'—',btype:g(r,'building_type'),region:regionKey(g(r,'region')),eng:(x=>ALIAS[x]||x)(g(r,'discipline').toUpperCase().trim().split(/\s+/)[0])};
       if(!rec.project_code||!rec.code||!rec.name||!rec.unit)errs.push(t.e_req);
       if(!isDate(rec.ps)||!isDate(rec.pf))errs.push(t.e_date);else if(rec.pf<rec.ps)errs.push(t.e_order);
       if(!(rec.qty>0))errs.push(t.e_qty);if(!(rec.w>0))errs.push(t.e_w);if(ENG.indexOf(rec.eng)<0)errs.push(t.e_eng);
@@ -1785,8 +1789,9 @@ class Component extends DCLogic {
   doImport(){const s=this.state,t=I18N[s.lang],ok=(s.importRows||[]).filter(r=>r.ok);if(!ok.length){this.toast(t.t_noValid);return;}
     const projects=s.data.projects.slice(),activities=s.data.activities.slice();
     ok.forEach(({rec})=>{let p=projects.find(x=>x.code===rec.project_code);
-      if(!p){p={id:'P_'+rec.project_code,code:rec.project_code,name:rec.project_name||rec.project_code,nameAr:rec.project_name||rec.project_code,loc:'—',locAr:'—',value:10,src:'imported'};projects.push(p);}
-      const fields={bldg:rec.bldg,zone:rec.zone,code:rec.code,name:rec.name,nameAr:rec.nameAr||rec.name,wbs:rec.wbs||'—',ps:rec.ps,pf:rec.pf,qty:rec.qty,unit:rec.unit,w:rec.w,eng:rec.eng,src:'imported'};
+      if(!p){p={id:'P_'+rec.project_code,code:rec.project_code,name:rec.project_name||rec.project_code,nameAr:rec.project_name||rec.project_code,loc:'—',locAr:'—',region:'',value:10,src:'imported'};projects.push(p);}
+      if(rec.region&&p.region!==rec.region){const j=projects.indexOf(p);p=Object.assign({},p,{region:rec.region});projects[j]=p;}
+      const fields={bldg:rec.bldg,zone:rec.zone,btype:rec.btype||'',code:rec.code,name:rec.name,nameAr:rec.nameAr||rec.name,wbs:rec.wbs||'—',ps:rec.ps,pf:rec.pf,qty:rec.qty,unit:rec.unit,w:rec.w,eng:rec.eng,src:'imported'};
       const i=activities.findIndex(a=>a.pid===p.id&&a.code===rec.code);
       if(i>=0)activities[i]=Object.assign({},activities[i],fields);else activities.push(Object.assign({id:'X_'+p.code+'_'+rec.code,pid:p.id},fields));});
     if(this.live()&&this._sb)this._sb.from('schedule_imports').insert({file_name:'csv',row_count:ok.length}).then(()=>{});
@@ -1802,7 +1807,7 @@ class Component extends DCLogic {
   renderVals(){
     const s=this.state,t=this.T(),L=s.lang,cfg=this.cfg(),D=this.D(),isRev=s.role==='cm'||s.role==='planner';
     const nm=o=>o?(L==='ar'?(o.nameAr||o.name):o.name):'';
-    const bl=b=>!b||b==='SITE'?t.siteWide:b,zl=z=>!z||z==='—'?t.siteWide:t.zoneL+' '+z,locL=a=>a.zone&&a.zone!=='—'?zl(a.zone)+(a.bldg&&a.bldg!=='SITE'?' · '+a.bldg:''):bl(a.bldg);
+    const bl=b=>!b||b==='SITE'?t.siteWide:b,zl=z=>!z||z==='—'?t.siteWide:z.length>3?z:t.zoneL+' '+z,locL=a=>a.zone&&a.zone!=='—'?zl(a.zone)+(a.btype?' · '+a.btype:'')+(a.bldg&&a.bldg!=='SITE'?' · '+a.bldg:''):bl(a.bldg),rgL=k=>k?t.regions[k]||k:t.noRegion;
     const person=id=>PEOPLE[id]?PEOPLE[id][L]:id;
     const dlP=u=>{if(!u||!u.delay)return '—';const r=t.delays[u.delay],pk=u.party||DPARTY[u.delay],pl=pk?t.parties[pk]:'';return pl&&pl!==r&&!(u.delay==='subcon'&&pk==='subcon')?r+' · '+pl:r;};
     const p0=v=>Math.round(v)+'%',p1=v=>r1(v).toFixed(1)+'%',sg=v=>(v>0?'+':'')+r1(v).toFixed(1)+'%';
@@ -1850,13 +1855,18 @@ class Component extends DCLogic {
     const permCells=[];PERM.forEach(([k,v])=>{permCells.push({v:t[k],c:'#1b1a17',fw:'600',al:'start'});v.forEach(x=>permCells.push(typeof x==='string'?{v:t[x],c:'#3f3a33',fw:'500',al:'center'}:{v:x?'✓':'—',c:x?C.green:'#b3ac9f',fw:'700',al:'center'}));});
     // Site
     const q=s.q.trim().toLowerCase();
-    const siteList=!show.siteList?[]:mine.filter(a=>(s.sProj==='all'||a.pid===s.sProj)&&FIL[s.sFilter](a)&&(s.sBldg==='all'||a.bldg===s.sBldg)&&(s.sZone==='all'||a.zone===s.sZone)&&(!q||(a.code+' '+a.name+' '+a.nameAr).toLowerCase().indexOf(q)>=0));
+    const siteList=!show.siteList?[]:mine.filter(a=>(s.sProj==='all'||a.pid===s.sProj)&&FIL[s.sFilter](a)&&(s.sBldg==='all'||a.bldg===s.sBldg)&&(s.sZone==='all'||a.zone===s.sZone)&&(s.sType==='all'||a.btype===s.sType)&&(s.sProj!=='all'||s.sRegion==='all'||(D.projMap[a.pid]||{}).region===s.sRegion)&&(!q||(a.code+' '+a.name+' '+a.nameAr).toLowerCase().indexOf(q)>=0));
     const engChips=(this.canSwitch()?ENG:[s.eng]).map(e=>chip(person(e),e===s.eng,()=>this.set({eng:e,detail:null,bulk:false,bulkVals:{},bulkErr:{}})));
-    const myProj=D.projects.filter(p=>mine.some(a=>a.pid===p.id));
-    const sProjChips=[chip(t.allProjects,s.sProj==='all',()=>this.setState({sProj:'all',sBldg:'all',sZone:'all'}))].concat(myProj.map(p=>chip(p.code,s.sProj===p.id,()=>this.setState({sProj:p.id,sBldg:'all',sZone:'all'}))));
+    const myProj=D.projects.filter(p=>mine.some(a=>a.pid===p.id)),RST={sProj:'all',sZone:'all',sType:'all',sBldg:'all'};
+    const myRg=REGIONS.slice().concat(myProj.some(p=>!REGIONS.includes(p.region))&&myProj.some(p=>REGIONS.includes(p.region))?['']:[]);
+    const sRegionChips=myRg.length?[chip(t.allRegions,s.sRegion==='all',()=>this.setState(Object.assign({sRegion:'all'},RST)))].concat(myRg.map(k=>chip(rgL(k)+' · '+myProj.filter(p=>(p.region||'')===k).length,s.sRegion===k,()=>this.setState(Object.assign({sRegion:k},RST))))):[];
+    const rgProj=myProj.filter(p=>s.sRegion==='all'||(p.region||'')===s.sRegion);
+    const sProjChips=[chip(t.allProjects,s.sProj==='all',()=>this.setState(RST))].concat(rgProj.map(p=>chip(p.code,s.sProj===p.id,()=>this.setState(Object.assign({},RST,{sProj:p.id})))));
     const sPool=s.sProj==='all'?[]:mine.filter(a=>a.pid===s.sProj),sZ=uniq(sPool.map(a=>a.zone));
-    const sZoneChips=sZ.length>1?[chip(t.allZones,s.sZone==='all',()=>this.setState({sZone:'all',sBldg:'all'}))].concat(sZ.map(z=>chip(zl(z),s.sZone===z,()=>this.setState({sZone:z,sBldg:'all'})))):[];
-    const sB=s.sZone==='all'?[]:uniq(sPool.filter(a=>a.zone===s.sZone).map(a=>a.bldg)).filter(b=>b!=='SITE');
+    const sZoneChips=sZ.length>1||(sZ.length===1&&sZ[0]!=='—')?[chip(t.allZones,s.sZone==='all',()=>this.setState({sZone:'all',sType:'all',sBldg:'all'}))].concat(sZ.map(z=>chip(zl(z),s.sZone===z,()=>this.setState({sZone:z,sType:'all',sBldg:'all'})))):[];
+    const zPool=sPool.filter(a=>s.sZone==='all'||a.zone===s.sZone),sT=uniq(zPool.map(a=>a.btype).filter(Boolean));
+    const sTypeChips=sT.length?[chip(t.allTypes,s.sType==='all',()=>this.setState({sType:'all',sBldg:'all'}))].concat(sT.map(y=>chip(y,s.sType===y,()=>this.setState({sType:y,sBldg:'all'})))):[];
+    const sB=s.sProj==='all'||(s.sZone==='all'&&s.sType==='all')?[]:uniq(zPool.filter(a=>s.sType==='all'||a.btype===s.sType).map(a=>a.bldg)).filter(b=>b!=='SITE');
     const sBldgChips=sB.length>1?[chip(t.allBldg,s.sBldg==='all',()=>this.setState({sBldg:'all'}))].concat(sB.map(b=>chip(bl(b),s.sBldg===b,()=>this.setState({sBldg:b})))):[];
     const TC={needs:C.red,returned:C.red,drafts:C.amber,pending:C.blue};
     const tiles=['needs','returned','drafts','pending'].map(k=>{const n=mine.filter(FIL[k]).length,on=s.sFilter===k;return{n,l:t['f_'+k],c:n?TC[k]:'#8a8378',bd:on?'#1b1a17':'#e4e0d8',bg:on?'#fbf3e4':'#fff',onClick:()=>this.setState({sFilter:on?'all':k})};});
@@ -1918,13 +1928,17 @@ class Component extends DCLogic {
       const ch=(s.adjPct!==''&&np!==u.pct)||(s.adjQty!==''&&nq!==u.qty);
       adjV={changed:ch,txt:t.adjPreview(u.pct,s.adjPct,u.qty,s.adjQty,a.unit),qtyLabel:t.qtyShort+' ('+a.unit+')',fromPct:()=>this.setState({adjQty:String(Math.round(a.qty*(Number(this.state.adjPct)||0))/100)})};
       adjQuick=[['−10',-10],['−5',-5],['+5',5]].map(([l,v])=>({label:l,onClick:()=>this.setState(st=>{const p=clamp((Number(st.adjPct)||0)+v,0,100);return{adjPct:String(p),adjQty:String(Math.round(a.qty*p)/100)};})})).concat([{label:t.adjReset,onClick:()=>this.setState({adjPct:String(u.pct),adjQty:String(u.qty)})}]);}
-    const bdown=(list,selZ,selB,onZ,onB)=>{const rows=[],mk=(label,lst,top,on,onClick)=>{const r=roll(lst,TODAY),v=r.a-r.p;return{label,n:lst.length+' '+t.actsShort,pT:p1(r.p),aT:p1(r.a),v:sg(v),vc:vc(v),pW:W(r.p),aW:W(r.a),bar:v<-5?C.barBad:v<-2?C.barWarn:C.barOk,pad:top?'12px':'32px',fw:top?'700':'500',fs:top?'15px':'13.5px',bg:on?'#fbf3e4':top?'#fff':'#faf8f4',onClick};};
-      uniq(list.map(a=>a.zone)).forEach(z=>{const lz=list.filter(a=>a.zone===z);rows.push(mk(zl(z),lz,true,selZ===z&&selB==='all',()=>onZ&&onZ(z)));const bs=uniq(lz.map(a=>a.bldg)).filter(b=>b!=='SITE');if(bs.length>1)bs.forEach(b=>rows.push(mk(bl(b),lz.filter(a=>a.bldg===b),false,selZ===z&&selB===b,()=>onB&&onB(z,b))));});return rows;};
+    // zone → building type (when set) → building / plot
+    const bdown=(list,selZ,selB,onZ,onB,selT,onT)=>{selT=selT||'all';const rows=[],mk=(label,lst,lvl,on,onClick)=>{const r=roll(lst,TODAY),v=r.a-r.p,top=lvl===0;return{label,n:lst.length+' '+t.actsShort,pT:p1(r.p),aT:p1(r.a),v:sg(v),vc:vc(v),pW:W(r.p),aW:W(r.a),bar:v<-5?C.barBad:v<-2?C.barWarn:C.barOk,pad:['12px','32px','52px'][lvl],fw:top?'700':lvl===1?'600':'500',fs:top?'15px':'13.5px',bg:on?'#fbf3e4':top?'#fff':'#faf8f4',onClick};};
+      const plots=(lz,z,lvl,ty)=>{const bs=uniq(lz.map(a=>a.bldg)).filter(b=>b!=='SITE');if(bs.length>1||ty)bs.forEach(b=>rows.push(mk(bl(b),lz.filter(a=>a.bldg===b),lvl,selZ===z&&selB===b,()=>onB&&onB(z,b,ty))));};
+      uniq(list.map(a=>a.zone)).forEach(z=>{const lz=list.filter(a=>a.zone===z),ts=uniq(lz.map(a=>a.btype).filter(Boolean));rows.push(mk(zl(z),lz,0,selZ===z&&selB==='all'&&selT==='all',()=>onZ&&onZ(z)));
+        if(ts.length){ts.forEach(ty=>{const lt=lz.filter(a=>a.btype===ty);rows.push(mk(t.btypeL+' '+ty,lt,1,selZ===z&&selT===ty&&selB==='all',()=>onT&&onT(z,ty)));plots(lt,z,2,ty);});const rest=lz.filter(a=>!a.btype);if(rest.length)plots(rest,z,1,'');}
+        else plots(lz,z,1,'');});return rows;};
     // Planner progress
     const pp=D.projMap[s.plProj]||D.projects[0]||EMPTYP;
-    const plChips=D.projects.map(p=>chip(p.code,p.id===pp.id,()=>this.setState({plProj:p.id,plBldg:'all',plZone:'all'})));
-    const plPool=pp.list.filter(a=>(s.plBldg==='all'||a.bldg===s.plBldg)&&(s.plZone==='all'||a.zone===s.plZone));
-    const plBreak=show.progress?bdown(pp.list,s.plZone,s.plBldg,z=>this.setState(st=>({plZone:st.plZone===z&&st.plBldg==='all'?'all':z,plBldg:'all'})),(z,b)=>this.setState(st=>({plZone:z,plBldg:st.plZone===z&&st.plBldg===b?'all':b}))):[];
+    const plChips=D.projects.map(p=>chip(p.code,p.id===pp.id,()=>this.setState({plProj:p.id,plBldg:'all',plZone:'all',plType:'all'})));
+    const plPool=pp.list.filter(a=>(s.plBldg==='all'||a.bldg===s.plBldg)&&(s.plZone==='all'||a.zone===s.plZone)&&(s.plType==='all'||a.btype===s.plType));
+    const plBreak=show.progress?bdown(pp.list,s.plZone,s.plBldg,z=>this.setState(st=>({plZone:st.plZone===z&&st.plBldg==='all'&&st.plType==='all'?'all':z,plBldg:'all',plType:'all'})),(z,b,ty)=>this.setState(st=>({plZone:z,plType:ty||'all',plBldg:st.plZone===z&&st.plBldg===b?'all':b})),s.plType,(z,ty)=>this.setState(st=>({plZone:z,plBldg:'all',plType:st.plZone===z&&st.plType===ty&&st.plBldg==='all'?'all':ty}))):[];
     const PF={all:()=>true,delayed:a=>a.delayed,missing:a=>a.missing,pending:a=>!!a.pending};
     const plFilterChips=[['all','f_all'],['delayed','f_delayed'],['missing','f_missing'],['pending','f_pending']].map(([k,l])=>chip(t[l]+' · '+plPool.filter(PF[k]).length,s.plFilter===k,()=>this.setState({plFilter:k})));
     const plActs=show.progress?plPool.filter(PF[s.plFilter]).map(a=>card(a,false)):[];
@@ -1942,7 +1956,7 @@ class Component extends DCLogic {
     const sum=k=>D.projects.reduce((x,p)=>x+p[k],0);
     const pf={planned:p1(pfP),actual:p1(pfA),spi:spiTxt(pfS),variance:sg(pfA-pfP),varColor:pfA-pfP>=-2?'oklch(0.82 0.12 150)':'oklch(0.8 0.13 45)',plannedW:W(pfP),actualW:W(pfA),flags:t.flags(sum('delayed'),sum('missing'),sum('pending'))};
     const ORD={attn:0,watch:1,ok:2},STC={attn:[C.redBg,C.red],watch:[C.amberBg,C.amber],ok:[C.greenBg,C.green]};
-    const pmProjects=!show.portfolio?[]:D.projects.slice().sort((a,b)=>ORD[a.status]-ORD[b.status]||a.variance-b.variance).map(p=>{const sp=spiOf(p.actual,p.planned);return{code:p.code,name:nm(p),sub:(L==='ar'?p.locAr:p.loc)+' · SAR '+p.value+'M · '+p.list.length+' '+t.tab_acts,srcLabel:srcL(p.src),stLabel:t['st_'+p.status],stBg:STC[p.status][0],stFg:STC[p.status][1],
+    const pmProjects=!show.portfolio?[]:D.projects.slice().sort((a,b)=>ORD[a.status]-ORD[b.status]||a.variance-b.variance).map(p=>{const sp=spiOf(p.actual,p.planned);return{code:p.code,name:nm(p),sub:(p.region?rgL(p.region):(L==='ar'?p.locAr:p.loc))+' · SAR '+p.value+'M · '+p.list.length+' '+t.tab_acts,srcLabel:srcL(p.src),stLabel:t['st_'+p.status],stBg:STC[p.status][0],stFg:STC[p.status][1],
       plannedW:W(p.planned),actualW:W(p.actual),plannedTxt:p1(p.planned),actualTxt:p1(p.actual),barColor:p.variance<-5?C.barBad:p.variance<-2?C.barWarn:C.barOk,varTxt:sg(p.variance),varColor:vc(p.variance),spi:spiTxt(sp),spiColor:spiC(sp),flags:t.flags(p.delayed,p.missing,p.pending),
       open:()=>{this.setState({tab:Object.assign({},s.tab,{pm:'trends'}),pmProj:p.id,dlProj:p.id,laProj:p.id});this.top();}};});
 
@@ -2004,7 +2018,7 @@ class Component extends DCLogic {
       const wks=[];for(let k=7;k>=0;k--){const e=addD(TODAY,-7*k),r0=rollS(addD(e,-7)),r=rollS(e);wks.push({e,p:Math.max(0,r.p-r0.p),a:Math.max(0,r.a-r0.a)});}
       const wm=Math.max(0.5,...wks.map(w=>Math.max(w.p,w.a)));
       db.weeks=wks.map(w=>({lbl:w.e.slice(5),aT:r1(w.a).toFixed(1),pH:(w.p/wm*100)+'%',aH:(w.a/wm*100)+'%'}));
-      db.health=sp?bdown(sp.list,'','').map(b=>Object.assign(b,{isProj:false,isLoc:true})):D.projects.slice().sort((a,b)=>ORD[a.status]-ORD[b.status]||a.variance-b.variance).map(p=>({isProj:true,isLoc:false,code:p.code,name:nm(p),stLabel:t['st_'+p.status],stBg:STC[p.status][0],stFg:STC[p.status][1],pW:W(p.planned),aW:W(p.actual),bar:p.variance<-5?C.barBad:p.variance<-2?C.barWarn:C.barOk,
+      db.health=sp?bdown(sp.list,'','').map(b=>Object.assign(b,{isProj:false,isLoc:true})):D.projects.slice().sort((a,b)=>ORD[a.status]-ORD[b.status]||a.variance-b.variance).map(p=>({isProj:true,isLoc:false,code:p.code,name:nm(p)+(p.region?' · '+rgL(p.region):''),stLabel:t['st_'+p.status],stBg:STC[p.status][0],stFg:STC[p.status][1],pW:W(p.planned),aW:W(p.actual),bar:p.variance<-5?C.barBad:p.variance<-2?C.barWarn:C.barOk,
         line:t.planned+' '+p1(p.planned)+' · '+t.actualShort+' '+p1(p.actual)+' · SPI '+spiTxt(spiOf(p.actual,p.planned)),v:sg(p.variance),vc:vc(p.variance),flags:t.flags(p.delayed,p.missing,p.pending),open:()=>this.setState({dbProj:p.id})}));
       db.disc=ENG.map(e=>{const l=acts.filter(a=>a.eng===e);if(!l.length)return null;const r=roll(l,TODAY),v=r.a-r.p;
         return{label:person(e),code:e,line:t.discLine(l.length,l.filter(a=>a.delayed).length,l.filter(a=>a.missing).length),pW:W(r.p),aW:W(r.a),v:sg(v),vc:vc(v),bar:v<-5?C.barBad:v<-2?C.barWarn:C.barOk};}).filter(Boolean);
@@ -2075,7 +2089,7 @@ class Component extends DCLogic {
         rList.map(p=>[Cl(p.code+' · '+nm(p),{fw:'600'})].concat(ext?[]:[N('SAR '+p.value+'M')]).concat([N(p1(p.planned)),N(p1(p.actual),{fw:'700'}),N(sg(p.variance),{fg:vc(p.variance),fw:'700'}),N(spiTxt(spiOf(p.actual,p.planned))),Cl(t['st_'+p.status],{fg:STC[p.status][1],fw:'700'})]))));
       if(rP){const zs=uniq(rP.list.map(a=>a.zone)),W0=rP.list.reduce((x,a)=>x+a.w,0)||1;
         tables.push(tbl(t.repT_zone,'minmax(0,2.2fr) repeat(5,minmax(0,1fr))',[t.repLoc,t.repWeight,t.repActs,t.planned,t.actualShort,t.variance],
-          zs.map(z=>{const L2=rP.list.filter(a=>a.zone===z),r=roll(L2,TODAY),w=L2.reduce((x,a)=>x+a.w,0);return[Cl(zl(z)+(uniq(L2.map(a=>a.bldg)).filter(b=>b&&b!=='SITE').length?' · '+uniq(L2.map(a=>a.bldg)).filter(b=>b&&b!=='SITE').join(', '):''),{fw:'600'}),N(p1(w/W0*100)),N(L2.length),N(p1(r.p)),N(p1(r.a),{fw:'700'}),N(sg(r.a-r.p),{fg:vc(r.a-r.p),fw:'700'})];})));}
+          [].concat(...zs.map(z=>{const Lz=rP.list.filter(a=>a.zone===z),ts=uniq(Lz.map(a=>a.btype||''));return ts.map(ty=>[z,ty,Lz.filter(a=>(a.btype||'')===ty)]);})).map(([z,ty,L2])=>{const r=roll(L2,TODAY),w=L2.reduce((x,a)=>x+a.w,0),bs=uniq(L2.map(a=>a.bldg)).filter(b=>b&&b!=='SITE');return[Cl(zl(z)+(ty?' · '+ty:'')+(bs.length?' · '+bs.join(', '):''),{fw:'600'}),N(p1(w/W0*100)),N(L2.length),N(p1(r.p)),N(p1(r.a),{fw:'700'}),N(sg(r.a-r.p),{fg:vc(r.a-r.p),fw:'700'})];})));}
       tables.push(tbl(t.repT_disc,'minmax(0,2.2fr) repeat(5,minmax(0,1fr))',[t.repDisc,t.repActs,t.planned,t.actualShort,t.variance,t.repDelayedN],
         ENG.filter(e=>acts.some(a=>a.eng===e)).map(e=>{const L2=acts.filter(a=>a.eng===e),r=roll(L2,TODAY);return[Cl(person(e),{fw:'600'}),N(L2.length),N(p1(r.p)),N(p1(r.a),{fw:'700'}),N(sg(r.a-r.p),{fg:vc(r.a-r.p),fw:'700'}),N(L2.filter(a=>a.delayed).length)];})));
       tables.push(tbl(t.repT_week,rP?'minmax(0,0.9fr) minmax(0,2.6fr) minmax(0,1.5fr) repeat(3,minmax(0,0.8fr))':'minmax(0,0.9fr) minmax(0,0.9fr) minmax(0,2.4fr) minmax(0,1.3fr) repeat(3,minmax(0,0.75fr))',
@@ -2110,7 +2124,7 @@ class Component extends DCLogic {
       const nKey='dmc-erp:repNotes:'+(rP?rP.id:'all')+':'+(ext?'ext':'int');
       rp={no:'WPR-'+(rP?rP.code:'PORTFOLIO')+'-'+isoW+(ext?'':'-INT'),week:t.repWeek(wk0,TODAY),scope:rP?rP.code+' · '+nm(rP):t.allProjects,
         cls:ext?t.repClsExt:t.repClsInt,clsBg:ext?'#0e5a4b':'#7a1f1f',
-        info:[{k:t.repProject,v:rP?rP.code+' — '+nm(rP):t.repAllN(rList.length)},{k:t.repLocL,v:rP?(L==='ar'?rP.locAr:rP.loc):'—'},{k:t.repPeriod,v:t.repWeek(wk0,TODAY)},{k:t.dataDate,v:TODAY},
+        info:[{k:t.repProject,v:rP?rP.code+' — '+nm(rP):t.repAllN(rList.length)},{k:t.repLocL,v:rP?(rP.region?rgL(rP.region):(L==='ar'?rP.locAr:rP.loc)):'—'},{k:t.repPeriod,v:t.repWeek(wk0,TODAY)},{k:t.dataDate,v:TODAY},
           {k:t.repPrepared,v:prepName===t.prole_planner?prepName:prepName+' — '+t.prole_planner},{k:t.repRev,v:'0'}].concat(ext?[]:[{k:t.repValue,v:'SAR '+rV+'M'},{k:t.repWeightBy,v:rP?t.repByWeight:t.byValue}]),
         kpis:[{l:t.planned,v:p1(rpP),s:t.repToDate,c:'#1d1b18'},{l:t.actualShort,v:p1(rpA),s:t.repApprovedOnly,c:'#0e5a4b'},{l:t.variance,v:sg(rpA-rpP),s:t.repVsPlan,c:vc(rpA-rpP)},{l:'SPI',v:spiTxt(rpS),s:t.repSpiS,c:rpS==null?'#1d1b18':rpS>=0.95?C.green:rpS>=0.85?C.amber:C.red},
           {l:t.repWeekGain,v:sg(now.a-bef.a),s:t.repPlannedGain(sg(now.p-bef.p)),c:'#0e5a4b'},{l:t.fcFinish,v:fc,s:t.plFinish+' '+c.end,c:fc>c.end?C.red:C.green}],
@@ -2217,7 +2231,7 @@ class Component extends DCLogic {
       saveDraft:()=>this.writeUpdate('draft'),submit:()=>this.writeUpdate('submitted'),withdraw:()=>this.withdraw(),closeDetail:()=>{this.setState({detail:null,form:null,errors:[]});this.top();},detailHist,
       reviewList,reviewEmpty:show.review&&!reviewList.length,rvProjChips,rvFlagChips,selectClean:()=>this.setState({sel:Object.fromEntries(cleanIds.map(id=>[id,true]))}),selectCleanTxt:t.selectClean(cleanIds.length),hasClean:cleanIds.length>0,clearSel:()=>this.setState({sel:{}}),
       showSelBar:show.review&&selIds.length>0,selCountTxt:t.selCount(selIds.length),approveSelTxt:t.approveSel(selIds.length),approveSel:()=>this.approveMany(selIds),
-      sBldgChips,sZoneChips,hasSBldg:sBldgChips.length>0,hasSZone:sZoneChips.length>0,plBreak,hasPlBreak:plBreak.length>1,tpBreak:show.trends&&tp?bdown(tp.list,'',''):[],hasTpBreak:!!(show.trends&&tp),
+      sBldgChips,sZoneChips,sRegionChips,sTypeChips,hasSRegion:sRegionChips.length>0,hasSType:sTypeChips.length>0,hasSBldg:sBldgChips.length>0,hasSZone:sZoneChips.length>0,plBreak,hasPlBreak:plBreak.length>1,tpBreak:show.trends&&tp?bdown(tp.list,'',''):[],hasTpBreak:!!(show.trends&&tp),
       canAdjust:inReview&&role==='cm',adjPct:s.adjPct,adjQty:s.adjQty,onAdjPct:e=>this.setState({adjPct:e.target.value}),onAdjQty:e=>this.setState({adjQty:e.target.value}),adjQtyFromPct:adjV.fromPct,adjChanged:adjV.changed,adjChangedTxt:adjV.txt,adjQtyLabel:adjV.qtyLabel,adjQuick,approveLbl:adjV.changed?t.approveAdj:t.approve,
       rv,comment:s.comment,onComment:e=>this.setState({comment:e.target.value}),approve:()=>this.decide(true),ret:()=>this.decide(false),retLabel:s.role==='planner'&&this.reqCM()?t.returnCm:t.returnBtn,closeReview:()=>this.setState({review:null,errors:[]}),
       plChips,kpis,plFilterChips,plActs,plEmpty:show.progress&&!plActs.length,plSummary:t.plSummary(pp.list.length,pp.value),exportProgress:()=>this.exportProgress(),exportHistory:()=>this.exportHistory(),
