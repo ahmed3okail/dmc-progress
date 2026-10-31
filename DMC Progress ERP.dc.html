@@ -124,7 +124,7 @@ input,textarea{font:inherit;color:inherit}
     <div style="padding:0 16px;display:flex;justify-content:space-between;gap:8px;font-size:12px;color:#605a51;flex-wrap:wrap"><span>{{ siteCountTxt }}</span><span>{{ t.legendBar }}</span></div>
     <sc-for list="{{ siteSecs }}" as="sec" hint-placeholder-count="2"><div style="display:flex;flex-direction:column;gap:{{ sec.gap }}">
     <sc-if value="{{ sec.hasTitle }}" hint-placeholder-val="{{ true }}"><div onClick="{{ sec.toggle }}" style="margin:{{ sec.mg }};padding:{{ sec.pd }};border-radius:10px;background:{{ sec.bg }};border:1px solid {{ sec.bd }};display:flex;align-items:center;gap:10px;cursor:{{ sec.cur }}"><span style="font-size:13px;color:#605a51;width:12px;flex:0 0 auto">{{ sec.caret }}</span><div style="display:flex;flex-direction:column;gap:2px;min-width:0;flex:1"><span style="font-weight:700;font-size:{{ sec.fs }};color:{{ sec.fg }}">{{ sec.title }}</span><span style="font-size:12.5px;color:#605a51">{{ sec.help }}</span></div></div></sc-if>
-    <div style="padding:0 16px;display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,360px),1fr));gap:10px;align-items:start">
+    <div style="padding:0 16px;padding-inline-start:{{ sec.ind }};display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,360px),1fr));gap:10px;align-items:start">
       <sc-for list="{{ sec.acts }}" as="a" hint-placeholder-count="4">
         <div style="background:#fff;border:1px solid #e4e0d8;border-inline-start:4px solid {{ a.stFg }};border-radius:14px;overflow:hidden;box-shadow:0 1px 2px rgba(27,26,23,.04)">
           <button onClick="{{ a.open }}" style="text-align:start;width:100%;background:transparent;border:none;padding:14px 14px 12px;display:flex;flex-direction:column;gap:10px;color:inherit">
@@ -2222,14 +2222,23 @@ class Component extends DCLogic {
       engChips,q:s.q,onSearch:e=>this.setState({q:e.target.value}),sProjChips,tiles,myRem,hasRem:myRem.length>0,filterOn:s.sFilter!=='all',clearFilter:()=>this.setState({sFilter:'all'}),
       siteCountTxt:t.siteCount(siteList.length,mine.length),siteSecs:(()=>{// no separate "this week" section (Ahmed 2026-10-31: execution priority can change) — everything goes under WBS
         const wkL=[],rest=siteList,cw=a=>Object.assign(card(a,s.bulk),{hasWk:true,wkTxt:a.updW?t.wkDone:'⏳ '+t.wkTodo,wkC:a.updW?C.green:C.red});
-        const H={gap:'8px',mg:'4px 16px 0',pd:'10px 12px',fs:'15px',caret:'',cur:'default',toggle:()=>{}};
-        // other activities grouped under their WBS (plus the building when several are listed), in schedule order; tap a group to open / close it
-        const multiB=uniq(rest.map(a=>a.pid+'|'+a.bldg)).length>1,gk=a=>(multiB?(a.bldg&&a.bldg!=='SITE'?a.bldg+' › ':''):'')+(a.wbs&&a.wbs!=='—'?a.wbs:t.siteWide),grp={};
-        rest.forEach(a=>{const k=gk(a);(grp[k]=grp[k]||[]).push(a);});
-        const keys=Object.keys(grp).sort((x,y)=>{const a=grp[x].reduce((m,v)=>v.ps<m?v.ps:m,'9999'),b=grp[y].reduce((m,v)=>v.ps<m?v.ps:m,'9999');return a<b?-1:a>b?1:x<y?-1:1;});
-        const defOpen=!!q||rest.length<=30||keys.length===1;
-        const wbsSecs=keys.map(k=>{const L2=grp[k].sort((x,y)=>x.ps<y.ps?-1:x.ps>y.ps?1:x.code<y.code?-1:1),op=s.sWbsOpen[k]==null?defOpen:s.sWbsOpen[k],r=roll(L2,TODAY),late=L2.filter(a=>a.delayed).length;
-          return{hasTitle:true,title:k,help:t.wbsHelp(L2.length,p1(r.a),late),bg:'#fff',bd:'#e4e0d8',fg:'#0b4a3e',mg:'2px 16px 0',pd:'9px 12px',fs:'14px',caret:op?'▾':'▸',cur:'pointer',toggle:()=>this.setState(st=>({sWbsOpen:Object.assign({},st.sWbsOpen,{[k]:!op})})),gap:op?'8px':'0',acts:op?L2.map(a=>card(a,s.bulk)):[]};});
+        const H={ind:'16px',gap:'8px',mg:'4px 16px 0',pd:'10px 12px',fs:'15px',caret:'',cur:'default',toggle:()=>{}};
+        // grouped by building (when several are listed), then WBS under each building, in schedule order; tap a header to open / close it
+        const minPs=L=>L.reduce((m,v)=>v.ps<m?v.ps:m,'9999'),byPs=(g)=>(x,y)=>{const a=minPs(g[x]),b=minPs(g[y]);return a<b?-1:a>b?1:x<y?-1:1;};
+        const isOpen=(k,def)=>s.sWbsOpen[k]==null?def:s.sWbsOpen[k],tog=(k,op)=>()=>this.setState(st=>({sWbsOpen:Object.assign({},st.sWbsOpen,{[k]:!op})}));
+        const wbsOf=(list,pre,mg,def)=>{const grp={};list.forEach(a=>{const k=a.wbs&&a.wbs!=='—'?a.wbs:t.siteWide;(grp[k]=grp[k]||[]).push(a);});
+          return Object.keys(grp).sort(byPs(grp)).map(k=>{const key=pre+k,L2=grp[k].sort((x,y)=>x.ps<y.ps?-1:x.ps>y.ps?1:x.code<y.code?-1:1),op=isOpen(key,def),r=roll(L2,TODAY),late=L2.filter(a=>a.delayed).length;
+            return{hasTitle:true,title:k,help:t.wbsHelp(L2.length,p1(r.a),late),bg:'#fff',bd:'#e4e0d8',fg:'#0b4a3e',mg,ind:pre.indexOf('W|')===0&&pre.length>2?'36px':'16px',pd:'9px 12px',fs:'14px',caret:op?'▾':'▸',cur:'pointer',toggle:tog(key,op),gap:op?'8px':'0',acts:op?L2.map(a=>card(a,s.bulk)):[]};});};
+        const bKey=a=>a.pid+'|'+a.bldg,bks=uniq(rest.map(bKey)),multiB=bks.length>1;
+        let wbsSecs;
+        if(!multiB)wbsSecs=wbsOf(rest,'W|','2px 16px 0',!!q||rest.length<=30);
+        else{const bg={};rest.forEach(a=>{(bg[bKey(a)]=bg[bKey(a)]||[]).push(a);});
+          const bLbl=k=>{const a=bg[k][0],p=D.projMap[a.pid];return(multiP&&p?p.code+' · ':'')+(a.btype?a.btype+' · ':'')+bl(a.bldg);};
+          const multiP=uniq(rest.map(a=>a.pid)).length>1;
+          const order=bks.sort((x,y)=>{const a=bg[x][0],b=bg[y][0];return (a.pid+'|'+(a.btype||'')).localeCompare(b.pid+'|'+(b.btype||''),undefined,{numeric:true})||bLbl(x).localeCompare(bLbl(y),undefined,{numeric:true});});
+          wbsSecs=[].concat(...order.map(k=>{const L1=bg[k],key='B|'+k,op=isOpen(key,!!q),r=roll(L1,TODAY),late=L1.filter(a=>a.delayed).length;
+            return[{hasTitle:true,title:'🏢 '+bLbl(k),help:t.wbsHelp(L1.length,p1(r.a),late),bg:'#f1e8cf',bd:'#e3d3a6',fg:'#0b4a3e',mg:'6px 16px 0',pd:'11px 12px',fs:'15px',caret:op?'▾':'▸',cur:'pointer',toggle:tog(key,op),gap:'0',acts:[]}]
+              .concat(op?wbsOf(L1,'W|'+k+'|','2px 16px 0;margin-inline-start:36px',!!q):[]);}));}
         const otherHead=rest.length?[Object.assign({},H,{hasTitle:true,title:t.allActsSec,help:t.siteCount(rest.length,mine.length)+' · '+t.wbsTap,bg:'#f7f5f1',bd:'#e4e0d8',fg:'#1b1a17',acts:[]})]:[];
         otherHead.forEach(h=>h.gap='0');if(!wkL.length)return otherHead.concat(wbsSecs);const u=wkL.filter(a=>a.updW).length;
         return [Object.assign({},H,{hasTitle:true,title:'📅 '+t.weekSec,help:t.weekSecHelp(t.dows[cfg.cut]+' '+D.nextCut,u,wkL.length),bg:u===wkL.length?'oklch(0.95 0.04 150)':'#fbf3e4',bd:u===wkL.length?'oklch(0.82 0.08 150)':'#e8d6a8',fg:'#0b4a3e',acts:wkL.map(cw)})]
