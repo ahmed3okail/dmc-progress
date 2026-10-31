@@ -1039,7 +1039,7 @@ input,textarea{font:inherit;color:inherit}
 </div>
 </x-dc>
 <script type="text/x-dc" data-dc-script data-props="{&quot;requireCM&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Rules&quot;},&quot;staleDays&quot;:{&quot;editor&quot;:&quot;int&quot;,&quot;default&quot;:7,&quot;min&quot;:1,&quot;max&quot;:30,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Rules&quot;},&quot;delayThreshold&quot;:{&quot;editor&quot;:&quot;int&quot;,&quot;default&quot;:10,&quot;min&quot;:1,&quot;max&quot;:40,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Rules&quot;}}">
-const KEY='dmc-erp:demo:v3',PREF_KEY='dmc-erp:prefs',CONN_KEY='dmc-erp:conn';
+const KEY='dmc-erp:demo:v4',PREF_KEY='dmc-erp:prefs',CONN_KEY='dmc-erp:conn';
 const locOf=()=>['SITE','—'];
 const uniq=arr=>Array.from(new Set(arr));
 const DAY=864e5;
@@ -1269,61 +1269,30 @@ chatErr:'المحادثة لسه مش متجهزة في قاعدة البيان�
 returnedBy:n=>`أعاده ${n}`,photoNoteLive:'حتى 4 صور. يُسجل الوقت والموقع (إن سمحت). الصور تُضغط وتُحفظ في قاعدة البيانات المشتركة.',
 signUpOk:'تم إنشاء الحساب. اطلب من المسؤول تحديد الدور والتخصص والمشروع.',importJson:'استعادة نسخة احتياطية (JSON)',t_imported:'تمت استعادة النسخة الاحتياطية',t_badJson:'ملف النسخة الاحتياطية غير صالح',
 e_eng:'التخصص يجب أن يكون CIV أو ARC أو MEC أو ELE'});
-// Demo schedule: [project, P6 activity ID, name, name_ar, wbs, zone, building, discipline, start (days from today), duration, budget qty, unit, weight, approved %, actual start lag, days since last update, delay reason]
-const ROWS=[
-['P1','A1010','Mobilisation & site setup','التجهيز والتعبئة للموقع','1.1 Preliminaries','—','SITE','CIV',-150,20,1,'LS',2,100,0,0,''],
-['P1','A1020','Bulk excavation','الحفر العام','2.1 Substructure','Z1','BLD-A','CIV',-130,30,4500,'m3',6,100,3,0,''],
-['P1','A1030','Raft foundation concrete','خرسانة اللبشة','2.2 Substructure','Z1','BLD-A','CIV',-100,35,1200,'m3',12,100,5,0,'equipment'],
-['P1','A1040','Basement retaining walls','جدران القبو الاستنادية','2.3 Substructure','Z1','BLD-A','CIV',-60,70,650,'m3',10,55,4,6,'material'],
-['P1','A1050','Ground floor columns','أعمدة الدور الأرضي','3.1 Superstructure','Z1','BLD-A','CIV',-15,45,180,'m3',8,15,2,5,'manpower'],
-['P1','A1060','Basement waterproofing','العزل المائي للقبو','2.4 Substructure','Z1','BLD-A','ARC',-35,40,3800,'m2',5,40,6,12,'weather'],
-['P1','A1070','Outpatient block foundations','أساسات مبنى العيادات','2.5 Substructure','Z2','BLD-B','CIV',-40,40,520,'m3',8,70,2,3,''],
-['P1','A1080','Outpatient block frame','هيكل مبنى العيادات','3.2 Superstructure','Z2','BLD-B','CIV',-5,60,610,'m3',9,5,1,2,''],
-['P1','A1090','Blockwork','أعمال البلوك','3.3 Superstructure','Z2','BLD-B','ARC',20,50,6200,'m2',9,0,0,0,''],
-['P1','A1100','Electrical containment first fix','تمديدات المواسير الكهربائية – المرحلة الأولى','4.1 Electrical','Z1','BLD-A','ELE',-8,60,1,'LS',10,8,0,4,''],
-['P1','A1110','Basement HVAC ductwork','مجاري التكييف في القبو','4.2 Mechanical','Z1','BLD-A','MEC',-12,50,2400,'m2',9,10,3,9,'design'],
-['P1','A1120','Medical gas pipework','شبكة الغازات الطبية','4.3 Mechanical','Z2','BLD-B','MEC',15,45,1800,'m',6,0,0,0,''],
-['P1','A1130','External drainage','الصرف الخارجي','5.1 External','—','SITE','CIV',35,30,950,'m',4,0,0,0,''],
-['P2','B2010','Bored piling','الخوازيق المحفورة','2.1 Foundations','Z1','TWR-1','CIV',-160,40,320,'nos',10,100,5,0,''],
-['P2','B2020','Pile caps','قواعد الخوازيق','2.2 Foundations','Z1','TWR-1','CIV',-115,30,85,'nos',6,100,8,0,'subcon'],
-['P2','B2030','Tower 1 slabs L1–L4','بلاطات البرج 1 – الأدوار 1–4','3.1 Tower frame','Z1','TWR-1','CIV',-85,70,2400,'m3',18,62,10,5,'material'],
-['P2','B2040','Tower 1 slabs L5–L8','بلاطات البرج 1 – الأدوار 5–8','3.2 Tower frame','Z1','TWR-1','CIV',-12,70,2400,'m3',18,3,4,9,'design'],
-['P2','B2050','Façade anchor installation','تركيب مثبتات الواجهة','5.1 Envelope','Z1','TWR-1','ARC',-18,40,1400,'nos',6,0,0,0,''],
-['P2','B2060','Plumbing risers – Tower 1','صواعد السباكة – البرج 1','4.1 MEP','Z1','TWR-1','MEC',-14,45,900,'m',7,12,2,3,''],
-['P2','B2070','Lift shaft core walls','جدران بئر المصعد','3.3 Tower frame','Z1','TWR-1','CIV',-55,60,120,'m3',8,40,6,4,'manpower'],
-['P2','B2080','Tower 2 raft','لبشة البرج 2','2.3 Foundations','Z2','TWR-2','CIV',-45,35,980,'m3',12,85,3,2,''],
-['P2','B2090','Tower 2 columns L1–L3','أعمدة البرج 2 – الأدوار 1–3','3.4 Tower frame','Z2','TWR-2','CIV',-5,40,210,'m3',8,6,1,2,''],
-['P2','B2100','Main LV panels','لوحات الجهد المنخفض الرئيسية','4.2 Electrical','Z2','TWR-2','ELE',10,40,12,'nos',5,0,0,0,''],
-['P2','B2110','Podium slab','بلاطة المنصة','3.5 Podium','Z2','PODIUM','CIV',-25,45,1500,'m3',10,50,2,3,''],
-['P2','B2120','Podium landscaping','تنسيق حدائق المنصة','6.1 External','Z2','PODIUM','ARC',40,40,2600,'m2',4,0,0,0,''],
-['P3','C3010','Site grading','تسوية الموقع','1.1 Earthworks','—','SITE','CIV',-110,20,18000,'m2',5,100,-2,0,''],
-['P3','C3020','Isolated footings','القواعد المنفصلة','2.1 Substructure','Z1','WH-1','CIV',-85,25,420,'m3',10,100,0,0,''],
-['P3','C3030','Structural steel erection','تركيب الهيكل الفولاذي','3.1 Superstructure','Z1','WH-1','CIV',-55,50,860,'t',22,95,-3,3,'subcon'],
-['P3','C3040','Roof sheeting','تغطية السقف بالألواح','3.2 Envelope','Z1','WH-1','ARC',-20,35,12000,'m2',12,45,-2,4,''],
-['P3','C3050','Slab on grade','البلاطة الأرضية','2.2 Substructure','Z2','WH-2','CIV',-25,40,9500,'m2',14,58,0,2,''],
-['P3','C3060','LV power & lighting','الإنارة وتوزيع الجهد المنخفض','4.1 Electrical','Z1','WH-1','ELE',-10,40,5200,'m',6,18,0,3,''],
-['P3','C3070','Fire sprinkler network','شبكة رشاشات الحريق','4.2 MEP','Z1','WH-1','MEC',-6,50,7400,'m',9,10,0,2,''],
-['P3','C3080','Dock levellers','منصات التحميل','5.1 Equipment','Z2','WH-2','MEC',12,25,16,'nos',5,0,0,0,''],
-['P3','C3090','External paving','الرصف الخارجي','6.1 External','—','SITE','CIV',30,30,6800,'m2',5,0,0,0,''],
-['P4','D4010','Site clearance','تنظيف الموقع','1.1 Enabling','—','SITE','CIV',-70,15,6000,'m2',3,100,0,0,''],
-['P4','D4020','Strip footings – Block 1','القواعد الشريطية – المبنى 1','2.1 Substructure','Z1','BLK-1','CIV',-55,25,260,'m3',10,100,2,0,''],
-['P4','D4030','Ground beams – Block 1','الجسور الأرضية – المبنى 1','2.2 Substructure','Z1','BLK-1','CIV',-30,25,140,'m3',8,80,2,2,''],
-['P4','D4040','Block 1 frame','هيكل المبنى 1','3.1 Superstructure','Z1','BLK-1','CIV',-8,55,620,'m3',14,10,0,2,''],
-['P4','D4050','Block 2 foundations','أساسات المبنى 2','2.3 Substructure','Z2','BLK-2','CIV',-20,30,180,'m3',8,40,3,10,'permit'],
-['P4','D4060','Sports hall steel frame','الهيكل الفولاذي للصالة الرياضية','3.2 Superstructure','Z2','SPORTS','CIV',18,45,210,'t',12,0,0,0,''],
-['P4','D4070','Classroom partitions','قواطع الفصول','3.3 Finishes','Z1','BLK-1','ARC',30,40,3100,'m2',8,0,0,0,''],
-['P4','D4080','Fire alarm system','نظام إنذار الحريق','4.1 Electrical','Z1','BLK-1','ELE',25,35,1,'LS',5,0,0,0,''],
-['P4','D4090','Chilled water piping','مواسير المياه المبردة','4.2 Mechanical','Z1','BLK-1','MEC',20,50,1600,'m',7,0,0,0,''],
-['P5','E5010','Shoring & dewatering','سند جوانب الحفر ونزح المياه','1.1 Enabling','Z1','BASEMENT','CIV',-200,45,1,'LS',6,100,4,0,''],
-['P5','E5020','Basement excavation','حفر القبو','2.1 Substructure','Z1','BASEMENT','CIV',-160,45,38000,'m3',10,100,6,0,'equipment'],
-['P5','E5030','Basement raft','لبشة القبو','2.2 Substructure','Z1','BASEMENT','CIV',-115,40,5200,'m3',14,100,5,0,''],
-['P5','E5040','Basement walls & slabs B2–B1','جدران وبلاطات القبو B2–B1','2.3 Substructure','Z1','BASEMENT','CIV',-75,60,4100,'m3',14,88,4,3,''],
-['P5','E5050','Podium structure','هيكل المنصة','3.1 Superstructure','Z2','PODIUM','CIV',-30,50,3600,'m3',12,30,6,4,'material'],
-['P5','E5060','Tower core L1–L10','قلب البرج – الأدوار 1–10','3.2 Superstructure','Z2','TWR','CIV',-10,80,2200,'m3',16,6,3,8,''],
-['P5','E5070','Curtain wall mock-up','عينة الحائط الستائري','5.1 Envelope','Z2','TWR','ARC',5,30,1,'LS',3,0,0,0,''],
-['P5','E5080','Basement MEP first fix','التمديدات الكهروميكانيكية للقبو','4.1 MEP','Z1','BASEMENT','MEC',-20,60,1,'LS',9,22,0,2,''],
-['P5','E5090','Substation building','مبنى المحطة الفرعية','4.2 Electrical','Z1','BASEMENT','ELE',-15,45,1,'LS',7,25,2,3,''],
-['P5','E5100','Façade glazing','زجاج الواجهات','5.2 Envelope','Z2','TWR','ARC',45,90,9800,'m2',10,0,0,0,'']];
+// Sample schedule (MS#4.2 Construction Works): same activity template for every building, sized by building type.
+// Row: [project, activity ID, name, name_ar, wbs, zone (= building type), building, discipline, start (days from today), duration, budget qty, unit, weight, approved %, actual start lag, days since last update, delay reason]
+const SAMPLE_BLDGS=[['55','CH3'],['54','CH3'],['53','CH6'],['52','CH7'],['42','CH3'],['43','CH3'],['44','CH10'],['45','CH10'],['46','CH10'],['47','CH6'],['48','CH7']];
+const SAMPLE_TPL=[
+ ['010','Excavation & blinding concrete','الحفر وخرسانة النظافة','1 Substructure','CIV',0,12,180,'m3',5],
+ ['020','Footings & tie beams','القواعد والميد','1 Substructure','CIV',10,20,120,'m3',9],
+ ['030','Ground floor columns & slab','أعمدة وسقف الدور الأرضي','2 Superstructure','CIV',28,25,95,'m3',11],
+ ['040','Roof slab & parapets','السقف العلوي والدراوي','2 Superstructure','CIV',50,25,85,'m3',10],
+ ['050','Blockwork','أعمال البلوك','3 Finishes','ARC',60,30,950,'m2',8],
+ ['060','Plumbing & drainage first fix','تمديدات السباكة والصرف','4 MEP','MEC',70,25,1,'LS',6],
+ ['070','Electrical conduits first fix','تمديدات مواسير الكهرباء','4 MEP','ELE',70,25,1,'LS',6],
+ ['080','Internal plaster','اللياسة الداخلية','3 Finishes','ARC',88,25,1900,'m2',8],
+ ['090','HVAC ducting & units','مجاري ووحدات التكييف','4 MEP','MEC',95,25,1,'LS',7],
+ ['100','Floor & wall tiling','البلاط والسيراميك','3 Finishes','ARC',110,30,620,'m2',9],
+ ['110','Wiring, panels & fixtures','الأسلاك واللوحات والإنارة','4 MEP','ELE',115,25,1,'LS',7],
+ ['120','External plaster & paint','اللياسة والدهان الخارجي','3 Finishes','ARC',125,30,780,'m2',8],
+ ['130','Testing & handover','الاختبارات والتسليم','5 Handover','CIV',150,10,1,'LS',6]];
+const ROWS=(()=>{const SIZE={CH3:1,CH6:1.3,CH7:1.45,CH10:1.8},PERF=[1,0.95,0.85,0.9,1,0.8,0.92,0.75,0.88,0.97,0.9],RS=['material','manpower','subcon','design','equipment','permit','client'],out=[];let k=0;
+  SAMPLE_BLDGS.forEach(([n,ty],bi)=>{const st=-170+12*bi,sz=SIZE[ty]||1,pf=PERF[bi%PERF.length];
+    SAMPLE_TPL.forEach(([suf,name,nameAr,wbs,eng,off,d,q,unit,w],ti)=>{const s0=st+off,pl=clamp(-s0/d,0,1)*100;
+      let cur=pl>=100&&pf>=0.95?100:Math.min(100,Math.round(pl*pf/5)*5);if(pl>=100&&cur>=100&&pf<0.95)cur=95;if(s0+d<-20)cur=100;
+      const behind=pl-cur>10,last=cur>0&&cur<100?((bi+ti)%6===0?10:2+(bi+ti)%4):0;
+      out.push(['P1','B'+n+'-'+suf,name+' — Blot '+n,nameAr+' — بلوك '+n,wbs,ty,'Blot '+n,eng,s0,d,unit==='LS'?1:Math.round(q*sz),unit,Math.round(w*sz*10)/10,cur,cur?(ti%3):0,last,behind?RS[(k++)%RS.length]:'']);});});
+  return out;})();
 const GEO={P1:[24.7136,46.6753],P2:[21.5433,39.1728],P3:[26.4207,50.0888],P4:[24.5247,39.5692],P5:[26.2172,50.1971]};
 const PH_COL=[['#c9dbe6','#a8957c','#6f665b'],['#e6d9c4','#9c8b74','#585149'],['#d3e0d6','#8f8a7d','#4f5a52'],['#e3d3cf','#a38a7e','#5e4f4a']];
 
@@ -1338,12 +1307,7 @@ function demoPhoto(label,n){const c=PH_COL[n%4],v=n%3;
 function plannedPct(a,d){if(d<a.ps)return 0;if(d>=a.pf)return 100;const t=dd(a.ps,a.pf);return t<=0?100:clamp(dd(a.ps,d)/t*100,0,100);}
 
 function seed(){
-  const projects=[
-    {id:'P1',code:'DMC-101',name:'Al Noor Medical Centre',nameAr:'مركز النور الطبي',loc:'Riyadh',locAr:'الرياض',value:48,src:'demo'},
-    {id:'P2',code:'DMC-102',name:'Harbour View Residences',nameAr:'مساكن إطلالة الميناء',loc:'Jeddah',locAr:'جدة',value:92,src:'demo'},
-    {id:'P3',code:'DMC-103',name:'Logistics Warehouse Ph. 2',nameAr:'مستودع لوجستي – المرحلة 2',loc:'Dammam',locAr:'الدمام',value:31,src:'demo'},
-    {id:'P4',code:'DMC-104',name:'Al Rawdah School Campus',nameAr:'مجمع مدارس الروضة',loc:'Madinah',locAr:'المدينة المنورة',value:37,src:'demo'},
-    {id:'P5',code:'DMC-105',name:'Corniche Office Tower',nameAr:'برج مكاتب الكورنيش',loc:'Al Khobar',locAr:'الخبر',value:120,src:'demo'}];
+  const projects=[{id:'P1',code:'MS#4.2',name:'MS#4.2 Construction Works',nameAr:'MS#4.2 أعمال الإنشاءات',loc:'Sample data',locAr:'بيانات تجريبية',value:85,src:'demo'}];
   const activities=[],updates=[];
   ROWS.forEach(([pid,code,name,nameAr,wbs,zone,bldg,eng,s,d,qty,unit,w,cur,lag,last,reason])=>{
     const ps=addD(TODAY,s),pf=addD(ps,d),a={id:'A_'+code,pid,code,name,nameAr,wbs,ps,pf,qty,unit,w,eng,bldg,zone,src:'demo'};
@@ -1371,32 +1335,37 @@ function seed(){
     updates.push(u);return u;};
   const endorse=(u,at,comment)=>{Object.assign(u,{status:'endorsed',cmAt:at,cmBy:'CM',cmComment:comment||''});u.log.push({at,ev:'endorsed',by:'CM'});return u;};
   const lastAppr=code=>updates.filter(u=>u.actId==='A_'+code&&u.status==='approved').pop();
-  const d=n=>addD(TODAY,-n);
+  const d=n=>addD(TODAY,-n);let this_adj=null;
 
+  // Workflow scenarios on activities that are in progress today
+  const prog=activities.filter(a=>{const r=ROWS.find(x=>x[1]===a.code);return r&&r[13]>0&&r[13]<100;}).map(a=>a.code);
+  const pick=k=>prog[(k*7)%prog.length],cur=c=>{const u=lastAppr(c);return u?u.pct:0;},nx=(c,n)=>Math.min(95,cur(c)+n),rd=(c,p)=>{const a=act(c);return Math.max(2,Math.round(dd(a.ps,a.pf)*(100-p)/100));};
+  const PS=(c,o)=>P(c,Object.assign({pct:nx(c,10),remD:rd(c,nx(c,10))},o));
   // Waiting for the Construction Manager (step 1)
-  photo(photo(P('A1040',{pct:62,status:'submitted',at:d(1)+'T16:05',delay:'material',remarks:'Wall panels W7–W9 poured. Formwork moved to grid C.'}),'Wall W8 after stripping'),'Formwork at grid C');
-  photo(photo(P('C3040',{pct:52,qty:6240,status:'submitted',at:TODAY+'T08:15',remarks:'Bays 1–6 sheeted, ridge capping pending.'}),'Roof bays 1–6'),'Ridge capping material on site');
-  photo(P('B2110',{pct:58,status:'submitted',at:d(1)+'T14:20',remarks:'Podium slab pour 3 of 5 completed.'}),'Pour 3 finished surface');
-  photo(P('E5080',{pct:30,status:'submitted',at:d(1)+'T11:40',remarks:'Sleeves and hangers B2 complete, B1 started.'}),'B2 hangers and sleeves');
-  P('D4030',{pct:92,status:'submitted',at:TODAY+'T09:05',remarks:'All ground beams cast except GB-14.'});
-  P('E5090',{pct:32,status:'submitted',at:d(2)+'T15:10',remarks:'Substation walls up to roof level.'});
+  photo(photo(PS(pick(0),{status:'submitted',at:d(1)+'T16:05',delay:'material',remarks:'Second half poured. Formwork moved to the next bay.'}),'Work completed today'),'Materials on site');
+  photo(PS(pick(1),{status:'submitted',at:TODAY+'T08:15',remarks:'Progress as planned this week.'}),'General view');
+  photo(PS(pick(2),{status:'submitted',at:d(1)+'T14:20',remarks:'Crew increased from Sunday.'}),'Work in progress');
+  PS(pick(3),{status:'submitted',at:TODAY+'T09:05',remarks:'Remaining part to finish next week.'});
+  PS(pick(4),{status:'submitted',at:d(2)+'T15:10',remarks:'Inspection requested from the consultant.'});
   // Approved by CM, waiting for Planning (step 2)
-  {const u=P('B2030',{pct:68,status:'submitted',at:d(2)+'T17:40',delay:'material',remarks:'Rebar delivery for L4 delayed 5 days. Pour rescheduled.'});const at=d(1)+'T08:30',note='L4 pour only half complete — adjusted to 68%.';
-    Object.assign(u,{origPct:72,origQty:Math.round(2400*72)/100,adjBy:'CM',adjAt:at,adjNote:note});u.log.push({at,ev:'adjusted',by:'CM',detail:'72% → 68%'});endorse(u,at,note);}
-  endorse(P('E5050',{pct:36,status:'submitted',at:d(2)+'T13:00',delay:'material',remarks:'Level P1 slab cast. Rebar supply still behind schedule.'}),d(1)+'T10:15','Checked on site — OK.');
-  endorse(P('A1100',{pct:14,status:'submitted',at:d(2)+'T16:30',remarks:'Basement conduits complete in zone Z1.'}),d(1)+'T09:40','');
-  endorse(P('C3050',{pct:64,status:'submitted',at:d(1)+'T12:00',remarks:'Bays 7–9 poured.'}),d(1)+'T17:50','');
+  {const c=pick(5),p0=nx(c,12),p1=Math.max(cur(c)+1,p0-4),a=act(c);const u=PS(c,{pct:p1,qty:Math.round(a.qty*p1)/100,status:'submitted',at:d(2)+'T17:40',delay:'material',remarks:'Material delivery delayed 5 days.'});const at=d(1)+'T08:30',note='Checked on site — adjusted to '+p1+'%.';
+    Object.assign(u,{origPct:p0,origQty:Math.round(a.qty*p0)/100,adjBy:'CM',adjAt:at,adjNote:note});u.log.push({at,ev:'adjusted',by:'CM',detail:p0+'% → '+p1+'%'});endorse(u,at,note);this_adj=[c,a.eng,p0,p1,a.qty];}
+  endorse(PS(pick(6),{status:'submitted',at:d(2)+'T13:00',delay:'manpower',remarks:'Second crew joined mid-week.'}),d(1)+'T10:15','Checked on site — OK.');
+  endorse(PS(pick(7),{status:'submitted',at:d(2)+'T16:30',remarks:'Completed as per drawings.'}),d(1)+'T09:40','');
   // Returned to the engineer
-  {const ret=d(2);P('A1050',{pct:25,qty:30,status:'returned',at:d(3)+'T15:00',delay:'manpower',remarks:'Columns GF-C1 to C12 cast.',reviewed:ret+'T10:20',reviewer:'CM',comment:'30 m3 is about 17% of 180 m3, not 25%. Please check the quantity or the %.'}).log.push({at:ret+'T10:20',ev:'returned',by:'CM'});}
-  {const ret=d(1);P('B2060',{pct:30,status:'returned',at:d(2)+'T12:30',remarks:'Risers installed to level 6.',reviewed:ret+'T09:00',reviewer:'PL',cmAt:d(2)+'T16:00',cmBy:'CM',comment:'Pressure test certificate missing — attach it and resubmit.'}).log.push({at:d(2)+'T16:00',ev:'endorsed',by:'CM'},{at:ret+'T09:00',ev:'returned',by:'PL'});}
+  {const c=pick(8),ret=d(2);PS(c,{status:'returned',at:d(3)+'T15:00',delay:'manpower',remarks:'Progress updated.',reviewed:ret+'T10:20',reviewer:'CM',comment:'The quantity does not match the % — please check and resubmit.'}).log.push({at:ret+'T10:20',ev:'returned',by:'CM'});}
+  {const c=pick(9),ret=d(1);PS(c,{status:'returned',at:d(2)+'T12:30',remarks:'Progress updated.',reviewed:ret+'T09:00',reviewer:'PL',cmAt:d(2)+'T16:00',cmBy:'CM',comment:'Test certificate missing — attach it and resubmit.'}).log.push({at:ret+'T09:00',ev:'returned',by:'PL'});}
   // Drafts not yet submitted
-  P('C3070',{pct:15,status:'draft',at:TODAY+'T07:50',remarks:'Zone A mains installed'});
-  P('D4050',{pct:48,status:'draft',at:d(1)+'T18:10',delay:'permit',remarks:'Excavation for F2 foundations waiting for municipality permit.'});
+  PS(pick(10),{status:'draft',at:TODAY+'T07:50',remarks:'Work started on the second side.'});
+  PS(pick(11),{status:'draft',at:d(1)+'T18:10',delay:'permit',remarks:'Waiting for the inspection permit.'});
   // Photos on recent approved updates (they appear in the weekly report)
-  [['A1030','Raft pour – final bay'],['B2080','Tower 2 raft rebar'],['C3050','Slab on grade bay 6'],['E5040','B1 wall formwork'],['A1070','Outpatient footings'],['C3030','Steel frame grid 4']].forEach(([c,cap])=>{const u=lastAppr(c);if(u)photo(u,cap);});
-  const reminders=[{id:'R_seed',to:'ARC',from:'PL',at:d(1)+'T09:00',actIds:['A_B2050','A_A1060'],type:'missing',done:false},
-    {id:'R_seed2',to:'CIV',from:'CM',at:d(1)+'T08:30',actIds:['A_B2030'],type:'adjusted',from_pct:72,to_pct:68,from_qty:1728,to_qty:1632,note:'L4 pour only half complete — adjusted to 68%.',done:false},
-    {id:'R_seed3',to:'MEC',from:'PL',at:d(1)+'T09:05',actIds:['A_A1110'],type:'missing',done:false}];
+  prog.slice(0,40).filter((c,i)=>i%7===3).slice(0,6).forEach(c=>{const u=lastAppr(c);if(u)photo(u,'Site progress — '+act(c).bldg);});
+  const miss=activities.filter(a=>{const r=ROWS.find(x=>x[1]===a.code);return r&&r[15]>=10;});
+  const byE=e=>miss.filter(a=>a.eng===e).slice(0,3).map(a=>a.id);
+  const reminders=[{id:'R_seed',to:'ARC',from:'PL',at:d(1)+'T09:00',actIds:byE('ARC'),type:'missing',done:false},
+    {id:'R_seed2',to:this_adj[1],from:'CM',at:d(1)+'T08:30',actIds:['A_'+this_adj[0]],type:'adjusted',from_pct:this_adj[2],to_pct:this_adj[3],from_qty:Math.round(this_adj[4]*this_adj[2])/100,to_qty:Math.round(this_adj[4]*this_adj[3])/100,note:'Checked on site — adjusted to '+this_adj[3]+'%.',done:false},
+    {id:'R_seed3',to:'MEC',from:'PL',at:d(1)+'T09:05',actIds:byE('MEC'),type:'missing',done:false}].filter(r=>r.actIds.length);
+  updates.forEach(u=>{if(u.status==='approved'&&u.remD==null&&u.pct<100){const a=activities.find(x=>x.id===u.actId);u.remD=Math.max(1,Math.round(dd(a.ps,a.pf)*(100-u.pct)/100*1.1));}});
   updates.forEach(u=>{if(u.delay&&!u.party)u.party=DPARTY[u.delay]||'other';});
   return {projects,activities,updates,reminders,chat:seedChat(),seededAt:stamp()};
 }
@@ -1408,14 +1377,11 @@ function seedChat(){const now=Date.now(),M=[];let k=0;
   m('general','CM',1490,'تمام. وأي نشاط متأخر لازم سبب التأخير يتكتب في التحديث.');
   m('general','ELE',1440,'تمام، ماشي.');
   m('general','PM',300,'Reminder: monthly client meeting on Sunday 10:00. Please make sure the S-curve is up to date.');
-  m('proj:P1','CIV',1300,'تم صب جدران W7 إلى W9 النهارده، الشدة هتتنقل لمحور C بكرة.');
+  m('proj:P1','CIV',1300,'تم صب سقف الدور الأرضي في بلوك 47 النهارده، الشدة هتتنقل لبلوك 48 بكرة.');
   m('proj:P1','CM',1280,'تمام، هعدي على الموقع الصبح وأراجع التحديث.');
-  m('proj:P1','PL',900,'A1050 رجعته لأن الكمية 30 م3 تساوي 17% مش 25%. راجع النسبة وابعته تاني.');
-  m('proj:P1','MEC',200,'مجاري التكييف في القبو واقفة لحد رد الاستشاري على الـ RFI رقم 14.');
-  m('proj:P2','CM',1250,'حديد الدور الرابع اتأخر 5 أيام، عدلت نسبة B2030 لـ 68%.');
-  m('proj:P2','CIV',1200,'تمام، هنعوض في الوردية الليلية الأسبوع ده.');
-  m('proj:P2','PM',240,'محتاج خطة استدراك للبرج 1 قبل اجتماع الأحد.');
-  m('proj:P5','PL',600,'E5060 مفيش تحديث بقاله أكتر من أسبوع، يا ريت تبعتوه النهارده.');
+  m('proj:P1','PL',900,'في تحديث رجعته لأن الكمية مش مطابقة للنسبة. راجعه وابعته تاني.');
+  m('proj:P1','MEC',200,'تمديدات التكييف في بلوك 44 واقفة لحد رد الاستشاري على الـ RFI.');
+  m('proj:P1','PM',240,'محتاج خطة استدراك لمباني CH10 قبل اجتماع الأحد.');
   m('dm:CIV:PL','PL',400,'ممكن تبعتلي صور جدران القبو في التحديث الجاي؟');
   m('dm:CIV:PL','CIV',380,'أكيد، هرفعها مع تحديث بكرة.');
   m('dm:CIV:PL','PL',60,'شكراً. وكمان راجع A1050 قبل الخميس.');
@@ -1666,8 +1632,14 @@ class Component extends DCLogic {
   openDemo(){const d=load();this.setState({mode:'demo',auth:'none',data:d?d.data:seed(),detail:null,review:null});}
   async loadDemoToDb(){const sb=this._sb,t=this.T();if(this.state.liveArm!=='load'){this.setState({liveArm:'load'});return;}this.setState({liveArm:'',syncing:true});
     try{const d=seed();
+      // replace: old demo rows go first (cascades to activities / updates / members)
+      let r0=await sb.from('notifications').delete().like('id','R_seed%');if(r0.error)throw r0.error;r0=await sb.from('projects').delete().eq('is_demo',true);if(r0.error)throw r0.error;
       for(const u of d.updates){if(!u.photos.length)continue;try{for(const p of u.photos)p.src=await svgToJpeg(p.src);await this.uploadPhotos(u);}catch(e){u.photos=[];}}
-      for(const k of TABLE_ORDER){const rows=(d[k]||[]).map(MAP[k].to);if(!rows.length)continue;const r=await sb.from(MAP[k].t).upsert(rows);if(r.error)throw r.error;}this.toast(t.demoLoaded);}
+      for(const k of TABLE_ORDER){const rows=(d[k]||[]).map(MAP[k].to);if(!rows.length)continue;const r=await sb.from(MAP[k].t).upsert(rows);if(r.error)throw r.error;}
+      // site engineers and CMs see the sample project
+      const pr=await sb.from('profiles').select('id,role').in('role',['site','cm']);
+      const mem=[];(pr.data||[]).forEach(u=>d.projects.forEach(p=>mem.push({project_id:p.id,user_id:u.id})));if(mem.length){const r=await sb.from('project_members').upsert(mem);if(r.error)throw r.error;}
+      this.toast(t.demoLoaded);}
     catch(e){this.toast(t.syncErr+' '+(e.message||e));}this.setState({syncing:false});await this.reloadLive();}
   async removeDemoFromDb(){const sb=this._sb,t=this.T();if(this.state.liveArm!=='remove'){this.setState({liveArm:'remove'});return;}this.setState({liveArm:'',syncing:true});
     try{let r=await sb.from('notifications').delete().like('id','R_seed%');if(r.error)throw r.error;r=await sb.from('projects').delete().eq('is_demo',true);if(r.error)throw r.error;this.toast(t.demoRemoved);}
