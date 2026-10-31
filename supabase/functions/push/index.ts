@@ -1,6 +1,6 @@
 // DMC Progress ERP — Edge Function "push"
 // Called by the database trigger push_notify() (header x-hook-secret) for:
-//   progress_updates (submitted / endorsed / returned / approved), notifications (insert), chat_messages (insert)
+//   progress_updates (submitted / endorsed / returned / approved), notifications, chat_messages, weekly_reports (insert)
 // and by a signed-in user (Authorization: Bearer <jwt>, body {test:true}) to send a test to their own devices.
 // Keys come from private.push_config through rpc push_config_get() (service role) — nothing secret in this file.
 import webpush from "npm:web-push@3.6.7";
@@ -174,6 +174,24 @@ async function forChat(rec: any): Promise<[Prof[], Msg] | null> {
   }];
 }
 
+async function forReport(rec: any): Promise<[Prof[], Msg] | null> {
+  const sentTo: string[] = rec.sent_to || [];
+  const roles = sentTo.filter((r) => r === "cm" || r === "pm");
+  if (!roles.length) return null;
+  let to = await profiles((q) => q.in("role", roles));
+  if (rec.project_id && roles.includes("cm")) {
+    const mem = await membersOf([rec.project_id]);
+    to = to.filter((p) => p.role !== "cm" || mem.has(p.id));
+  }
+  const proj = rec.project_id ? await projectCode(rec.project_id) : "";
+  const no = rec.report_no || "";
+  return [to, {
+    ar: { title: `تقرير أسبوعي جديد${proj ? " — " + proj : ""}`, body: `${no}${rec.note ? " — " + rec.note : ""}` },
+    en: { title: `New weekly report${proj ? " — " + proj : ""}`, body: `${no}${rec.note ? " — " + rec.note : ""}` },
+    tag: `wr-${rec.id}`,
+  }];
+}
+
 async function send(to: Prof[], msg: Msg) {
   if (!to.length) return { users: 0, sent: 0 };
   const ids = [...new Set(to.map((p) => p.id))];
@@ -219,6 +237,7 @@ Deno.serve(async (req) => {
     if (table === "progress_updates") r = await forUpdate(type, record, old_record);
     else if (table === "notifications") r = await forNotification(record);
     else if (table === "chat_messages") r = await forChat(record);
+    else if (table === "weekly_reports") r = await forReport(record);
     if (!r) return json({ skipped: true });
     return json(await send(r[0], r[1]));
   } catch (e: any) {
