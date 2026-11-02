@@ -1000,10 +1000,9 @@ input,textarea{font:inherit;color:inherit}
 <sc-if value="{{ showLogin }}" hint-placeholder-val="{{ false }}">
   <div data-noprint="1" data-keepcolor="1" style="position:fixed;inset:0;z-index:70;background:url(login-bg.jpg) center/cover no-repeat,url(login-art.svg) center bottom/auto 46% repeat-x,radial-gradient(ellipse at 70% 15%,#1a6b5a 0%,#0b4a3e 55%,#062c25 100%);background-color:#0b4a3e;display:grid;place-items:center;padding:24px 16px 40px;overflow-y:auto">
     <div style="width:100%;max-width:410px;background:#f7f5f1;border-radius:20px;padding:26px 24px 20px;display:flex;flex-direction:column;gap:14px;box-shadow:0 24px 60px rgba(0,0,0,.35);border-top:4px solid #c5a45a">
-      <div style="display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center"><div style="background:#fff;border-radius:14px;padding:10px 16px;box-shadow:0 2px 10px rgba(11,74,62,.12)"><img src="logo.png" alt="DMC | CURVE" style="height:92px;width:auto;display:block"></div><div style="font-weight:800;font-size:21px;color:#0b4a3e;margin-top:4px">{{ t.title }}</div><div style="font-size:13px;color:#8a6d2c;font-weight:600">{{ t.loginTag }}</div><div style="font-size:11.5px;color:#5f5a52;direction:ltr;unicode-bidi:isolate">{{ host }}</div></div>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center"><div style="background:#fff;border-radius:14px;padding:10px 16px;box-shadow:0 2px 10px rgba(11,74,62,.12)"><img src="logo.png" alt="DMC | CURVE" style="height:92px;width:auto;display:block"></div><div style="font-weight:800;font-size:21px;color:#0b4a3e;margin-top:4px">{{ t.title }}</div><div style="font-size:13px;color:#8a6d2c;font-weight:600">{{ t.loginTag }}</div></div>
       <sc-if value="{{ authChecking }}" hint-placeholder-val="{{ false }}"><div style="padding:16px 0;color:#5f5a52;font-weight:600">{{ t.connecting }}</div></sc-if>
       <sc-if value="{{ authForm }}" hint-placeholder-val="{{ false }}">
-        <div style="font-size:14px;color:#3d3933">{{ t.loginSub }}</div>
         <label style="font-size:13px;font-weight:600">{{ t.email }}</label>
         <input type="text" autocomplete="username" autocapitalize="none" spellcheck="false" value="{{ loginEmail }}" onChange="{{ onLoginEmail }}" style="min-height:50px;padding:0 14px;border:1px solid #cfc9bf;border-radius:10px;background:#fff;font-size:16px;direction:ltr">
         <label style="font-size:13px;font-weight:600">{{ t.password }}</label>
@@ -1011,7 +1010,6 @@ input,textarea{font:inherit;color:inherit}
         <sc-if value="{{ hasLoginErr }}" hint-placeholder-val="{{ false }}"><div style="background:oklch(0.95 0.035 28);color:oklch(0.42 0.16 28);border-radius:8px;padding:9px 11px;font-size:13.5px;font-weight:600">{{ loginErr }}</div></sc-if>
         <button onClick="{{ signIn }}" style="min-height:52px;border:none;background:#0e5a4b;color:#fff;border-radius:10px;font-weight:700;font-size:15px">{{ signInLbl }}</button>
         <button onClick="{{ signUp }}" style="min-height:46px;border:1px solid #1d1b18;background:#fff;border-radius:10px;font-weight:600">{{ t.signUp }}</button>
-        <div style="font-size:12px;color:#5f5a52;line-height:1.45">{{ t.signUpNote }}</div>
       </sc-if>
       <button onClick="{{ openDemo }}" style="min-height:44px;border:none;background:transparent;color:#8a4b12;font-weight:600;text-decoration:underline">{{ t.openDemo }}</button>
       <div style="text-align:center;font-size:11.5px;color:#5f5a52;border-top:1px solid #e4e0d8;padding-top:10px">© 2026 {{ t.copyright }} <span style="direction:ltr;unicode-bidi:isolate;font-weight:700">Ahmed A.Okail</span></div>
