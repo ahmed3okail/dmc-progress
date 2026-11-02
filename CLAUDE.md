@@ -101,6 +101,7 @@ update profiles set role='admin', discipline='CIV' where id=(select id from auth
 
 ## Known limitations / roadmap
 - No direct P6 integration; CSV import only. Next: XER/XML import.
+- Later (Ahmed 2026-11-02, "not now"): project map from the site layout (Ahmed will send the layout drawing) + QR code per building that opens its activities.
 - Offline: progress updates queue on the device (see 2026-11-02). Push notifications added 2026-10-29 (Data screen → Phone notifications; banner after login).
 - LIVE load reads each table in pages of 1,000 rows (the API's max per request), up to 20,000 rows per table (2026-10-31; before that only the first 1,000 activities loaded).
 - Vercel Hobby is non-commercial; company adoption needs IT approval or a paid/internal host.
