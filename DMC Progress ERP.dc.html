@@ -18,7 +18,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <script src="./config.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600&family=Cairo:wght@400;500;600;700;800&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 html,body{margin:0;background:#e9e5de;-webkit-text-size-adjust:100%}
 *{box-sizing:border-box}
@@ -26,10 +26,14 @@ a{color:#8a4b12}a:hover{color:#5c300a}
 button{font:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent}
 input,textarea{font:inherit;color:inherit}
 [data-printonly]{display:none}
+@keyframes dmcIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@keyframes dmcShim{from{background-position:100% 0}to{background-position:-100% 0}}
+button{transition:transform .08s ease,background-color .15s ease}button:active{transform:scale(.97)}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 @media print{[data-printonly]{display:block!important}*{-webkit-print-color-adjust:exact;print-color-adjust:exact}[data-app],[data-noprint]{display:none!important}#dmc-report{position:absolute!important;top:0!important;left:0!important;right:0!important;bottom:auto!important;overflow:visible!important;background:#fff!important}#dmc-report [data-sheet]{margin:0!important;padding:0!important;box-shadow:none!important;max-width:none!important}html,body{background:#fff!important}#dmc-report[data-lock="1"]{display:none!important}@page{size:A4;margin:12mm}}
 </style>
 </helmet>
-<div dir="{{ dir }}" lang="{{ lang }}" style="min-height:100vh;font-family:'IBM Plex Sans','IBM Plex Sans Arabic',system-ui,sans-serif;color:#1d1b18;background:#e9e5de">
+<div dir="{{ dir }}" lang="{{ lang }}" style="min-height:100vh;font-family:'IBM Plex Sans','Cairo','IBM Plex Sans Arabic',system-ui,sans-serif;color:#1d1b18;background:#e9e5de">
 <div style="display:flex;align-items:flex-start;min-height:100vh">
 <sc-if value="{{ wide }}" hint-placeholder-val="{{ false }}">
   <aside data-noprint="1" data-keepcolor="1" style="position:sticky;top:0;height:100vh;width:256px;flex:0 0 256px;background:#0b4a3e;color:#e9e4da;display:flex;flex-direction:column;gap:18px;padding:18px 14px;overflow-y:auto">
@@ -39,7 +43,7 @@ input,textarea{font:inherit;color:inherit}
     </div>
     <div style="display:flex;flex-direction:column;gap:4px">
       <div style="font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:#8f887c;font-weight:700;padding:0 8px 4px">{{ t.modules }}</div>
-      <sc-for list="{{ sideTabs }}" as="b" hint-placeholder-count="3"><button onClick="{{ b.onClick }}" style="min-height:44px;display:flex;align-items:center;gap:8px;padding:0 12px;border:none;border-radius:9px;background:{{ b.sbg }};color:{{ b.sfg }};font-size:14.5px;font-weight:{{ b.fw }};text-align:start"><span style="width:22px;text-align:center;font-size:16px">{{ b.icon }}</span><span style="flex:1">{{ b.label }}</span><sc-if value="{{ b.hasBadge }}" hint-placeholder-val="{{ false }}"><span style="min-width:22px;padding:1px 6px;border-radius:999px;background:oklch(0.55 0.17 28);color:#fff;font-size:12px;font-weight:700;text-align:center">{{ b.badge }}</span></sc-if></button></sc-for>
+      <sc-for list="{{ sideTabs }}" as="b" hint-placeholder-count="3"><button onClick="{{ b.onClick }}" style="min-height:44px;display:flex;align-items:center;gap:8px;padding:0 12px;border:none;border-radius:9px;background:{{ b.sbg }};color:{{ b.sfg }};font-size:14.5px;font-weight:{{ b.fw }};text-align:start"><img data-ico="1" src="{{ b.sic }}" alt="" style="width:20px;height:20px;display:block;flex:0 0 auto"><span style="flex:1">{{ b.label }}</span><sc-if value="{{ b.hasBadge }}" hint-placeholder-val="{{ false }}"><span style="min-width:22px;padding:1px 6px;border-radius:999px;background:oklch(0.55 0.17 28);color:#fff;font-size:12px;font-weight:700;text-align:center">{{ b.badge }}</span></sc-if></button></sc-for>
       <button onClick="{{ openChat }}" style="min-height:44px;margin-top:6px;display:flex;align-items:center;gap:8px;padding:0 12px;border:1px solid #3f7468;border-radius:9px;background:transparent;color:#e9e4da;font-size:14.5px;font-weight:600;text-align:start"><span style="flex:1">{{ t.chatBtn }}</span><sc-if value="{{ chatHasUnread }}" hint-placeholder-val="{{ false }}"><span style="min-width:22px;padding:1px 6px;border-radius:999px;background:oklch(0.55 0.15 150);color:#fff;font-size:12px;font-weight:700;text-align:center">{{ chatUnread }}</span></sc-if></button>
     </div>
     <sc-if value="{{ showSideRoles }}" hint-placeholder-val="{{ true }}">
@@ -60,29 +64,35 @@ input,textarea{font:inherit;color:inherit}
 <div data-app="1" style="flex:1;min-width:0;max-width:1400px;margin:0 auto;min-height:100vh;background:#f4f2ed;padding-bottom:150px">
 
 <header data-keepcolor="1" style="position:sticky;top:0;z-index:20;background:#0e5a4b;color:#f7f5f1">
-  <div style="display:flex;align-items:center;gap:6px;padding:10px 10px 8px 10px">
-    <div style="flex:0 0 auto;display:flex;flex-direction:column;align-items:center"><div style="height:40px;flex:0 0 auto;background:#fff;display:grid;place-items:center;border-radius:7px;padding:2px 5px"><img src="logo.png" alt="DMC | CURVE" style="height:36px;width:auto;display:block"></div><div style="direction:ltr;unicode-bidi:isolate;text-align:center;white-space:nowrap;font-size:11.5px;font-weight:700;color:#fff;margin-top:4px">Ahmed A. Okail</div></div>
+  <div style="display:flex;align-items:center;gap:6px;padding:8px 10px">
+    <div style="flex:0 0 auto;height:38px;background:#fff;display:grid;place-items:center;border-radius:8px;padding:2px 6px"><img src="logo.png" alt="DMC | CURVE" style="height:33px;width:auto;display:block"></div>
     <div style="flex:1;min-width:0"><sc-if value="{{ wide }}" hint-placeholder-val="{{ true }}">
       <div style="font-weight:700;font-size:17px;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ t.title }}</div>
       <div style="font-size:12px;color:#c9c3b8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">DMC-CURVE · {{ t.dataDate }} <span style="font-family:'IBM Plex Mono',monospace">{{ today }}</span></div>
     </sc-if></div>
-    <button onClick="{{ openChat }}" style="position:relative;min-height:44px;padding:0 9px;border:1px solid #c5a45a;background:transparent;color:#f7f5f1;border-radius:8px;font-weight:600;font-size:14px">{{ t.chatBtn }}<sc-if value="{{ chatHasUnread }}" hint-placeholder-val="{{ false }}"><span style="position:absolute;top:-7px;inset-inline-end:-7px;min-width:21px;height:21px;padding:0 6px;border-radius:999px;background:oklch(0.55 0.15 150);color:#fff;font-size:11.5px;font-weight:700;display:grid;place-items:center;border:2px solid #0e5a4b">{{ chatUnread }}</span></sc-if></button>
-    <button onClick="{{ refresh }}" title="{{ t.refreshBtn }}" aria-label="{{ t.refreshBtn }}" style="min-height:44px;min-width:40px;padding:0 8px;border:1px solid #4f8478;background:transparent;color:#f7f5f1;border-radius:8px;font-weight:700;font-size:19px;line-height:1">↻</button>
-    <button onClick="{{ toggleDark }}" title="{{ darkLbl }}" aria-label="{{ darkLbl }}" style="min-height:44px;min-width:40px;padding:0 8px;border:1px solid #4f8478;background:transparent;color:#f7f5f1;border-radius:8px;font-size:17px;line-height:1">{{ darkIcon }}</button>
-    <button onClick="{{ toggleLang }}" style="min-height:44px;min-width:44px;padding:0 9px;border:1px solid #4f8478;background:transparent;color:#f7f5f1;border-radius:8px;font-weight:600;font-size:14px">{{ t.otherLang }}</button>
-    <button onClick="{{ openSettings }}" style="min-height:44px;padding:0 9px;border:1px solid #4f8478;background:transparent;color:#f7f5f1;border-radius:8px;font-weight:600;font-size:14px">{{ t.dataShort }}</button>
+    <button onClick="{{ openChat }}" title="{{ t.chatBtn }}" aria-label="{{ t.chatBtn }}" style="position:relative;min-height:40px;min-width:40px;padding:0 9px;border:1px solid #c5a45a;background:rgba(197,164,90,.12);color:#f7f5f1;border-radius:10px;font-weight:600;font-size:14px;display:flex;align-items:center;gap:6px"><img src="{{ hic.chat }}" alt="" style="width:20px;height:20px;display:block"><sc-if value="{{ wide }}" hint-placeholder-val="{{ false }}"><span>{{ t.chatBtn }}</span></sc-if><sc-if value="{{ chatHasUnread }}" hint-placeholder-val="{{ false }}"><span style="position:absolute;top:-7px;inset-inline-end:-7px;min-width:21px;height:21px;padding:0 6px;border-radius:999px;background:oklch(0.55 0.15 150);color:#fff;font-size:11.5px;font-weight:700;display:grid;place-items:center;border:2px solid #0e5a4b">{{ chatUnread }}</span></sc-if></button>
+    <button onClick="{{ refresh }}" title="{{ t.refreshBtn }}" aria-label="{{ t.refreshBtn }}" style="min-height:40px;min-width:40px;padding:0;border:1px solid #4f8478;background:transparent;border-radius:10px;display:grid;place-items:center"><img src="{{ hic.refresh }}" alt="" style="width:19px;height:19px;display:block"></button>
+    <button onClick="{{ toggleDark }}" title="{{ darkLbl }}" aria-label="{{ darkLbl }}" style="min-height:40px;min-width:40px;padding:0;border:1px solid #4f8478;background:transparent;border-radius:10px;display:grid;place-items:center"><img src="{{ hic.dark }}" alt="" style="width:19px;height:19px;display:block"></button>
+    <button onClick="{{ toggleLang }}" style="min-height:40px;min-width:40px;padding:0 8px;border:1px solid #4f8478;background:transparent;color:#f7f5f1;border-radius:10px;font-weight:700;font-size:13.5px">{{ t.otherLang }}</button>
+    <button onClick="{{ openSettings }}" title="{{ t.dataShort }}" aria-label="{{ t.dataShort }}" style="min-height:40px;min-width:40px;padding:0 8px;border:1px solid #4f8478;background:transparent;color:#f7f5f1;border-radius:10px;font-weight:600;font-size:13.5px;display:flex;align-items:center;gap:6px"><img src="{{ hic.gear }}" alt="" style="width:19px;height:19px;display:block"><sc-if value="{{ wide }}" hint-placeholder-val="{{ false }}"><span>{{ t.dataShort }}</span></sc-if></button>
   </div>
-  <sc-if value="{{ showRoleBar }}" hint-placeholder-val="{{ true }}"><div style="padding:2px 12px 12px"><div style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:4px;background:#093d33;border-radius:12px;padding:4px">
+  <sc-if value="{{ showRoleBar }}" hint-placeholder-val="{{ true }}"><div style="padding:0 10px 8px"><div style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:3px;background:#093d33;border-radius:11px;padding:3px">
     <sc-for list="{{ roles }}" as="r" hint-placeholder-count="3">
-      <button onClick="{{ r.onClick }}" style="min-height:44px;border-radius:9px;border:none;background:{{ r.bg }};color:{{ r.fg }};font-size:12px;font-weight:600;line-height:1.15;padding:4px 3px">{{ r.label }}</button>
+      <button onClick="{{ r.onClick }}" style="min-height:36px;border-radius:8px;border:none;background:{{ r.bg }};color:{{ r.fg }};font-size:11.5px;font-weight:600;line-height:1.1;padding:3px 2px">{{ r.label }}</button>
     </sc-for>
   </div></div></sc-if>
-  <sc-if value="{{ isDemo }}" hint-placeholder-val="{{ true }}"><button onClick="{{ openSettings }}" style="display:block;width:100%;border:none;text-align:start;background:repeating-linear-gradient(-45deg,#f2c14e 0 10px,#f5cd6a 10px 20px);color:#1d1b18;font-size:12.5px;font-weight:600;padding:7px 16px;line-height:1.35">{{ t.demo }}</button></sc-if>
+  <sc-if value="{{ isDemo }}" hint-placeholder-val="{{ true }}"><button onClick="{{ openSettings }}" style="display:block;width:100%;border:none;text-align:start;background:repeating-linear-gradient(-45deg,#f2c14e 0 10px,#f5cd6a 10px 20px);color:#1d1b18;font-size:11.5px;font-weight:600;padding:5px 14px;line-height:1.3">{{ t.demo }}</button></sc-if>
   <sc-if value="{{ isLive }}" hint-placeholder-val="{{ false }}"><button onClick="{{ openSettings }}" style="display:flex;gap:8px;align-items:center;width:100%;border:none;text-align:start;background:oklch(0.9 0.07 150);color:oklch(0.3 0.09 150);font-size:12.5px;font-weight:600;padding:7px 16px;line-height:1.35"><span style="width:8px;height:8px;border-radius:50%;background:oklch(0.55 0.15 150);flex:0 0 auto"></span><span>{{ liveBar }}</span></button></sc-if>
   <sc-if value="{{ showPushAsk }}" hint-placeholder-val="{{ false }}"><div style="display:flex;gap:8px;align-items:center;background:#f1e8cf;color:#1d1b18;font-size:13px;font-weight:600;padding:8px 10px 8px 14px;line-height:1.35"><span style="font-size:18px">🔔</span><span style="flex:1">{{ t.pushAsk }}</span><button onClick="{{ pushEnable }}" style="min-height:36px;padding:0 12px;border-radius:8px;font-weight:700;font-size:13px;border:none;background:#0e5a4b;color:#fff">{{ t.pushOn }}</button><button onClick="{{ pushDismiss }}" aria-label="close" style="min-height:36px;min-width:36px;border:none;background:transparent;color:#5f5a52;font-size:18px">×</button></div></sc-if>
   <sc-if value="{{ offBar.show }}" hint-placeholder-val="{{ false }}"><div style="background:{{ offBar.bg }};color:{{ offBar.fg }};font-size:12.5px;font-weight:700;padding:7px 16px;display:flex;gap:8px;align-items:center;flex-wrap:wrap"><span style="flex:1;min-width:0">{{ offBar.txt }}</span><sc-if value="{{ offBar.canSend }}" hint-placeholder-val="{{ false }}"><button onClick="{{ offBar.send }}" style="min-height:32px;padding:0 12px;border-radius:8px;border:1px solid currentColor;background:transparent;color:inherit;font-weight:700;font-size:12.5px">{{ t.offSendNow }}</button></sc-if></div></sc-if>
   <sc-if value="{{ hasLoadErr }}" hint-placeholder-val="{{ false }}"><div style="background:oklch(0.93 0.05 28);color:oklch(0.38 0.15 28);font-size:12.5px;font-weight:600;padding:7px 16px">⚠ {{ t.loadErrTxt }}: {{ loadErr }}</div></sc-if>
 </header>
+<sc-if value="{{ skel }}" hint-placeholder-val="{{ false }}"><div data-noprint="1" style="padding:16px;display:flex;flex-direction:column;gap:12px">
+  <div style="height:26px;width:55%;border-radius:8px;background:linear-gradient(90deg,#e9e5de 30%,#f6f3ee 50%,#e9e5de 70%);background-size:200% 100%;animation:dmcShim 1.3s linear infinite"></div>
+  <div style="display:flex;gap:8px"><div style="height:38px;width:110px;border-radius:999px;background:linear-gradient(90deg,#e9e5de 30%,#f6f3ee 50%,#e9e5de 70%);background-size:200% 100%;animation:dmcShim 1.3s linear infinite"></div><div style="height:38px;width:80px;border-radius:999px;background:linear-gradient(90deg,#e9e5de 30%,#f6f3ee 50%,#e9e5de 70%);background-size:200% 100%;animation:dmcShim 1.3s linear infinite"></div></div>
+  <sc-for list="{{ skelRows }}" as="k" hint-placeholder-count="4"><div style="height:{{ k.h }};border-radius:14px;background:linear-gradient(90deg,#e9e5de 30%,#f6f3ee 50%,#e9e5de 70%);background-size:200% 100%;animation:dmcShim 1.3s linear infinite"></div></sc-for>
+  <div style="text-align:center;font-size:12.5px;color:#7a7368;font-weight:600">{{ t.loadingData }}</div>
+</div></sc-if>
 
 <sc-if value="{{ show.siteList }}" hint-placeholder-val="{{ true }}">
   <div style="display:flex;flex-direction:column;gap:14px;padding:16px 0">
@@ -129,23 +139,26 @@ input,textarea{font:inherit;color:inherit}
     <sc-if value="{{ sec.hasTitle }}" hint-placeholder-val="{{ true }}"><div onClick="{{ sec.toggle }}" style="margin:{{ sec.mg }};padding:{{ sec.pd }};border-radius:10px;background:{{ sec.bg }};border:1px solid {{ sec.bd }};display:flex;align-items:center;gap:10px;cursor:{{ sec.cur }}"><span style="font-size:13px;color:#605a51;width:12px;flex:0 0 auto">{{ sec.caret }}</span><div style="display:flex;flex-direction:column;gap:2px;min-width:0;flex:1"><span style="font-weight:700;font-size:{{ sec.fs }};color:{{ sec.fg }}">{{ sec.title }}</span><span style="font-size:12.5px;color:#605a51">{{ sec.help }}</span></div></div></sc-if>
     <div style="padding:0 16px;padding-inline-start:{{ sec.ind }};display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,360px),1fr));gap:10px;align-items:start">
       <sc-for list="{{ sec.acts }}" as="a" hint-placeholder-count="4">
-        <div style="background:#fff;border:1px solid #e4e0d8;border-inline-start:4px solid {{ a.stFg }};border-radius:14px;overflow:hidden;box-shadow:0 1px 2px rgba(27,26,23,.04)">
+        <div style="background:#fff;border:1px solid #e4e0d8;border-inline-start:4px solid {{ a.stFg }};border-radius:14px;overflow:hidden;box-shadow:0 1px 3px rgba(27,26,23,.06);animation:dmcIn .3s ease both">
           <button onClick="{{ a.open }}" style="text-align:start;width:100%;background:transparent;border:none;padding:14px 14px 12px;display:flex;flex-direction:column;gap:10px;color:inherit">
             <div style="display:flex;gap:8px;align-items:center;width:100%">
-              <span style="font-family:'IBM Plex Mono',monospace;font-size:13px;font-weight:600;white-space:nowrap">{{ a.code }}</span>
-              <span style="font-size:12px;color:#605a51;white-space:nowrap">{{ a.projCode }}</span>
-              <span style="font-size:10.5px;color:#605a51;border:1px solid #d8d3ca;border-radius:4px;padding:1px 5px;white-space:nowrap">{{ a.srcLabel }}</span>
-              <span style="margin-inline-start:auto;font-size:12px;font-weight:600;padding:4px 9px;border-radius:999px;background:{{ a.stBg }};color:{{ a.stFg }};white-space:nowrap">{{ a.stLabel }}</span>
+              <span style="font-family:'IBM Plex Mono',monospace;font-size:12.5px;font-weight:600;white-space:nowrap;color:#3d3933;background:#f2efe9;border-radius:6px;padding:2px 7px">{{ a.code }}</span>
+              <sc-if value="{{ a.showSrc }}" hint-placeholder-val="{{ false }}"><span style="font-size:10.5px;color:#605a51;border:1px solid #d8d3ca;border-radius:4px;padding:1px 5px;white-space:nowrap">{{ a.srcLabel }}</span></sc-if>
+              <span style="margin-inline-start:auto;font-size:12px;font-weight:700;padding:4px 10px;border-radius:999px;background:{{ a.stBg }};color:{{ a.stFg }};white-space:nowrap">{{ a.stLabel }}</span>
             </div>
-            <div style="display:flex;gap:12px;align-items:flex-end;width:100%">
-              <div style="flex:1;min-width:0;font-weight:600;font-size:16.5px;line-height:1.3;text-wrap:pretty">{{ a.name }}</div>
-              <div style="font-size:26px;font-weight:700;line-height:1;letter-spacing:-0.02em">{{ a.actualTxt }}</div>
+            <div style="display:flex;gap:14px;align-items:center;width:100%">
+              <div style="flex:1;min-width:0;font-weight:600;font-size:16px;line-height:1.35;text-wrap:pretty">{{ a.name }}</div>
+              <div style="flex:0 0 auto;display:flex;flex-direction:column;align-items:flex-end;line-height:1"><span style="font-size:28px;font-weight:800;letter-spacing:-0.02em;color:{{ a.actC }};font-variant-numeric:tabular-nums">{{ a.actualTxt }}</span><span style="font-size:10.5px;color:#7a7368;margin-top:3px;font-weight:600">{{ t.actualShort }}</span></div>
             </div>
-            <div style="position:relative;height:10px;background:#ece9e3;border-radius:5px;width:100%">
-              <div style="position:absolute;inset-block:0;inset-inline-start:0;width:{{ a.actualW }};background:{{ a.barColor }};border-radius:5px"></div>
-              <div style="position:absolute;top:-4px;bottom:-4px;inset-inline-start:{{ a.plannedW }};width:2px;margin-inline-start:-1px;background:#0b4a3e;border-radius:1px"></div>
+            <div style="position:relative;height:12px;background:#ece9e3;border-radius:6px;width:100%">
+              <div style="position:absolute;inset-block:0;inset-inline-start:0;width:{{ a.actualW }};background:linear-gradient(90deg,{{ a.barColor }},{{ a.barColor2 }});border-radius:6px"></div>
+              <div style="position:absolute;top:-4px;bottom:-4px;inset-inline-start:{{ a.plannedW }};width:3px;margin-inline-start:-1.5px;background:#0b4a3e;border-radius:2px;box-shadow:0 0 0 1.5px #fff"></div>
             </div>
-            <div style="font-size:12px;color:#605a51;direction:inherit">{{ a.meta }}</div>
+            <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;width:100%;font-size:12px">
+              <span style="padding:3px 8px;border-radius:999px;background:#f2efe9;color:#3d3933;font-weight:600">{{ t.planned }} <span style="direction:ltr;unicode-bidi:isolate">{{ a.plannedTxt }}</span></span>
+              <span style="padding:3px 8px;border-radius:999px;background:{{ a.varBg }};color:{{ a.varC }};font-weight:700;direction:ltr;unicode-bidi:isolate">{{ a.varTxt }}</span>
+              <span style="color:#7a7368;margin-inline-start:auto">🕒 {{ a.lastTxt }}</span>
+            </div>
             <sc-if value="{{ a.hasWk }}" hint-placeholder-val="{{ false }}"><span style="font-size:12px;font-weight:700;color:{{ a.wkC }}">{{ a.wkTxt }}</span></sc-if>
           </button>
           <sc-if value="{{ a.bulkOn }}" hint-placeholder-val="{{ false }}">
@@ -446,23 +459,26 @@ input,textarea{font:inherit;color:inherit}
     <sc-if value="{{ sec.hasTitle }}" hint-placeholder-val="{{ true }}"><div onClick="{{ sec.toggle }}" style="margin:{{ sec.mg }};padding:{{ sec.pd }};border-radius:10px;background:{{ sec.bg }};border:1px solid {{ sec.bd }};display:flex;align-items:center;gap:10px;cursor:{{ sec.cur }}"><span style="font-size:13px;color:#605a51;width:12px;flex:0 0 auto">{{ sec.caret }}</span><div style="display:flex;flex-direction:column;gap:2px;min-width:0;flex:1"><span style="font-weight:700;font-size:{{ sec.fs }};color:{{ sec.fg }}">{{ sec.title }}</span><span style="font-size:12.5px;color:#605a51">{{ sec.help }}</span></div></div></sc-if>
     <div style="padding:0 16px;padding-inline-start:{{ sec.ind }};display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,360px),1fr));gap:10px;align-items:start">
       <sc-for list="{{ sec.acts }}" as="a" hint-placeholder-count="4">
-        <div style="background:#fff;border:1px solid #e4e0d8;border-inline-start:4px solid {{ a.stFg }};border-radius:14px;overflow:hidden;box-shadow:0 1px 2px rgba(27,26,23,.04)">
+        <div style="background:#fff;border:1px solid #e4e0d8;border-inline-start:4px solid {{ a.stFg }};border-radius:14px;overflow:hidden;box-shadow:0 1px 3px rgba(27,26,23,.06);animation:dmcIn .3s ease both">
           <button onClick="{{ a.open }}" style="text-align:start;width:100%;background:transparent;border:none;padding:14px 14px 12px;display:flex;flex-direction:column;gap:10px;color:inherit">
             <div style="display:flex;gap:8px;align-items:center;width:100%">
-              <span style="font-family:'IBM Plex Mono',monospace;font-size:13px;font-weight:600;white-space:nowrap">{{ a.code }}</span>
-              <span style="font-size:12px;color:#605a51;white-space:nowrap">{{ a.projCode }}</span>
-              <span style="font-size:10.5px;color:#605a51;border:1px solid #d8d3ca;border-radius:4px;padding:1px 5px;white-space:nowrap">{{ a.srcLabel }}</span>
-              <span style="margin-inline-start:auto;font-size:12px;font-weight:600;padding:4px 9px;border-radius:999px;background:{{ a.stBg }};color:{{ a.stFg }};white-space:nowrap">{{ a.stLabel }}</span>
+              <span style="font-family:'IBM Plex Mono',monospace;font-size:12.5px;font-weight:600;white-space:nowrap;color:#3d3933;background:#f2efe9;border-radius:6px;padding:2px 7px">{{ a.code }}</span>
+              <sc-if value="{{ a.showSrc }}" hint-placeholder-val="{{ false }}"><span style="font-size:10.5px;color:#605a51;border:1px solid #d8d3ca;border-radius:4px;padding:1px 5px;white-space:nowrap">{{ a.srcLabel }}</span></sc-if>
+              <span style="margin-inline-start:auto;font-size:12px;font-weight:700;padding:4px 10px;border-radius:999px;background:{{ a.stBg }};color:{{ a.stFg }};white-space:nowrap">{{ a.stLabel }}</span>
             </div>
-            <div style="display:flex;gap:12px;align-items:flex-end;width:100%">
-              <div style="flex:1;min-width:0;font-weight:600;font-size:16.5px;line-height:1.3;text-wrap:pretty">{{ a.name }}</div>
-              <div style="font-size:26px;font-weight:700;line-height:1;letter-spacing:-0.02em">{{ a.actualTxt }}</div>
+            <div style="display:flex;gap:14px;align-items:center;width:100%">
+              <div style="flex:1;min-width:0;font-weight:600;font-size:16px;line-height:1.35;text-wrap:pretty">{{ a.name }}</div>
+              <div style="flex:0 0 auto;display:flex;flex-direction:column;align-items:flex-end;line-height:1"><span style="font-size:28px;font-weight:800;letter-spacing:-0.02em;color:{{ a.actC }};font-variant-numeric:tabular-nums">{{ a.actualTxt }}</span><span style="font-size:10.5px;color:#7a7368;margin-top:3px;font-weight:600">{{ t.actualShort }}</span></div>
             </div>
-            <div style="position:relative;height:10px;background:#ece9e3;border-radius:5px;width:100%">
-              <div style="position:absolute;inset-block:0;inset-inline-start:0;width:{{ a.actualW }};background:{{ a.barColor }};border-radius:5px"></div>
-              <div style="position:absolute;top:-4px;bottom:-4px;inset-inline-start:{{ a.plannedW }};width:2px;margin-inline-start:-1px;background:#0b4a3e;border-radius:1px"></div>
+            <div style="position:relative;height:12px;background:#ece9e3;border-radius:6px;width:100%">
+              <div style="position:absolute;inset-block:0;inset-inline-start:0;width:{{ a.actualW }};background:linear-gradient(90deg,{{ a.barColor }},{{ a.barColor2 }});border-radius:6px"></div>
+              <div style="position:absolute;top:-4px;bottom:-4px;inset-inline-start:{{ a.plannedW }};width:3px;margin-inline-start:-1.5px;background:#0b4a3e;border-radius:2px;box-shadow:0 0 0 1.5px #fff"></div>
             </div>
-            <div style="font-size:12px;color:#605a51;direction:inherit">{{ a.meta }}</div>
+            <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;width:100%;font-size:12px">
+              <span style="padding:3px 8px;border-radius:999px;background:#f2efe9;color:#3d3933;font-weight:600">{{ t.planned }} <span style="direction:ltr;unicode-bidi:isolate">{{ a.plannedTxt }}</span></span>
+              <span style="padding:3px 8px;border-radius:999px;background:{{ a.varBg }};color:{{ a.varC }};font-weight:700;direction:ltr;unicode-bidi:isolate">{{ a.varTxt }}</span>
+              <span style="color:#7a7368;margin-inline-start:auto">🕒 {{ a.lastTxt }}</span>
+            </div>
           </button>
         </div>
       </sc-for>
@@ -650,7 +666,24 @@ input,textarea{font:inherit;color:inherit}
           <div style="background:#fff;border:1px solid #ece7dc;border-radius:14px;padding:8px 12px;display:flex;align-items:center;gap:10px;min-width:0"><span style="width:30px;height:30px;border-radius:9px;background:#f1e8cf;display:grid;place-items:center;flex:0 0 auto">🏢</span><span style="font-weight:600;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ bv.name }}</span></div>
           <div style="background:#fff;border:1px solid #ece7dc;border-radius:14px;padding:8px 12px;display:flex;align-items:center;gap:10px"><span style="width:30px;height:30px;border-radius:9px;background:#f1e8cf;display:grid;place-items:center">📅</span><span style="font-weight:600;font-size:14px;direction:ltr">{{ bv.date }}</span></div>
         </div>
-        <img src="{{ bv.img }}" alt="" style="width:100%;max-height:300px;object-fit:contain;border-radius:16px;background:#fbf8f1;display:block">
+        <div style="display:flex;flex-wrap:wrap;gap:12px;align-items:flex-start">
+          <img src="{{ bv.img }}" alt="" style="flex:1 1 320px;min-width:0;width:100%;max-height:380px;object-fit:contain;border-radius:16px;background:#fbf8f1;display:block">
+          <sc-if value="{{ bv.hasFloors }}" hint-placeholder-val="{{ true }}"><div style="flex:1 1 300px;min-width:0;background:#fff;border:1px solid #ece7dc;border-radius:16px;overflow:hidden;display:flex;flex-direction:column">
+            <div style="padding:10px 14px;font-weight:700;font-size:14px;border-bottom:1px solid #f0ede7">{{ t.bvFloors }}</div>
+            <sc-for list="{{ bv.floors }}" as="f" hint-placeholder-count="4"><div style="border-bottom:1px solid #f0ede7">
+              <button onClick="{{ f.toggle }}" style="width:100%;text-align:start;background:transparent;border:none;padding:10px 14px;display:flex;flex-direction:column;gap:6px;color:inherit">
+                <div style="display:flex;align-items:center;gap:8px;width:100%"><span style="font-size:12px;color:#605a51;width:12px">{{ f.caret }}</span><span style="font-weight:700;font-size:14px;flex:1;min-width:0">{{ f.label }}</span><span style="font-size:12px;color:#605a51">{{ f.planL }} <span style="direction:ltr;unicode-bidi:isolate">{{ f.planV }}</span></span><span style="font-weight:800;font-size:16px;direction:ltr;unicode-bidi:isolate">{{ f.pct }}</span><span style="font-size:12px;font-weight:700;color:{{ f.vc }};direction:ltr;unicode-bidi:isolate;min-width:44px;text-align:end">{{ f.v }}</span></div>
+                <div style="position:relative;height:8px;background:#ece9e3;border-radius:4px;width:100%"><div style="position:absolute;inset-block:0;inset-inline-start:0;width:{{ f.aW }};background:{{ f.bar }};border-radius:4px"></div><div style="position:absolute;top:-3px;bottom:-3px;inset-inline-start:{{ f.pW }};width:2px;background:#b3261e"></div></div>
+                <span style="font-size:11.5px;color:#7a7368">{{ f.n }}</span>
+              </button>
+              <sc-if value="{{ f.open }}" hint-placeholder-val="{{ false }}"><div style="background:#faf8f4;max-height:320px;overflow-y:auto">
+                <sc-for list="{{ f.acts }}" as="x" hint-placeholder-count="3"><button onClick="{{ x.go }}" style="width:100%;text-align:start;background:transparent;border:none;border-top:1px solid #f0ede7;padding:8px 14px 8px 34px;display:flex;align-items:center;gap:8px;color:inherit">
+                  <span style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;font-weight:600;flex:0 0 auto">{{ x.code }}</span><span style="flex:1;min-width:0;font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ x.name }}</span><span style="font-size:11px;font-weight:700;padding:2px 7px;border-radius:999px;background:{{ x.stBg }};color:{{ x.stFg }};white-space:nowrap">{{ x.stL }}</span><span style="font-weight:700;font-size:13px;min-width:40px;text-align:end">{{ x.pct }}</span>
+                </button></sc-for>
+              </div></sc-if>
+            </div></sc-for>
+          </div></sc-if>
+        </div>
         <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px">
           <sc-for list="{{ bv.tiles }}" as="x" hint-placeholder-count="3"><button onClick="{{ x.go }}" style="text-align:start;background:#fff;border:1px solid #ece7dc;border-radius:16px;padding:12px 14px;display:flex;flex-direction:column;gap:6px;color:inherit">
             <span style="font-size:13.5px;font-weight:600;color:#3f3a33">{{ x.icon }} {{ x.label }}</span>
@@ -682,7 +715,7 @@ input,textarea{font:inherit;color:inherit}
       <sc-for list="{{ db.chips }}" as="c" hint-placeholder-count="4"><button onClick="{{ c.onClick }}" style="flex:0 0 auto;min-height:40px;padding:0 14px;border-radius:999px;border:1px solid {{ c.bd }};background:{{ c.bg }};color:{{ c.fg }};font-size:14px;white-space:nowrap">{{ c.label }}</button></sc-for>
     </div>
     <div style="display:flex;flex-wrap:wrap;gap:14px 0;align-items:stretch">
-    <div data-keepcolor="1" style="flex:1 1 380px;margin:0 16px;background:#0e5a4b;color:#f7f5f1;border-radius:14px;padding:16px;display:flex;gap:20px;align-items:center;flex-wrap:wrap">
+    <div data-keepcolor="1" style="flex:1 1 380px;margin:0 16px;animation:dmcIn .3s ease both;box-shadow:0 6px 18px rgba(11,74,62,.18);background:#0e5a4b;color:#f7f5f1;border-radius:14px;padding:16px;display:flex;gap:20px;align-items:center;flex-wrap:wrap">
       <div style="position:relative;width:136px;height:136px;flex:0 0 auto">
         <svg viewBox="0 0 120 120" style="width:136px;height:136px;display:block;transform:rotate(-90deg)">
           <circle cx="60" cy="60" r="50" style="fill:none;stroke:#093d33;stroke-width:11"></circle>
@@ -700,11 +733,11 @@ input,textarea{font:inherit;color:inherit}
       </div>
     </div>
     <div style="flex:1.6 1 440px;align-content:start;padding:0 16px;display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,160px),1fr));gap:8px">
-      <sc-for list="{{ db.kpis }}" as="k" hint-placeholder-count="8"><div style="background:#fff;border:1px solid #e2ded6;border-inline-start:4px solid {{ k.c }};border-radius:10px;padding:10px 12px;display:flex;flex-direction:column;gap:2px;min-height:76px"><span style="font-size:24px;font-weight:700;line-height:1.1;color:{{ k.c }}">{{ k.v }}</span><span style="font-size:13px;color:#2d2a25;font-weight:600">{{ k.l }}</span><span style="font-size:11.5px;color:#605a51;line-height:1.3">{{ k.sub }}</span></div></sc-for>
+      <sc-for list="{{ db.kpis }}" as="k" hint-placeholder-count="8"><div style="background:#fff;border:1px solid #e2ded6;border-inline-start:4px solid {{ k.c }};border-radius:12px;padding:10px 12px;display:flex;flex-direction:column;gap:2px;min-height:80px;box-shadow:0 1px 3px rgba(27,26,23,.05);animation:dmcIn .3s ease both"><div style="display:flex;align-items:center;gap:8px"><span style="flex:1;min-width:0;font-size:24px;font-weight:800;line-height:1.1;color:{{ k.c }};font-variant-numeric:tabular-nums">{{ k.v }}</span><span style="flex:0 0 auto;width:32px;height:32px;border-radius:9px;background:{{ k.icBg }};display:grid;place-items:center"><img data-ico="1" src="{{ k.ic }}" alt="" style="width:18px;height:18px;display:block"></span></div><span style="font-size:13px;color:#2d2a25;font-weight:600">{{ k.l }}</span><span style="font-size:11.5px;color:#605a51;line-height:1.3">{{ k.sub }}</span></div></sc-for>
     </div>
     </div>
     <div style="padding:0 16px;column-width:340px;column-gap:12px">
-      <div style="break-inside:avoid;margin-bottom:12px;background:#fff;border:1px solid #e2ded6;border-inline-start:4px solid oklch(0.55 0.17 28);border-radius:12px;overflow:hidden;display:flex;flex-direction:column">
+      <div style="break-inside:avoid;margin-bottom:12px;animation:dmcIn .35s ease both;box-shadow:0 1px 3px rgba(27,26,23,.05);background:#fff;border:1px solid #e2ded6;border-inline-start:4px solid oklch(0.55 0.17 28);border-radius:12px;overflow:hidden;display:flex;flex-direction:column">
         <div style="padding:14px 14px 6px;font-weight:700;font-size:15px">⚠️ {{ t.repRisks }}</div>
         <sc-for list="{{ db.risks }}" as="r" hint-placeholder-count="5"><button onClick="{{ r.open }}" style="text-align:start;width:100%;background:transparent;border:none;border-top:1px solid #f0ede7;padding:10px 14px;display:flex;gap:10px;align-items:flex-start;color:inherit">
           <span style="flex:0 0 auto;width:24px;height:24px;border-radius:50%;background:oklch(0.95 0.035 28);color:oklch(0.45 0.16 28);font-weight:700;font-size:13px;display:grid;place-items:center">{{ r.n }}</span>
@@ -717,32 +750,34 @@ input,textarea{font:inherit;color:inherit}
         </button></sc-for>
         <sc-if value="{{ db.noRisks }}" hint-placeholder-val="{{ false }}"><div style="color:#5f5a52;text-align:center;padding:14px">{{ t.noRisks }}</div></sc-if>
       </div>
-      <div style="break-inside:avoid;margin-bottom:12px;background:#fff;border:1px solid #e2ded6;border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:10px">
+      <div style="break-inside:avoid;margin-bottom:12px;animation:dmcIn .35s ease both;box-shadow:0 1px 3px rgba(27,26,23,.05);background:#fff;border:1px solid #e2ded6;border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:10px">
         <div style="font-weight:700;font-size:15px">{{ t.p_scurve }}</div>
-        <div style="display:flex;gap:16px;font-size:12.5px;flex-wrap:wrap"><span style="display:flex;align-items:center;gap:6px"><span style="width:18px;height:3px;background:#8f887c"></span>{{ t.planned }}</span><span style="display:flex;align-items:center;gap:6px"><span style="width:18px;height:4px;background:oklch(0.62 0.16 50)"></span>{{ t.actual }}</span><span style="display:flex;align-items:center;gap:6px"><span style="width:2px;height:14px;background:#0b4a3e"></span>{{ t.todayL }}</span></div>
+        <div style="display:flex;gap:16px;font-size:12.5px;flex-wrap:wrap"><span style="display:flex;align-items:center;gap:6px"><span style="width:18px;height:3px;background:#c5a45a"></span>{{ t.planned }}</span><span style="display:flex;align-items:center;gap:6px"><span style="width:18px;height:4px;background:#0e5a4b;border-radius:2px"></span>{{ t.actual }}</span><span style="display:flex;align-items:center;gap:6px"><span style="width:2px;height:14px;background:#0b4a3e"></span>{{ t.todayL }}</span></div>
         <div style="direction:ltr;position:relative">
           <svg viewBox="0 0 300 130" preserveAspectRatio="none" style="width:100%;height:190px;display:block;overflow:visible">
             <line x1="0" y1="5" x2="300" y2="5" style="stroke:#ece9e3;stroke-width:1;vector-effect:non-scaling-stroke"></line>
             <line x1="0" y1="65" x2="300" y2="65" style="stroke:#ece9e3;stroke-width:1;vector-effect:non-scaling-stroke"></line>
             <line x1="0" y1="125" x2="300" y2="125" style="stroke:#cfc9bf;stroke-width:1;vector-effect:non-scaling-stroke"></line>
             <line x1="{{ db.chart.tx }}" y1="0" x2="{{ db.chart.tx }}" y2="125" style="stroke:#1b1a17;stroke-width:1.5;vector-effect:non-scaling-stroke"></line>
-            <polyline points="{{ db.chart.planPts }}" style="fill:none;stroke:#8f887c;stroke-width:2;stroke-dasharray:5 4;vector-effect:non-scaling-stroke"></polyline>
-            <polyline points="{{ db.chart.actPts }}" style="fill:none;stroke:oklch(0.62 0.16 50);stroke-width:3.5;vector-effect:non-scaling-stroke;stroke-linejoin:round"></polyline>
+            <defs><linearGradient id="dmcArea" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0e5a4b" stop-opacity=".32"></stop><stop offset="1" stop-color="#0e5a4b" stop-opacity=".02"></stop></linearGradient></defs>
+            <polygon points="{{ db.chart.area }}" style="fill:url(#dmcArea);stroke:none"></polygon>
+            <polyline points="{{ db.chart.planPts }}" style="fill:none;stroke:#c5a45a;stroke-width:2.5;stroke-dasharray:6 4;vector-effect:non-scaling-stroke"></polyline>
+            <polyline points="{{ db.chart.actPts }}" style="fill:none;stroke:#0e5a4b;stroke-width:3.5;vector-effect:non-scaling-stroke;stroke-linejoin:round;stroke-linecap:round"></polyline>
           </svg>
           <div style="position:absolute;left:2px;top:-2px;font-size:10px;color:#5f5a52">100%</div>
           <div style="position:absolute;left:2px;top:88px;font-size:10px;color:#5f5a52">50%</div>
         </div>
         <div style="direction:ltr;display:flex;justify-content:space-between;font-size:10.5px;color:#5f5a52;font-family:'IBM Plex Mono',monospace"><span>{{ db.axis.a }}</span><span>{{ db.axis.b }}</span></div>
       </div>
-      <div style="break-inside:avoid;margin-bottom:12px;background:#fff;border:1px solid #e2ded6;border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:8px">
+      <div style="break-inside:avoid;margin-bottom:12px;animation:dmcIn .35s ease both;box-shadow:0 1px 3px rgba(27,26,23,.05);background:#fff;border:1px solid #e2ded6;border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:8px">
         <div style="font-weight:700;font-size:15px">{{ t.p_weekly }}</div>
         <div style="font-size:12px;color:#605a51">{{ t.p_weeklyHelp }}</div>
         <div style="display:flex;gap:6px;direction:ltr;align-items:flex-end;border-bottom:1px solid #cfc9bf;padding-top:6px">
-          <sc-for list="{{ db.weeks }}" as="w" hint-placeholder-count="8"><div style="flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;gap:3px"><span style="font-size:10.5px;font-weight:700;color:#3f3a33">{{ w.aT }}</span><div style="display:flex;gap:2px;align-items:flex-end;justify-content:center;width:100%;height:120px"><div style="width:40%;height:{{ w.pH }};background:#cfc9bf;border-radius:3px 3px 0 0"></div><div style="width:40%;height:{{ w.aH }};background:#c5a45a;border-radius:3px 3px 0 0"></div></div></div></sc-for>
+          <sc-for list="{{ db.weeks }}" as="w" hint-placeholder-count="8"><div style="flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;gap:3px"><span style="font-size:10.5px;font-weight:700;color:#3f3a33">{{ w.aT }}</span><div style="display:flex;gap:2px;align-items:flex-end;justify-content:center;width:100%;height:120px"><div style="width:40%;height:{{ w.pH }};background:#e6d7ae;border-radius:4px 4px 0 0"></div><div style="width:40%;height:{{ w.aH }};background:linear-gradient(180deg,#1a7a66,#0e5a4b);border-radius:4px 4px 0 0"></div></div></div></sc-for>
         </div>
         <div style="display:flex;gap:6px;direction:ltr"><sc-for list="{{ db.weeks }}" as="w" hint-placeholder-count="8"><span style="flex:1;min-width:0;text-align:center;font-size:10px;color:#605a51;font-family:'IBM Plex Mono',monospace">{{ w.lbl }}</span></sc-for></div>
       </div>
-      <div style="break-inside:avoid;margin-bottom:12px;background:#fff;border:1px solid #e2ded6;border-radius:12px;overflow:hidden;display:flex;flex-direction:column">
+      <div style="break-inside:avoid;margin-bottom:12px;animation:dmcIn .35s ease both;box-shadow:0 1px 3px rgba(27,26,23,.05);background:#fff;border:1px solid #e2ded6;border-radius:12px;overflow:hidden;display:flex;flex-direction:column">
         <div style="padding:14px 14px 6px;font-weight:700;font-size:15px">{{ db.healthTitle }}</div>
         <sc-for list="{{ db.health }}" as="h" hint-placeholder-count="4">
           <sc-if value="{{ h.isProj }}" hint-placeholder-val="{{ true }}"><button onClick="{{ h.open }}" style="display:flex;flex-direction:column;gap:6px;width:100%;text-align:start;border:none;border-top:1px solid #f0ede7;background:#fff;padding:10px 14px;color:inherit">
@@ -759,7 +794,7 @@ input,textarea{font:inherit;color:inherit}
           </div></sc-if>
         </sc-for>
       </div>
-      <div style="break-inside:avoid;margin-bottom:12px;background:#fff;border:1px solid #e2ded6;border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:12px">
+      <div style="break-inside:avoid;margin-bottom:12px;animation:dmcIn .35s ease both;box-shadow:0 1px 3px rgba(27,26,23,.05);background:#fff;border:1px solid #e2ded6;border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:12px">
         <div style="font-weight:700;font-size:15px">⏰ {{ t.compTitle }}</div>
         <div style="font-size:12.5px;color:#605a51;font-weight:600">{{ db.cutTxt }}</div>
         <sc-for list="{{ db.comp }}" as="x" hint-placeholder-count="5"><div style="display:flex;flex-direction:column;gap:5px">
@@ -773,7 +808,7 @@ input,textarea{font:inherit;color:inherit}
         </div></sc-if>
         <div style="font-size:11.5px;color:#605a51;line-height:1.45">{{ db.cutHelp }}</div>
       </div>
-      <div style="break-inside:avoid;margin-bottom:12px;background:#fff;border:1px solid #e2ded6;border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:12px">
+      <div style="break-inside:avoid;margin-bottom:12px;animation:dmcIn .35s ease both;box-shadow:0 1px 3px rgba(27,26,23,.05);background:#fff;border:1px solid #e2ded6;border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:12px">
         <div style="font-weight:700;font-size:15px">{{ t.p_disc }}</div>
         <sc-for list="{{ db.disc }}" as="x" hint-placeholder-count="4"><div style="display:flex;flex-direction:column;gap:5px">
           <div style="display:flex;gap:8px;align-items:baseline"><span style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;font-weight:700;padding:1px 6px;border-radius:4px;background:#f2efe9">{{ x.code }}</span><span style="flex:1;font-weight:600;font-size:14px">{{ x.label }}</span><span style="font-weight:700;font-size:13.5px;color:{{ x.vc }};direction:ltr;unicode-bidi:isolate">{{ x.v }}</span></div>
@@ -781,14 +816,14 @@ input,textarea{font:inherit;color:inherit}
           <div style="font-size:12px;color:#605a51">{{ x.line }}</div>
         </div></sc-for>
       </div>
-      <div style="break-inside:avoid;margin-bottom:12px;background:#fff;border:1px solid #e2ded6;border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:10px">
+      <div style="break-inside:avoid;margin-bottom:12px;animation:dmcIn .35s ease both;box-shadow:0 1px 3px rgba(27,26,23,.05);background:#fff;border:1px solid #e2ded6;border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:10px">
         <div style="font-weight:700;font-size:15px">{{ t.p_flow }}</div>
         <sc-for list="{{ db.flow }}" as="x" hint-placeholder-count="5"><div style="display:flex;flex-direction:column;gap:4px">
           <div style="display:flex;justify-content:space-between;gap:8px;font-size:13.5px"><span>{{ x.l }}</span><span style="font-weight:700">{{ x.n }}</span></div>
           <div style="height:10px;background:#ece9e3;border-radius:5px;overflow:hidden"><div style="height:100%;width:{{ x.w }};background:{{ x.c }};border-radius:5px"></div></div>
         </div></sc-for>
       </div>
-      <div style="break-inside:avoid;margin-bottom:12px;background:#fff;border:1px solid #e2ded6;border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:10px">
+      <div style="break-inside:avoid;margin-bottom:12px;animation:dmcIn .35s ease both;box-shadow:0 1px 3px rgba(27,26,23,.05);background:#fff;border:1px solid #e2ded6;border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:10px">
         <div style="font-weight:700;font-size:15px">{{ t.p_reasons }}</div>
         <sc-for list="{{ db.reasons }}" as="r" hint-placeholder-count="4"><div style="display:flex;flex-direction:column;gap:4px">
           <div style="display:flex;justify-content:space-between;gap:8px;font-size:13.5px"><span style="font-weight:600">{{ r.label }}</span><span style="color:#5f5a52">{{ r.n }}</span></div>
@@ -796,7 +831,7 @@ input,textarea{font:inherit;color:inherit}
         </div></sc-for>
         <sc-if value="{{ db.noReasons }}" hint-placeholder-val="{{ false }}"><div style="color:#5f5a52;text-align:center;padding:12px">{{ t.noItems }}</div></sc-if>
       </div>
-      <div style="break-inside:avoid;margin-bottom:12px;background:#fff;border:1px solid #e2ded6;border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:10px">
+      <div style="break-inside:avoid;margin-bottom:12px;animation:dmcIn .35s ease both;box-shadow:0 1px 3px rgba(27,26,23,.05);background:#fff;border:1px solid #e2ded6;border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:10px">
         <div style="font-weight:700;font-size:15px">{{ t.repByParty }}</div>
         <sc-for list="{{ db.parties }}" as="r" hint-placeholder-count="4"><div style="display:flex;flex-direction:column;gap:4px">
           <div style="display:flex;justify-content:space-between;gap:8px;font-size:13.5px"><span style="font-weight:600">{{ r.label }}</span><span style="color:#5f5a52;direction:ltr;unicode-bidi:isolate">{{ r.n }}</span></div>
@@ -804,14 +839,14 @@ input,textarea{font:inherit;color:inherit}
         </div></sc-for>
         <sc-if value="{{ db.noParties }}" hint-placeholder-val="{{ false }}"><div style="color:#5f5a52;text-align:center;padding:12px">{{ t.noItems }}</div></sc-if>
       </div>
-      <div style="break-inside:avoid;margin-bottom:12px;background:#fff;border:1px solid #e2ded6;border-radius:12px;overflow:hidden;display:flex;flex-direction:column">
+      <div style="break-inside:avoid;margin-bottom:12px;animation:dmcIn .35s ease both;box-shadow:0 1px 3px rgba(27,26,23,.05);background:#fff;border:1px solid #e2ded6;border-radius:12px;overflow:hidden;display:flex;flex-direction:column">
         <div style="padding:14px 14px 6px;font-weight:700;font-size:15px">{{ t.p_behind }}</div>
         <sc-for list="{{ db.behind }}" as="a" hint-placeholder-count="4"><button onClick="{{ a.open }}" style="display:flex;gap:10px;align-items:center;width:100%;text-align:start;border:none;border-top:1px solid #f0ede7;background:#fff;padding:10px 14px;color:inherit;min-height:56px">
           <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:2px"><div style="display:flex;gap:8px"><span style="font-family:'IBM Plex Mono',monospace;font-size:12.5px;font-weight:600">{{ a.code }}</span><span style="font-size:12px;color:#605a51;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ a.proj }}</span></div><div style="font-size:14px;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ a.name }}</div><div style="font-size:12px;color:#605a51">{{ t.actualShort }} / {{ t.planned }} · {{ a.aT }}</div></div>
           <span style="font-size:16px;font-weight:700;color:{{ a.vc }};direction:ltr;unicode-bidi:isolate;white-space:nowrap">{{ a.v }}</span>
         </button></sc-for>
       </div>
-      <div style="break-inside:avoid;margin-bottom:12px;background:#fff;border:1px solid #e2ded6;border-radius:12px;overflow:hidden;display:flex;flex-direction:column">
+      <div style="break-inside:avoid;margin-bottom:12px;animation:dmcIn .35s ease both;box-shadow:0 1px 3px rgba(27,26,23,.05);background:#fff;border:1px solid #e2ded6;border-radius:12px;overflow:hidden;display:flex;flex-direction:column">
         <div style="padding:14px 14px 4px;font-weight:700;font-size:15px">{{ t.p_ahead }}</div>
         <div style="padding:0 14px 10px;display:flex;flex-direction:column;gap:4px"><sc-for list="{{ db.ahead }}" as="x" hint-placeholder-count="3"><div style="font-size:13.5px;font-weight:600;color:{{ x.c }}">{{ x.l }}</div></sc-for></div>
         <div style="padding:10px 14px 6px;font-weight:700;font-size:15px;border-top:1px solid #ece9e3">{{ t.p_feed }}</div>
@@ -910,7 +945,7 @@ input,textarea{font:inherit;color:inherit}
   <div style="max-width:760px;margin:0 auto;display:flex;overflow-x:auto;padding:0 2px">
     <sc-for list="{{ tabs }}" as="b" hint-placeholder-count="3">
       <button onClick="{{ b.onClick }}" style="position:relative;flex:1 1 0;min-width:44px;padding:0 2px;white-space:normal;line-height:1.15;text-align:center;min-height:58px;margin:4px 1px;border:none;border-radius:12px;background:{{ b.bg }};color:{{ b.fg }};font-size:12.5px;font-weight:{{ b.fw }};display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px">
-        <span style="font-size:19px;line-height:1">{{ b.icon }}</span>
+        <span style="display:grid;place-items:center;width:46px;height:28px;border-radius:999px;background:{{ b.pill }};transition:background .2s"><img data-ico="1" src="{{ b.ic }}" alt="" style="width:21px;height:21px;display:block"></span>
         <span style="font-size:10px;letter-spacing:-0.2px">{{ b.label }}</span>
         <sc-if value="{{ b.hasBadge }}" hint-placeholder-val="{{ false }}"><span style="position:absolute;top:2px;inset-inline-end:2px;min-width:18px;padding:0 5px;border-radius:999px;background:oklch(0.52 0.17 28);color:#fff;font-size:11px;line-height:18px;font-weight:700">{{ b.badge }}</span></sc-if>
       </button>
@@ -1118,6 +1153,35 @@ const r1=v=>Math.round(v*10)/10;
 const uid=p=>p+Date.now().toString(36)+Math.random().toString(36).slice(2,6);
 const isDate=s=>/^\d{4}-\d{2}-\d{2}$/.test(s)&&!isNaN(Date.parse(s));
 const DELAYS=['material','manpower','equipment','weather','design','client','subcon','permit','other'];
+// Line icons (24x24, stroke) — rendered as <img data-ico> data URLs so templates stay plain lookups
+const ICO={
+ acts:'<rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 3v3h6V3M9 11h6M9 15h4"/>',
+ hist:'<path d="M22 2 11 13M22 2l-7 20-4-9-9-4z"/>',
+ lookahead:'<rect x="3" y="4" width="18" height="17" rx="2"/><path d="M16 2v4M8 2v4M3 10h18M8 14h2M14 14h2M8 18h2"/>',
+ review:'<rect x="3" y="3" width="18" height="18" rx="3"/><path d="m8 12 3 3 5-6"/>',
+ progress:'<path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/>',
+ import:'<path d="M12 3v12M7 10l5 5 5-5M4 21h16"/>',
+ dash:'<rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/>',
+ bldg:'<path d="M4 21V5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v16M16 9h3a1 1 0 0 1 1 1v11M2 21h20M8 7h4M8 11h4M8 15h4"/>',
+ report:'<path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h6"/>',
+ portfolio:'<rect x="3" y="7" width="18" height="13" rx="2"/><path d="M9 7V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2M3 13h18"/>',
+ trends:'<path d="M22 12h-4l-3 8L9 4l-3 8H2"/>',
+ delays:'<circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2.5M9 2h6"/>',
+ users:'<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0M16 4.5a3.5 3.5 0 0 1 0 7M18 14a6 6 0 0 1 3.5 6"/>',
+ chat:'<path d="M21 12a8 8 0 0 1-11.6 7.1L4 20.5l1.4-4.6A8 8 0 1 1 21 12z"/><path d="M8.5 12h.01M12 12h.01M15.5 12h.01"/>',
+ refresh:'<path d="M21 12a9 9 0 1 1-2.6-6.4L21 8"/><path d="M21 3v5h-5"/>',
+ moon:'<path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/>',
+ sun:'<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>',
+ gear:'<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/>',
+ alert:'<path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><path d="M12 9v4M12 17h.01"/>',
+ target:'<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/>',
+ layers:'<path d="m12 2 10 5-10 5L2 7z"/><path d="m2 17 10 5 10-5M2 12l10 5 10-5"/>',
+ play:'<circle cx="12" cy="12" r="9"/><path d="m10 8 6 4-6 4z"/>',
+ check:'<circle cx="12" cy="12" r="9"/><path d="m8 12 3 3 5-6"/>',
+ user:'<circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/>'
+};
+const _icoC={};
+function ico(n,c){c=String(c).replace(OKLCH_RE,oklchRgb);const k=n+'|'+c;if(_icoC[k])return _icoC[k];const svg='<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="'+c+'" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">'+(ICO[n]||ICO.acts)+'</svg>';return _icoC[k]='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(svg);}
 const TAB_ICON={acts:'📋',hist:'📤',lookahead:'📅',review:'✅',progress:'📈',import:'📥',dash:'📊',bldg:'🏢',report:'📄',portfolio:'💼',trends:'📉',delays:'⏱️',users:'👥'};
 const PARTIES=['contractor','owner','consultant','subcon','other'];
 const DPARTY={material:'contractor',manpower:'contractor',equipment:'contractor',weather:'other',design:'consultant',client:'owner',subcon:'subcon',permit:'owner',other:'other'};
@@ -1141,7 +1205,7 @@ refreshBtn:'Refresh',dows:['Sun','Mon','Tue','Wed','Thu','Fri','Sat'],compTitle:
 prodTitle:'Productivity & forecast',tab_report:'Report',tab_bldg:'Buildings',bldgTitle:'Buildings',bldgHelp:'Pick a building to see its floors, trades and progress against plan.',pdfMaking:'Preparing the PDF…',pdfDone:'PDF downloaded',pdfFail:'Could not create the PDF — check the internet connection and try again',wrSubmitBtn:'Submit',wrSendTo:'Send the report to',wrTo_cm:'Construction Manager',wrTo_pm:'Project Manager',wrTo_consultant:'Consultant',wrHelp:'A fixed copy of the report is saved. The CM / PM can download it from this tab. For the consultant, download the PDF and email it.',wrNotePh:'Note (optional)',wrSubmit:'Submit report',wrBusy:'Submitting…',wrPickTo:'Choose at least one recipient',wrSent:'Report submitted',wrSentCons:'Report submitted — download the PDF and email it to the consultant',wrListTitle:'Submitted reports',wrNone:'No reports submitted yet.',wrDl:'PDF',wrToLine:x=>`Sent to: ${x}`,wrPopup:'Allow pop-ups for this site to download the report',wrMissing:'Report not found',repStep1:'1. Project',repStep2:'2. Who is it for?',repStep3:'3. Language',repPreview:'Preview',repPdf:'Download PDF',repModeExtD:'Formal report for the consultant / client. No contract values or internal workflow.',repModeIntD:'For management. Adds contract values, approvals and missing updates.',k_comp:'Update compliance',k_compSub:d=>`this cycle · cut-off ${d}`,k_gain:'Progress this week',k_gainSub:v=>`last week ${v}`,k_fcLate:'Forecast to finish late',k_fcLateSub:'activities after planned finish',remDaysLbl:'Remaining duration to finish the activity',daysWord:'days',remHint:d=>`Your estimate of working days left. Planned finish: ${d}`,err_remD:'Enter the remaining duration (days) to finish the activity',remSrcSite:(n,d)=>`Remaining duration from the site engineer: ${n} days (as of ${d})`,remSrcPend:'not yet approved',remSrcCalc:'Calculated from the actual production rate (no estimate from site)',remQty:'Remaining quantity',rateAct:'Actual rate / day',rateReq:'Required rate / day',remDur:'Remaining duration',fcAct:'Forecast finish',daysN:n=>`${n} days`,notStartedRate:'Not started',overduePf:'Past planned finish',fcLate:n=>`${n} days after planned finish`,fcOk:'On or before planned finish',perDay:'/day',
 repCmp:'Compared with last week',repMetric:'Indicator',repCmpPrev:'Last week',repCmpNow:'This week',repCmpChg:'Change',cmpPlanned:'Planned progress',cmpActual:'Actual progress (approved)',cmpVar:'Variance',cmpSpi:'SPI',cmpBehind:'Activities behind schedule',cmpDone:'Activities completed',cmpGain:'Progress gained in the week',
 repRisks:'Top 5 risks',riskCols:['#','Activity','Risk','Cause / responsibility','Forecast finish'],riskBehind:v=>`Behind plan by ${v}`,riskDueSoon:d=>`Due ${d} — not finished`,riskOverdue:'Past planned finish',riskNoUpd:'No recent site update',noRisks:'No significant risks this week.',
-weekSec:'This week — before the cut-off',weekSecHelp:(d,u,n)=>`Cut-off ${d} · ${u} of ${n} updated`,otherSec:'Other activities',darkOn:'Night mode',darkOff:'Day mode',al_title:'Activity log',al_help:'Who signed in and who changed what (demo rows hidden). Only the administrator sees this.',al_show:'Show log',al_refresh:'Refresh',al_all:'All',al_logins:'Sign-ins',al_changes:'Changes',al_loading:'Loading…',al_unknown:'System',al_login:'signed in',al_upNew:(c,p,st)=>`new update on ${c}: ${p}% (${st})`,al_upDel:c=>`deleted an update on ${c}`,al_upEdit:c=>`update on ${c}`,al_act:{insert:'added activity',update:'edited activity',delete:'deleted activity'},al_proj:{insert:'created project',update:'edited project',delete:'deleted project'},al_mem:(k,u,p)=>k==='delete'?`removed ${u} from ${p}`:`added ${u} to ${p}`,al_signup:'new account',al_user:'changed user',al_rep:'issued report',al_set:'changed setting',bvTitle:'Building',k_struct:'Structural work',k_finish:'Finishing work',k_mep:'MEP works',k_planShort:'Planned',k_finBy:'Planned finish',bvActs:n=>n+' activities',bvLegend:'Ticks = actual (gold) vs planned today (light) · colour by floor: green done, gold in progress, grey not started',bvActual:'Actual',bvPlanned:'Planned',bvVar:'Variance',fl_found:'Foundation',fl_gf:'GF',fl_f1:'1st',fl_f2:'2nd',fl_f3:'3rd',fl_roof:'Roof',rvGrpN:n=>n+(n===1?' update':' updates')+' to review',allActsSec:'Activities',wbsHelp:(n,a,l)=>`${n} activities · actual ${a}`+(l?` · ${l} delayed`:''),wbsTap:'grouped by WBS — tap a group to open it',wkDone:'✓ Updated this week',wkTodo:'Needs update this week',partyLabel:'Who is responsible for the delay?',parties:{contractor:'DMC (us)',owner:'Owner / client',consultant:'Consultant',subcon:'Subcontractor',other:'Other / force majeure'},repByParty:'Delays by responsibility',repParty:'Responsibility',returnCm:'Return to CM',plRetShort:'Returned by Planning',t_returnedCm:'Returned to the Construction Manager',plRetLine:d=>`Returned by Planning ${d}`,ev_returned_cm:'returned to CM by Planning',repNo:'Report No.',repPeriod:'Period',repFor:'Report for:',repModeExt:'Consultant / Client',repModeInt:'Internal',repClsExt:'FOR CONSULTANT REVIEW',repClsInt:'INTERNAL — CONFIDENTIAL — NOT FOR EXTERNAL DISTRIBUTION',
+weekSec:'This week — before the cut-off',weekSecHelp:(d,u,n)=>`Cut-off ${d} · ${u} of ${n} updated`,otherSec:'Other activities',darkOn:'Night mode',darkOff:'Day mode',al_title:'Activity log',al_help:'Who signed in and who changed what (demo rows hidden). Only the administrator sees this.',al_show:'Show log',al_refresh:'Refresh',al_all:'All',al_logins:'Sign-ins',al_changes:'Changes',al_loading:'Loading…',al_unknown:'System',al_login:'signed in',al_upNew:(c,p,st)=>`new update on ${c}: ${p}% (${st})`,al_upDel:c=>`deleted an update on ${c}`,al_upEdit:c=>`update on ${c}`,al_act:{insert:'added activity',update:'edited activity',delete:'deleted activity'},al_proj:{insert:'created project',update:'edited project',delete:'deleted project'},al_mem:(k,u,p)=>k==='delete'?`removed ${u} from ${p}`:`added ${u} to ${p}`,al_signup:'new account',al_user:'changed user',al_rep:'issued report',al_set:'changed setting',bvTitle:'Building',k_struct:'Structural work',k_finish:'Finishing work',k_mep:'MEP works',k_planShort:'Planned',k_finBy:'Planned finish',bvActs:n=>n+' activities',bvLegend:'Ticks = actual (gold) vs planned (light) · floor colour: green done, gold in progress, grey not started · red dashed line = planned',bvActual:'Actual',bvPlanned:'Planned',bvVar:'Variance',fl_found:'Foundation',fl_gf:'GF',fl_f1:'1st',fl_f2:'2nd',fl_f3:'3rd',fl_roof:'Roof',rvGrpN:n=>n+(n===1?' update':' updates')+' to review',allActsSec:'Activities',wbsHelp:(n,a,l)=>`${n} activities · actual ${a}`+(l?` · ${l} delayed`:''),wbsTap:'grouped by WBS — tap a group to open it',wkDone:'✓ Updated this week',wkTodo:'Needs update this week',partyLabel:'Who is responsible for the delay?',parties:{contractor:'DMC (us)',owner:'Owner / client',consultant:'Consultant',subcon:'Subcontractor',other:'Other / force majeure'},repByParty:'Delays by responsibility',repParty:'Responsibility',returnCm:'Return to CM',plRetShort:'Returned by Planning',t_returnedCm:'Returned to the Construction Manager',plRetLine:d=>`Returned by Planning ${d}`,ev_returned_cm:'returned to CM by Planning',repNo:'Report No.',repPeriod:'Period',repFor:'Report for:',repModeExt:'Consultant / Client',repModeInt:'Internal',repClsExt:'FOR CONSULTANT REVIEW',repClsInt:'INTERNAL — CONFIDENTIAL — NOT FOR EXTERNAL DISTRIBUTION',
 repLocL:'Location',repPrepared:'Prepared by',repRev:'Revision',repValue:'Contract value',repWeightBy:'Weighting',repByWeight:'Activity weights',repAllN:n=>`All projects (${n})`,
 repExec:'1. Executive summary',repToDate:'Cumulative to date',repApprovedOnly:'Approved updates only',repVsPlan:'Actual − planned',repSpiS:'Actual ÷ planned',repWeekGain:'Progress this week',repPlannedGain:g=>`Planned ${g}`,
 repNarr:o=>`Overall progress reached ${o.a} against ${o.p} planned (variance ${o.v}, SPI ${o.spi}). Progress achieved this week is ${o.g} against ${o.gp} planned, from ${o.n} approved site updates. ${o.d} activities are currently behind schedule${o.r?`; the main reported cause is “${o.r}”`:''}. At the current rate the forecast finish is ${o.fc} (planned ${o.end}).`,
@@ -1181,7 +1245,7 @@ t_saved:'Draft saved',t_submitted:'Submitted for review',t_approved:'Approved �
 ev_saved:'saved',ev_submitted:'submitted',ev_approved:'approved',ev_returned:'returned',ev_withdrawn:'withdrawn',
 err_pct:'Progress must be 0–100',err_lower:'Lower than approved progress — explain in remarks',err_start:'Actual start is required once work has started',err_finish:'Actual finish is required at 100%',err_finishEarly:'Actual finish is only allowed at 100%',err_order:'Finish cannot be before start',err_future:'Dates cannot be in the future',err_delay:'Select a delay reason',err_qty:'Quantity must be between 0 and 110% of budget',err_comment:'A comment is required to return an update',
 delays:{material:'Material delivery',manpower:'Manpower shortage',equipment:'Equipment breakdown',weather:'Weather / heat',design:'Design / RFI pending',client:'Client approval',subcon:'Subcontractor',permit:'Permits / authority',other:'Other'},
-siteCount:(n,a)=>`${n} of ${a} assigned activities`,lastUpd:d=>d?`Last update ${d}`:'No update yet',ago:n=>n<=0?'today':`${n} d ago`,
+siteCount:(n,a)=>`${n} of ${a} assigned activities`,lastUpd:d=>d?`Last update ${d}`:'No update yet',noUpdYet:'No update yet',ago:n=>n<=0?'today':`${n} d ago`,
 pctHint:(a,p)=>`Approved ${a}% · planned today ${p}%`,implied:(x)=>`Quantity implies ${x}%`,formNew:'New update',formDraft:'Editing draft',formRet:'Revising returned update',
 flags:(d,m,p)=>`${d} delayed · ${m} missing updates · ${p} in review`,
 w_qty:(x,y)=>`Quantity implies ${x}% but ${y}% was entered`,w_jump:x=>`Large jump: +${x} points since last approval`,w_ahead:x=>`Ahead of plan by ${x} points`,w_lower:x=>`Lower than current approved ${x}%`,w_delay:'Behind plan — delay reason given',
@@ -1197,7 +1261,7 @@ refreshBtn:'تحديث',dows:['الأحد','الاثنين','الثلاثاء','
 prodTitle:'الإنتاجية والتوقع',tab_report:'التقرير',tab_bldg:'المباني',bldgTitle:'المباني',bldgHelp:'اختار المبنى عشان تشوف أدواره وأعماله وتقدمه مقابل المخطط.',pdfMaking:'جاري تجهيز الـ PDF…',pdfDone:'اتنزل الـ PDF',pdfFail:'معرفتش أعمل الـ PDF — اتأكد من النت وجرّب تاني',wrSubmitBtn:'إرسال',wrSendTo:'ابعت التقرير لـ',wrTo_cm:'مدير الإنشاءات',wrTo_pm:'مدير المشروع',wrTo_consultant:'الاستشاري',wrHelp:'بيتحفظ نسخة ثابتة من التقرير، ومدير الإنشاءات / مدير المشروع يقدروا ينزلوها من التاب ده. للاستشاري نزّل الـ PDF وابعته بالإيميل.',wrNotePh:'ملاحظة (اختياري)',wrSubmit:'إرسال التقرير',wrBusy:'جاري الإرسال…',wrPickTo:'اختار مستلم واحد على الأقل',wrSent:'اتبعت التقرير',wrSentCons:'اتبعت التقرير — نزّل الـ PDF وابعته للاستشاري بالإيميل',wrListTitle:'التقارير المبعوتة',wrNone:'لسه مفيش تقارير اتبعتت.',wrDl:'PDF',wrToLine:x=>`مبعوت لـ: ${x}`,wrPopup:'اسمح بالنوافذ المنبثقة للموقع ده عشان التقرير يتنزل',wrMissing:'التقرير مش موجود',repStep1:'١. المشروع',repStep2:'٢. التقرير لمين؟',repStep3:'٣. اللغة',repPreview:'معاينة',repPdf:'تحميل PDF',repModeExtD:'تقرير رسمي للاستشاري / المالك. من غير قيم العقود ولا دورة الاعتماد الداخلية.',repModeIntD:'للإدارة. فيه قيم العقود والاعتمادات والتحديثات المتأخرة.',k_comp:'الالتزام بالتحديث',k_compSub:d=>`الدورة دي · القفل ${d}`,k_gain:'تقدم الأسبوع ده',k_gainSub:v=>`الأسبوع اللي فات ${v}`,k_fcLate:'متوقع يخلص متأخر',k_fcLateSub:'نشاط بعد تاريخ الانتهاء المخطط',remDaysLbl:'المدة المتبقية لإنهاء النشاط',daysWord:'يوم',remHint:d=>`تقديرك لعدد الأيام الباقية. تاريخ الانتهاء المخطط: ${d}`,err_remD:'اكتب المدة المتبقية (بالأيام) لإنهاء النشاط',remSrcSite:(n,d)=>`المدة المتبقية من مهندس الموقع: ${n} يوم (بتاريخ ${d})`,remSrcPend:'لسه ما اتعتمدتش',remSrcCalc:'محسوبة من معدل الإنتاج الفعلي (مفيش تقدير من الموقع)',remQty:'الكمية المتبقية',rateAct:'معدل الإنتاج الفعلي / يوم',rateReq:'المعدل المطلوب / يوم',remDur:'المدة المتبقية',fcAct:'تاريخ الانتهاء المتوقع',daysN:n=>`${n} يوم`,notStartedRate:'لم يبدأ',overduePf:'عدّى تاريخ الانتهاء المخطط',fcLate:n=>`متأخر ${n} يوم عن المخطط`,fcOk:'في الميعاد أو قبله',perDay:'/يوم',
 repCmp:'مقارنة بالأسبوع السابق',repMetric:'المؤشر',repCmpPrev:'الأسبوع السابق',repCmpNow:'هذا الأسبوع',repCmpChg:'التغيير',cmpPlanned:'التقدم المخطط',cmpActual:'التقدم الفعلي (المعتمد)',cmpVar:'الانحراف',cmpSpi:'مؤشر أداء الجدول',cmpBehind:'أنشطة متأخرة عن المخطط',cmpDone:'أنشطة مكتملة',cmpGain:'التقدم المحقق في الأسبوع',
 repRisks:'أهم ٥ مخاطر',riskCols:['#','النشاط','الخطر','السبب / المسؤول','الانتهاء المتوقع'],riskBehind:v=>`متأخر عن المخطط ${v}`,riskDueSoon:d=>`ينتهي ${d} — لم يكتمل`,riskOverdue:'تجاوز تاريخ الانتهاء المخطط',riskNoUpd:'لا يوجد تحديث حديث من الموقع',noRisks:'لا توجد مخاطر مؤثرة هذا الأسبوع.',
-weekSec:'أنشطة الأسبوع ده — قبل يوم القفل',weekSecHelp:(d,u,n)=>`يوم القفل ${d} · ${u} من ${n} اتحدّث`,otherSec:'باقي الأنشطة',darkOn:'الوضع الليلي',darkOff:'الوضع النهاري',al_title:'سجل النشاط',al_help:'مين دخل ومين عدّل إيه (بيانات الديمو مخفية). الأدمن بس اللي بيشوف ده.',al_show:'اعرض السجل',al_refresh:'تحديث',al_all:'الكل',al_logins:'تسجيل الدخول',al_changes:'التعديلات',al_loading:'جاري التحميل…',al_unknown:'النظام',al_login:'سجّل دخول',al_upNew:(c,p,st)=>`تحديث جديد على ${c}: ${p}% (${st})`,al_upDel:c=>`مسح تحديث على ${c}`,al_upEdit:c=>`تحديث على ${c}`,al_act:{insert:'أضاف نشاط',update:'عدّل نشاط',delete:'مسح نشاط'},al_proj:{insert:'أنشأ مشروع',update:'عدّل مشروع',delete:'مسح مشروع'},al_mem:(k,u,p)=>k==='delete'?`شال ${u} من ${p}`:`ضاف ${u} على ${p}`,al_signup:'حساب جديد',al_user:'عدّل مستخدم',al_rep:'أصدر تقرير',al_set:'غيّر إعداد',bvTitle:'المبنى',k_struct:'الأعمال الإنشائية',k_finish:'أعمال التشطيبات',k_mep:'الأعمال الكهروميكانيكية',k_planShort:'المخطط',k_finBy:'نهاية مخططة',bvActs:n=>n+' نشاط',bvLegend:'الشرط = الفعلي (ذهبي) مقابل المخطط النهارده (فاتح) · لون الدور: أخضر خلص، ذهبي شغال، رمادي لسه',bvActual:'الفعلي',bvPlanned:'المخطط',bvVar:'الفرق',fl_found:'الأساسات',fl_gf:'الأرضي',fl_f1:'الأول',fl_f2:'التاني',fl_f3:'التالت',fl_roof:'السطح',rvGrpN:n=>n+' تحديث للمراجعة',allActsSec:'الأنشطة',wbsHelp:(n,a,l)=>`${n} نشاط · الفعلي ${a}`+(l?` · ${l} متأخر`:''),wbsTap:'مقسمة حسب WBS — اضغط على أي مجموعة لفتحها',wkDone:'✓ اتحدّث الأسبوع ده',wkTodo:'محتاج تحديث الأسبوع ده',partyLabel:'مين المسؤول عن التأخير؟',parties:{contractor:'إحنا (DMC)',owner:'المالك',consultant:'الاستشاري',subcon:'مقاول الباطن',other:'أخرى / قوة قاهرة'},repByParty:'التأخيرات حسب المسؤولية',repParty:'المسؤولية',returnCm:'إرجاع لمدير الإنشاءات',plRetShort:'مرتجع من التخطيط',t_returnedCm:'اترجع لمدير الإنشاءات',plRetLine:d=>`مرتجع من التخطيط ${d}`,ev_returned_cm:'رجّعه التخطيط لمدير الإنشاءات',repNo:'رقم التقرير',repPeriod:'الفترة',repFor:'التقرير لـ:',repModeExt:'الاستشاري / المالك',repModeInt:'داخلي',repClsExt:'للمراجعة من الاستشاري',repClsInt:'داخلي — سري — غير مخصص للتوزيع الخارجي',
+weekSec:'أنشطة الأسبوع ده — قبل يوم القفل',weekSecHelp:(d,u,n)=>`يوم القفل ${d} · ${u} من ${n} اتحدّث`,otherSec:'باقي الأنشطة',darkOn:'الوضع الليلي',darkOff:'الوضع النهاري',al_title:'سجل النشاط',al_help:'مين دخل ومين عدّل إيه (بيانات الديمو مخفية). الأدمن بس اللي بيشوف ده.',al_show:'اعرض السجل',al_refresh:'تحديث',al_all:'الكل',al_logins:'تسجيل الدخول',al_changes:'التعديلات',al_loading:'جاري التحميل…',al_unknown:'النظام',al_login:'سجّل دخول',al_upNew:(c,p,st)=>`تحديث جديد على ${c}: ${p}% (${st})`,al_upDel:c=>`مسح تحديث على ${c}`,al_upEdit:c=>`تحديث على ${c}`,al_act:{insert:'أضاف نشاط',update:'عدّل نشاط',delete:'مسح نشاط'},al_proj:{insert:'أنشأ مشروع',update:'عدّل مشروع',delete:'مسح مشروع'},al_mem:(k,u,p)=>k==='delete'?`شال ${u} من ${p}`:`ضاف ${u} على ${p}`,al_signup:'حساب جديد',al_user:'عدّل مستخدم',al_rep:'أصدر تقرير',al_set:'غيّر إعداد',bvTitle:'المبنى',k_struct:'الأعمال الإنشائية',k_finish:'أعمال التشطيبات',k_mep:'الأعمال الكهروميكانيكية',k_planShort:'المخطط',k_finBy:'نهاية مخططة',bvActs:n=>n+' نشاط',bvLegend:'الشرط = الفعلي (ذهبي) مقابل المخطط (فاتح) · لون الدور: أخضر خلص، ذهبي شغال، رمادي لسه · الخط الأحمر المتقطع = المخطط',bvActual:'الفعلي',bvPlanned:'المخطط',bvVar:'الفرق',fl_found:'الأساسات',fl_gf:'الأرضي',fl_f1:'الأول',fl_f2:'التاني',fl_f3:'التالت',fl_roof:'السطح',rvGrpN:n=>n+' تحديث للمراجعة',allActsSec:'الأنشطة',wbsHelp:(n,a,l)=>`${n} نشاط · الفعلي ${a}`+(l?` · ${l} متأخر`:''),wbsTap:'مقسمة حسب WBS — اضغط على أي مجموعة لفتحها',wkDone:'✓ اتحدّث الأسبوع ده',wkTodo:'محتاج تحديث الأسبوع ده',partyLabel:'مين المسؤول عن التأخير؟',parties:{contractor:'إحنا (DMC)',owner:'المالك',consultant:'الاستشاري',subcon:'مقاول الباطن',other:'أخرى / قوة قاهرة'},repByParty:'التأخيرات حسب المسؤولية',repParty:'المسؤولية',returnCm:'إرجاع لمدير الإنشاءات',plRetShort:'مرتجع من التخطيط',t_returnedCm:'اترجع لمدير الإنشاءات',plRetLine:d=>`مرتجع من التخطيط ${d}`,ev_returned_cm:'رجّعه التخطيط لمدير الإنشاءات',repNo:'رقم التقرير',repPeriod:'الفترة',repFor:'التقرير لـ:',repModeExt:'الاستشاري / المالك',repModeInt:'داخلي',repClsExt:'للمراجعة من الاستشاري',repClsInt:'داخلي — سري — غير مخصص للتوزيع الخارجي',
 repLocL:'الموقع',repPrepared:'إعداد',repRev:'الإصدار',repValue:'قيمة العقد',repWeightBy:'الترجيح',repByWeight:'أوزان الأنشطة',repAllN:n=>`كل المشاريع (${n})`,
 repExec:'١. الملخص التنفيذي',repToDate:'تراكمي حتى تاريخه',repApprovedOnly:'التحديثات المعتمدة فقط',repVsPlan:'الفعلي − المخطط',repSpiS:'الفعلي ÷ المخطط',repWeekGain:'تقدم هذا الأسبوع',repPlannedGain:g=>`المخطط ${g}`,
 repNarr:o=>`بلغ التقدم الكلي ${o.a} مقابل ${o.p} مخطط (انحراف ${o.v}، مؤشر أداء الجدول ${o.spi}). التقدم المحقق هذا الأسبوع ${o.g} مقابل ${o.gp} مخطط، من ${o.n} تحديث معتمد من الموقع. عدد الأنشطة المتأخرة حالياً ${o.d}${o.r?`، وأكثر سبب مُبلغ عنه «${o.r}»`:''}. بالمعدل الحالي تاريخ الانتهاء المتوقع ${o.fc} (المخطط ${o.end}).`,
@@ -1237,7 +1301,7 @@ t_saved:'تم حفظ المسودة',t_submitted:'تم الإرسال للمرا
 ev_saved:'حُفظ',ev_submitted:'أُرسل',ev_approved:'اعتُمد',ev_returned:'أُعيد',ev_withdrawn:'سُحب',
 err_pct:'النسبة يجب أن تكون بين 0 و100',err_lower:'أقل من التقدم المعتمد — اشرح السبب في الملاحظات',err_start:'البداية الفعلية مطلوبة بعد بدء العمل',err_finish:'النهاية الفعلية مطلوبة عند 100%',err_finishEarly:'النهاية الفعلية تُسمح فقط عند 100%',err_order:'النهاية لا يمكن أن تسبق البداية',err_future:'لا يمكن أن تكون التواريخ في المستقبل',err_delay:'اختر سبب التأخير',err_qty:'الكمية يجب أن تكون بين 0 و110% من المقرر',err_comment:'التعليق مطلوب لإعادة التحديث',
 delays:{material:'تأخر توريد المواد',manpower:'نقص العمالة',equipment:'عطل المعدات',weather:'الطقس / الحرارة',design:'تصميم / استفسار فني معلق',client:'موافقة العميل',subcon:'مقاول الباطن',permit:'التصاريح / الجهات',other:'أخرى'},
-siteCount:(n,a)=>`${n} من ${a} نشاطاً مسنداً`,lastUpd:d=>d?`آخر تحديث ${d}`:'لا يوجد تحديث',ago:n=>n<=0?'اليوم':`منذ ${n} يوم`,
+siteCount:(n,a)=>`${n} من ${a} نشاطاً مسنداً`,lastUpd:d=>d?`آخر تحديث ${d}`:'لا يوجد تحديث',noUpdYet:'لا يوجد تحديث',ago:n=>n<=0?'اليوم':`منذ ${n} يوم`,
 pctHint:(a,p)=>`المعتمد ${a}% · المخطط اليوم ${p}%`,implied:x=>`الكمية تعادل ${x}%`,formNew:'تحديث جديد',formDraft:'تعديل مسودة',formRet:'مراجعة تحديث مُعاد',
 flags:(d,m,p)=>`${d} متأخر · ${m} تحديث مفقود · ${p} قيد المراجعة`,
 w_qty:(x,y)=>`الكمية تعادل ${x}% بينما أُدخل ${y}%`,w_jump:x=>`قفزة كبيرة: +${x} نقطة منذ آخر اعتماد`,w_ahead:x=>`متقدم عن المخطط بـ ${x} نقطة`,w_lower:x=>`أقل من المعتمد الحالي ${x}%`,w_delay:'متأخر عن المخطط — تم ذكر السبب',
@@ -1291,7 +1355,7 @@ connTitle:'Database connection',connDemo:'Not connected — DEMO mode (this brow
 signIn:'Sign in',signUp:'Create account',signOut:'Sign out',wait:'Please wait…',email:'Username or email',tab_users:'Users',usersTitle:'Users & permissions',usersHelp:'Colleagues open the site and tap “Create account” with a username (e.g. civil.eng1) and a password. They appear here — set their role, discipline and projects. Changes apply immediately.',you:'You',uActive:'Active',uDisabled:'Disabled',uRole:'Role',uDisc:'Discipline',uProj:'Projects (site engineers & CM see only these)',cantDemoteSelf:'You cannot remove your own admin role',savedOk:'Saved',password:'Password',loginTag:'Site progress · Planning · Reporting',loginSub:'Sign in with your company account. Your role and discipline are assigned by the administrator.',
 signUpNote:'New accounts start without access until an administrator assigns a role and project.',loginNeed:'Enter username and password',signUpNeed:'Enter a username and a password of at least 8 characters',signUpOk:'Account created — confirm your email, then sign in.',
 noProfile:'No profile found for this account. Ask the administrator.',inactive:'Your account is disabled.',openDemo:'Open demo mode instead',connecting:'Connecting…',
-liveBar:(h,s)=>'LIVE · Shared database'+(s?' · '+s:''),syncing:'Saving…',syncedAt:x=>'synced '+x,syncErr:'Not saved:',al_pw:n=>'Set a new password for '+n,pwNew:'New password',pwPh:'At least 8 characters',pwSave:'Save password',pwShort:'Password must be at least 8 characters',pwDemo:'Only in the live app',pwDone:n=>'Password changed for '+n+' — send it to them privately',planAt:d=>'as of cut-off '+d,offSaved:'No connection — saved on this device. It will be sent automatically when the internet is back.',offSent:n=>n+' saved update(s) sent',offBar:n=>'📶 Offline'+(n?' · '+n+' update(s) saved on this device, waiting to send':' · showing the last loaded data'),offWait:n=>'⏳ '+n+' update(s) waiting to send',offSendNow:'Send now',loadErrTxt:'Could not load data',
+liveBar:(h,s)=>'LIVE · Shared database'+(s?' · '+s:''),syncing:'Saving…',syncedAt:x=>'synced '+x,syncErr:'Not saved:',bvFloors:'Floors — tap a floor to see its activities',loadingData:'Loading data…',al_pw:n=>'Set a new password for '+n,pwNew:'New password',pwPh:'At least 8 characters',pwSave:'Save password',pwShort:'Password must be at least 8 characters',pwDemo:'Only in the live app',pwDone:n=>'Password changed for '+n+' — send it to them privately',planAt:d=>'as of cut-off '+d,offSaved:'No connection — saved on this device. It will be sent automatically when the internet is back.',offSent:n=>n+' saved update(s) sent',offBar:n=>'📶 Offline'+(n?' · '+n+' update(s) saved on this device, waiting to send':' · showing the last loaded data'),offWait:n=>'⏳ '+n+' update(s) waiting to send',offSendNow:'Send now',loadErrTxt:'Could not load data',
 adminTools:'Administrator tools',adminHelp:'Demo rows are marked is_demo and can be removed at any time without touching real data.',demoLoading:'Loading sample data… keep this page open',loadDemoDb:'Load demo data into database',removeDemoDb:'Remove demo data',demoLoaded:'Demo data loaded',demoRemoved:'Demo data removed',
 storageBadgeLive:'Shared · Supabase PostgreSQL · real-time',storageLive1:'Data is stored in a shared PostgreSQL database (Supabase). Every signed-in user sees the same data, and changes appear for others within seconds.',
 storageLive2:'Workflow rules (CM → Planning approval, approved updates locked, roles per discipline) are enforced by the database itself, not only by this screen. Every change is written to an audit log.',
@@ -1302,7 +1366,7 @@ connTitle:'الاتصال بقاعدة البيانات',connDemo:'غير متص
 signIn:'تسجيل الدخول',signUp:'إنشاء حساب',signOut:'تسجيل الخروج',wait:'انتظر…',email:'اسم المستخدم أو البريد',tab_users:'المستخدمون',usersTitle:'المستخدمون والصلاحيات',usersHelp:'الزملاء يفتحون الموقع ويضغطون «إنشاء حساب» باسم مستخدم (مثل civil.eng1) وكلمة مرور. يظهرون هنا — حدد الدور والتخصص والمشاريع. التغيير يطبق فوراً.',you:'أنت',uActive:'نشط',uDisabled:'موقوف',uRole:'الدور',uDisc:'التخصص',uProj:'المشاريع (مهندس الموقع ومدير الإنشاءات يرون هذه فقط)',cantDemoteSelf:'لا يمكنك إزالة صلاحية المسؤول عن نفسك',savedOk:'تم الحفظ',password:'كلمة المرور',loginTag:'متابعة تقدم الموقع · التخطيط · التقارير',loginSub:'سجّل الدخول بحساب الشركة. الدور والتخصص يحددهما مسؤول النظام.',
 signUpNote:'الحسابات الجديدة لا تملك صلاحيات حتى يحدد المسؤول الدور والمشروع.',loginNeed:'أدخل البريد وكلمة المرور',signUpNeed:'أدخل البريد وكلمة مرور 8 أحرف على الأقل',signUpOk:'تم إنشاء الحساب — أكّد بريدك ثم سجّل الدخول.',
 noProfile:'لا يوجد ملف لهذا الحساب. تواصل مع المسؤول.',inactive:'حسابك موقوف.',openDemo:'فتح الوضع التجريبي بدلاً من ذلك',connecting:'جارٍ الاتصال…',
-liveBar:(h,s)=>'مباشر · قاعدة بيانات مشتركة'+(s?' · '+s:''),syncing:'جارٍ الحفظ…',syncedAt:x=>'آخر مزامنة '+x,syncErr:'لم يُحفظ:',al_pw:n=>'عمل كلمة مرور جديدة لـ '+n,pwNew:'كلمة مرور جديدة',pwPh:'8 حروف على الأقل',pwSave:'حفظ كلمة المرور',pwShort:'كلمة المرور لازم 8 حروف على الأقل',pwDemo:'متاح في النسخة المباشرة فقط',pwDone:n=>'تم تغيير كلمة مرور '+n+' — ابعتها له في رسالة خاصة',planAt:d=>'حتى يوم القطع '+d,offSaved:'لا يوجد اتصال — تم الحفظ على هذا الجهاز وسيُرسل تلقائياً عند عودة الإنترنت.',offSent:n=>'تم إرسال '+n+' تحديث محفوظ',offBar:n=>'📶 بدون إنترنت'+(n?' · '+n+' تحديث محفوظ على الجهاز في انتظار الإرسال':' · يتم عرض آخر بيانات محمّلة'),offWait:n=>'⏳ '+n+' تحديث في انتظار الإرسال',offSendNow:'إرسال الآن',loadErrTxt:'تعذر تحميل البيانات',
+liveBar:(h,s)=>'مباشر · قاعدة بيانات مشتركة'+(s?' · '+s:''),syncing:'جارٍ الحفظ…',syncedAt:x=>'آخر مزامنة '+x,syncErr:'لم يُحفظ:',bvFloors:'الأدوار — اضغط على أي دور لعرض أنشطته',loadingData:'جارٍ تحميل البيانات…',al_pw:n=>'عمل كلمة مرور جديدة لـ '+n,pwNew:'كلمة مرور جديدة',pwPh:'8 حروف على الأقل',pwSave:'حفظ كلمة المرور',pwShort:'كلمة المرور لازم 8 حروف على الأقل',pwDemo:'متاح في النسخة المباشرة فقط',pwDone:n=>'تم تغيير كلمة مرور '+n+' — ابعتها له في رسالة خاصة',planAt:d=>'حتى يوم القطع '+d,offSaved:'لا يوجد اتصال — تم الحفظ على هذا الجهاز وسيُرسل تلقائياً عند عودة الإنترنت.',offSent:n=>'تم إرسال '+n+' تحديث محفوظ',offBar:n=>'📶 بدون إنترنت'+(n?' · '+n+' تحديث محفوظ على الجهاز في انتظار الإرسال':' · يتم عرض آخر بيانات محمّلة'),offWait:n=>'⏳ '+n+' تحديث في انتظار الإرسال',offSendNow:'إرسال الآن',loadErrTxt:'تعذر تحميل البيانات',
 adminTools:'أدوات المسؤول',adminHelp:'الصفوف التجريبية معلّمة is_demo ويمكن حذفها في أي وقت دون المساس بالبيانات الحقيقية.',demoLoading:'جارٍ تحميل البيانات التجريبية… لا تغلق الصفحة',loadDemoDb:'تحميل بيانات تجريبية في القاعدة',removeDemoDb:'حذف البيانات التجريبية',demoLoaded:'تم تحميل البيانات التجريبية',demoRemoved:'تم حذف البيانات التجريبية',
 storageBadgeLive:'مشترك · Supabase PostgreSQL · لحظي',storageLive1:'البيانات محفوظة في قاعدة بيانات PostgreSQL مشتركة (Supabase). كل المستخدمين المسجلين يرون نفس البيانات، والتغييرات تظهر للآخرين خلال ثوانٍ.',
 storageLive2:'قواعد سير العمل (موافقة مدير الإنشاءات ثم التخطيط، قفل التحديثات المعتمدة، الصلاحيات حسب التخصص) تفرضها قاعدة البيانات نفسها وليس الشاشة فقط. كل تغيير يُسجَّل في سجل تدقيق.',
@@ -1310,7 +1374,7 @@ storageLive3:'تنطبق حدود الخطة المجانية (حجم القاع
 prole_site:'مهندس موقع',prole_cm:'مدير الإنشاءات',prole_planner:'مهندس التخطيط',prole_pm:'مدير المشروع',prole_admin:'مسؤول النظام'});
 Object.assign(I18N.en,{tab_dash:'Dashboard',dashTitle:'Project dashboard',dashScopeAll:n=>`${n} projects · weighted by contract value`,dashScopeOne:n=>`${n} activities · weighted by activity weight`,
 k_total:'Activities',k_inprog:'In progress',k_done:'Completed',k_notstarted:'Not started',k_awaitCM:'Awaiting CM',k_awaitPL:'Awaiting Planning',k_appr7:'Approved · 7 days',k_returnedN:'Returned',kDelayedSub:n=>`> ${n} pts behind or overdue`,kMissingSub:n=>`no update for ${n}+ days`,kOfTotal:(n,a)=>`${n} of ${a}`,
-p_scurve:'S-curve — planned vs approved actual',p_weekly:'Weekly progress gain — last 8 weeks',p_weeklyHelp:'Grey = planned gain · amber = approved actual gain (percentage points)',p_health:'Project health',p_disc:'Performance by discipline',p_flow:'Approval workflow',p_reasons:'Top delay reasons · last 10 weeks',p_behind:'Most behind plan',p_ahead:'Next 14 days',p_feed:'Recent activity',
+p_scurve:'S-curve — planned vs approved actual',p_weekly:'Weekly progress gain — last 8 weeks',p_weeklyHelp:'Gold = planned gain · green = approved actual gain (percentage points)',p_health:'Project health',p_disc:'Performance by discipline',p_flow:'Approval workflow',p_reasons:'Top delay reasons · last 10 weeks',p_behind:'Most behind plan',p_ahead:'Next 14 days',p_feed:'Recent activity',
 fl_draft:'Drafts (not submitted)',fl_cm:'Awaiting Construction Manager',fl_pl:'Awaiting Planning Engineer',fl_ret:'Returned for correction',fl_appr:'Approved in the last 7 days',
 la_startsN:n=>`${n} activities planned to start`,la_finishesN:n=>`${n} activities planned to finish`,la_riskN:n=>`${n} finishing activities at risk`,discLine:(n,d,m)=>`${n} act. · ${d} delayed · ${m} missing`,
 nuOpen:'+ Add user',nuClose:'Close',nuTitle:'New user',nuName:'Username',nuPw:'Password (at least 8 characters)',nuRole:'Role',nuDisc:'Discipline',nuCreate:'Create user',nuBusy:'Creating…',
@@ -1324,7 +1388,7 @@ signUpOk:'Account created. Ask the administrator to give you a role, discipline 
 e_eng:'discipline must be CIV, ARC, MEC or ELE (or Civil, Architectural, Mechanical, Electrical)'});
 Object.assign(I18N.ar,{tab_dash:'لوحة المتابعة',dashTitle:'لوحة متابعة المشاريع',dashScopeAll:n=>`${n} مشاريع · مرجّح بقيمة العقد`,dashScopeOne:n=>`${n} نشاط · مرجّح بوزن النشاط`,
 k_total:'الأنشطة',k_inprog:'قيد التنفيذ',k_done:'مكتمل',k_notstarted:'لم يبدأ',k_awaitCM:'بانتظار مدير الإنشاءات',k_awaitPL:'بانتظار التخطيط',k_appr7:'معتمد · 7 أيام',k_returnedN:'مُعاد',kDelayedSub:n=>`متأخر أكثر من ${n} نقاط أو تجاوز النهاية`,kMissingSub:n=>`بدون تحديث ${n} أيام أو أكثر`,kOfTotal:(n,a)=>`${n} من ${a}`,
-p_scurve:'منحنى S — المخطط مقابل الفعلي المعتمد',p_weekly:'التقدم الأسبوعي — آخر 8 أسابيع',p_weeklyHelp:'الرمادي = المخطط · البرتقالي = الفعلي المعتمد (نقاط مئوية)',p_health:'حالة المشاريع',p_disc:'الأداء حسب التخصص',p_flow:'دورة الاعتماد',p_reasons:'أهم أسباب التأخير · آخر 10 أسابيع',p_behind:'الأكثر تأخراً عن المخطط',p_ahead:'الـ 14 يوماً القادمة',p_feed:'آخر الأحداث',
+p_scurve:'منحنى S — المخطط مقابل الفعلي المعتمد',p_weekly:'التقدم الأسبوعي — آخر 8 أسابيع',p_weeklyHelp:'الذهبي = المخطط · الأخضر = الفعلي المعتمد (نقاط مئوية)',p_health:'حالة المشاريع',p_disc:'الأداء حسب التخصص',p_flow:'دورة الاعتماد',p_reasons:'أهم أسباب التأخير · آخر 10 أسابيع',p_behind:'الأكثر تأخراً عن المخطط',p_ahead:'الـ 14 يوماً القادمة',p_feed:'آخر الأحداث',
 fl_draft:'مسودات (لم تُرسل)',fl_cm:'بانتظار مدير الإنشاءات',fl_pl:'بانتظار مهندس التخطيط',fl_ret:'مُعادة للتصحيح',fl_appr:'معتمدة في آخر 7 أيام',
 la_startsN:n=>`${n} نشاط مخطط بدؤه`,la_finishesN:n=>`${n} نشاط مخطط انتهاؤه`,la_riskN:n=>`${n} نشاط ينتهي ومعرّض للخطر`,discLine:(n,d,m)=>`${n} نشاط · ${d} متأخر · ${m} بدون تحديث`,
 nuOpen:'+ إضافة مستخدم',nuClose:'إغلاق',nuTitle:'مستخدم جديد',nuName:'اسم المستخدم',nuPw:'كلمة المرور (8 أحرف على الأقل)',nuRole:'الدور',nuDisc:'التخصص',nuCreate:'إنشاء المستخدم',nuBusy:'جارٍ الإنشاء…',
@@ -1467,7 +1531,8 @@ function curve(lists,vals){const all=[].concat(...lists);if(!all.length)return{p
   const val=(d,k)=>{let V=0,S=0;lists.forEach((l,i)=>{if(!l.length)return;const r=roll(l,d);V+=vals[i];S+=vals[i]*r[k];});return V?S/V:0;};
   const X=d=>r1(clamp(dd(start,d)/span,0,1)*300),Y=v=>r1(125-v*1.2);
   const ad=dates.filter(d=>d<TODAY);if(TODAY>=start)ad.push(TODAY<=end?TODAY:end);
-  return{plan:dates.map(d=>X(d)+','+Y(val(d,'p'))).join(' '),act:ad.map(d=>X(d)+','+Y(val(d,'a'))).join(' '),tx:X(TODAY),start,end};}
+  const act=ad.map(d=>X(d)+','+Y(val(d,'a'))).join(' ');
+  return{plan:dates.map(d=>X(d)+','+Y(val(d,'p'))).join(' '),act,area:ad.length?X(ad[0])+',125 '+act+' '+X(ad[ad.length-1])+',125':'',tx:X(TODAY),start,end};}
 const fmtMs=ms=>{const d=new Date(ms);return `${d.getFullYear()}-${p2(d.getMonth()+1)}-${p2(d.getDate())} ${p2(d.getHours())}:${p2(d.getMinutes())}`;};
 
 function derive(data,cfg){
@@ -1509,7 +1574,7 @@ function actualAt(a,at){let v=0;for(const u of a.appr){if(u.reviewed.slice(0,10)
 const DARK_KEY='dmc-erp:dark';
 function applyDark(on){try{let st=document.getElementById('dmc-dark-css');
   if(on&&!st){st=document.createElement('style');st.id='dmc-dark-css';
-    st.textContent='html{filter:invert(1) hue-rotate(180deg);background:#fff}img,video,canvas,[data-keepcolor]{filter:invert(1) hue-rotate(180deg)}[data-keepcolor] img,[data-keepcolor] canvas{filter:none}@media print{html,img,video,canvas,[data-keepcolor]{filter:none!important}}';
+    st.textContent='html{filter:invert(1) hue-rotate(180deg);background:#fff}img,video,canvas,[data-keepcolor]{filter:invert(1) hue-rotate(180deg)}[data-keepcolor] img,[data-keepcolor] canvas,img[data-ico]{filter:none}@media print{html,img,video,canvas,[data-keepcolor]{filter:none!important}}';
     document.head.appendChild(st);}
   if(!on&&st)st.remove();
   const m=document.querySelector('meta[name=theme-color]');if(m)m.setAttribute('content',on?'#0b2a24':'#0b4a3e');}catch(e){}}
@@ -1590,7 +1655,7 @@ const TABLE_ORDER=['projects','activities','updates','reminders'];
 
 class Component extends DCLogic {
   state=(()=>{const s=load();return{data:s?s.data:seed(),lang:(s&&s.prefs&&s.prefs.lang)||'en',role:(s&&s.prefs&&s.prefs.role)||'site',eng:(s&&s.prefs&&ENG.indexOf(s.prefs.eng)>=0&&s.prefs.eng)||'CIV',
-    tab:{site:'acts',cm:'review',planner:'review',pm:'dash'},offline:false,obN:0,pwFor:null,pwVal:'',pwBusy:false,repMode:'ext',repNotes:null,repGhost:false,pdfBusy:false,wrList:[],wrOpen:false,wrTo:{cm:true,pm:true,consultant:false},wrNote:'',wrBusy:false,cutDow:(()=>{try{const v=localStorage.getItem('dmc-erp:cutDow');return v==null?4:Number(v);}catch(e){return 4;}})(),push:'',pushAskHidden:(()=>{try{return localStorage.getItem('dmc-erp:pushAsk')==='no';}catch(e){return false;}})(),detail:null,review:null,form:null,errors:[],q:'',sProj:'all',sFilter:'all',plProj:'P1',plFilter:'all',mode:'demo',auth:'none',user:null,profile:null,syncing:false,lastSync:'',loadErr:'',settingsDb:{},loginEmail:'',loginPw:'',loginErr:'',loginBusy:false,connUrl:connCfg().url,connKey:connCfg().key,wide:false,liveArm:'',pmProj:'all',dlProj:'all',
+    tab:{site:'acts',cm:'review',planner:'review',pm:'dash'},offline:false,obN:0,pwFor:null,pwVal:'',pwBusy:false,bvFl:'',repMode:'ext',repNotes:null,repGhost:false,pdfBusy:false,wrList:[],wrOpen:false,wrTo:{cm:true,pm:true,consultant:false},wrNote:'',wrBusy:false,cutDow:(()=>{try{const v=localStorage.getItem('dmc-erp:cutDow');return v==null?4:Number(v);}catch(e){return 4;}})(),push:'',pushAskHidden:(()=>{try{return localStorage.getItem('dmc-erp:pushAsk')==='no';}catch(e){return false;}})(),detail:null,review:null,form:null,errors:[],q:'',sProj:'all',sFilter:'all',plProj:'P1',plFilter:'all',mode:'demo',auth:'none',user:null,profile:null,syncing:false,lastSync:'',loadErr:'',settingsDb:{},loginEmail:'',loginPw:'',loginErr:'',loginBusy:false,connUrl:connCfg().url,connKey:connCfg().key,wide:false,liveArm:'',pmProj:'all',dlProj:'all',
     comment:'',importText:'',importRows:null,settings:false,toast:'',resetArm:false,bulk:false,bulkVals:{},bulkErr:{},sel:{},rvProj:'all',rvFlag:'all',sBldg:'all',sZone:'all',sRegion:'all',sType:'all',sWbsOpen:{},dark:(()=>{try{return localStorage.getItem(DARK_KEY)==='1';}catch(e){return false;}})(),alOpen:false,alBusy:false,alRows:[],alErr:'',alKind:'all',dbBld:'',plWbsOpen:{},plBldg:'all',plZone:'all',plType:'all',adjPct:'',adjQty:'',laProj:'all',laDays:14,report:false,repProj:'all',dbProj:'all',uq:'',uFilter:'all',nuOpen:false,nu:{name:'',pw:'',role:'site',disc:'CIV'},nuBusy:false,
     chatOpen:false,chatRoom:null,chatText:'',chatImg:null,chatNew:false,chatQ:'',chatMsgs:[],chatReads:[],chatDir:[],chatErr:''};})();
   live(){return this.state.mode==='live';}
@@ -1616,7 +1681,7 @@ class Component extends DCLogic {
     let box=null;try{
       if(!window.html2pdf)await new Promise((res,rej)=>{const sc=document.createElement('script');sc.src='https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js';sc.onload=res;sc.onerror=rej;document.head.appendChild(sc);});
       box=document.createElement('div');box.id='dmc-pdfbox';box.setAttribute('dir',lang==='ar'?'rtl':'ltr');
-      box.style.cssText="position:fixed;left:-10000px;top:0;width:760px;background:#fff;color:#1d1b18;font-family:'IBM Plex Sans','IBM Plex Sans Arabic',system-ui,sans-serif";
+      box.style.cssText="position:fixed;left:-10000px;top:0;width:760px;background:#fff;color:#1d1b18;font-family:'IBM Plex Sans','Cairo','IBM Plex Sans Arabic',system-ui,sans-serif";
       box.innerHTML=cleanHtml('<style>#dmc-pdfbox [data-printonly]{display:block!important}#dmc-pdfbox [data-noprint],#dmc-pdfbox textarea{display:none!important}#dmc-pdfbox [data-sheet]{margin:0!important;padding:0!important;box-shadow:none!important;max-width:none!important}#dmc-pdfbox *{-webkit-print-color-adjust:exact;print-color-adjust:exact}</style>'+html).replace(OKLCH_RE,oklchRgb);
       document.body.appendChild(box);
       box.querySelectorAll('[data-noprint],textarea').forEach(e=>e.remove());box.querySelectorAll('[data-printonly]').forEach(e=>{e.style.display='block';});
@@ -1943,7 +2008,7 @@ class Component extends DCLogic {
     const stOf=a=>a.pending?(a.pending.status==='endorsed'?['st_endorsed',C.blueBg,C.blue]:['st_submitted',C.blueBg,C.blue]):a.draft?['st_draft',C.amberBg,C.amber]:a.returned?['st_returned',C.redBg,C.red]:a.actual>=100?['st_complete',C.greenBg,C.green]:a.missing?['st_needs',C.redBg,C.red]:a.ps>TODAY?['st_notstarted',C.greyBg,C.grey]:a.delayed?['f_delayed',C.amberBg,C.amber]:['st_uptodate',C.greenBg,C.green];
     const upSt={draft:['st_draft',C.amberBg,C.amber],submitted:['st_submitted',C.blueBg,C.blue],endorsed:['st_endorsed',C.blueBg,C.blue],approved:['st_approved',C.greenBg,C.green],returned:['st_returned',C.redBg,C.red]};
     const card=(a,bulk)=>{const st=stOf(a);const o={code:a.code,projCode:D.projMap[a.pid].code,name:nm(a),srcLabel:srcL(a.src),stLabel:t[st[0]],stBg:st[1],stFg:st[2],plannedW:W(a.planned),plannedTxt:p0(a.planned),actualW:W(a.actual),actualTxt:p0(a.actual),barColor:a.delayed?C.barBad:a.variance<-2?C.barWarn:C.barOk,
-      meta:locL(a)+' · '+t.planned+' '+p0(a.planned)+' · '+sg(a.variance)+' · '+t.lastUpd(a.lastDate),open:()=>this.openDetail(a.id),bulkOn:false,hasBulkErr:false};
+      meta:locL(a)+' · '+t.planned+' '+p0(a.planned)+' · '+sg(a.variance)+' · '+t.lastUpd(a.lastDate),showSrc:a.src==='demo'&&this.live(),actC:a.actual>=100?C.green:a.delayed?C.red:a.variance<-2?C.amber:'#1b1a17',barColor2:a.delayed?'oklch(0.66 0.16 35)':a.variance<-2?'oklch(0.75 0.12 80)':'oklch(0.68 0.12 160)',varTxt:sg(a.variance),varC:vc(a.variance),varBg:a.variance>=-2?C.greenBg:a.variance>=-cfg.thr/2?C.amberBg:C.redBg,lastTxt:a.lastDate?t.ago(dd(a.lastDate,TODAY)):t.noUpdYet,open:()=>this.openDetail(a.id),bulkOn:false,hasBulkErr:false};
       if(bulk&&!a.pending&&a.actual<100&&(a.ps<=TODAY||a.actual>0)){const b=this.bulkBase(a),v=s.bulkVals[a.id]!=null?s.bulkVals[a.id]:b;
         Object.assign(o,{bulkOn:true,bulkTxt:v+'%',bulkFrom:v!==b?b+'% →':'',bulkColor:v!==b?C.blue:'#1b1a17',dec:()=>this.bulkStep(a,-5),inc:()=>this.bulkStep(a,5),inc10:()=>this.bulkStep(a,10),full:()=>this.bulkStep(a,null),hasBulkErr:!!s.bulkErr[a.id],bulkErr:s.bulkErr[a.id]||''});}
       return o;};
@@ -1955,10 +2020,11 @@ class Component extends DCLogic {
     const needsN=mine.filter(FIL.needs).length;
     const notifN=(s.data.reminders||[]).filter(r=>r.to===s.eng&&!r.done&&r.type==='adjusted').length;
     const TABS={site:['acts','hist','lookahead'],cm:['review','progress','dash','bldg','report','lookahead'],planner:['review','progress','import','dash','bldg','report','lookahead'],pm:['dash','bldg','portfolio','trends','report','lookahead','delays']};
-    const isAdm=this.live()&&s.profile&&s.profile.role==='admin';const tabs=TABS[role].concat(isAdm?['users']:[]).map(k=>{const bd=k==='review'?pendingAll.length:k==='acts'?notifN:0;return{label:t['tab_'+k],icon:TAB_ICON[k]||'•',onClick:setTab(k),fg:k===tab?'#1b1a17':'#605a51',fw:k===tab?'700':'500',bg:k===tab?'#f1e8cf':'transparent',hasBadge:bd>0,badge:bd};});
+    const isAdm=this.live()&&s.profile&&s.profile.role==='admin';const tabs=TABS[role].concat(isAdm?['users']:[]).map(k=>{const bd=k==='review'?pendingAll.length:k==='acts'?notifN:0;const on=k===tab;return{label:t['tab_'+k],icon:TAB_ICON[k]||'•',ic:ico(k,on?'#0b4a3e':'#6b655b'),sic:ico(k,on?'#1b1a17':'#cfe3dc'),pill:on?'#d9ebe4':'transparent',onClick:setTab(k),fg:on?'#0b4a3e':'#605a51',fw:on?'700':'500',bg:'transparent',hasBadge:bd>0,badge:bd};});
     const roles=['site','cm','planner','pm'].map(r=>({label:t['role_'+r],onClick:()=>{this.set({role:r,detail:null,review:null,errors:[],bulk:false,bulkVals:{},bulkErr:{},sel:{}});this.top();},bg:r===role?'#c5a45a':'transparent',fg:r===role?'#1b1a17':'#e9e4da'}));
     const inDetail=!!(s.detail&&D.actMap[s.detail]),inReview=isRev&&!!(s.review&&pendingAll.find(u=>u.id===s.review));
     const show={dash:role!=='site'&&tab==='dash'&&!inDetail,users:!!isAdm&&tab==='users'&&!inDetail,siteList:role==='site'&&tab==='acts'&&!inDetail,siteHist:role==='site'&&tab==='hist'&&!inDetail,detail:inDetail,review:isRev&&tab==='review'&&!inReview&&!inDetail,reviewDetail:inReview&&!inDetail,progress:isRev&&tab==='progress'&&!inDetail,import:role==='planner'&&tab==='import'&&!inDetail,portfolio:role==='pm'&&tab==='portfolio'&&!inDetail,trends:role==='pm'&&tab==='trends'&&!inDetail,lookahead:tab==='lookahead'&&!inDetail,report:role!=='site'&&tab==='report'&&!inDetail,bldg:role!=='site'&&tab==='bldg'&&!inDetail,delays:role==='pm'&&tab==='delays'&&!inDetail};
+    const skel=this.live()&&s.auth==='ready'&&!s.lastSync&&!s.loadErr&&!s.data.activities.length;if(skel)Object.keys(show).forEach(k=>{show[k]=false;});
 
     const memOf=id=>new Set((s.members||[]).filter(m=>m.user_id===id).map(m=>m.project_id));
     const allUsers=s.users||[],isPendU=u=>u.active!==false&&u.role==='site'&&(!u.discipline||!memOf(u.id).size),uQ=(s.uq||'').trim().toLowerCase();
@@ -2079,14 +2145,22 @@ class Component extends DCLogic {
           for(let c=0;c<=4;c++)svg+='<rect x="'+(X0+c*W/4-3)+'" y="'+y+'" width="6" height="'+H+'" fill="#8a8378" opacity="0.55"/>';
           svg+='<rect x="'+(X0-4)+'" y="'+(y-3)+'" width="'+(W+8)+'" height="4" fill="#605a51"/>';
           for(let w=0;w<4;w++)svg+='<rect x="'+(X0+w*W/4+12)+'" y="'+(y+H*0.3)+'" width="'+(W/4-24)+'" height="'+(H*0.4)+'" fill="#ffffff" opacity="0.45"/>';
+          const px=X0+Math.max(0,Math.min(1,l.r.p/100))*W;svg+='<line x1="'+px.toFixed(1)+'" y1="'+(y+1)+'" x2="'+px.toFixed(1)+'" y2="'+(y+H-1)+'" stroke="#b3261e" stroke-width="2" stroke-dasharray="3 2"/>';
+          if(l.k==='gf')svg+='<rect x="'+(X0+W/2-9)+'" y="'+(y+H-22)+'" width="18" height="22" fill="#5c4a2e" opacity="0.8"/>';
           svg+='<rect x="'+(X0+W/2-46)+'" y="'+(y+H/2-10)+'" width="92" height="20" rx="10" fill="#ffffff" opacity="0.92"/>';
           svg+='<text x="'+(X0+W/2)+'" y="'+(y+H/2+5)+'" font-family="IBM Plex Sans,Arial" font-size="13" font-weight="700" text-anchor="middle" fill="#0b4a3e">'+(L==='ar'?Math.round(l.r.a)+'% · '+t['fl_'+l.k]:t['fl_'+l.k]+' · '+Math.round(l.r.a)+'%')+'</text>';});
         svg+='</svg>';
         const NT=48,aT=Math.round(r.a/100*NT),pT=Math.round(r.p/100*NT);
+        const flOpen=s.bvFl||'';
+        const floors=levels.slice().reverse().map(l=>{const v=l.r.a-l.r.p,L2=lv[l.k],on=flOpen===cur+'|'+l.k;
+          return{label:t['fl_'+l.k],pct:Math.round(l.r.a)+'%',planL:t.k_planShort,planV:Math.round(l.r.p)+'%',v:sg(v),vc:vc(v),aW:Math.max(0,Math.min(100,l.r.a)).toFixed(1)+'%',pW:Math.max(0,Math.min(100,l.r.p)).toFixed(1)+'%',bar:l.r.a>=99.5?'#0e5a4b':'#c5a45a',
+            n:t.bvActs(L2.length)+(L2.some(a=>a.delayed)?' · '+L2.filter(a=>a.delayed).length+' '+t.f_delayed:''),caret:on?'▾':'▸',open:on,
+            toggle:()=>this.setState({bvFl:on?'':cur+'|'+l.k}),
+            acts:on?L2.slice().sort((x,y)=>x.ps<y.ps?-1:1).map(a=>{const st=stOf(a);return{code:a.code,name:nm(a),pct:p0(a.actual),stL:t[st[0]],stBg:st[1],stFg:st[2],go:()=>this.openDetail(a.id)};}):[]};});
         bv={show:true,pchips:D.projects.length>1?[chip(t.allProjects,!sp,()=>this.setState({dbProj:'all',dbBld:''}))].concat(D.projects.map(p=>chip(p.code,!!sp&&sp.id===p.id,()=>this.setState({dbProj:p.id,dbBld:''})))):[],hasP:D.projects.length>1,chips:bks.map(k=>{const a=pool.find(v=>bkey(v)===k);return chip(lbl(a),k===cur,()=>this.setState({dbBld:k}));}),
           name:lbl(a0),date:dm(TODAY),img:'data:image/svg+xml;charset=utf-8,'+encodeURIComponent(svg),tiles,
           ticks:Array.from({length:NT},(_,i)=>({bg:i<aT?'#c5a45a':i<pT?'#e8c9a0':'#d8d3ca',h:i===pT?'34px':'26px',op:i===pT?'1':'0.95'})),
-          aTxt:Math.round(r.a)+'%',pTxt:Math.round(r.p)+'%',vTxt:sg(r.a-r.p),vC:vc(r.a-r.p),start:dm(startOf(L1)),end:dm(endOf(L1)),nActs:t.bvActs(L1.length)};}}
+          floors,hasFloors:floors.length>0,aTxt:Math.round(r.a)+'%',pTxt:Math.round(r.p)+'%',vTxt:sg(r.a-r.p),vC:vc(r.a-r.p),start:dm(startOf(L1)),end:dm(endOf(L1)),nActs:t.bvActs(L1.length)};}}
 
     // Admin activity log (Data screen)
     const alDev=ua=>!ua?'':/iphone|ipad|android|mobile/i.test(ua)?'📱':'💻';
@@ -2230,7 +2304,7 @@ class Component extends DCLogic {
         kpis:[{l:t.k_total,v:acts.length,sub:t.kOfTotal(n(a=>a.actual>=100),acts.length)+' '+t.k_done.toLowerCase(),c:'#1b1a17'},{l:t.k_inprog,v:n(a=>started(a)&&a.actual<100),sub:t.k_notstarted+' '+n(a=>!started(a)&&a.actual<100),c:C.blue},
           {l:t.k_delayed,v:n(a=>a.delayed),sub:t.kDelayedSub(cfg.thr),c:n(a=>a.delayed)?C.red:C.green},{l:t.k_missing,v:n(a=>a.missing),sub:t.kMissingSub(cfg.stale),c:n(a=>a.missing)?C.red:C.green},
           {l:t.k_awaitCM,v:cnt.cm,sub:t.p_flow,c:cnt.cm?C.blue:'#1b1a17'},{l:t.k_awaitPL,v:cnt.pl,sub:t.p_flow,c:cnt.pl?C.blue:'#1b1a17'},{l:t.k_returnedN,v:cnt.ret,sub:t.fl_ret,c:cnt.ret?C.amber:'#1b1a17'},{l:t.k_appr7,v:cnt.appr,sub:t.fl_appr,c:C.green}].map(k=>Object.assign(k,{v:String(k.v)})),
-        chart:{planPts:c.plan,actPts:c.act,tx:c.tx},axis:{a:c.start,b:c.end}};
+        chart:{planPts:c.plan,actPts:c.act,area:c.area,tx:c.tx},axis:{a:c.start,b:c.end}};
       const wks=[];for(let k=7;k>=0;k--){const e=addD(TODAY,-7*k),r0=rollS(addD(e,-7)),r=rollS(e);wks.push({e,p:Math.max(0,r.p-r0.p),a:Math.max(0,r.a-r0.a)});}
       const wm=Math.max(0.5,...wks.map(w=>Math.max(w.p,w.a)));
       db.weeks=wks.map(w=>({lbl:w.e.slice(5),aT:r1(w.a).toFixed(1),pH:(w.p/wm*100)+'%',aH:(w.a/wm*100)+'%'}));
@@ -2247,6 +2321,8 @@ class Component extends DCLogic {
       db.kpis.unshift({l:t.k_comp,v:p0(cAll),sub:t.k_compSub(t.dows[cfg.cut]+' '+D.nextCut),c:cAll>=90?C.green:cAll>=70?C.amber:C.red},
         {l:t.k_gain,v:(gNow>=gPrev?'▲ ':'▼ ')+sg(gNow),sub:t.k_gainSub(sg(gPrev)),c:gNow>=gPrev?C.green:C.red},{l:t.k_fcLate,v:String(lateN),sub:t.k_fcLateSub,c:lateN?C.red:C.green});
       db.kpis=db.kpis.filter(k=>k.l!==t.k_awaitCM&&k.l!==t.k_awaitPL&&k.l!==t.k_returnedN);
+      const KI={[t.k_comp]:'check',[t.k_gain]:'progress',[t.k_fcLate]:'delays',[t.k_total]:'layers',[t.k_inprog]:'play',[t.k_delayed]:'alert',[t.k_missing]:'target',[t.k_appr7]:'review'};
+      db.kpis.forEach(k=>{k.ic=ico(KI[k.l]||'dash',k.c);k.icBg=k.c===C.red?C.redBg:k.c===C.green?C.greenBg:k.c===C.amber?C.amberBg:k.c===C.blue?C.blueBg:'#f2efe9';});
       db.risks=risksOf(acts,5).map((x,i)=>({n:String(i+1),code:x.a.code,proj:D.projMap[x.a.pid].code+' · '+person(x.a.eng),name:nm(x.a),why:x.why,cause:lastReasonA(x.a),fc:x.pr.fc,fcC:x.pr.late?C.red:C.green,open:()=>this.openDetail(x.a.id)}));
       db.hasRisks=db.risks.length>0;db.noRisks=!db.risks.length;
       const pc=partyCounts(sp?sp.id:null),pt=Object.values(pc).reduce((x,y)=>x+y,0),pm2=Math.max(1,...Object.values(pc));
@@ -2345,7 +2421,7 @@ class Component extends DCLogic {
         kpis:[{l:t.planned,v:p1(rpP),s:t.repToDate,c:'#1d1b18'},{l:t.actualShort,v:p1(rpA),s:t.repApprovedOnly,c:'#0e5a4b'},{l:t.variance,v:sg(rpA-rpP),s:t.repVsPlan,c:vc(rpA-rpP)},{l:'SPI',v:spiTxt(rpS),s:t.repSpiS,c:rpS==null?'#1d1b18':rpS>=0.95?C.green:rpS>=0.85?C.amber:C.red},
           {l:t.repWeekGain,v:sg(now.a-bef.a),s:t.repPlannedGain(sg(now.p-bef.p)),c:'#0e5a4b'},{l:t.fcFinish,v:fc,s:t.plFinish+' '+c.end,c:fc>c.end?C.red:C.green}],
         narr:t.repNarr({a:p1(rpA),p:p1(rpP),v:sg(rpA-rpP),spi:spiTxt(rpS),g:sg(now.a-bef.a),gp:sg(now.p-bef.p),n:prog.length,d:delayedActs.length,r:DELAYS.filter(k=>rc[k]).sort((a,b)=>rc[b]-rc[a]).map(k=>t.delays[k])[0]||'',fc,end:c.end}),
-        chart:{planPts:c.plan,actPts:c.act,tx:c.tx},range:c.start+' → '+c.end,tables,
+        chart:{planPts:c.plan,actPts:c.act,area:c.area,tx:c.tx},range:c.start+' → '+c.end,tables,
         projects:rList.map(p=>{const photoActs=p.list.map(a=>{const ph=[];a.ups.filter(u=>u.status!=='draft'&&u.status!=='returned'&&(u.submitted||u.created).slice(0,10)>=wk0).forEach(u=>(u.photos||[]).forEach(x=>ph.push({src:x.src||'',cap:x.caption||'—',meta:(x.at||'')+' · '+u.pct+'% · '+t[upSt[u.status][0]]+(x.geo==='ok'?' · GPS '+x.lat.toFixed(5)+', '+x.lng.toFixed(5):'')})));return ph.length?{title:a.code+' · '+nm(a),sub:locL(a)+' · '+t.actualShort+' '+p0(a.actual),photos:ph}:null;}).filter(Boolean);return{title:p.code+' · '+nm(p),photoActs,noPhotos:!photoActs.length};}).filter(p=>rP||!p.noPhotos),
         notes:s.repNotes==null?(()=>{try{return localStorage.getItem(nKey)||'';}catch(e){return '';}})():s.repNotes,
         onNotes:e=>{const v=e.target.value;this.setState({repNotes:v});try{localStorage.setItem(nKey,v);}catch(x){}},
@@ -2425,7 +2501,7 @@ class Component extends DCLogic {
       isAdmin:!!(live&&prof&&prof.role==='admin'),loadDemoDb:()=>this.loadDemoToDb(),removeDemoDb:()=>this.removeDemoFromDb(),
       loadDemoLbl:s.liveArm==='load'?t.resetConfirm:t.loadDemoDb,removeDemoLbl:s.liveArm==='remove'?t.resetConfirm:t.removeDemoDb,
       stor:live?{badge:t.storageBadgeLive,l1:t.storageLive1,l2:t.storageLive2,l3:t.storageLive3,bg:'oklch(0.94 0.05 150)',fg:'oklch(0.38 0.1 150)'}:{badge:t.storageBadge,l1:t.storage1,l2:t.storage2,l3:t.storage3,bg:'oklch(0.94 0.06 85)',fg:'oklch(0.4 0.09 70)'},
-      sideTabs:tabs.map(b=>Object.assign({},b,{sbg:b.fw==='700'?'#c5a45a':'transparent',sfg:b.fw==='700'?'#1b1a17':'#e9e4da'})),roleLabel:t['role_'+role],srcTag:live?'LIVE':'DEMO',srcBg:live?'oklch(0.62 0.13 150)':'#f2c14e'};
+      skel,skelRows:[{h:'150px'},{h:'120px'},{h:'120px'},{h:'120px'}],hic:{chat:ico('chat','#f1e8cf'),refresh:ico('refresh','#f7f5f1'),dark:ico(s.dark?'sun':'moon','#f7f5f1'),gear:ico('gear','#f7f5f1')},sideTabs:tabs.map(b=>Object.assign({},b,{sbg:b.fw==='700'?'#c5a45a':'transparent',sfg:b.fw==='700'?'#1b1a17':'#e9e4da'})),roleLabel:t['role_'+role],srcTag:live?'LIVE':'DEMO',srcBg:live?'oklch(0.62 0.13 150)':'#f2c14e'};
     return{...liveVals,usersList,usersEmpty:show.users&&!usersList.length,uStats,uq:s.uq,onUq:e=>this.setState({uq:e.target.value}),nuOpen:s.nuOpen,nuBtn:s.nuOpen?t.nuClose:t.nuOpen,toggleNu:()=>this.setState({nuOpen:!s.nuOpen}),nuV,permHead,permCells,
       db,ch,chatOpen:s.chatOpen,chatUnread,chatHasUnread:chatUnread>0,openChat:()=>{this.setState({chatOpen:true,settings:false});if(this.live())this.reloadChat();},
       photoNote:live?t.photoNoteLive:t.photoNote,retTitle:d.retBy?t.returnedBy(d.retBy):t.returnedNote,importJson:e=>this.importJson(e),t,dir:L==='ar'?'rtl':'ltr',lang:L,today:TODAY,roles,tabs,show,toast:s.toast,hasToast:!!s.toast,

@@ -101,7 +101,7 @@ update profiles set role='admin', discipline='CIV' where id=(select id from auth
 
 ## Known limitations / roadmap
 - No direct P6 integration; CSV import only. Next: XER/XML import.
-- No offline mode. Push notifications added 2026-10-29 (Data screen → Phone notifications; banner after login).
+- Offline: progress updates queue on the device (see 2026-11-02). Push notifications added 2026-10-29 (Data screen → Phone notifications; banner after login).
 - LIVE load reads each table in pages of 1,000 rows (the API's max per request), up to 20,000 rows per table (2026-10-31; before that only the first 1,000 activities loaded).
 - Vercel Hobby is non-commercial; company adoption needs IT approval or a paid/internal host.
 - Don't upload real project data without company approval.
@@ -128,3 +128,11 @@ update profiles set role='admin', discipline='CIV' where id=(select id from auth
 - Offline updates (2026-11-02): `sw.js` now caches app files network-first (`dmc-shell-v1`; Supabase API never cached). IndexedDB `dmc-offline` (`idb()` helper): `outbox` = progress updates that failed to send for network reasons (`pushDiff` → `queueUpd`), `snap` = last loaded data per user (used when loading fails offline). `flushOutbox()` runs on the `online` event, every 30 s while items wait, and after each successful load; it uploads photos then inserts or updates each row. Offline banner `offBar` (+ "Send now"). Profile cached in localStorage `dmc-erp:prof:<uid>` for offline start. Only progress updates are queued (not CSV imports/project edits). Not yet tested end-to-end on live with airplane mode.
 - Planned % frozen at the last cut-off (2026-11-02): global `PLAN_AT=lastCut(cfg.cut)` set in `derive()`; `plannedPct(a,TODAY)` uses `PLAN_AT`, so dashboard / progress / delayed flags / report planned values move once a week on the cut-off day. Dashboard hero shows "as of cut-off <date>" (`t.planAt`).
 - Admin password reset (2026-11-02, `db/14_admin_set_password.sql`, applied + verified with a rolled-back test): RPC `admin_set_password(p_user,p_password)` (admin only via `app_role()`, ≥ 8 chars, bcrypt via `extensions.crypt`), writes an audit_log row (`PASSWORD`, shown in the activity log). Users tab: "🔑 New password" per user (`pwFor`/`pwVal`, `setPw`).
+- Look refresh (2026-11-02, Ahmed asked for all 8):
+  - Line icons: `ICO` (SVG paths) + `ico(name,color)` → cached data-URL `<img data-ico>` (oklch converted with `oklchRgb`). Used in bottom nav (active tab = green pill), sidebar, header buttons (`hic`), dashboard KPI tiles (`k.ic/k.icBg`). Dark mode CSS gives `img[data-ico]` `filter:none` so icons invert with the text. `TAB_ICON` emoji kept only as fallback.
+  - Font: Cairo (Google Fonts) for Arabic, Plex Sans for Latin (`'IBM Plex Sans','Cairo','IBM Plex Sans Arabic'`), also in the PDF box.
+  - Site / Progress activity cards: code tag, big coloured % (`actC`), gradient bar + planned tick, chips planned / variance / "n d ago"; location line dropped (cards are already grouped by building → WBS); Demo tag only for demo rows in LIVE (`showSrc`).
+  - Mobile header compact: logo only (name stays in footer), 40px icon buttons, chat/data text only on wide; smaller role bar + demo banner.
+  - Motion: `@keyframes dmcIn` on cards (`animation:dmcIn`), `button:active` scale, `prefers-reduced-motion` respected. Skeleton (`skel`, `skelRows`, shimmer `dmcShim`) while LIVE data is loading (all `show.*` false).
+  - Dashboard charts: S-curve actual = brand green with gradient area (`chart.area` from the chart builder), planned = gold dashed; weekly bars gold (planned) / green (actual).
+  - Buildings: drawing bigger (max 380px) with red dashed planned line per floor and a door on GF; floors list beside it (`bv.floors`, state `bvFl` = `<building>|<floor>`), tap a floor → its activities (status + %), tap an activity → detail.
