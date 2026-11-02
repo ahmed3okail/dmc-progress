@@ -1523,7 +1523,7 @@ function sampleCSV(){const d=n=>addD(TODAY,n);return [CSV_COLS.join(','),
 function connCfg(){const w=window.DMC_CONFIG||{};let l={};try{l=JSON.parse(localStorage.getItem(CONN_KEY)||'{}');}catch(e){}
   return{url:String(w.SUPABASE_URL||l.url||'').trim(),key:String(w.SUPABASE_ANON_KEY||l.key||'').trim(),fromFile:!!(w.SUPABASE_URL&&w.SUPABASE_ANON_KEY)};}
 let _sb=null,_sbKey='';
-async function getSB(c){if(_sb&&_sbKey===c.url+c.key)return _sb;const m=await import('https://esm.sh/@supabase/supabase-js@2');
+async function getSB(c){if(_sb&&_sbKey===c.url+c.key)return _sb;const m=await import('https://esm.sh/@supabase/supabase-js@2.45.4');
   _sb=m.createClient(c.url,c.key,{auth:{persistSession:true,storageKey:'dmc-erp-auth'}});_sbKey=c.url+c.key;return _sb;}
 const toTs=s=>s?new Date(s.length<=10?s+'T00:00':s).toISOString():null;
 const fromTs=s=>s?fmtMs(Date.parse(s)).replace(' ','T'):'';
@@ -1685,7 +1685,7 @@ class Component extends DCLogic {
     catch(e){this.toast(t.syncErr+' '+(e.message||e));}this.setState({syncing:false});await this.reloadLive();}
   async createUser(){const s=this.state,t=this.T(),f=s.nu,name=(f.name||'').trim();if(!name||(f.pw||'').length<8){this.toast(t.signUpNeed);return;}
     const email=name.indexOf('@')<0?name.toLowerCase().replace(/\s+/g,'.')+'@dmc.local':name;this.setState({nuBusy:true});
-    try{const c=connCfg(),m=await import('https://esm.sh/@supabase/supabase-js@2');
+    try{const c=connCfg(),m=await import('https://esm.sh/@supabase/supabase-js@2.45.4');
       // separate client without a stored session, so the administrator stays signed in
       const tmp=m.createClient(c.url,c.key,{auth:{persistSession:false,autoRefreshToken:false,detectSessionInUrl:false,storageKey:'dmc-erp-newuser'}});
       const r=await tmp.auth.signUp({email,password:f.pw,options:{data:{full_name:name}}});if(r.error)throw r.error;
