@@ -1,4 +1,4 @@
-# CLAUDE.md — DMC Progress ERP
+# CLAUDE.md — DMC Progress Update (file still named DMC Progress ERP.dc.html)
 
 Read this whole file before doing anything. It is the full project context.
 
