@@ -32,7 +32,7 @@ input,textarea{font:inherit;color:inherit}
 <div dir="{{ dir }}" lang="{{ lang }}" style="min-height:100vh;font-family:'IBM Plex Sans','IBM Plex Sans Arabic',system-ui,sans-serif;color:#1d1b18;background:#e9e5de">
 <div style="display:flex;align-items:flex-start;min-height:100vh">
 <sc-if value="{{ wide }}" hint-placeholder-val="{{ false }}">
-  <aside data-noprint="1" style="position:sticky;top:0;height:100vh;width:256px;flex:0 0 256px;background:#0b4a3e;color:#e9e4da;display:flex;flex-direction:column;gap:18px;padding:18px 14px;overflow-y:auto">
+  <aside data-noprint="1" data-keepcolor="1" style="position:sticky;top:0;height:100vh;width:256px;flex:0 0 256px;background:#0b4a3e;color:#e9e4da;display:flex;flex-direction:column;gap:18px;padding:18px 14px;overflow-y:auto">
     <div style="display:flex;align-items:center;gap:10px">
       <div style="flex:0 0 auto;display:flex;flex-direction:column;align-items:center"><div style="height:44px;flex:0 0 auto;background:#fff;display:grid;place-items:center;border-radius:8px;padding:3px 6px"><img src="logo.png" alt="DMC | CURVE" style="height:38px;width:auto;display:block"></div><div style="direction:ltr;unicode-bidi:isolate;text-align:center;white-space:nowrap;font-size:12px;font-weight:700;color:#fff;margin-top:4px">Ahmed A. Okail</div></div>
       <div style="min-width:0"><div style="font-weight:700;font-size:15px;line-height:1.2">{{ t.title }}</div><div style="display:flex;gap:6px;align-items:center;margin-top:3px"><span style="font-size:10.5px;font-weight:700;padding:1px 7px;border-radius:4px;background:{{ srcBg }};color:#1b1a17">{{ srcTag }}</span><span style="font-size:11.5px;color:#a8a194">{{ roleLabel }}</span></div></div>
@@ -52,13 +52,14 @@ input,textarea{font:inherit;color:inherit}
       <div style="font-size:12px;color:#c9c3b8;line-height:1.4;overflow-wrap:anywhere">{{ userLine }}</div>
       <div style="font-size:11px;color:#9fc2b8;line-height:1.4">© 2026 {{ t.copyright }} <span style="direction:ltr;unicode-bidi:isolate;font-weight:700">Ahmed A.Okail</span></div>
       <button onClick="{{ refresh }}" style="min-height:40px;border:1px solid #3f7468;background:transparent;color:#e9e4da;border-radius:8px;font-weight:600">↻ {{ t.refreshBtn }}</button>
+      <button onClick="{{ toggleDark }}" style="min-height:40px;border:1px solid #3f7468;background:transparent;color:#e9e4da;border-radius:8px;font-weight:600">{{ darkIcon }} {{ darkLbl }}</button>
       <div style="display:flex;gap:6px"><button onClick="{{ toggleLang }}" style="flex:1;min-height:40px;border:1px solid #3f7468;background:transparent;color:#e9e4da;border-radius:8px;font-weight:600">{{ t.otherLang }}</button><button onClick="{{ openSettings }}" style="flex:1;min-height:40px;border:1px solid #3f7468;background:transparent;color:#e9e4da;border-radius:8px;font-weight:600">{{ t.dataShort }}</button></div>
     </div>
   </aside>
 </sc-if>
-<div data-app="1" style="flex:1;min-width:0;max-width:1180px;margin:0 auto;min-height:100vh;background:#f4f2ed;padding-bottom:150px">
+<div data-app="1" style="flex:1;min-width:0;max-width:1400px;margin:0 auto;min-height:100vh;background:#f4f2ed;padding-bottom:150px">
 
-<header style="position:sticky;top:0;z-index:20;background:#0e5a4b;color:#f7f5f1">
+<header data-keepcolor="1" style="position:sticky;top:0;z-index:20;background:#0e5a4b;color:#f7f5f1">
   <div style="display:flex;align-items:center;gap:6px;padding:10px 10px 8px 10px">
     <div style="flex:0 0 auto;display:flex;flex-direction:column;align-items:center"><div style="height:40px;flex:0 0 auto;background:#fff;display:grid;place-items:center;border-radius:7px;padding:2px 5px"><img src="logo.png" alt="DMC | CURVE" style="height:36px;width:auto;display:block"></div><div style="direction:ltr;unicode-bidi:isolate;text-align:center;white-space:nowrap;font-size:11.5px;font-weight:700;color:#fff;margin-top:4px">Ahmed A. Okail</div></div>
     <div style="flex:1;min-width:0"><sc-if value="{{ wide }}" hint-placeholder-val="{{ true }}">
@@ -66,7 +67,8 @@ input,textarea{font:inherit;color:inherit}
       <div style="font-size:12px;color:#c9c3b8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">DMC-CURVE · {{ t.dataDate }} <span style="font-family:'IBM Plex Mono',monospace">{{ today }}</span></div>
     </sc-if></div>
     <button onClick="{{ openChat }}" style="position:relative;min-height:44px;padding:0 9px;border:1px solid #c5a45a;background:transparent;color:#f7f5f1;border-radius:8px;font-weight:600;font-size:14px">{{ t.chatBtn }}<sc-if value="{{ chatHasUnread }}" hint-placeholder-val="{{ false }}"><span style="position:absolute;top:-7px;inset-inline-end:-7px;min-width:21px;height:21px;padding:0 6px;border-radius:999px;background:oklch(0.55 0.15 150);color:#fff;font-size:11.5px;font-weight:700;display:grid;place-items:center;border:2px solid #0e5a4b">{{ chatUnread }}</span></sc-if></button>
-    <button onClick="{{ refresh }}" title="{{ t.refreshBtn }}" aria-label="{{ t.refreshBtn }}" style="min-height:44px;min-width:44px;padding:0 10px;border:1px solid #4f8478;background:transparent;color:#f7f5f1;border-radius:8px;font-weight:700;font-size:19px;line-height:1">↻</button>
+    <button onClick="{{ refresh }}" title="{{ t.refreshBtn }}" aria-label="{{ t.refreshBtn }}" style="min-height:44px;min-width:40px;padding:0 8px;border:1px solid #4f8478;background:transparent;color:#f7f5f1;border-radius:8px;font-weight:700;font-size:19px;line-height:1">↻</button>
+    <button onClick="{{ toggleDark }}" title="{{ darkLbl }}" aria-label="{{ darkLbl }}" style="min-height:44px;min-width:40px;padding:0 8px;border:1px solid #4f8478;background:transparent;color:#f7f5f1;border-radius:8px;font-size:17px;line-height:1">{{ darkIcon }}</button>
     <button onClick="{{ toggleLang }}" style="min-height:44px;min-width:44px;padding:0 9px;border:1px solid #4f8478;background:transparent;color:#f7f5f1;border-radius:8px;font-weight:600;font-size:14px">{{ t.otherLang }}</button>
     <button onClick="{{ openSettings }}" style="min-height:44px;padding:0 9px;border:1px solid #4f8478;background:transparent;color:#f7f5f1;border-radius:8px;font-weight:600;font-size:14px">{{ t.dataShort }}</button>
   </div>
@@ -678,7 +680,8 @@ input,textarea{font:inherit;color:inherit}
     <div style="display:flex;gap:8px;overflow-x:auto;padding:0 16px 2px">
       <sc-for list="{{ db.chips }}" as="c" hint-placeholder-count="4"><button onClick="{{ c.onClick }}" style="flex:0 0 auto;min-height:40px;padding:0 14px;border-radius:999px;border:1px solid {{ c.bd }};background:{{ c.bg }};color:{{ c.fg }};font-size:14px;white-space:nowrap">{{ c.label }}</button></sc-for>
     </div>
-    <div style="margin:0 16px;background:#0e5a4b;color:#f7f5f1;border-radius:14px;padding:16px;display:flex;gap:20px;align-items:center;flex-wrap:wrap">
+    <div style="display:flex;flex-wrap:wrap;gap:14px 0;align-items:stretch">
+    <div data-keepcolor="1" style="flex:1 1 380px;margin:0 16px;background:#0e5a4b;color:#f7f5f1;border-radius:14px;padding:16px;display:flex;gap:20px;align-items:center;flex-wrap:wrap">
       <div style="position:relative;width:136px;height:136px;flex:0 0 auto">
         <svg viewBox="0 0 120 120" style="width:136px;height:136px;display:block;transform:rotate(-90deg)">
           <circle cx="60" cy="60" r="50" style="fill:none;stroke:#093d33;stroke-width:11"></circle>
@@ -695,11 +698,12 @@ input,textarea{font:inherit;color:inherit}
         <div><div style="font-size:12px;color:#c9c3b8">{{ t.fcFinish }}</div><div style="font-size:15px;font-weight:700;color:{{ db.fcColor }};font-family:'IBM Plex Mono',monospace">{{ db.fc }}</div><div style="font-size:11px;color:#a8a194">{{ t.plFinish }} <span style="font-family:'IBM Plex Mono',monospace">{{ db.plFinish }}</span></div></div>
       </div>
     </div>
-    <div style="padding:0 16px;display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,160px),1fr));gap:8px">
+    <div style="flex:1.6 1 440px;align-content:start;padding:0 16px;display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,160px),1fr));gap:8px">
       <sc-for list="{{ db.kpis }}" as="k" hint-placeholder-count="8"><div style="background:#fff;border:1px solid #e2ded6;border-inline-start:4px solid {{ k.c }};border-radius:10px;padding:10px 12px;display:flex;flex-direction:column;gap:2px;min-height:76px"><span style="font-size:24px;font-weight:700;line-height:1.1;color:{{ k.c }}">{{ k.v }}</span><span style="font-size:13px;color:#2d2a25;font-weight:600">{{ k.l }}</span><span style="font-size:11.5px;color:#605a51;line-height:1.3">{{ k.sub }}</span></div></sc-for>
     </div>
-    <div style="padding:0 16px;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr));gap:12px;align-items:start">
-      <div style="background:#fff;border:1px solid #e2ded6;border-inline-start:4px solid oklch(0.55 0.17 28);border-radius:12px;overflow:hidden;display:flex;flex-direction:column">
+    </div>
+    <div style="padding:0 16px;column-width:340px;column-gap:12px">
+      <div style="break-inside:avoid;margin-bottom:12px;background:#fff;border:1px solid #e2ded6;border-inline-start:4px solid oklch(0.55 0.17 28);border-radius:12px;overflow:hidden;display:flex;flex-direction:column">
         <div style="padding:14px 14px 6px;font-weight:700;font-size:15px">⚠️ {{ t.repRisks }}</div>
         <sc-for list="{{ db.risks }}" as="r" hint-placeholder-count="5"><button onClick="{{ r.open }}" style="text-align:start;width:100%;background:transparent;border:none;border-top:1px solid #f0ede7;padding:10px 14px;display:flex;gap:10px;align-items:flex-start;color:inherit">
           <span style="flex:0 0 auto;width:24px;height:24px;border-radius:50%;background:oklch(0.95 0.035 28);color:oklch(0.45 0.16 28);font-weight:700;font-size:13px;display:grid;place-items:center">{{ r.n }}</span>
@@ -712,7 +716,7 @@ input,textarea{font:inherit;color:inherit}
         </button></sc-for>
         <sc-if value="{{ db.noRisks }}" hint-placeholder-val="{{ false }}"><div style="color:#5f5a52;text-align:center;padding:14px">{{ t.noRisks }}</div></sc-if>
       </div>
-      <div style="background:#fff;border:1px solid #e2ded6;border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:10px">
+      <div style="break-inside:avoid;margin-bottom:12px;background:#fff;border:1px solid #e2ded6;border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:10px">
         <div style="font-weight:700;font-size:15px">{{ t.p_scurve }}</div>
         <div style="display:flex;gap:16px;font-size:12.5px;flex-wrap:wrap"><span style="display:flex;align-items:center;gap:6px"><span style="width:18px;height:3px;background:#8f887c"></span>{{ t.planned }}</span><span style="display:flex;align-items:center;gap:6px"><span style="width:18px;height:4px;background:oklch(0.62 0.16 50)"></span>{{ t.actual }}</span><span style="display:flex;align-items:center;gap:6px"><span style="width:2px;height:14px;background:#0b4a3e"></span>{{ t.todayL }}</span></div>
         <div style="direction:ltr;position:relative">
@@ -729,7 +733,7 @@ input,textarea{font:inherit;color:inherit}
         </div>
         <div style="direction:ltr;display:flex;justify-content:space-between;font-size:10.5px;color:#5f5a52;font-family:'IBM Plex Mono',monospace"><span>{{ db.axis.a }}</span><span>{{ db.axis.b }}</span></div>
       </div>
-      <div style="background:#fff;border:1px solid #e2ded6;border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:8px">
+      <div style="break-inside:avoid;margin-bottom:12px;background:#fff;border:1px solid #e2ded6;border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:8px">
         <div style="font-weight:700;font-size:15px">{{ t.p_weekly }}</div>
         <div style="font-size:12px;color:#605a51">{{ t.p_weeklyHelp }}</div>
         <div style="display:flex;gap:6px;direction:ltr;align-items:flex-end;border-bottom:1px solid #cfc9bf;padding-top:6px">
@@ -737,7 +741,7 @@ input,textarea{font:inherit;color:inherit}
         </div>
         <div style="display:flex;gap:6px;direction:ltr"><sc-for list="{{ db.weeks }}" as="w" hint-placeholder-count="8"><span style="flex:1;min-width:0;text-align:center;font-size:10px;color:#605a51;font-family:'IBM Plex Mono',monospace">{{ w.lbl }}</span></sc-for></div>
       </div>
-      <div style="background:#fff;border:1px solid #e2ded6;border-radius:12px;overflow:hidden;display:flex;flex-direction:column">
+      <div style="break-inside:avoid;margin-bottom:12px;background:#fff;border:1px solid #e2ded6;border-radius:12px;overflow:hidden;display:flex;flex-direction:column">
         <div style="padding:14px 14px 6px;font-weight:700;font-size:15px">{{ db.healthTitle }}</div>
         <sc-for list="{{ db.health }}" as="h" hint-placeholder-count="4">
           <sc-if value="{{ h.isProj }}" hint-placeholder-val="{{ true }}"><button onClick="{{ h.open }}" style="display:flex;flex-direction:column;gap:6px;width:100%;text-align:start;border:none;border-top:1px solid #f0ede7;background:#fff;padding:10px 14px;color:inherit">
@@ -754,7 +758,7 @@ input,textarea{font:inherit;color:inherit}
           </div></sc-if>
         </sc-for>
       </div>
-      <div style="background:#fff;border:1px solid #e2ded6;border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:12px">
+      <div style="break-inside:avoid;margin-bottom:12px;background:#fff;border:1px solid #e2ded6;border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:12px">
         <div style="font-weight:700;font-size:15px">⏰ {{ t.compTitle }}</div>
         <div style="font-size:12.5px;color:#605a51;font-weight:600">{{ db.cutTxt }}</div>
         <sc-for list="{{ db.comp }}" as="x" hint-placeholder-count="5"><div style="display:flex;flex-direction:column;gap:5px">
@@ -768,7 +772,7 @@ input,textarea{font:inherit;color:inherit}
         </div></sc-if>
         <div style="font-size:11.5px;color:#605a51;line-height:1.45">{{ db.cutHelp }}</div>
       </div>
-      <div style="background:#fff;border:1px solid #e2ded6;border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:12px">
+      <div style="break-inside:avoid;margin-bottom:12px;background:#fff;border:1px solid #e2ded6;border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:12px">
         <div style="font-weight:700;font-size:15px">{{ t.p_disc }}</div>
         <sc-for list="{{ db.disc }}" as="x" hint-placeholder-count="4"><div style="display:flex;flex-direction:column;gap:5px">
           <div style="display:flex;gap:8px;align-items:baseline"><span style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;font-weight:700;padding:1px 6px;border-radius:4px;background:#f2efe9">{{ x.code }}</span><span style="flex:1;font-weight:600;font-size:14px">{{ x.label }}</span><span style="font-weight:700;font-size:13.5px;color:{{ x.vc }};direction:ltr;unicode-bidi:isolate">{{ x.v }}</span></div>
@@ -776,14 +780,14 @@ input,textarea{font:inherit;color:inherit}
           <div style="font-size:12px;color:#605a51">{{ x.line }}</div>
         </div></sc-for>
       </div>
-      <div style="background:#fff;border:1px solid #e2ded6;border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:10px">
+      <div style="break-inside:avoid;margin-bottom:12px;background:#fff;border:1px solid #e2ded6;border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:10px">
         <div style="font-weight:700;font-size:15px">{{ t.p_flow }}</div>
         <sc-for list="{{ db.flow }}" as="x" hint-placeholder-count="5"><div style="display:flex;flex-direction:column;gap:4px">
           <div style="display:flex;justify-content:space-between;gap:8px;font-size:13.5px"><span>{{ x.l }}</span><span style="font-weight:700">{{ x.n }}</span></div>
           <div style="height:10px;background:#ece9e3;border-radius:5px;overflow:hidden"><div style="height:100%;width:{{ x.w }};background:{{ x.c }};border-radius:5px"></div></div>
         </div></sc-for>
       </div>
-      <div style="background:#fff;border:1px solid #e2ded6;border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:10px">
+      <div style="break-inside:avoid;margin-bottom:12px;background:#fff;border:1px solid #e2ded6;border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:10px">
         <div style="font-weight:700;font-size:15px">{{ t.p_reasons }}</div>
         <sc-for list="{{ db.reasons }}" as="r" hint-placeholder-count="4"><div style="display:flex;flex-direction:column;gap:4px">
           <div style="display:flex;justify-content:space-between;gap:8px;font-size:13.5px"><span style="font-weight:600">{{ r.label }}</span><span style="color:#5f5a52">{{ r.n }}</span></div>
@@ -791,7 +795,7 @@ input,textarea{font:inherit;color:inherit}
         </div></sc-for>
         <sc-if value="{{ db.noReasons }}" hint-placeholder-val="{{ false }}"><div style="color:#5f5a52;text-align:center;padding:12px">{{ t.noItems }}</div></sc-if>
       </div>
-      <div style="background:#fff;border:1px solid #e2ded6;border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:10px">
+      <div style="break-inside:avoid;margin-bottom:12px;background:#fff;border:1px solid #e2ded6;border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:10px">
         <div style="font-weight:700;font-size:15px">{{ t.repByParty }}</div>
         <sc-for list="{{ db.parties }}" as="r" hint-placeholder-count="4"><div style="display:flex;flex-direction:column;gap:4px">
           <div style="display:flex;justify-content:space-between;gap:8px;font-size:13.5px"><span style="font-weight:600">{{ r.label }}</span><span style="color:#5f5a52;direction:ltr;unicode-bidi:isolate">{{ r.n }}</span></div>
@@ -799,14 +803,14 @@ input,textarea{font:inherit;color:inherit}
         </div></sc-for>
         <sc-if value="{{ db.noParties }}" hint-placeholder-val="{{ false }}"><div style="color:#5f5a52;text-align:center;padding:12px">{{ t.noItems }}</div></sc-if>
       </div>
-      <div style="background:#fff;border:1px solid #e2ded6;border-radius:12px;overflow:hidden;display:flex;flex-direction:column">
+      <div style="break-inside:avoid;margin-bottom:12px;background:#fff;border:1px solid #e2ded6;border-radius:12px;overflow:hidden;display:flex;flex-direction:column">
         <div style="padding:14px 14px 6px;font-weight:700;font-size:15px">{{ t.p_behind }}</div>
         <sc-for list="{{ db.behind }}" as="a" hint-placeholder-count="4"><button onClick="{{ a.open }}" style="display:flex;gap:10px;align-items:center;width:100%;text-align:start;border:none;border-top:1px solid #f0ede7;background:#fff;padding:10px 14px;color:inherit;min-height:56px">
           <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:2px"><div style="display:flex;gap:8px"><span style="font-family:'IBM Plex Mono',monospace;font-size:12.5px;font-weight:600">{{ a.code }}</span><span style="font-size:12px;color:#605a51;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ a.proj }}</span></div><div style="font-size:14px;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ a.name }}</div><div style="font-size:12px;color:#605a51">{{ t.actualShort }} / {{ t.planned }} · {{ a.aT }}</div></div>
           <span style="font-size:16px;font-weight:700;color:{{ a.vc }};direction:ltr;unicode-bidi:isolate;white-space:nowrap">{{ a.v }}</span>
         </button></sc-for>
       </div>
-      <div style="background:#fff;border:1px solid #e2ded6;border-radius:12px;overflow:hidden;display:flex;flex-direction:column">
+      <div style="break-inside:avoid;margin-bottom:12px;background:#fff;border:1px solid #e2ded6;border-radius:12px;overflow:hidden;display:flex;flex-direction:column">
         <div style="padding:14px 14px 4px;font-weight:700;font-size:15px">{{ t.p_ahead }}</div>
         <div style="padding:0 14px 10px;display:flex;flex-direction:column;gap:4px"><sc-for list="{{ db.ahead }}" as="x" hint-placeholder-count="3"><div style="font-size:13.5px;font-weight:600;color:{{ x.c }}">{{ x.l }}</div></sc-for></div>
         <div style="padding:10px 14px 6px;font-weight:700;font-size:15px;border-top:1px solid #ece9e3">{{ t.p_feed }}</div>
@@ -994,9 +998,9 @@ input,textarea{font:inherit;color:inherit}
 </sc-if>
 
 <sc-if value="{{ showLogin }}" hint-placeholder-val="{{ false }}">
-  <div data-noprint="1" style="position:fixed;inset:0;z-index:70;background:#0b4a3e;display:grid;place-items:center;padding:20px;overflow-y:auto">
-    <div style="width:100%;max-width:400px;background:#f7f5f1;border-radius:16px;padding:24px;display:flex;flex-direction:column;gap:14px">
-      <div style="display:flex;align-items:center;gap:10px"><div style="flex:0 0 auto;display:flex;flex-direction:column;align-items:center"><img src="logo.png" alt="DMC | CURVE" style="height:56px;width:auto;display:block;flex:0 0 auto"><div style="direction:ltr;unicode-bidi:isolate;text-align:center;white-space:nowrap;font-size:12.5px;font-weight:700;color:#0b4a3e;margin-top:4px">Ahmed A. Okail</div></div><div><div style="font-weight:700;font-size:19px">{{ t.title }}</div><div style="font-size:12.5px;color:#5f5a52;direction:ltr;unicode-bidi:isolate">{{ host }}</div></div></div>
+  <div data-noprint="1" data-keepcolor="1" style="position:fixed;inset:0;z-index:70;background:url(login-bg.jpg) center/cover no-repeat,url(login-art.svg) center bottom/auto 46% repeat-x,radial-gradient(ellipse at 70% 15%,#1a6b5a 0%,#0b4a3e 55%,#062c25 100%);background-color:#0b4a3e;display:grid;place-items:center;padding:24px 16px 40px;overflow-y:auto">
+    <div style="width:100%;max-width:410px;background:#f7f5f1;border-radius:20px;padding:26px 24px 20px;display:flex;flex-direction:column;gap:14px;box-shadow:0 24px 60px rgba(0,0,0,.35);border-top:4px solid #c5a45a">
+      <div style="display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center"><div style="background:#fff;border-radius:14px;padding:10px 16px;box-shadow:0 2px 10px rgba(11,74,62,.12)"><img src="logo.png" alt="DMC | CURVE" style="height:92px;width:auto;display:block"></div><div style="font-weight:800;font-size:21px;color:#0b4a3e;margin-top:4px">{{ t.title }}</div><div style="font-size:13px;color:#8a6d2c;font-weight:600">{{ t.loginTag }}</div><div style="font-size:11.5px;color:#5f5a52;direction:ltr;unicode-bidi:isolate">{{ host }}</div></div>
       <sc-if value="{{ authChecking }}" hint-placeholder-val="{{ false }}"><div style="padding:16px 0;color:#5f5a52;font-weight:600">{{ t.connecting }}</div></sc-if>
       <sc-if value="{{ authForm }}" hint-placeholder-val="{{ false }}">
         <div style="font-size:14px;color:#3d3933">{{ t.loginSub }}</div>
@@ -1044,6 +1048,22 @@ input,textarea{font:inherit;color:inherit}
         <sc-if value="{{ isAdmin }}" hint-placeholder-val="{{ false }}">
           <div style="border-top:1px dashed #e2ded6;padding-top:10px;display:flex;flex-direction:column;gap:8px"><div style="font-weight:700">{{ t.adminTools }}</div><div style="font-size:12.5px;color:#5f5a52">{{ t.adminHelp }}</div>
           <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px"><button onClick="{{ loadDemoDb }}" style="min-height:48px;padding:0 14px;border-radius:10px;font-weight:700;font-size:14px;border:1px solid #1d1b18;background:#fff">{{ loadDemoLbl }}</button><button onClick="{{ removeDemoDb }}" style="min-height:48px;padding:0 14px;border-radius:10px;font-weight:700;font-size:14px;border:1px solid oklch(0.52 0.17 28);color:oklch(0.45 0.16 28);background:#fff">{{ removeDemoLbl }}</button></div></div>
+        <div style="border-top:1px dashed #e2ded6;padding-top:10px;display:flex;flex-direction:column;gap:8px">
+          <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap"><div style="font-weight:700;flex:1">🕵️ {{ t.al_title }}</div><button onClick="{{ al.load }}" style="min-height:40px;padding:0 14px;border-radius:10px;font-weight:700;font-size:13.5px;border:1px solid #0b4a3e;color:#0b4a3e;background:#fff">{{ al.btn }}</button></div>
+          <div style="font-size:12.5px;color:#5f5a52">{{ t.al_help }}</div>
+          <sc-if value="{{ al.open }}" hint-placeholder-val="{{ false }}">
+            <div style="display:flex;gap:8px;overflow-x:auto"><sc-for list="{{ al.chips }}" as="c" hint-placeholder-count="3"><button onClick="{{ c.onClick }}" style="flex:0 0 auto;min-height:36px;padding:0 12px;border-radius:999px;border:1px solid {{ c.bd }};background:{{ c.bg }};color:{{ c.fg }};font-size:13px;white-space:nowrap">{{ c.label }}</button></sc-for></div>
+            <sc-if value="{{ al.busy }}" hint-placeholder-val="{{ false }}"><div style="font-size:13px;color:#5f5a52">{{ t.al_loading }}</div></sc-if>
+            <sc-if value="{{ al.hasErr }}" hint-placeholder-val="{{ false }}"><div style="font-size:13px;color:oklch(0.45 0.16 28)">{{ al.err }}</div></sc-if>
+            <sc-if value="{{ al.empty }}" hint-placeholder-val="{{ false }}"><div style="font-size:13px;color:#5f5a52">{{ t.noItems }}</div></sc-if>
+            <div style="display:flex;flex-direction:column;gap:6px;max-height:460px;overflow-y:auto">
+              <sc-for list="{{ al.rows }}" as="r" hint-placeholder-count="5"><div style="background:{{ r.bg }};border:1px solid #ece7dc;border-radius:10px;padding:8px 10px;display:flex;flex-direction:column;gap:2px">
+                <div style="display:flex;gap:8px;font-size:12px;color:#605a51"><span style="font-weight:700;color:#1b1a17">{{ r.who }}</span><span style="margin-inline-start:auto;direction:ltr;white-space:nowrap">{{ r.when }}</span></div>
+                <div style="font-size:13px;line-height:1.4;overflow-wrap:anywhere">{{ r.txt }}</div>
+              </div></sc-for>
+            </div>
+          </sc-if>
+        </div>
         </sc-if>
       </div>
       <sc-if value="{{ isSignedIn }}" hint-placeholder-val="{{ false }}"><div style="background:#fff;border:1px solid #e2ded6;border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:10px;font-size:14px;line-height:1.5">
@@ -1116,7 +1136,7 @@ refreshBtn:'Refresh',dows:['Sun','Mon','Tue','Wed','Thu','Fri','Sat'],compTitle:
 prodTitle:'Productivity & forecast',tab_report:'Report',tab_bldg:'Buildings',bldgTitle:'Buildings',bldgHelp:'Pick a building to see its floors, trades and progress against plan.',pdfMaking:'Preparing the PDF…',pdfDone:'PDF downloaded',pdfFail:'Could not create the PDF — check the internet connection and try again',wrSubmitBtn:'Submit',wrSendTo:'Send the report to',wrTo_cm:'Construction Manager',wrTo_pm:'Project Manager',wrTo_consultant:'Consultant',wrHelp:'A fixed copy of the report is saved. The CM / PM can download it from this tab. For the consultant, download the PDF and email it.',wrNotePh:'Note (optional)',wrSubmit:'Submit report',wrBusy:'Submitting…',wrPickTo:'Choose at least one recipient',wrSent:'Report submitted',wrSentCons:'Report submitted — download the PDF and email it to the consultant',wrListTitle:'Submitted reports',wrNone:'No reports submitted yet.',wrDl:'PDF',wrToLine:x=>`Sent to: ${x}`,wrPopup:'Allow pop-ups for this site to download the report',wrMissing:'Report not found',repStep1:'1. Project',repStep2:'2. Who is it for?',repStep3:'3. Language',repPreview:'Preview',repPdf:'Download PDF',repModeExtD:'Formal report for the consultant / client. No contract values or internal workflow.',repModeIntD:'For management. Adds contract values, approvals and missing updates.',k_comp:'Update compliance',k_compSub:d=>`this cycle · cut-off ${d}`,k_gain:'Progress this week',k_gainSub:v=>`last week ${v}`,k_fcLate:'Forecast to finish late',k_fcLateSub:'activities after planned finish',remDaysLbl:'Remaining duration to finish the activity',daysWord:'days',remHint:d=>`Your estimate of working days left. Planned finish: ${d}`,err_remD:'Enter the remaining duration (days) to finish the activity',remSrcSite:(n,d)=>`Remaining duration from the site engineer: ${n} days (as of ${d})`,remSrcPend:'not yet approved',remSrcCalc:'Calculated from the actual production rate (no estimate from site)',remQty:'Remaining quantity',rateAct:'Actual rate / day',rateReq:'Required rate / day',remDur:'Remaining duration',fcAct:'Forecast finish',daysN:n=>`${n} days`,notStartedRate:'Not started',overduePf:'Past planned finish',fcLate:n=>`${n} days after planned finish`,fcOk:'On or before planned finish',perDay:'/day',
 repCmp:'Compared with last week',repMetric:'Indicator',repCmpPrev:'Last week',repCmpNow:'This week',repCmpChg:'Change',cmpPlanned:'Planned progress',cmpActual:'Actual progress (approved)',cmpVar:'Variance',cmpSpi:'SPI',cmpBehind:'Activities behind schedule',cmpDone:'Activities completed',cmpGain:'Progress gained in the week',
 repRisks:'Top 5 risks',riskCols:['#','Activity','Risk','Cause / responsibility','Forecast finish'],riskBehind:v=>`Behind plan by ${v}`,riskDueSoon:d=>`Due ${d} — not finished`,riskOverdue:'Past planned finish',riskNoUpd:'No recent site update',noRisks:'No significant risks this week.',
-weekSec:'This week — before the cut-off',weekSecHelp:(d,u,n)=>`Cut-off ${d} · ${u} of ${n} updated`,otherSec:'Other activities',bvTitle:'Building',k_struct:'Structural work',k_finish:'Finishing work',k_mep:'MEP works',k_planShort:'Planned',k_finBy:'Planned finish',bvActs:n=>n+' activities',bvLegend:'Ticks = actual (gold) vs planned today (light) · colour by floor: green done, gold in progress, grey not started',bvActual:'Actual',bvPlanned:'Planned',bvVar:'Variance',fl_found:'Foundation',fl_gf:'GF',fl_f1:'1st',fl_f2:'2nd',fl_f3:'3rd',fl_roof:'Roof',rvGrpN:n=>n+(n===1?' update':' updates')+' to review',allActsSec:'Activities',wbsHelp:(n,a,l)=>`${n} activities · actual ${a}`+(l?` · ${l} delayed`:''),wbsTap:'grouped by WBS — tap a group to open it',wkDone:'✓ Updated this week',wkTodo:'Needs update this week',partyLabel:'Who is responsible for the delay?',parties:{contractor:'DMC (us)',owner:'Owner / client',consultant:'Consultant',subcon:'Subcontractor',other:'Other / force majeure'},repByParty:'Delays by responsibility',repParty:'Responsibility',returnCm:'Return to CM',plRetShort:'Returned by Planning',t_returnedCm:'Returned to the Construction Manager',plRetLine:d=>`Returned by Planning ${d}`,ev_returned_cm:'returned to CM by Planning',repNo:'Report No.',repPeriod:'Period',repFor:'Report for:',repModeExt:'Consultant / Client',repModeInt:'Internal',repClsExt:'FOR CONSULTANT REVIEW',repClsInt:'INTERNAL — CONFIDENTIAL — NOT FOR EXTERNAL DISTRIBUTION',
+weekSec:'This week — before the cut-off',weekSecHelp:(d,u,n)=>`Cut-off ${d} · ${u} of ${n} updated`,otherSec:'Other activities',darkOn:'Night mode',darkOff:'Day mode',al_title:'Activity log',al_help:'Who signed in and who changed what (demo rows hidden). Only the administrator sees this.',al_show:'Show log',al_refresh:'Refresh',al_all:'All',al_logins:'Sign-ins',al_changes:'Changes',al_loading:'Loading…',al_unknown:'System',al_login:'signed in',al_upNew:(c,p,st)=>`new update on ${c}: ${p}% (${st})`,al_upDel:c=>`deleted an update on ${c}`,al_upEdit:c=>`update on ${c}`,al_act:{insert:'added activity',update:'edited activity',delete:'deleted activity'},al_proj:{insert:'created project',update:'edited project',delete:'deleted project'},al_mem:(k,u,p)=>k==='delete'?`removed ${u} from ${p}`:`added ${u} to ${p}`,al_signup:'new account',al_user:'changed user',al_rep:'issued report',al_set:'changed setting',bvTitle:'Building',k_struct:'Structural work',k_finish:'Finishing work',k_mep:'MEP works',k_planShort:'Planned',k_finBy:'Planned finish',bvActs:n=>n+' activities',bvLegend:'Ticks = actual (gold) vs planned today (light) · colour by floor: green done, gold in progress, grey not started',bvActual:'Actual',bvPlanned:'Planned',bvVar:'Variance',fl_found:'Foundation',fl_gf:'GF',fl_f1:'1st',fl_f2:'2nd',fl_f3:'3rd',fl_roof:'Roof',rvGrpN:n=>n+(n===1?' update':' updates')+' to review',allActsSec:'Activities',wbsHelp:(n,a,l)=>`${n} activities · actual ${a}`+(l?` · ${l} delayed`:''),wbsTap:'grouped by WBS — tap a group to open it',wkDone:'✓ Updated this week',wkTodo:'Needs update this week',partyLabel:'Who is responsible for the delay?',parties:{contractor:'DMC (us)',owner:'Owner / client',consultant:'Consultant',subcon:'Subcontractor',other:'Other / force majeure'},repByParty:'Delays by responsibility',repParty:'Responsibility',returnCm:'Return to CM',plRetShort:'Returned by Planning',t_returnedCm:'Returned to the Construction Manager',plRetLine:d=>`Returned by Planning ${d}`,ev_returned_cm:'returned to CM by Planning',repNo:'Report No.',repPeriod:'Period',repFor:'Report for:',repModeExt:'Consultant / Client',repModeInt:'Internal',repClsExt:'FOR CONSULTANT REVIEW',repClsInt:'INTERNAL — CONFIDENTIAL — NOT FOR EXTERNAL DISTRIBUTION',
 repLocL:'Location',repPrepared:'Prepared by',repRev:'Revision',repValue:'Contract value',repWeightBy:'Weighting',repByWeight:'Activity weights',repAllN:n=>`All projects (${n})`,
 repExec:'1. Executive summary',repToDate:'Cumulative to date',repApprovedOnly:'Approved updates only',repVsPlan:'Actual − planned',repSpiS:'Actual ÷ planned',repWeekGain:'Progress this week',repPlannedGain:g=>`Planned ${g}`,
 repNarr:o=>`Overall progress reached ${o.a} against ${o.p} planned (variance ${o.v}, SPI ${o.spi}). Progress achieved this week is ${o.g} against ${o.gp} planned, from ${o.n} approved site updates. ${o.d} activities are currently behind schedule${o.r?`; the main reported cause is “${o.r}”`:''}. At the current rate the forecast finish is ${o.fc} (planned ${o.end}).`,
@@ -1172,7 +1192,7 @@ refreshBtn:'تحديث',dows:['الأحد','الاثنين','الثلاثاء','
 prodTitle:'الإنتاجية والتوقع',tab_report:'التقرير',tab_bldg:'المباني',bldgTitle:'المباني',bldgHelp:'اختار المبنى عشان تشوف أدواره وأعماله وتقدمه مقابل المخطط.',pdfMaking:'جاري تجهيز الـ PDF…',pdfDone:'اتنزل الـ PDF',pdfFail:'معرفتش أعمل الـ PDF — اتأكد من النت وجرّب تاني',wrSubmitBtn:'إرسال',wrSendTo:'ابعت التقرير لـ',wrTo_cm:'مدير الإنشاءات',wrTo_pm:'مدير المشروع',wrTo_consultant:'الاستشاري',wrHelp:'بيتحفظ نسخة ثابتة من التقرير، ومدير الإنشاءات / مدير المشروع يقدروا ينزلوها من التاب ده. للاستشاري نزّل الـ PDF وابعته بالإيميل.',wrNotePh:'ملاحظة (اختياري)',wrSubmit:'إرسال التقرير',wrBusy:'جاري الإرسال…',wrPickTo:'اختار مستلم واحد على الأقل',wrSent:'اتبعت التقرير',wrSentCons:'اتبعت التقرير — نزّل الـ PDF وابعته للاستشاري بالإيميل',wrListTitle:'التقارير المبعوتة',wrNone:'لسه مفيش تقارير اتبعتت.',wrDl:'PDF',wrToLine:x=>`مبعوت لـ: ${x}`,wrPopup:'اسمح بالنوافذ المنبثقة للموقع ده عشان التقرير يتنزل',wrMissing:'التقرير مش موجود',repStep1:'١. المشروع',repStep2:'٢. التقرير لمين؟',repStep3:'٣. اللغة',repPreview:'معاينة',repPdf:'تحميل PDF',repModeExtD:'تقرير رسمي للاستشاري / المالك. من غير قيم العقود ولا دورة الاعتماد الداخلية.',repModeIntD:'للإدارة. فيه قيم العقود والاعتمادات والتحديثات المتأخرة.',k_comp:'الالتزام بالتحديث',k_compSub:d=>`الدورة دي · القفل ${d}`,k_gain:'تقدم الأسبوع ده',k_gainSub:v=>`الأسبوع اللي فات ${v}`,k_fcLate:'متوقع يخلص متأخر',k_fcLateSub:'نشاط بعد تاريخ الانتهاء المخطط',remDaysLbl:'المدة المتبقية لإنهاء النشاط',daysWord:'يوم',remHint:d=>`تقديرك لعدد الأيام الباقية. تاريخ الانتهاء المخطط: ${d}`,err_remD:'اكتب المدة المتبقية (بالأيام) لإنهاء النشاط',remSrcSite:(n,d)=>`المدة المتبقية من مهندس الموقع: ${n} يوم (بتاريخ ${d})`,remSrcPend:'لسه ما اتعتمدتش',remSrcCalc:'محسوبة من معدل الإنتاج الفعلي (مفيش تقدير من الموقع)',remQty:'الكمية المتبقية',rateAct:'معدل الإنتاج الفعلي / يوم',rateReq:'المعدل المطلوب / يوم',remDur:'المدة المتبقية',fcAct:'تاريخ الانتهاء المتوقع',daysN:n=>`${n} يوم`,notStartedRate:'لم يبدأ',overduePf:'عدّى تاريخ الانتهاء المخطط',fcLate:n=>`متأخر ${n} يوم عن المخطط`,fcOk:'في الميعاد أو قبله',perDay:'/يوم',
 repCmp:'مقارنة بالأسبوع السابق',repMetric:'المؤشر',repCmpPrev:'الأسبوع السابق',repCmpNow:'هذا الأسبوع',repCmpChg:'التغيير',cmpPlanned:'التقدم المخطط',cmpActual:'التقدم الفعلي (المعتمد)',cmpVar:'الانحراف',cmpSpi:'مؤشر أداء الجدول',cmpBehind:'أنشطة متأخرة عن المخطط',cmpDone:'أنشطة مكتملة',cmpGain:'التقدم المحقق في الأسبوع',
 repRisks:'أهم ٥ مخاطر',riskCols:['#','النشاط','الخطر','السبب / المسؤول','الانتهاء المتوقع'],riskBehind:v=>`متأخر عن المخطط ${v}`,riskDueSoon:d=>`ينتهي ${d} — لم يكتمل`,riskOverdue:'تجاوز تاريخ الانتهاء المخطط',riskNoUpd:'لا يوجد تحديث حديث من الموقع',noRisks:'لا توجد مخاطر مؤثرة هذا الأسبوع.',
-weekSec:'أنشطة الأسبوع ده — قبل يوم القفل',weekSecHelp:(d,u,n)=>`يوم القفل ${d} · ${u} من ${n} اتحدّث`,otherSec:'باقي الأنشطة',bvTitle:'المبنى',k_struct:'الأعمال الإنشائية',k_finish:'أعمال التشطيبات',k_mep:'الأعمال الكهروميكانيكية',k_planShort:'المخطط',k_finBy:'نهاية مخططة',bvActs:n=>n+' نشاط',bvLegend:'الشرط = الفعلي (ذهبي) مقابل المخطط النهارده (فاتح) · لون الدور: أخضر خلص، ذهبي شغال، رمادي لسه',bvActual:'الفعلي',bvPlanned:'المخطط',bvVar:'الفرق',fl_found:'الأساسات',fl_gf:'الأرضي',fl_f1:'الأول',fl_f2:'التاني',fl_f3:'التالت',fl_roof:'السطح',rvGrpN:n=>n+' تحديث للمراجعة',allActsSec:'الأنشطة',wbsHelp:(n,a,l)=>`${n} نشاط · الفعلي ${a}`+(l?` · ${l} متأخر`:''),wbsTap:'مقسمة حسب WBS — اضغط على أي مجموعة لفتحها',wkDone:'✓ اتحدّث الأسبوع ده',wkTodo:'محتاج تحديث الأسبوع ده',partyLabel:'مين المسؤول عن التأخير؟',parties:{contractor:'إحنا (DMC)',owner:'المالك',consultant:'الاستشاري',subcon:'مقاول الباطن',other:'أخرى / قوة قاهرة'},repByParty:'التأخيرات حسب المسؤولية',repParty:'المسؤولية',returnCm:'إرجاع لمدير الإنشاءات',plRetShort:'مرتجع من التخطيط',t_returnedCm:'اترجع لمدير الإنشاءات',plRetLine:d=>`مرتجع من التخطيط ${d}`,ev_returned_cm:'رجّعه التخطيط لمدير الإنشاءات',repNo:'رقم التقرير',repPeriod:'الفترة',repFor:'التقرير لـ:',repModeExt:'الاستشاري / المالك',repModeInt:'داخلي',repClsExt:'للمراجعة من الاستشاري',repClsInt:'داخلي — سري — غير مخصص للتوزيع الخارجي',
+weekSec:'أنشطة الأسبوع ده — قبل يوم القفل',weekSecHelp:(d,u,n)=>`يوم القفل ${d} · ${u} من ${n} اتحدّث`,otherSec:'باقي الأنشطة',darkOn:'الوضع الليلي',darkOff:'الوضع النهاري',al_title:'سجل النشاط',al_help:'مين دخل ومين عدّل إيه (بيانات الديمو مخفية). الأدمن بس اللي بيشوف ده.',al_show:'اعرض السجل',al_refresh:'تحديث',al_all:'الكل',al_logins:'تسجيل الدخول',al_changes:'التعديلات',al_loading:'جاري التحميل…',al_unknown:'النظام',al_login:'سجّل دخول',al_upNew:(c,p,st)=>`تحديث جديد على ${c}: ${p}% (${st})`,al_upDel:c=>`مسح تحديث على ${c}`,al_upEdit:c=>`تحديث على ${c}`,al_act:{insert:'أضاف نشاط',update:'عدّل نشاط',delete:'مسح نشاط'},al_proj:{insert:'أنشأ مشروع',update:'عدّل مشروع',delete:'مسح مشروع'},al_mem:(k,u,p)=>k==='delete'?`شال ${u} من ${p}`:`ضاف ${u} على ${p}`,al_signup:'حساب جديد',al_user:'عدّل مستخدم',al_rep:'أصدر تقرير',al_set:'غيّر إعداد',bvTitle:'المبنى',k_struct:'الأعمال الإنشائية',k_finish:'أعمال التشطيبات',k_mep:'الأعمال الكهروميكانيكية',k_planShort:'المخطط',k_finBy:'نهاية مخططة',bvActs:n=>n+' نشاط',bvLegend:'الشرط = الفعلي (ذهبي) مقابل المخطط النهارده (فاتح) · لون الدور: أخضر خلص، ذهبي شغال، رمادي لسه',bvActual:'الفعلي',bvPlanned:'المخطط',bvVar:'الفرق',fl_found:'الأساسات',fl_gf:'الأرضي',fl_f1:'الأول',fl_f2:'التاني',fl_f3:'التالت',fl_roof:'السطح',rvGrpN:n=>n+' تحديث للمراجعة',allActsSec:'الأنشطة',wbsHelp:(n,a,l)=>`${n} نشاط · الفعلي ${a}`+(l?` · ${l} متأخر`:''),wbsTap:'مقسمة حسب WBS — اضغط على أي مجموعة لفتحها',wkDone:'✓ اتحدّث الأسبوع ده',wkTodo:'محتاج تحديث الأسبوع ده',partyLabel:'مين المسؤول عن التأخير؟',parties:{contractor:'إحنا (DMC)',owner:'المالك',consultant:'الاستشاري',subcon:'مقاول الباطن',other:'أخرى / قوة قاهرة'},repByParty:'التأخيرات حسب المسؤولية',repParty:'المسؤولية',returnCm:'إرجاع لمدير الإنشاءات',plRetShort:'مرتجع من التخطيط',t_returnedCm:'اترجع لمدير الإنشاءات',plRetLine:d=>`مرتجع من التخطيط ${d}`,ev_returned_cm:'رجّعه التخطيط لمدير الإنشاءات',repNo:'رقم التقرير',repPeriod:'الفترة',repFor:'التقرير لـ:',repModeExt:'الاستشاري / المالك',repModeInt:'داخلي',repClsExt:'للمراجعة من الاستشاري',repClsInt:'داخلي — سري — غير مخصص للتوزيع الخارجي',
 repLocL:'الموقع',repPrepared:'إعداد',repRev:'الإصدار',repValue:'قيمة العقد',repWeightBy:'الترجيح',repByWeight:'أوزان الأنشطة',repAllN:n=>`كل المشاريع (${n})`,
 repExec:'١. الملخص التنفيذي',repToDate:'تراكمي حتى تاريخه',repApprovedOnly:'التحديثات المعتمدة فقط',repVsPlan:'الفعلي − المخطط',repSpiS:'الفعلي ÷ المخطط',repWeekGain:'تقدم هذا الأسبوع',repPlannedGain:g=>`المخطط ${g}`,
 repNarr:o=>`بلغ التقدم الكلي ${o.a} مقابل ${o.p} مخطط (انحراف ${o.v}، مؤشر أداء الجدول ${o.spi}). التقدم المحقق هذا الأسبوع ${o.g} مقابل ${o.gp} مخطط، من ${o.n} تحديث معتمد من الموقع. عدد الأنشطة المتأخرة حالياً ${o.d}${o.r?`، وأكثر سبب مُبلغ عنه «${o.r}»`:''}. بالمعدل الحالي تاريخ الانتهاء المتوقع ${o.fc} (المخطط ${o.end}).`,
@@ -1263,7 +1283,7 @@ adjPreview:(p0,p1,q0,q1,u)=>`سيُعتمد بنسبة ${p1}% (المرسل ${p0
 err_adjComment:'التعليق مطلوب عند التعديل',err_adjFinish:'لا يمكن التعديل إلى 100% — لم يُدخل المهندس تاريخ النهاية الفعلية. أعد التحديث بدلاً من ذلك.',t_adjusted:'تم التعديل والموافقة — تم إشعار المهندس',repProjSummary:'ملخص المشروع',repPhotos:'صور الموقع هذا الأسبوع',repNoPhotos:'لا توجد صور مرفقة هذا الأسبوع.',actPhotos:'صور النشاط',ev_adjusted:'عُدّل'});
 Object.assign(I18N.en,{title:'DMC Progress ERP',modules:'Modules',roleView:'Role view',demoUser:'Demo mode · no sign-in',
 connTitle:'Database connection',connDemo:'Not connected — DEMO mode (this browser only)',connLive:h=>'Connected to shared database · '+h,connHelp:'Paste your Supabase Project URL and anon public key (Project Settings → API). Saved in this browser.',connFile:'Connection is set by the site administrator (config.js).',connect:'Connect',disconnect:'Disconnect (back to demo)',connBad:'Enter a valid https URL and anon key',
-signIn:'Sign in',signUp:'Create account',signOut:'Sign out',wait:'Please wait…',email:'Username or email',tab_users:'Users',usersTitle:'Users & permissions',usersHelp:'Colleagues open the site and tap “Create account” with a username (e.g. civil.eng1) and a password. They appear here — set their role, discipline and projects. Changes apply immediately.',you:'You',uActive:'Active',uDisabled:'Disabled',uRole:'Role',uDisc:'Discipline',uProj:'Projects (site engineers & CM see only these)',cantDemoteSelf:'You cannot remove your own admin role',savedOk:'Saved',password:'Password',loginSub:'Sign in with your company account. Your role and discipline are assigned by the administrator.',
+signIn:'Sign in',signUp:'Create account',signOut:'Sign out',wait:'Please wait…',email:'Username or email',tab_users:'Users',usersTitle:'Users & permissions',usersHelp:'Colleagues open the site and tap “Create account” with a username (e.g. civil.eng1) and a password. They appear here — set their role, discipline and projects. Changes apply immediately.',you:'You',uActive:'Active',uDisabled:'Disabled',uRole:'Role',uDisc:'Discipline',uProj:'Projects (site engineers & CM see only these)',cantDemoteSelf:'You cannot remove your own admin role',savedOk:'Saved',password:'Password',loginTag:'Site progress · Planning · Reporting',loginSub:'Sign in with your company account. Your role and discipline are assigned by the administrator.',
 signUpNote:'New accounts start without access until an administrator assigns a role and project.',loginNeed:'Enter username and password',signUpNeed:'Enter a username and a password of at least 8 characters',signUpOk:'Account created — confirm your email, then sign in.',
 noProfile:'No profile found for this account. Ask the administrator.',inactive:'Your account is disabled.',openDemo:'Open demo mode instead',connecting:'Connecting…',
 liveBar:(h,s)=>'LIVE · Shared database'+(s?' · '+s:''),syncing:'Saving…',syncedAt:x=>'synced '+x,syncErr:'Not saved:',loadErrTxt:'Could not load data',
@@ -1274,7 +1294,7 @@ storageLive3:'Free plan limits apply (database size, file storage, inactive proj
 prole_site:'Site engineer',prole_cm:'Construction Manager',prole_planner:'Planning Engineer',prole_pm:'Project Manager',prole_admin:'Administrator'});
 Object.assign(I18N.ar,{title:'DMC Progress ERP',modules:'الوحدات',roleView:'عرض حسب الدور',demoUser:'وضع تجريبي · بدون تسجيل دخول',
 connTitle:'الاتصال بقاعدة البيانات',connDemo:'غير متصل — وضع تجريبي (هذا المتصفح فقط)',connLive:h=>'متصل بقاعدة بيانات مشتركة · '+h,connHelp:'الصق رابط مشروع Supabase والمفتاح العام anon (Project Settings ← API). يُحفظ في هذا المتصفح.',connFile:'الاتصال مضبوط من مسؤول الموقع (config.js).',connect:'اتصال',disconnect:'قطع الاتصال (العودة للتجريبي)',connBad:'أدخل رابط https صحيح والمفتاح العام',
-signIn:'تسجيل الدخول',signUp:'إنشاء حساب',signOut:'تسجيل الخروج',wait:'انتظر…',email:'اسم المستخدم أو البريد',tab_users:'المستخدمون',usersTitle:'المستخدمون والصلاحيات',usersHelp:'الزملاء يفتحون الموقع ويضغطون «إنشاء حساب» باسم مستخدم (مثل civil.eng1) وكلمة مرور. يظهرون هنا — حدد الدور والتخصص والمشاريع. التغيير يطبق فوراً.',you:'أنت',uActive:'نشط',uDisabled:'موقوف',uRole:'الدور',uDisc:'التخصص',uProj:'المشاريع (مهندس الموقع ومدير الإنشاءات يرون هذه فقط)',cantDemoteSelf:'لا يمكنك إزالة صلاحية المسؤول عن نفسك',savedOk:'تم الحفظ',password:'كلمة المرور',loginSub:'سجّل الدخول بحساب الشركة. الدور والتخصص يحددهما مسؤول النظام.',
+signIn:'تسجيل الدخول',signUp:'إنشاء حساب',signOut:'تسجيل الخروج',wait:'انتظر…',email:'اسم المستخدم أو البريد',tab_users:'المستخدمون',usersTitle:'المستخدمون والصلاحيات',usersHelp:'الزملاء يفتحون الموقع ويضغطون «إنشاء حساب» باسم مستخدم (مثل civil.eng1) وكلمة مرور. يظهرون هنا — حدد الدور والتخصص والمشاريع. التغيير يطبق فوراً.',you:'أنت',uActive:'نشط',uDisabled:'موقوف',uRole:'الدور',uDisc:'التخصص',uProj:'المشاريع (مهندس الموقع ومدير الإنشاءات يرون هذه فقط)',cantDemoteSelf:'لا يمكنك إزالة صلاحية المسؤول عن نفسك',savedOk:'تم الحفظ',password:'كلمة المرور',loginTag:'متابعة تقدم الموقع · التخطيط · التقارير',loginSub:'سجّل الدخول بحساب الشركة. الدور والتخصص يحددهما مسؤول النظام.',
 signUpNote:'الحسابات الجديدة لا تملك صلاحيات حتى يحدد المسؤول الدور والمشروع.',loginNeed:'أدخل البريد وكلمة المرور',signUpNeed:'أدخل البريد وكلمة مرور 8 أحرف على الأقل',signUpOk:'تم إنشاء الحساب — أكّد بريدك ثم سجّل الدخول.',
 noProfile:'لا يوجد ملف لهذا الحساب. تواصل مع المسؤول.',inactive:'حسابك موقوف.',openDemo:'فتح الوضع التجريبي بدلاً من ذلك',connecting:'جارٍ الاتصال…',
 liveBar:(h,s)=>'مباشر · قاعدة بيانات مشتركة'+(s?' · '+s:''),syncing:'جارٍ الحفظ…',syncedAt:x=>'آخر مزامنة '+x,syncErr:'لم يُحفظ:',loadErrTxt:'تعذر تحميل البيانات',
@@ -1477,6 +1497,14 @@ function derive(data,cfg){
 function actualAt(a,at){let v=0;for(const u of a.appr){if(u.reviewed.slice(0,10)<=at)v=u.pct;else break;}return v;}
 // Productivity: remaining qty, actual / required rate per day, remaining duration, forecast finish
 // The PDF library does not understand oklch() colours: convert them to rgb() first
+// Night mode: invert the page colours (photos / drawings flipped back); switched off while printing or making a PDF.
+const DARK_KEY='dmc-erp:dark';
+function applyDark(on){try{let st=document.getElementById('dmc-dark-css');
+  if(on&&!st){st=document.createElement('style');st.id='dmc-dark-css';
+    st.textContent='html{filter:invert(1) hue-rotate(180deg);background:#fff}img,video,canvas,[data-keepcolor]{filter:invert(1) hue-rotate(180deg)}[data-keepcolor] img,[data-keepcolor] canvas{filter:none}@media print{html,img,video,canvas,[data-keepcolor]{filter:none!important}}';
+    document.head.appendChild(st);}
+  if(!on&&st)st.remove();
+  const m=document.querySelector('meta[name=theme-color]');if(m)m.setAttribute('content',on?'#0b2a24':'#0b4a3e');}catch(e){}}
 // Saved report HTML is shown again later (CM / PM download) — strip anything that could run code before it touches the page.
 function cleanHtml(h){try{const doc=new DOMParser().parseFromString('<body>'+String(h)+'</body>','text/html');
   doc.querySelectorAll('script,iframe,object,embed,link,meta,base,form').forEach(e=>e.remove());
@@ -1547,7 +1575,7 @@ const TABLE_ORDER=['projects','activities','updates','reminders'];
 class Component extends DCLogic {
   state=(()=>{const s=load();return{data:s?s.data:seed(),lang:(s&&s.prefs&&s.prefs.lang)||'en',role:(s&&s.prefs&&s.prefs.role)||'site',eng:(s&&s.prefs&&ENG.indexOf(s.prefs.eng)>=0&&s.prefs.eng)||'CIV',
     tab:{site:'acts',cm:'review',planner:'review',pm:'dash'},repMode:'ext',repNotes:null,repGhost:false,pdfBusy:false,wrList:[],wrOpen:false,wrTo:{cm:true,pm:true,consultant:false},wrNote:'',wrBusy:false,cutDow:(()=>{try{const v=localStorage.getItem('dmc-erp:cutDow');return v==null?4:Number(v);}catch(e){return 4;}})(),push:'',pushAskHidden:(()=>{try{return localStorage.getItem('dmc-erp:pushAsk')==='no';}catch(e){return false;}})(),detail:null,review:null,form:null,errors:[],q:'',sProj:'all',sFilter:'all',plProj:'P1',plFilter:'all',mode:'demo',auth:'none',user:null,profile:null,syncing:false,lastSync:'',loadErr:'',settingsDb:{},loginEmail:'',loginPw:'',loginErr:'',loginBusy:false,connUrl:connCfg().url,connKey:connCfg().key,wide:false,liveArm:'',pmProj:'all',dlProj:'all',
-    comment:'',importText:'',importRows:null,settings:false,toast:'',resetArm:false,bulk:false,bulkVals:{},bulkErr:{},sel:{},rvProj:'all',rvFlag:'all',sBldg:'all',sZone:'all',sRegion:'all',sType:'all',sWbsOpen:{},dbBld:'',plWbsOpen:{},plBldg:'all',plZone:'all',plType:'all',adjPct:'',adjQty:'',laProj:'all',laDays:14,report:false,repProj:'all',dbProj:'all',uq:'',uFilter:'all',nuOpen:false,nu:{name:'',pw:'',role:'site',disc:'CIV'},nuBusy:false,
+    comment:'',importText:'',importRows:null,settings:false,toast:'',resetArm:false,bulk:false,bulkVals:{},bulkErr:{},sel:{},rvProj:'all',rvFlag:'all',sBldg:'all',sZone:'all',sRegion:'all',sType:'all',sWbsOpen:{},dark:(()=>{try{return localStorage.getItem(DARK_KEY)==='1';}catch(e){return false;}})(),alOpen:false,alBusy:false,alRows:[],alErr:'',alKind:'all',dbBld:'',plWbsOpen:{},plBldg:'all',plZone:'all',plType:'all',adjPct:'',adjQty:'',laProj:'all',laDays:14,report:false,repProj:'all',dbProj:'all',uq:'',uFilter:'all',nuOpen:false,nu:{name:'',pw:'',role:'site',disc:'CIV'},nuBusy:false,
     chatOpen:false,chatRoom:null,chatText:'',chatImg:null,chatNew:false,chatQ:'',chatMsgs:[],chatReads:[],chatDir:[],chatErr:''};})();
   live(){return this.state.mode==='live';}
   dbSet(k){const v=this.live()?this.state.settingsDb[k]:undefined;return v===undefined||v===null?undefined:v;}
@@ -1568,7 +1596,7 @@ class Component extends DCLogic {
     if(this.live()){const r=await this._sb.from('weekly_reports').select('report_no,lang,html').eq('id',id).maybeSingle();rec=r.data;}else rec=this.wrLocal().find(x=>x.id===id);
     if(!rec){this.toast(t.wrMissing);return;}await this.pdfSave(rec.html,rec.report_no,rec.lang);}
   // Builds a real PDF file from the report sheet HTML and downloads it (no print dialog)
-  async pdfSave(html,no,lang){const t=this.T();if(this._pdfBusy)return;this._pdfBusy=true;this.setState({pdfBusy:true});this.toast(t.pdfMaking);
+  async pdfSave(html,no,lang){const t=this.T();if(this._pdfBusy)return;this._pdfBusy=true;const dk=document.getElementById('dmc-dark-css');if(dk)dk.disabled=true;this.setState({pdfBusy:true});this.toast(t.pdfMaking);
     let box=null;try{
       if(!window.html2pdf)await new Promise((res,rej)=>{const sc=document.createElement('script');sc.src='https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js';sc.onload=res;sc.onerror=rej;document.head.appendChild(sc);});
       box=document.createElement('div');box.id='dmc-pdfbox';box.setAttribute('dir',lang==='ar'?'rtl':'ltr');
@@ -1587,7 +1615,7 @@ class Component extends DCLogic {
       try{await document.fonts.ready;}catch(e){}
       await window.html2pdf().set({margin:[10,10,12,10],filename:(no||'weekly-report')+'.pdf',image:{type:'jpeg',quality:0.95},html2canvas:{scale:2,useCORS:true,backgroundColor:'#ffffff',foreignObjectRendering:true},jsPDF:{unit:'mm',format:'a4',orientation:'portrait'},pagebreak:{mode:['css','legacy'],avoid:['img','[data-avoid]']}}).from(box.firstElementChild.nextElementSibling||box).save();
       this.toast(t.pdfDone);
-    }catch(e){console.error('pdf',e);this.toast(t.pdfFail);}finally{if(box)box.remove();this._pdfBusy=false;this.setState({pdfBusy:false});}}
+    }catch(e){console.error('pdf',e);this.toast(t.pdfFail);}finally{if(box)box.remove();if(dk)dk.disabled=false;this._pdfBusy=false;this.setState({pdfBusy:false});}}
   // Planner: download the report currently selected in the Report tab (renders it hidden, then saves)
   pdfCurrent(){if(this._pdfBusy)return;const was=this.state.report;
     this.setState({report:true,repGhost:!was},()=>setTimeout(async()=>{const el=document.querySelector('#dmc-report [data-sheet]'),info=this._rpInfo||{};const html=el?el.outerHTML:'';
@@ -1596,7 +1624,7 @@ class Component extends DCLogic {
   async setCut(n){if(!this.canCut())return;if(this.live()){const sb=this._sb;const {error}=await sb.from('app_settings').upsert({key:'cutoff_dow',value:n});if(error){this.toast(error.message);return;}this.setState({settingsDb:Object.assign({},this.state.settingsDb,{cutoff_dow:n})});}else{try{localStorage.setItem('dmc-erp:cutDow',String(n));}catch(e){}this.setState({cutDow:n});}}
   canSwitch(){return !this.live()||(this.state.profile&&this.state.profile.role==='admin');}
   savePrefs(){try{localStorage.setItem(PREF_KEY,JSON.stringify({lang:this.state.lang}));}catch(e){}}
-  componentDidMount(){this._onResize=()=>{const w=window.innerWidth>=1024;if(w!==this.state.wide)this.setState({wide:w});};window.addEventListener('resize',this._onResize);this._onResize();
+  componentDidMount(){applyDark(this.state.dark);this._onResize=()=>{const w=window.innerWidth>=1024;if(w!==this.state.wide)this.setState({wide:w});};window.addEventListener('resize',this._onResize);this._onResize();
     try{const p=JSON.parse(localStorage.getItem(PREF_KEY)||'{}');if(p.lang&&p.lang!==this.state.lang)this.setState({lang:p.lang});}catch(e){}
     let n=0;const go=()=>{if(window.DMC_CONFIG===undefined&&n++<15){setTimeout(go,100);return;}this.initConn();};go();
     if(/^https?:$/.test(location.protocol)&&'serviceWorker' in navigator){navigator.serviceWorker.register('sw.js').catch(()=>{});
@@ -1609,7 +1637,7 @@ class Component extends DCLogic {
       if(!this._authSub){this._authSub=sb.auth.onAuthStateChange(ev=>{if(ev==='SIGNED_OUT')this.setState({auth:'signedOut',user:null,profile:null});});}
       if(data&&data.session)await this.afterLogin(data.session.user);else this.setState({auth:'signedOut'});
     }catch(e){this.setState({auth:'signedOut',loginErr:String(e.message||e)});}}
-  async afterLogin(user){const sb=this._sb,t=this.T();const r=await sb.from('profiles').select('*').eq('id',user.id).maybeSingle();
+  async afterLogin(user){const sb=this._sb,t=this.T();try{sb.rpc('log_login',{p_ua:navigator.userAgent||''}).then(()=>{},()=>{});}catch(e){}const r=await sb.from('profiles').select('*').eq('id',user.id).maybeSingle();
     if(r.error||!r.data){this.setState({auth:'signedOut',loginErr:(r.error&&r.error.message)||t.noProfile});return;}
     const prof=r.data;if(prof.active===false){this.setState({auth:'signedOut',loginErr:t.inactive});await sb.auth.signOut();return;}
     const role=prof.role==='admin'?(['site','cm','planner','pm'].indexOf(this.state.role)>=0?this.state.role:'planner'):prof.role;
@@ -1647,6 +1675,10 @@ class Component extends DCLogic {
     }catch(e){this.setState({syncing:false});this.toast(t.syncErr+' '+(e.message||e));}
     await this.reloadLive();}
   loginId(){const v=this.state.loginEmail.trim();return v.indexOf('@')<0?v.toLowerCase().replace(/\s+/g,'.')+'@dmc.local':v;}
+  async alLoad(){const sb=this._sb;if(!sb)return;this.setState({alBusy:true,alOpen:true});
+    const r=await sb.rpc('admin_activity',{p_limit:400,p_demo:false});
+    this.setState({alBusy:false,alRows:r.error?[]:(r.data||[]),alErr:r.error?r.error.message:''});}
+  toggleDark(){const on=!this.state.dark;try{localStorage.setItem(DARK_KEY,on?'1':'0');}catch(e){}applyDark(on);this.setState({dark:on});}
   async loadAdmin(){const sb=this._sb,p=this.state.profile;if(!sb||!p||p.role!=='admin')return;
     const r=await Promise.all([sb.from('profiles').select('*').order('created_at'),sb.from('project_members').select('*')]);
     this.setState({users:r[0].data||[],members:r[1].data||[]});}
@@ -2007,6 +2039,29 @@ class Component extends DCLogic {
           name:lbl(a0),date:dm(TODAY),img:'data:image/svg+xml;charset=utf-8,'+encodeURIComponent(svg),tiles,
           ticks:Array.from({length:NT},(_,i)=>({bg:i<aT?'#c5a45a':i<pT?'#e8c9a0':'#d8d3ca',h:i===pT?'34px':'26px',op:i===pT?'1':'0.95'})),
           aTxt:Math.round(r.a)+'%',pTxt:Math.round(r.p)+'%',vTxt:sg(r.a-r.p),vC:vc(r.a-r.p),start:dm(startOf(L1)),end:dm(endOf(L1)),nActs:t.bvActs(L1.length)};}}
+
+    // Admin activity log (Data screen)
+    const alDev=ua=>!ua?'':/iphone|ipad|android|mobile/i.test(ua)?'📱':'💻';
+    const alWhen=ts=>{const d=new Date(ts);return isNaN(d)?'':d.getFullYear()+'-'+p2(d.getMonth()+1)+'-'+p2(d.getDate())+' '+p2(d.getHours())+':'+p2(d.getMinutes());};
+    const alAct=id=>{const a=s.data.activities.find(x=>x.id===id);return a?a.code:(id||'');};
+    const alTxt=r=>{const o=r.old_row||{},n=r.new_row||{},k=r.kind;
+      if(k==='login')return '🔑 '+t.al_login+' '+alDev(n.ua);
+      if(r.tbl==='progress_updates'){const code=alAct(n.activity_id||o.activity_id);
+        if(k==='insert')return '📝 '+t.al_upNew(code,n.pct,t['st_'+n.status]||n.status);
+        if(k==='delete')return '🗑 '+t.al_upDel(code);
+        const parts=[];if(o.status!==n.status)parts.push((t['st_'+o.status]||o.status)+' → '+(t['st_'+n.status]||n.status));if(o.pct!==n.pct)parts.push(o.pct+'% → '+n.pct+'%');
+        return '✏️ '+t.al_upEdit(code)+(parts.length?': '+parts.join(' · '):'');}
+      if(r.tbl==='activities')return '📋 '+t.al_act[k]+' '+(n.code||o.code||'');
+      if(r.tbl==='projects')return '🏗 '+t.al_proj[k]+' '+(n.code||o.code||'');
+      if(r.tbl==='project_members'){const p=(n.project_id||o.project_id),u=((s.users||[]).find(x=>x.id===(n.user_id||o.user_id))||{}).full_name||'';return (k==='delete'?'➖ ':'➕ ')+t.al_mem(k,u||'?',(D.projMap[p]||{}).code||p);}
+      if(r.tbl==='profiles'){const ch=['role','discipline','active','full_name'].filter(f=>k==='update'&&o[f]!==n[f]).map(f=>f+': '+(o[f]==null?'—':o[f])+' → '+(n[f]==null?'—':n[f]));return '👤 '+(k==='insert'?t.al_signup+' '+(n.full_name||''):t.al_user+' '+(n.full_name||o.full_name||'')+(ch.length?' — '+ch.join(' · '):''));}
+      if(r.tbl==='weekly_reports')return '📄 '+t.al_rep+' '+(n.report_no||o.report_no||'');
+      if(r.tbl==='app_settings')return '⚙️ '+t.al_set+' '+(n.key||o.key)+' = '+JSON.stringify(n.value);
+      return k+' '+(r.tbl||'')+' '+(r.row_id||'');};
+    const alF={all:()=>true,login:r=>r.kind==='login',change:r=>r.kind!=='login'};
+    const alRows=(s.alRows||[]).filter(alF[s.alKind]||alF.all).slice(0,300).map(r=>({when:alWhen(r.at),who:(r.who||t.al_unknown)+(r.role?' · '+(t['prole_'+r.role]||r.role):''),txt:alTxt(r),bg:r.kind==='login'?'#f3efe7':'#fff'}));
+    const al={open:!!s.alOpen,busy:!!s.alBusy,rows:alRows,empty:s.alOpen&&!s.alBusy&&!alRows.length,err:s.alErr||'',hasErr:!!s.alErr,load:()=>this.alLoad(),
+      btn:s.alOpen?t.al_refresh:t.al_show,chips:[['all',t.al_all],['login',t.al_logins],['change',t.al_changes]].map(([k,l])=>chip(l,s.alKind===k,()=>this.setState({alKind:k})))};
     let rv={rows:[],photos:[],warnings:[]};
     if(inReview){const u=pendingAll.find(x=>x.id===s.review),a=D.actMap[u.actId],o=a.off||{},dl=x=>dlP(x);
       const row=(l,x,y)=>({l,a:x,b:y,fw:String(x)!==String(y)?'700':'400',bg:String(x)!==String(y)?'oklch(0.96 0.04 85)':'transparent'});
@@ -2345,7 +2400,7 @@ class Component extends DCLogic {
       myHist,myHistEmpty:show.siteHist&&!myHist.length,
       d,fm,f,quick,delayChips,partyChips,hasParty:partyChips.length>0,photos,canAddPhoto:photos.length<4,onPhotos:e=>this.onPhotos(e),errors,hasErrors:errors.length>0,
       saveDraft:()=>this.writeUpdate('draft'),submit:()=>this.writeUpdate('submitted'),withdraw:()=>this.withdraw(),closeDetail:()=>{this.setState({detail:null,form:null,errors:[]});this.top();},detailHist,
-      bv,bldgEmpty:show.bldg&&!bv.show,reviewList,reviewEmpty:show.review&&!reviewList.length,rvProjChips,rvFlagChips,selectClean:()=>this.setState({sel:Object.fromEntries(cleanIds.map(id=>[id,true]))}),selectCleanTxt:t.selectClean(cleanIds.length),hasClean:cleanIds.length>0,clearSel:()=>this.setState({sel:{}}),
+      toggleDark:()=>this.toggleDark(),darkIcon:s.dark?'☀️':'🌙',darkLbl:s.dark?t.darkOff:t.darkOn,al,bv,bldgEmpty:show.bldg&&!bv.show,reviewList,reviewEmpty:show.review&&!reviewList.length,rvProjChips,rvFlagChips,selectClean:()=>this.setState({sel:Object.fromEntries(cleanIds.map(id=>[id,true]))}),selectCleanTxt:t.selectClean(cleanIds.length),hasClean:cleanIds.length>0,clearSel:()=>this.setState({sel:{}}),
       showSelBar:show.review&&selIds.length>0,selCountTxt:t.selCount(selIds.length),approveSelTxt:t.approveSel(selIds.length),approveSel:()=>this.approveMany(selIds),
       sBldgChips,sZoneChips,sRegionChips,sTypeChips,hasSRegion:sRegionChips.length>0,hasSType:sTypeChips.length>0,hasSBldg:sBldgChips.length>0,hasSZone:sZoneChips.length>0,plBreak,hasPlBreak:plBreak.length>1,tpBreak:show.trends&&tp?bdown(tp.list,'',''):[],hasTpBreak:!!(show.trends&&tp),
       canAdjust:inReview&&role==='cm',adjPct:s.adjPct,adjQty:s.adjQty,onAdjPct:e=>this.setState({adjPct:e.target.value}),onAdjQty:e=>this.setState({adjQty:e.target.value}),adjQtyFromPct:adjV.fromPct,adjChanged:adjV.changed,adjChangedTxt:adjV.txt,adjQtyLabel:adjV.qtyLabel,adjQuick,approveLbl:adjV.changed?t.approveAdj:t.approve,
