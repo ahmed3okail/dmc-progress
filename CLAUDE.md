@@ -1,4 +1,4 @@
-# CLAUDE.md — DMC Progress Update (file still named DMC Progress ERP.dc.html)
+# CLAUDE.md — DMC SiteTrack (file still named DMC Progress ERP.dc.html)
 
 Read this whole file before doing anything. It is the full project context.
 

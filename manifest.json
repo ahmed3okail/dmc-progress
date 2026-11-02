@@ -1,6 +1,6 @@
 {
-  "name": "DMC Progress Update",
-  "short_name": "DMC Progress",
+  "name": "DMC SiteTrack",
+  "short_name": "SiteTrack",
   "start_url": "./DMC%20Progress%20ERP.dc.html",
   "scope": "./",
   "display": "standalone",
