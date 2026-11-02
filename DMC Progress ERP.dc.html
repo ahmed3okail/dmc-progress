@@ -80,6 +80,7 @@ input,textarea{font:inherit;color:inherit}
   <sc-if value="{{ isDemo }}" hint-placeholder-val="{{ true }}"><button onClick="{{ openSettings }}" style="display:block;width:100%;border:none;text-align:start;background:repeating-linear-gradient(-45deg,#f2c14e 0 10px,#f5cd6a 10px 20px);color:#1d1b18;font-size:12.5px;font-weight:600;padding:7px 16px;line-height:1.35">{{ t.demo }}</button></sc-if>
   <sc-if value="{{ isLive }}" hint-placeholder-val="{{ false }}"><button onClick="{{ openSettings }}" style="display:flex;gap:8px;align-items:center;width:100%;border:none;text-align:start;background:oklch(0.9 0.07 150);color:oklch(0.3 0.09 150);font-size:12.5px;font-weight:600;padding:7px 16px;line-height:1.35"><span style="width:8px;height:8px;border-radius:50%;background:oklch(0.55 0.15 150);flex:0 0 auto"></span><span>{{ liveBar }}</span></button></sc-if>
   <sc-if value="{{ showPushAsk }}" hint-placeholder-val="{{ false }}"><div style="display:flex;gap:8px;align-items:center;background:#f1e8cf;color:#1d1b18;font-size:13px;font-weight:600;padding:8px 10px 8px 14px;line-height:1.35"><span style="font-size:18px">🔔</span><span style="flex:1">{{ t.pushAsk }}</span><button onClick="{{ pushEnable }}" style="min-height:36px;padding:0 12px;border-radius:8px;font-weight:700;font-size:13px;border:none;background:#0e5a4b;color:#fff">{{ t.pushOn }}</button><button onClick="{{ pushDismiss }}" aria-label="close" style="min-height:36px;min-width:36px;border:none;background:transparent;color:#5f5a52;font-size:18px">×</button></div></sc-if>
+  <sc-if value="{{ offBar.show }}" hint-placeholder-val="{{ false }}"><div style="background:{{ offBar.bg }};color:{{ offBar.fg }};font-size:12.5px;font-weight:700;padding:7px 16px;display:flex;gap:8px;align-items:center;flex-wrap:wrap"><span style="flex:1;min-width:0">{{ offBar.txt }}</span><sc-if value="{{ offBar.canSend }}" hint-placeholder-val="{{ false }}"><button onClick="{{ offBar.send }}" style="min-height:32px;padding:0 12px;border-radius:8px;border:1px solid currentColor;background:transparent;color:inherit;font-weight:700;font-size:12.5px">{{ t.offSendNow }}</button></sc-if></div></sc-if>
   <sc-if value="{{ hasLoadErr }}" hint-placeholder-val="{{ false }}"><div style="background:oklch(0.93 0.05 28);color:oklch(0.38 0.15 28);font-size:12.5px;font-weight:600;padding:7px 16px">⚠ {{ t.loadErrTxt }}: {{ loadErr }}</div></sc-if>
 </header>
 
@@ -692,7 +693,7 @@ input,textarea{font:inherit;color:inherit}
         <div style="position:absolute;inset:0;display:grid;place-items:center;text-align:center"><div><div style="font-size:24px;font-weight:700;line-height:1">{{ db.actual }}</div><div style="font-size:11px;color:#c9c3b8;margin-top:4px">{{ t.actualShort }}</div></div></div>
       </div>
       <div style="flex:1;min-width:220px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px 18px">
-        <div><div style="font-size:12px;color:#c9c3b8">{{ t.planned }}</div><div style="font-size:22px;font-weight:700">{{ db.planned }}</div></div>
+        <div><div style="font-size:12px;color:#c9c3b8">{{ t.planned }}</div><div style="font-size:22px;font-weight:700">{{ db.planned }}</div><div style="font-size:11px;color:#a8a194">{{ db.planAt }}</div></div>
         <div><div style="font-size:12px;color:#c9c3b8">{{ t.variance }}</div><div style="font-size:22px;font-weight:700;color:{{ db.varColor }};direction:ltr;unicode-bidi:isolate;text-align:start">{{ db.variance }}</div></div>
         <div><div style="font-size:12px;color:#c9c3b8">{{ t.spi }}</div><div style="font-size:22px;font-weight:700">{{ db.spi }}</div></div>
         <div><div style="font-size:12px;color:#c9c3b8">{{ t.fcFinish }}</div><div style="font-size:15px;font-weight:700;color:{{ db.fcColor }};font-family:'IBM Plex Mono',monospace">{{ db.fc }}</div><div style="font-size:11px;color:#a8a194">{{ t.plFinish }} <span style="font-family:'IBM Plex Mono',monospace">{{ db.plFinish }}</span></div></div>
@@ -849,6 +850,13 @@ input,textarea{font:inherit;color:inherit}
         <div style="font-size:12px;font-weight:700;color:#5f5a52">{{ t.uRole }}</div><div style="display:flex;gap:6px;flex-wrap:wrap"><sc-for list="{{ u.roleChips }}" as="c" hint-placeholder-count="4"><button onClick="{{ c.onClick }}" style="min-height:40px;padding:0 12px;border-radius:999px;border:1px solid {{ c.bd }};background:{{ c.bg }};color:{{ c.fg }};font-size:13px">{{ c.label }}</button></sc-for></div>
         <div style="font-size:12px;font-weight:700;color:#5f5a52">{{ t.uDisc }}</div><div style="display:flex;gap:6px;flex-wrap:wrap"><sc-for list="{{ u.discChips }}" as="c" hint-placeholder-count="4"><button onClick="{{ c.onClick }}" style="min-height:40px;padding:0 12px;border-radius:999px;border:1px solid {{ c.bd }};background:{{ c.bg }};color:{{ c.fg }};font-size:13px">{{ c.label }}</button></sc-for></div>
         <sc-if value="{{ u.hasProj }}" hint-placeholder-val="{{ true }}"><div style="font-size:12px;font-weight:700;color:#5f5a52">{{ t.uProj }}</div><div style="display:flex;gap:6px;flex-wrap:wrap"><sc-for list="{{ u.projChips }}" as="c" hint-placeholder-count="4"><button onClick="{{ c.onClick }}" style="min-height:40px;padding:0 12px;border-radius:999px;border:1px solid {{ c.bd }};background:{{ c.bg }};color:{{ c.fg }};font-size:13px">{{ c.label }}</button></sc-for></div></sc-if>
+        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;border-top:1px solid #f0ede7;padding-top:10px">
+          <button onClick="{{ u.pwToggle }}" style="min-height:38px;padding:0 12px;border:1px solid #cfc9bf;background:#fff;border-radius:10px;font-weight:600;font-size:13px">🔑 {{ t.pwNew }}</button>
+          <sc-if value="{{ u.pwOpen }}" hint-placeholder-val="{{ false }}">
+            <input type="text" autocomplete="off" autocapitalize="none" spellcheck="false" value="{{ pwVal }}" onChange="{{ onPwVal }}" placeholder="{{ t.pwPh }}" style="flex:1;min-width:160px;min-height:40px;padding:0 12px;border:1px solid #cfc9bf;border-radius:10px;background:#fff;font-size:15px;direction:ltr">
+            <button onClick="{{ u.pwSave }}" style="min-height:40px;padding:0 14px;border:none;background:#0e5a4b;color:#fff;border-radius:10px;font-weight:700;font-size:13.5px">{{ pwBtn }}</button>
+          </sc-if>
+        </div>
       </div>
     </sc-for>
     <sc-if value="{{ usersEmpty }}" hint-placeholder-val="{{ false }}"><div style="padding:24px;text-align:center;color:#5f5a52;border:1px dashed #cfc9bf;border-radius:12px">{{ t.noItems }}</div></sc-if>
@@ -1283,7 +1291,7 @@ connTitle:'Database connection',connDemo:'Not connected — DEMO mode (this brow
 signIn:'Sign in',signUp:'Create account',signOut:'Sign out',wait:'Please wait…',email:'Username or email',tab_users:'Users',usersTitle:'Users & permissions',usersHelp:'Colleagues open the site and tap “Create account” with a username (e.g. civil.eng1) and a password. They appear here — set their role, discipline and projects. Changes apply immediately.',you:'You',uActive:'Active',uDisabled:'Disabled',uRole:'Role',uDisc:'Discipline',uProj:'Projects (site engineers & CM see only these)',cantDemoteSelf:'You cannot remove your own admin role',savedOk:'Saved',password:'Password',loginTag:'Site progress · Planning · Reporting',loginSub:'Sign in with your company account. Your role and discipline are assigned by the administrator.',
 signUpNote:'New accounts start without access until an administrator assigns a role and project.',loginNeed:'Enter username and password',signUpNeed:'Enter a username and a password of at least 8 characters',signUpOk:'Account created — confirm your email, then sign in.',
 noProfile:'No profile found for this account. Ask the administrator.',inactive:'Your account is disabled.',openDemo:'Open demo mode instead',connecting:'Connecting…',
-liveBar:(h,s)=>'LIVE · Shared database'+(s?' · '+s:''),syncing:'Saving…',syncedAt:x=>'synced '+x,syncErr:'Not saved:',loadErrTxt:'Could not load data',
+liveBar:(h,s)=>'LIVE · Shared database'+(s?' · '+s:''),syncing:'Saving…',syncedAt:x=>'synced '+x,syncErr:'Not saved:',al_pw:n=>'Set a new password for '+n,pwNew:'New password',pwPh:'At least 8 characters',pwSave:'Save password',pwShort:'Password must be at least 8 characters',pwDemo:'Only in the live app',pwDone:n=>'Password changed for '+n+' — send it to them privately',planAt:d=>'as of cut-off '+d,offSaved:'No connection — saved on this device. It will be sent automatically when the internet is back.',offSent:n=>n+' saved update(s) sent',offBar:n=>'📶 Offline'+(n?' · '+n+' update(s) saved on this device, waiting to send':' · showing the last loaded data'),offWait:n=>'⏳ '+n+' update(s) waiting to send',offSendNow:'Send now',loadErrTxt:'Could not load data',
 adminTools:'Administrator tools',adminHelp:'Demo rows are marked is_demo and can be removed at any time without touching real data.',demoLoading:'Loading sample data… keep this page open',loadDemoDb:'Load demo data into database',removeDemoDb:'Remove demo data',demoLoaded:'Demo data loaded',demoRemoved:'Demo data removed',
 storageBadgeLive:'Shared · Supabase PostgreSQL · real-time',storageLive1:'Data is stored in a shared PostgreSQL database (Supabase). Every signed-in user sees the same data, and changes appear for others within seconds.',
 storageLive2:'Workflow rules (CM → Planning approval, approved updates locked, roles per discipline) are enforced by the database itself, not only by this screen. Every change is written to an audit log.',
@@ -1294,7 +1302,7 @@ connTitle:'الاتصال بقاعدة البيانات',connDemo:'غير متص
 signIn:'تسجيل الدخول',signUp:'إنشاء حساب',signOut:'تسجيل الخروج',wait:'انتظر…',email:'اسم المستخدم أو البريد',tab_users:'المستخدمون',usersTitle:'المستخدمون والصلاحيات',usersHelp:'الزملاء يفتحون الموقع ويضغطون «إنشاء حساب» باسم مستخدم (مثل civil.eng1) وكلمة مرور. يظهرون هنا — حدد الدور والتخصص والمشاريع. التغيير يطبق فوراً.',you:'أنت',uActive:'نشط',uDisabled:'موقوف',uRole:'الدور',uDisc:'التخصص',uProj:'المشاريع (مهندس الموقع ومدير الإنشاءات يرون هذه فقط)',cantDemoteSelf:'لا يمكنك إزالة صلاحية المسؤول عن نفسك',savedOk:'تم الحفظ',password:'كلمة المرور',loginTag:'متابعة تقدم الموقع · التخطيط · التقارير',loginSub:'سجّل الدخول بحساب الشركة. الدور والتخصص يحددهما مسؤول النظام.',
 signUpNote:'الحسابات الجديدة لا تملك صلاحيات حتى يحدد المسؤول الدور والمشروع.',loginNeed:'أدخل البريد وكلمة المرور',signUpNeed:'أدخل البريد وكلمة مرور 8 أحرف على الأقل',signUpOk:'تم إنشاء الحساب — أكّد بريدك ثم سجّل الدخول.',
 noProfile:'لا يوجد ملف لهذا الحساب. تواصل مع المسؤول.',inactive:'حسابك موقوف.',openDemo:'فتح الوضع التجريبي بدلاً من ذلك',connecting:'جارٍ الاتصال…',
-liveBar:(h,s)=>'مباشر · قاعدة بيانات مشتركة'+(s?' · '+s:''),syncing:'جارٍ الحفظ…',syncedAt:x=>'آخر مزامنة '+x,syncErr:'لم يُحفظ:',loadErrTxt:'تعذر تحميل البيانات',
+liveBar:(h,s)=>'مباشر · قاعدة بيانات مشتركة'+(s?' · '+s:''),syncing:'جارٍ الحفظ…',syncedAt:x=>'آخر مزامنة '+x,syncErr:'لم يُحفظ:',al_pw:n=>'عمل كلمة مرور جديدة لـ '+n,pwNew:'كلمة مرور جديدة',pwPh:'8 حروف على الأقل',pwSave:'حفظ كلمة المرور',pwShort:'كلمة المرور لازم 8 حروف على الأقل',pwDemo:'متاح في النسخة المباشرة فقط',pwDone:n=>'تم تغيير كلمة مرور '+n+' — ابعتها له في رسالة خاصة',planAt:d=>'حتى يوم القطع '+d,offSaved:'لا يوجد اتصال — تم الحفظ على هذا الجهاز وسيُرسل تلقائياً عند عودة الإنترنت.',offSent:n=>'تم إرسال '+n+' تحديث محفوظ',offBar:n=>'📶 بدون إنترنت'+(n?' · '+n+' تحديث محفوظ على الجهاز في انتظار الإرسال':' · يتم عرض آخر بيانات محمّلة'),offWait:n=>'⏳ '+n+' تحديث في انتظار الإرسال',offSendNow:'إرسال الآن',loadErrTxt:'تعذر تحميل البيانات',
 adminTools:'أدوات المسؤول',adminHelp:'الصفوف التجريبية معلّمة is_demo ويمكن حذفها في أي وقت دون المساس بالبيانات الحقيقية.',demoLoading:'جارٍ تحميل البيانات التجريبية… لا تغلق الصفحة',loadDemoDb:'تحميل بيانات تجريبية في القاعدة',removeDemoDb:'حذف البيانات التجريبية',demoLoaded:'تم تحميل البيانات التجريبية',demoRemoved:'تم حذف البيانات التجريبية',
 storageBadgeLive:'مشترك · Supabase PostgreSQL · لحظي',storageLive1:'البيانات محفوظة في قاعدة بيانات PostgreSQL مشتركة (Supabase). كل المستخدمين المسجلين يرون نفس البيانات، والتغييرات تظهر للآخرين خلال ثوانٍ.',
 storageLive2:'قواعد سير العمل (موافقة مدير الإنشاءات ثم التخطيط، قفل التحديثات المعتمدة، الصلاحيات حسب التخصص) تفرضها قاعدة البيانات نفسها وليس الشاشة فقط. كل تغيير يُسجَّل في سجل تدقيق.',
@@ -1351,7 +1359,10 @@ function demoPhoto(label,n){const c=PH_COL[n%4],v=n%3;
   const svg=`<svg xmlns="http://www.w3.org/2000/svg" width="320" height="240" viewBox="0 0 320 240"><rect width="320" height="240" fill="${c[0]}"/><rect y="170" width="320" height="70" fill="${c[1]}"/>${scene}<rect width="320" height="26" fill="#1b1a17" opacity="0.7"/><text x="10" y="18" font-family="monospace" font-size="13" fill="#ffffff">DEMO PHOTO · ${label}</text></svg>`;
   return 'data:image/svg+xml;charset=utf-8,'+encodeURIComponent(svg);}
 
-function plannedPct(a,d){if(d<a.ps)return 0;if(d>=a.pf)return 100;const t=dd(a.ps,a.pf);return t<=0?100:clamp(dd(a.ps,d)/t*100,0,100);}
+// Planned % is frozen on the last weekly cut-off day (PLAN_AT, set in derive): "today" means "as of the last cut-off"
+let PLAN_AT=null;
+function lastCut(cut){return addD(TODAY,-((new Date(TODAY+'T00:00:00Z').getUTCDay()-(cut??4)+7)%7));}
+function plannedPct(a,d){if(d===TODAY&&PLAN_AT)d=PLAN_AT;if(d<a.ps)return 0;if(d>=a.pf)return 100;const t=dd(a.ps,a.pf);return t<=0?100:clamp(dd(a.ps,d)/t*100,0,100);}
 
 function seed(){
   const projects=[{id:'P1',code:'Evia',name:'Evia',nameAr:'Evia',loc:'North Coast',locAr:'الساحل الشمالي',region:'nc',value:85,src:'demo'}];
@@ -1461,7 +1472,7 @@ const fmtMs=ms=>{const d=new Date(ms);return `${d.getFullYear()}-${p2(d.getMonth
 
 function derive(data,cfg){
   const byAct={};
-  const nextCut=addD(TODAY,((cfg.cut??4)-new Date(TODAY+'T00:00:00Z').getUTCDay()+7)%7),cycStart=addD(nextCut,-6);
+  const nextCut=addD(TODAY,((cfg.cut??4)-new Date(TODAY+'T00:00:00Z').getUTCDay()+7)%7),cycStart=addD(nextCut,-6);PLAN_AT=lastCut(cfg.cut);
   data.updates.forEach(u=>{(byAct[u.actId]=byAct[u.actId]||[]).push(u);});
   Object.values(byAct).forEach(l=>l.sort((a,b)=>a.created<b.created?-1:1));
   const acts=data.activities.map(a=>{
@@ -1535,6 +1546,14 @@ function parseCSV(text){text=text.replace(/^\ufeff/,'');const rows=[];let row=[]
   return rows.filter(r=>r.some(x=>x.trim()));}
 const toCSV=rows=>rows.map(r=>r.map(v=>{v=v==null?'':String(v);return /[",\r\n]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v;}).join(',')).join('\r\n');
 function download(name,text,type){const blob=new Blob([type==='application/json'?text:'\ufeff'+text],{type:type||'text/csv;charset=utf-8'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),2000);}
+// Offline store (IndexedDB): 'outbox' = progress updates waiting to be sent, 'snap' = last loaded data per user
+function idb(store,op,key,val){return new Promise(res=>{try{const rq=indexedDB.open('dmc-offline',1);
+  rq.onupgradeneeded=()=>{const d=rq.result;['outbox','snap'].forEach(n=>{if(!d.objectStoreNames.contains(n))d.createObjectStore(n);});};
+  rq.onsuccess=()=>{try{const d=rq.result,tx=d.transaction(store,op==='get'||op==='all'?'readonly':'readwrite'),os=tx.objectStore(store);
+    const r=op==='get'?os.get(key):op==='all'?os.getAll():op==='del'?os.delete(key):os.put(val,key);
+    r.onsuccess=()=>res(op==='get'||op==='all'?r.result:true);r.onerror=()=>res(null);}catch(e){res(null);}};
+  rq.onerror=()=>res(null);}catch(e){res(null);}});}
+function isNetErr(e){const m=String((e&&(e.message||e))||'');return (typeof navigator!=='undefined'&&navigator.onLine===false)||/failed to fetch|networkerror|load failed|network request failed|fetch failed|timeout/i.test(m);}
 function compress(file){return new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>{const img=new Image();img.onload=()=>{const sc=Math.min(1,800/Math.max(img.width,img.height));const c=document.createElement('canvas');c.width=Math.round(img.width*sc);c.height=Math.round(img.height*sc);c.getContext('2d').drawImage(img,0,0,c.width,c.height);res(c.toDataURL('image/jpeg',0.6));};img.onerror=rej;img.src=r.result;};r.onerror=rej;r.readAsDataURL(file);});}
 function sampleCSV(){const d=n=>addD(TODAY,n);return [CSV_COLS.join(','),
 `DMC-106,Coastal School Annex,F6010,Site clearance,تنظيف الموقع,1.1 Enabling,${d(-20)},${d(-5)},6000,m2,4,CIV`,
@@ -1571,7 +1590,7 @@ const TABLE_ORDER=['projects','activities','updates','reminders'];
 
 class Component extends DCLogic {
   state=(()=>{const s=load();return{data:s?s.data:seed(),lang:(s&&s.prefs&&s.prefs.lang)||'en',role:(s&&s.prefs&&s.prefs.role)||'site',eng:(s&&s.prefs&&ENG.indexOf(s.prefs.eng)>=0&&s.prefs.eng)||'CIV',
-    tab:{site:'acts',cm:'review',planner:'review',pm:'dash'},repMode:'ext',repNotes:null,repGhost:false,pdfBusy:false,wrList:[],wrOpen:false,wrTo:{cm:true,pm:true,consultant:false},wrNote:'',wrBusy:false,cutDow:(()=>{try{const v=localStorage.getItem('dmc-erp:cutDow');return v==null?4:Number(v);}catch(e){return 4;}})(),push:'',pushAskHidden:(()=>{try{return localStorage.getItem('dmc-erp:pushAsk')==='no';}catch(e){return false;}})(),detail:null,review:null,form:null,errors:[],q:'',sProj:'all',sFilter:'all',plProj:'P1',plFilter:'all',mode:'demo',auth:'none',user:null,profile:null,syncing:false,lastSync:'',loadErr:'',settingsDb:{},loginEmail:'',loginPw:'',loginErr:'',loginBusy:false,connUrl:connCfg().url,connKey:connCfg().key,wide:false,liveArm:'',pmProj:'all',dlProj:'all',
+    tab:{site:'acts',cm:'review',planner:'review',pm:'dash'},offline:false,obN:0,pwFor:null,pwVal:'',pwBusy:false,repMode:'ext',repNotes:null,repGhost:false,pdfBusy:false,wrList:[],wrOpen:false,wrTo:{cm:true,pm:true,consultant:false},wrNote:'',wrBusy:false,cutDow:(()=>{try{const v=localStorage.getItem('dmc-erp:cutDow');return v==null?4:Number(v);}catch(e){return 4;}})(),push:'',pushAskHidden:(()=>{try{return localStorage.getItem('dmc-erp:pushAsk')==='no';}catch(e){return false;}})(),detail:null,review:null,form:null,errors:[],q:'',sProj:'all',sFilter:'all',plProj:'P1',plFilter:'all',mode:'demo',auth:'none',user:null,profile:null,syncing:false,lastSync:'',loadErr:'',settingsDb:{},loginEmail:'',loginPw:'',loginErr:'',loginBusy:false,connUrl:connCfg().url,connKey:connCfg().key,wide:false,liveArm:'',pmProj:'all',dlProj:'all',
     comment:'',importText:'',importRows:null,settings:false,toast:'',resetArm:false,bulk:false,bulkVals:{},bulkErr:{},sel:{},rvProj:'all',rvFlag:'all',sBldg:'all',sZone:'all',sRegion:'all',sType:'all',sWbsOpen:{},dark:(()=>{try{return localStorage.getItem(DARK_KEY)==='1';}catch(e){return false;}})(),alOpen:false,alBusy:false,alRows:[],alErr:'',alKind:'all',dbBld:'',plWbsOpen:{},plBldg:'all',plZone:'all',plType:'all',adjPct:'',adjQty:'',laProj:'all',laDays:14,report:false,repProj:'all',dbProj:'all',uq:'',uFilter:'all',nuOpen:false,nu:{name:'',pw:'',role:'site',disc:'CIV'},nuBusy:false,
     chatOpen:false,chatRoom:null,chatText:'',chatImg:null,chatNew:false,chatQ:'',chatMsgs:[],chatReads:[],chatDir:[],chatErr:''};})();
   live(){return this.state.mode==='live';}
@@ -1621,7 +1640,7 @@ class Component extends DCLogic {
   async setCut(n){if(!this.canCut())return;if(this.live()){const sb=this._sb;const {error}=await sb.from('app_settings').upsert({key:'cutoff_dow',value:n});if(error){this.toast(error.message);return;}this.setState({settingsDb:Object.assign({},this.state.settingsDb,{cutoff_dow:n})});}else{try{localStorage.setItem('dmc-erp:cutDow',String(n));}catch(e){}this.setState({cutDow:n});}}
   canSwitch(){return !this.live()||(this.state.profile&&this.state.profile.role==='admin');}
   savePrefs(){try{localStorage.setItem(PREF_KEY,JSON.stringify({lang:this.state.lang}));}catch(e){}}
-  componentDidMount(){applyDark(this.state.dark);this._onResize=()=>{const w=window.innerWidth>=1024;if(w!==this.state.wide)this.setState({wide:w});};window.addEventListener('resize',this._onResize);this._onResize();
+  componentDidMount(){applyDark(this.state.dark);this._onOnline=()=>{this.setState({offline:false});this.flushOutbox();this.reloadLive();};this._onOffline=()=>this.setState({offline:true});window.addEventListener('online',this._onOnline);window.addEventListener('offline',this._onOffline);this._onResize=()=>{const w=window.innerWidth>=1024;if(w!==this.state.wide)this.setState({wide:w});};window.addEventListener('resize',this._onResize);this._onResize();
     try{const p=JSON.parse(localStorage.getItem(PREF_KEY)||'{}');if(p.lang&&p.lang!==this.state.lang)this.setState({lang:p.lang});}catch(e){}
     let n=0;const go=()=>{if(window.DMC_CONFIG===undefined&&n++<15){setTimeout(go,100);return;}this.initConn();};go();
     if(/^https?:$/.test(location.protocol)&&'serviceWorker' in navigator){navigator.serviceWorker.register('sw.js').catch(()=>{});
@@ -1634,7 +1653,9 @@ class Component extends DCLogic {
       if(!this._authSub){this._authSub=sb.auth.onAuthStateChange(ev=>{if(ev==='SIGNED_OUT')this.setState({auth:'signedOut',user:null,profile:null});});}
       if(data&&data.session)await this.afterLogin(data.session.user);else this.setState({auth:'signedOut'});
     }catch(e){this.setState({auth:'signedOut',loginErr:String(e.message||e)});}}
-  async afterLogin(user){const sb=this._sb,t=this.T();try{sb.rpc('log_login',{p_ua:navigator.userAgent||''}).then(()=>{},()=>{});}catch(e){}const r=await sb.from('profiles').select('*').eq('id',user.id).maybeSingle();
+  async afterLogin(user){const sb=this._sb,t=this.T();try{sb.rpc('log_login',{p_ua:navigator.userAgent||''}).then(()=>{},()=>{});}catch(e){}let r=await sb.from('profiles').select('*').eq('id',user.id).maybeSingle();const PK='dmc-erp:prof:'+user.id;
+    if(r.error&&isNetErr(r.error)){try{const c=JSON.parse(localStorage.getItem(PK)||'null');if(c)r={data:c,error:null};}catch(e){}}
+    else if(r.data){try{localStorage.setItem(PK,JSON.stringify(r.data));}catch(e){}}
     if(r.error||!r.data){this.setState({auth:'signedOut',loginErr:(r.error&&r.error.message)||t.noProfile});return;}
     const prof=r.data;if(prof.active===false){this.setState({auth:'signedOut',loginErr:t.inactive});await sb.auth.signOut();return;}
     const role=prof.role==='admin'?(['site','cm','planner','pm'].indexOf(this.state.role)>=0?this.state.role:'planner'):prof.role;
@@ -1654,13 +1675,20 @@ class Component extends DCLogic {
       if(need.length){const sr=await sb.storage.from('site-photos').createSignedUrls(need,43200);(sr.data||[]).forEach(d=>{if(d.signedUrl&&d.path)cache[d.path]=d.signedUrl;});}
       this._signed=cache;updates.forEach(x=>{x.photos=x.photos.map(p=>p.path&&cache[p.path]?Object.assign({},p,{src:cache[p.path]}):p);});
       const st={};(res[4].data||[]).forEach(r=>{st[r.key]=r.value;});
-      this.setState({data:{projects:res[0].data.map(MAP.projects.from),activities:res[1].data.map(MAP.activities.from),updates,reminders:res[3].data.map(MAP.reminders.from)},settingsDb:st,lastSync:stamp(),loadErr:''});this.loadAdmin();
-    }catch(e){this.setState({loadErr:String(e.message||e)});}}
+      let data={projects:res[0].data.map(MAP.projects.from),activities:res[1].data.map(MAP.activities.from),updates,reminders:res[3].data.map(MAP.reminders.from)};
+      idb('snap','put',this.obKey(),{data,st,at:stamp()});data=await this.mergeOutbox(data);
+      this.setState({data,settingsDb:st,lastSync:stamp(),loadErr:'',offline:false});this.loadAdmin();this.obCount().then(n=>{if(n)this.flushOutbox();});
+    }catch(e){if(isNetErr(e)){const sn=await idb('snap','get',this.obKey());if(sn&&sn.data&&!this.state.data.activities.length){const data=await this.mergeOutbox(sn.data);this.setState({data,settingsDb:sn.st||{},lastSync:sn.at||''});}
+        this.setState({offline:true,loadErr:''});this.obCount();return;}
+      this.setState({loadErr:String(e.message||e)});}}
   async uploadPhotos(x){const sb=this._sb,out=[];for(const p of (x.photos||[])){if(p.path||!p.src||p.src.indexOf('data:')!==0){out.push(p);continue;}
       const blob=await (await fetch(p.src)).blob(),path=x.actId+'/'+x.id+'/'+p.id+'.jpg';
       const r=await sb.storage.from('site-photos').upload(path,blob,{contentType:'image/jpeg',upsert:true});if(r.error)throw r.error;out.push(Object.assign({},p,{path}));}
     x.photos=out;}
-  async pushDiff(prev,next){const sb=this._sb,t=this.T();if(!sb)return;this.setState({syncing:true});
+  async pushDiff(prev,next){const sb=this._sb,t=this.T();if(!sb)return;
+    const pu=new Map((prev.updates||[]).map(x=>[x.id,x])),chg=(next.updates||[]).filter(x=>pu.get(x.id)!==x);
+    if(chg.length&&navigator.onLine===false){await this.queueUpd(chg);return;}
+    this.setState({syncing:true});
     try{for(const k of TABLE_ORDER){const m=MAP[k],pm=new Map((prev[k]||[]).map(x=>[x.id,x])),ins=[];
         for(const x of (next[k]||[])){const o=pm.get(x.id);if(o===x)continue;if(k==='updates')await this.uploadPhotos(x);
           const row=m.to(x);if(!o){ins.push(row);continue;}
@@ -1669,8 +1697,27 @@ class Component extends DCLogic {
         if(ins.length){const r=await sb.from(m.t).insert(ins);if(r.error)throw r.error;}
         if(k==='activities'&&ins.length){const locs={};ins.forEach(a=>{locs[a.project_id+'|'+a.zone+'|'+a.building]={project_id:a.project_id,zone:a.zone,building:a.building};});await sb.from('project_locations').upsert(Object.values(locs));}}
       this.setState({syncing:false});
-    }catch(e){this.setState({syncing:false});this.toast(t.syncErr+' '+(e.message||e));}
+    }catch(e){this.setState({syncing:false});if(chg.length&&isNetErr(e)){await this.queueUpd(chg);return;}this.toast(t.syncErr+' '+(e.message||e));}
     await this.reloadLive();}
+  obKey(){const u=this.state.user;return u?u.id:'';}
+  async queueUpd(list){const t=this.T(),k=this.obKey();for(const x of list)await idb('outbox','put',k+'|'+x.id,{uid:k,x,at:Date.now()});
+    await this.obCount();this.setState({offline:true});this.toast(t.offSaved);
+    if(!this._obTimer)this._obTimer=setInterval(()=>this.flushOutbox(),30000);}
+  async obItems(){const k=this.obKey();return ((await idb('outbox','all'))||[]).filter(o=>o&&o.uid===k).sort((a,b)=>a.at-b.at);}
+  async obCount(){const n=(await this.obItems()).length;if(n!==this.state.obN)this.setState({obN:n});return n;}
+  async flushOutbox(){const sb=this._sb,t=this.T();if(!sb||this._obBusy||this.state.auth!=='ready')return;const items=await this.obItems();
+    if(!items.length){if(this._obTimer){clearInterval(this._obTimer);this._obTimer=null;}if(this.state.obN)this.setState({obN:0});return;}
+    if(navigator.onLine===false)return;this._obBusy=true;let sent=0,net=false;
+    for(const o of items){const x=Object.assign({},o.x);try{await this.uploadPhotos(x);const row=MAP.updates.to(x);
+        const ex=await sb.from('progress_updates').select('id').eq('id',x.id).maybeSingle();if(ex.error)throw ex.error;
+        const r=ex.data?await sb.from('progress_updates').update(Object.assign({},row,{id:undefined})).eq('id',x.id):await sb.from('progress_updates').insert(row);
+        if(r.error)throw r.error;await idb('outbox','del',o.uid+'|'+x.id);sent++;
+      }catch(e){if(isNetErr(e)){net=true;break;}await idb('outbox','del',o.uid+'|'+x.id);this.toast(t.syncErr+' '+(e.message||e));}}
+    this._obBusy=false;const left=await this.obCount();this.setState({offline:net});
+    if(sent)this.toast(t.offSent(sent));if(!left&&this._obTimer){clearInterval(this._obTimer);this._obTimer=null;}
+    if(sent)await this.reloadLive();}
+  async mergeOutbox(data){const items=await this.obItems();if(!items.length)return data;const m=new Map(data.updates.map(x=>[x.id,x]));items.forEach(o=>m.set(o.x.id,o.x));
+    return Object.assign({},data,{updates:[...m.values()]});}
   loginId(){const v=this.state.loginEmail.trim();return v.indexOf('@')<0?v.toLowerCase().replace(/\s+/g,'.')+'@dmc.local':v;}
   async alLoad(){const sb=this._sb;if(!sb)return;this.setState({alBusy:true,alOpen:true});
     const r=await sb.rpc('admin_activity',{p_limit:400,p_demo:false});
@@ -1679,6 +1726,9 @@ class Component extends DCLogic {
   async loadAdmin(){const sb=this._sb,p=this.state.profile;if(!sb||!p||p.role!=='admin')return;
     const r=await Promise.all([sb.from('profiles').select('*').order('created_at'),sb.from('project_members').select('*')]);
     this.setState({users:r[0].data||[],members:r[1].data||[]});}
+  async setPw(uid,name){const t=this.T(),pw=(this.state.pwVal||'').trim();if(this.state.pwBusy)return;if(pw.length<8){this.toast(t.pwShort);return;}
+    if(!this.live()){this.toast(t.pwDemo);return;}this.setState({pwBusy:true});const r=await this._sb.rpc('admin_set_password',{p_user:uid,p_password:pw});
+    this.setState({pwBusy:false});if(r.error){this.toast(t.syncErr+' '+r.error.message);return;}this.setState({pwFor:null,pwVal:''});this.toast(t.pwDone(name));}
   async updProfile(id,patch){const r=await this._sb.from('profiles').update(patch).eq('id',id);if(r.error)this.toast(this.T().syncErr+' '+r.error.message);else this.toast(this.T().savedOk);await this.loadAdmin();}
   async toggleMember(pid,uid,on){const sb=this._sb;const r=on?await sb.from('project_members').delete().eq('project_id',pid).eq('user_id',uid):await sb.from('project_members').insert({project_id:pid,user_id:uid});
     if(r.error)this.toast(this.T().syncErr+' '+r.error.message);await this.loadAdmin();}
@@ -1920,7 +1970,8 @@ class Component extends DCLogic {
         roleChips:['site','cm','planner','pm','admin'].map(r=>chip(t['prole_'+r],u.role===r,()=>{if(me&&r!=='admin'){this.toast(t.cantDemoteSelf);return;}this.updProfile(u.id,{role:r});})),
         discChips:ENG.map(e=>chip(person(e),u.discipline===e,()=>this.updProfile(u.id,{discipline:e}))),
         projChips:D.projects.map(p=>chip((mem.has(p.id)?'✓ ':'')+p.code,mem.has(p.id),()=>this.toggleMember(p.id,u.id,mem.has(p.id)))),hasProj:D.projects.length>0,
-        activeLbl:u.active!==false?t.uActive:t.uDisabled,activeBg:u.active!==false?C.greenBg:C.redBg,activeFg:u.active!==false?C.green:C.red,toggleActive:()=>{if(me)return;this.updProfile(u.id,{active:u.active===false});}};}):[];
+        activeLbl:u.active!==false?t.uActive:t.uDisabled,activeBg:u.active!==false?C.greenBg:C.redBg,activeFg:u.active!==false?C.green:C.red,toggleActive:()=>{if(me)return;this.updProfile(u.id,{active:u.active===false});},
+        pwOpen:s.pwFor===u.id,pwToggle:()=>this.setState({pwFor:s.pwFor===u.id?null:u.id,pwVal:''}),pwSave:()=>this.setPw(u.id,(u.full_name||'').replace('@dmc.local',''))};}):[];
     const nu=s.nu,setNu=p=>this.setState(st=>({nu:Object.assign({},st.nu,p)}));
     const nuV={name:nu.name,pw:nu.pw,onName:e=>setNu({name:e.target.value}),onPw:e=>setNu({pw:e.target.value}),roleChips:['site','cm','planner','pm','admin'].map(r=>chip(t['prole_'+r],nu.role===r,()=>setNu({role:r}))),
       discChips:ENG.map(e=>chip(person(e),nu.disc===e,()=>setNu({disc:e}))),btn:s.nuBusy?t.nuBusy:t.nuCreate,create:()=>{if(!s.nuBusy)this.createUser();}};
@@ -2043,6 +2094,7 @@ class Component extends DCLogic {
     const alAct=id=>{const a=s.data.activities.find(x=>x.id===id);return a?a.code:(id||'');};
     const alTxt=r=>{const o=r.old_row||{},n=r.new_row||{},k=r.kind;
       if(k==='login')return '🔑 '+t.al_login+' '+alDev(n.ua);
+      if(k==='password')return '🔐 '+t.al_pw((n.full_name||'').replace('@dmc.local',''));
       if(r.tbl==='progress_updates'){const code=alAct(n.activity_id||o.activity_id);
         if(k==='insert')return '📝 '+t.al_upNew(code,n.pct,t['st_'+n.status]||n.status);
         if(k==='delete')return '🗑 '+t.al_upDel(code);
@@ -2173,7 +2225,7 @@ class Component extends DCLogic {
       const RC=2*Math.PI*50,RP=2*Math.PI*36;
       db={chips:[chip(t.allProjects,!sp,()=>this.setState({dbProj:'all'}))].concat(D.projects.map(p=>chip(p.code,!!sp&&sp.id===p.id,()=>this.setState({dbProj:p.id})))),
         scopeNote:sp?nm(sp)+' · '+t.dashScopeOne(acts.length):t.dashScopeAll(D.projects.length),
-        actual:p1(A),planned:p1(P),variance:sg(A-P),varColor:A-P>=-2?'oklch(0.82 0.12 150)':'oklch(0.8 0.13 45)',spi:spiTxt(spx),fc,fcColor:fc>c.end?'oklch(0.8 0.13 45)':'oklch(0.82 0.12 150)',plFinish:c.end,
+        actual:p1(A),planned:p1(P),planAt:t.planAt(PLAN_AT||TODAY),variance:sg(A-P),varColor:A-P>=-2?'oklch(0.82 0.12 150)':'oklch(0.8 0.13 45)',spi:spiTxt(spx),fc,fcColor:fc>c.end?'oklch(0.8 0.13 45)':'oklch(0.82 0.12 150)',plFinish:c.end,
         ringA:r1(RC*clamp(A,0,100)/100)+' '+r1(RC),ringP:r1(RP*clamp(P,0,100)/100)+' '+r1(RP),
         kpis:[{l:t.k_total,v:acts.length,sub:t.kOfTotal(n(a=>a.actual>=100),acts.length)+' '+t.k_done.toLowerCase(),c:'#1b1a17'},{l:t.k_inprog,v:n(a=>started(a)&&a.actual<100),sub:t.k_notstarted+' '+n(a=>!started(a)&&a.actual<100),c:C.blue},
           {l:t.k_delayed,v:n(a=>a.delayed),sub:t.kDelayedSub(cfg.thr),c:n(a=>a.delayed)?C.red:C.green},{l:t.k_missing,v:n(a=>a.missing),sub:t.kMissingSub(cfg.stale),c:n(a=>a.missing)?C.red:C.green},
@@ -2366,7 +2418,7 @@ class Component extends DCLogic {
       showLogin:live&&s.auth!=='ready',authChecking:live&&s.auth==='checking',authForm:live&&s.auth==='signedOut',
       loginEmail:s.loginEmail,loginPw:s.loginPw,onLoginEmail:e=>this.setState({loginEmail:e.target.value}),onLoginPw:e=>this.setState({loginPw:e.target.value}),
       signIn:()=>this.signIn(),signUp:()=>this.signUp(),openDemo:()=>this.openDemo(),hasLoginErr:!!s.loginErr,loginErr:s.loginErr,signInLbl:s.loginBusy?t.wait:t.signIn,
-      host,liveBar:t.liveBar(host,s.syncing?t.syncing:(s.lastSync?t.syncedAt(s.lastSync.slice(11)):'')),hasLoadErr:live&&!!s.loadErr,loadErr:s.loadErr,
+      host,liveBar:t.liveBar(host,s.syncing?t.syncing:(s.lastSync?t.syncedAt(s.lastSync.slice(11)):'')),pwVal:s.pwVal,onPwVal:e=>this.setState({pwVal:e.target.value}),pwBtn:s.pwBusy?t.wait:t.pwSave,offBar:{show:live&&s.auth==='ready'&&(s.offline||s.obN>0),bg:s.offline?'#3d3933':'#f1e8cf',fg:s.offline?'#fff':'#5b4614',txt:s.offline?t.offBar(s.obN):t.offWait(s.obN),canSend:!s.offline&&s.obN>0,send:()=>this.flushOutbox()},hasLoadErr:live&&!!s.loadErr,loadErr:s.loadErr,
       userLine:prof&&s.user?(s.user.email+' · '+t['prole_'+prof.role]+(prof.discipline?' · '+person(prof.discipline):'')):t.demoUser,
       connStatus:live?t.connLive(host):t.connDemo,connUrl:s.connUrl,connKey:s.connKey,onConnUrl:e=>this.setState({connUrl:e.target.value}),onConnKey:e=>this.setState({connKey:e.target.value}),
       connEditable:!connCfg().fromFile,connFromFile:!!connCfg().fromFile,connect:()=>this.connect(),disconnect:()=>this.disconnect(),signOut:()=>this.signOut(),isSignedIn:live&&s.auth==='ready',
