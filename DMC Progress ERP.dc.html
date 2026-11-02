@@ -1477,6 +1477,12 @@ function derive(data,cfg){
 function actualAt(a,at){let v=0;for(const u of a.appr){if(u.reviewed.slice(0,10)<=at)v=u.pct;else break;}return v;}
 // Productivity: remaining qty, actual / required rate per day, remaining duration, forecast finish
 // The PDF library does not understand oklch() colours: convert them to rgb() first
+// Saved report HTML is shown again later (CM / PM download) — strip anything that could run code before it touches the page.
+function cleanHtml(h){try{const doc=new DOMParser().parseFromString('<body>'+String(h)+'</body>','text/html');
+  doc.querySelectorAll('script,iframe,object,embed,link,meta,base,form').forEach(e=>e.remove());
+  doc.querySelectorAll('*').forEach(e=>{[...e.attributes].forEach(at=>{const n=at.name.toLowerCase(),v=String(at.value).trim().toLowerCase();
+    if(n.startsWith('on')||((n==='href'||n==='src'||n==='xlink:href'||n==='action')&&(v.startsWith('javascript:')||(v.startsWith('data:')&&!v.startsWith('data:image/')))))e.removeAttribute(at.name);});});
+  return doc.body.innerHTML;}catch(e){return '';}}
 const OKLCH_RE=/oklch\(\s*([\d.]+)(%?)\s+([\d.]+)\s+([\d.]+)\s*(?:\/\s*([\d.]+)(%?))?\s*\)/g;
 function oklchRgb(m,Ls,pc,Cs,Hs,As,ap){const L=pc?Number(Ls)/100:Number(Ls),C=Number(Cs),h=Number(Hs)*Math.PI/180,A=Math.cos(h)*C,B=Math.sin(h)*C;
   const l=Math.pow(L+0.3963377774*A+0.2158037573*B,3),mm=Math.pow(L-0.1055613458*A-0.0638541728*B,3),s=Math.pow(L-0.0894841775*A-1.291485548*B,3);
@@ -1567,7 +1573,7 @@ class Component extends DCLogic {
       if(!window.html2pdf)await new Promise((res,rej)=>{const sc=document.createElement('script');sc.src='https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js';sc.onload=res;sc.onerror=rej;document.head.appendChild(sc);});
       box=document.createElement('div');box.id='dmc-pdfbox';box.setAttribute('dir',lang==='ar'?'rtl':'ltr');
       box.style.cssText="position:fixed;left:-10000px;top:0;width:760px;background:#fff;color:#1d1b18;font-family:'IBM Plex Sans','IBM Plex Sans Arabic',system-ui,sans-serif";
-      box.innerHTML=('<style>#dmc-pdfbox [data-printonly]{display:block!important}#dmc-pdfbox [data-noprint],#dmc-pdfbox textarea{display:none!important}#dmc-pdfbox [data-sheet]{margin:0!important;padding:0!important;box-shadow:none!important;max-width:none!important}#dmc-pdfbox *{-webkit-print-color-adjust:exact;print-color-adjust:exact}</style>'+html).replace(OKLCH_RE,oklchRgb);
+      box.innerHTML=cleanHtml('<style>#dmc-pdfbox [data-printonly]{display:block!important}#dmc-pdfbox [data-noprint],#dmc-pdfbox textarea{display:none!important}#dmc-pdfbox [data-sheet]{margin:0!important;padding:0!important;box-shadow:none!important;max-width:none!important}#dmc-pdfbox *{-webkit-print-color-adjust:exact;print-color-adjust:exact}</style>'+html).replace(OKLCH_RE,oklchRgb);
       document.body.appendChild(box);
       box.querySelectorAll('[data-noprint],textarea').forEach(e=>e.remove());box.querySelectorAll('[data-printonly]').forEach(e=>{e.style.display='block';});
       const sh=box.querySelector('[data-sheet]');if(sh)Object.assign(sh.style,{margin:'0',padding:'0',boxShadow:'none',maxWidth:'none'});
