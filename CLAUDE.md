@@ -143,4 +143,5 @@ update profiles set role='admin', discipline='CIV' where id=(select id from auth
 - Landscape Engineer discipline `LND` (enum value added on live DB). Demo data adds 6 fictional landscape activities per plot (WBS `External Works › Landscape`, ids `B<plot>-L0n`); Buildings tab has a "Landscape works" trade tile. `supabase/functions/push/index.ts` has the LND label in the repo but is **not redeployed** yet (deployed version falls back to the code "LND").
 - Demo project renamed to Project X / مشروع X.
 - Marketing video + LinkedIn assets live in project files (`video/`, `linkedin/`), built from DEMO mode screens.
+- PM role label is "Project Manager / Planning Manager" / "مدير المشروع / مدير التخطيط" (Ahmed 2026-11-04).
 - Planning's approve button is labelled **Verify / تحقق** (Ahmed: planning verifies the data, never "approves"); toast "تم التحقق". CM's button stays "اعتماد". Status names unchanged.
