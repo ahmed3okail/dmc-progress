@@ -1,4 +1,4 @@
-# CLAUDE.md — DMC SiteTrack (file still named DMC Progress ERP.dc.html)
+# CLAUDE.md — DME Progress Tracker (was DMC SiteTrack; DME = DMC + CURVE; file still named DMC Progress ERP.dc.html)
 
 Read this whole file before doing anything. It is the full project context.
 
