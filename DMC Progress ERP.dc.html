@@ -1193,7 +1193,8 @@ function decideU(u,ok,role,c,ts,toCm){const cm=role==='cm',by=cm?'CM':'PL';
   if(ok&&cm)return Object.assign({},u,{status:'endorsed',cmAt:ts,cmBy:'CM',cmComment:c,log:u.log.concat([{at:ts,ev:'endorsed',by}])});
   return Object.assign({},u,{status:ok?'approved':'returned',reviewed:ts,reviewer:by,comment:c,log:u.log.concat([{at:ts,ev:ok?'approved':'returned',by}])});}
 const C={green:'oklch(0.48 0.12 150)',greenBg:'oklch(0.94 0.04 150)',red:'oklch(0.48 0.17 28)',redBg:'oklch(0.95 0.035 28)',amber:'oklch(0.45 0.1 70)',amberBg:'oklch(0.94 0.06 85)',blue:'oklch(0.45 0.12 250)',blueBg:'oklch(0.94 0.03 250)',grey:'#5f5a52',greyBg:'#ece9e3',barOk:'oklch(0.58 0.13 150)',barWarn:'oklch(0.68 0.14 70)',barBad:'oklch(0.56 0.18 28)'};
-const CSV_COLS=['project_code','project_name','region','activity_id','activity_name','activity_name_ar','wbs','planned_start','planned_finish','budget_qty','unit','weight','discipline','zone','building_type','building'];
+const OPEN_NOTE='Opening balance from P6 · رصيد افتتاحي من P6';
+const CSV_COLS=['project_code','project_name','region','activity_id','activity_name','activity_name_ar','wbs','planned_start','planned_finish','budget_qty','unit','weight','discipline','zone','building_type','building','actual_start','actual_finish','actual_pct'];
 const REGIONS=['nc','wc','ec'];
 const regionKey=v=>{v=String(v||'').toLowerCase().replace(/[^a-z]/g,'');return v==='nc'||v==='northcoast'?'nc':v==='wc'||v==='westcairo'?'wc':v==='ec'||v==='eastcairo'?'ec':'';};
 
@@ -1230,7 +1231,7 @@ prevApproved:'Previous approved',submittedVal:'Submitted',reviewComment:'Review 
 progressTitle:'Planned vs approved progress',weightedNote:'Project % = Σ(activity weight × %) ÷ Σ weight. Only approved updates count as actual.',
 k_planned:'Planned',k_actual:'Actual',k_var:'Variance',k_pending:'In review',k_missing:'Missing',k_delayed:'Delayed',
 exportProgress:'Progress CSV',exportHistory:'Update history CSV',
-importTitle:'Import schedule (CSV)',importHelp:'Export activities from Primavera P6 (or any scheduler) to Excel/CSV and arrange them in these columns. This app does not connect to P6 directly; XER/XML import is planned for a later version. Rows are matched by project_code + activity_id: existing activities are updated, new ones are added.',
+importTitle:'Import schedule (CSV)',importHelp:'Export activities from Primavera P6 (or any scheduler) to Excel/CSV and arrange them in these columns. This app does not connect to P6 directly; XER/XML import is planned for a later version. Rows are matched by project_code + activity_id: existing activities are updated, new ones are added. Optional actual_start, actual_finish and actual_pct (from your latest P6 update) are loaded once as an approved opening balance, dated at the previous cut-off; activities that already have approved progress are skipped.',
 columns:'Expected columns',loadSample:'Load sample CSV',chooseFile:'Choose CSV file',validate:'Validate',
 portfolio:'Portfolio progress',byValue:'Weighted by contract value',projectsTitle:'Projects',st_attn:'Needs attention',st_watch:'Watch',st_ok:'On track',
 trendTitle:'S-curve — planned vs approved actual',weekCol:'Week ending',delaysTitle:'Delay reasons reported',delayedActs:'Delayed activities',
@@ -1251,7 +1252,7 @@ flags:(d,m,p)=>`${d} delayed · ${m} missing updates · ${p} in review`,
 w_qty:(x,y)=>`Quantity implies ${x}% but ${y}% was entered`,w_jump:x=>`Large jump: +${x} points since last approval`,w_ahead:x=>`Ahead of plan by ${x} points`,w_lower:x=>`Lower than current approved ${x}%`,w_delay:'Behind plan — delay reason given',
 plannedLine:(p,a)=>`Planned today ${p}% · currently approved ${a}%`,byLine:(n,w)=>`${n} · ${w}`,
 impSummary:(v,e)=>`${v} valid · ${e} with errors`,impBtn:n=>`Import ${n} valid rows`,impNew:'New',impUpd:'Update',impErr:'Error',impToast:n=>`Imported ${n} activities`,
-e_col:c=>`Missing column: ${c}`,e_req:'Required value missing',e_date:'Invalid date — use YYYY-MM-DD',e_order:'Finish is before start',e_qty:'budget_qty must be > 0',e_w:'weight must be > 0',e_eng:'assigned_to must be E1, E2 or E3',e_dup:'Duplicate activity in file',
+e_col:c=>`Missing column: ${c}`,e_req:'Required value missing',e_date:'Invalid date — use YYYY-MM-DD',e_adate:'Invalid actual date — use YYYY-MM-DD',e_apct:'actual_pct must be 0–100',e_aorder:'Actual finish is before actual start',e_afin:'Actual finish is needed when progress is 100%',e_afin100:'An activity with an actual finish must be 100%',e_astart:'Actual start is needed when progress is above 0',e_afuture:'Actual dates cannot be in the future',impOpenTag:p=>`opening balance ${p}%`,impOpenToast:(n,k)=>`opening balance for ${n} activities`+(k?` (${k} skipped — already have approved progress)`:''),e_order:'Finish is before start',e_qty:'budget_qty must be > 0',e_w:'weight must be > 0',e_eng:'assigned_to must be E1, E2 or E3',e_dup:'Duplicate activity in file',
 plSummary:(n,v)=>`${n} activities · contract value SAR ${v}M (fictional)`,reports:n=>`${n} reports`,
 stats:(p,a,u,kb)=>`${p} projects · ${a} activities · ${u} updates · ${kb} KB used`},
 ar:{title:'DME Progress Tracker',otherLang:'English',dataShort:'البيانات',dataDate:'تاريخ البيانات',
@@ -1286,7 +1287,7 @@ prevApproved:'المعتمد السابق',submittedVal:'المرسل',reviewCom
 progressTitle:'المخطط مقابل التقدم المعتمد',weightedNote:'نسبة المشروع = مجموع (وزن النشاط × النسبة) ÷ مجموع الأوزان. التحديثات المعتمدة فقط تُحتسب فعلياً.',
 k_planned:'المخطط',k_actual:'الفعلي',k_var:'الانحراف',k_pending:'قيد المراجعة',k_missing:'مفقود',k_delayed:'متأخر',
 exportProgress:'تقرير التقدم CSV',exportHistory:'سجل التحديثات CSV',
-importTitle:'استيراد الجدول الزمني (CSV)',importHelp:'صدّر الأنشطة من Primavera P6 (أو أي برنامج جدولة) إلى Excel/CSV ورتبها حسب هذه الأعمدة. هذا التطبيق لا يتصل ببرنامج P6 مباشرة، واستيراد ملفات XER/XML مخطط لإصدار لاحق. تتم المطابقة برمز المشروع ورقم النشاط: الأنشطة الموجودة تُحدَّث والجديدة تُضاف.',
+importTitle:'استيراد الجدول الزمني (CSV)',importHelp:'صدّر الأنشطة من Primavera P6 (أو أي برنامج جدولة) إلى Excel/CSV ورتبها حسب هذه الأعمدة. هذا التطبيق لا يتصل ببرنامج P6 مباشرة، واستيراد ملفات XER/XML مخطط لإصدار لاحق. تتم المطابقة برمز المشروع ورقم النشاط: الأنشطة الموجودة تُحدَّث والجديدة تُضاف. الأعمدة الاختيارية actual_start و actual_finish و actual_pct (من آخر تحديث على P6) بتتسجل مرة واحدة كرصيد افتتاحي معتمد بتاريخ القفل اللي فات، والأنشطة اللي عندها تقدم معتمد بتتساب زي ما هي.',
 columns:'الأعمدة المطلوبة',loadSample:'تحميل ملف نموذجي',chooseFile:'اختيار ملف CSV',validate:'تحقق',
 portfolio:'تقدم المحفظة',byValue:'مرجّح بقيمة العقد',projectsTitle:'المشاريع',st_attn:'يحتاج اهتمام',st_watch:'مراقبة',st_ok:'ضمن الخطة',
 trendTitle:'منحنى S — المخطط مقابل الفعلي المعتمد',weekCol:'نهاية الأسبوع',delaysTitle:'أسباب التأخير المبلغ عنها',delayedActs:'الأنشطة المتأخرة',
@@ -1307,7 +1308,7 @@ flags:(d,m,p)=>`${d} متأخر · ${m} تحديث مفقود · ${p} قيد ا�
 w_qty:(x,y)=>`الكمية تعادل ${x}% بينما أُدخل ${y}%`,w_jump:x=>`قفزة كبيرة: +${x} نقطة منذ آخر اعتماد`,w_ahead:x=>`متقدم عن المخطط بـ ${x} نقطة`,w_lower:x=>`أقل من المعتمد الحالي ${x}%`,w_delay:'متأخر عن المخطط — تم ذكر السبب',
 plannedLine:(p,a)=>`المخطط اليوم ${p}% · المعتمد حالياً ${a}%`,byLine:(n,w)=>`${n} · ${w}`,
 impSummary:(v,e)=>`${v} صالح · ${e} به أخطاء`,impBtn:n=>`استيراد ${n} صفوف صالحة`,impNew:'جديد',impUpd:'تحديث',impErr:'خطأ',impToast:n=>`تم استيراد ${n} نشاط`,
-e_col:c=>`عمود مفقود: ${c}`,e_req:'قيمة مطلوبة مفقودة',e_date:'تاريخ غير صالح — استخدم YYYY-MM-DD',e_order:'النهاية قبل البداية',e_qty:'الكمية يجب أن تكون أكبر من 0',e_w:'الوزن يجب أن يكون أكبر من 0',e_eng:'المسند إليه يجب أن يكون E1 أو E2 أو E3',e_dup:'نشاط مكرر في الملف',
+e_col:c=>`عمود مفقود: ${c}`,e_req:'قيمة مطلوبة مفقودة',e_date:'تاريخ غير صالح — استخدم YYYY-MM-DD',e_adate:'تاريخ فعلي غير صالح — استخدم YYYY-MM-DD',e_apct:'نسبة الإنجاز لازم تكون من 0 لـ 100',e_aorder:'النهاية الفعلية قبل البداية الفعلية',e_afin:'لازم نهاية فعلية لما النسبة 100%',e_afin100:'النشاط اللي له نهاية فعلية لازم يكون 100%',e_astart:'لازم بداية فعلية لما النسبة أكبر من صفر',e_afuture:'التواريخ الفعلية مينفعش تكون في المستقبل',impOpenTag:p=>`رصيد افتتاحي ${p}%`,impOpenToast:(n,k)=>`رصيد افتتاحي لـ ${n} نشاط`+(k?` (اتساب ${k} لأن عندهم تقدم معتمد)`:''),e_order:'النهاية قبل البداية',e_qty:'الكمية يجب أن تكون أكبر من 0',e_w:'الوزن يجب أن يكون أكبر من 0',e_eng:'المسند إليه يجب أن يكون E1 أو E2 أو E3',e_dup:'نشاط مكرر في الملف',
 plSummary:(n,v)=>`${n} نشاط · قيمة العقد ${v} مليون ريال (وهمية)`,reports:n=>`${n} بلاغ`,
 stats:(p,a,u,kb)=>`${p} مشاريع · ${a} نشاط · ${u} تحديث · ${kb} KB مستخدم`}
 };
@@ -1627,12 +1628,12 @@ function idb(store,op,key,val){return new Promise(res=>{try{const rq=indexedDB.o
 function isNetErr(e){const m=String((e&&(e.message||e))||'');return (typeof navigator!=='undefined'&&navigator.onLine===false)||/failed to fetch|networkerror|load failed|network request failed|fetch failed|timeout/i.test(m);}
 function compress(file){return new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>{const img=new Image();img.onload=()=>{const sc=Math.min(1,800/Math.max(img.width,img.height));const c=document.createElement('canvas');c.width=Math.round(img.width*sc);c.height=Math.round(img.height*sc);c.getContext('2d').drawImage(img,0,0,c.width,c.height);res(c.toDataURL('image/jpeg',0.6));};img.onerror=rej;img.src=r.result;};r.onerror=rej;r.readAsDataURL(file);});}
 function sampleCSV(){const d=n=>addD(TODAY,n);return [CSV_COLS.join(','),
-`DMC-106,Coastal School Annex,F6010,Site clearance,تنظيف الموقع,1.1 Enabling,${d(-20)},${d(-5)},6000,m2,4,CIV`,
-`DMC-106,Coastal School Annex,F6020,Strip footings,القواعد الشريطية,2.1 Substructure,${d(-8)},${d(20)},260,m3,10,CIV`,
-`DMC-106,Coastal School Annex,F6030,Ground beams,الجسور الأرضية,2.2 Substructure,${d(10)},${d(35)},140,m3,8,CIV`,
-`DMC-106,Coastal School Annex,F6040,Steel frame,الهيكل الفولاذي,3.1 Superstructure,${d(30)},${d(75)},210,t,16,CIV`,
-`DMC-106,Coastal School Annex,F6050,Roof deck,سطح السقف,3.2 Superstructure,${d(80)},${d(70)},2400,m2,9,ARC`,
-`DMC-101,,A1090,Blockwork (re-baselined),أعمال البلوك,3.3 Superstructure,${d(25)},${d(80)},6400,m2,9,ARC`].map((l,i)=>i===0?l:l+','+['—,SITE','Z1,BLD-1','Z1,BLD-2','Z2,BLD-1','Z2,BLD-2','Z2,BLD-B'][i-1]).join('\n');}
+`DMC-106,Coastal School Annex,North Coast,F6010,Site clearance,تنظيف الموقع,1.1 Enabling,${d(-20)},${d(-5)},6000,m2,4,CIV,—,,SITE,${d(-19)},${d(-6)},100`,
+`DMC-106,Coastal School Annex,North Coast,F6020,Strip footings,القواعد الشريطية,2.1 Substructure,${d(-8)},${d(20)},260,m3,10,CIV,Z1,Type A,BLD-1,${d(-7)},,30`,
+`DMC-106,Coastal School Annex,North Coast,F6030,Ground beams,الجسور الأرضية,2.2 Substructure,${d(10)},${d(35)},140,m3,8,CIV,Z1,Type A,BLD-2,,,`,
+`DMC-106,Coastal School Annex,North Coast,F6040,Steel frame,الهيكل الفولاذي,3.1 Superstructure,${d(30)},${d(75)},210,t,16,CIV,Z2,Type B,BLD-1,,,`,
+`DMC-106,Coastal School Annex,North Coast,F6050,Roof deck,سطح السقف,3.2 Superstructure,${d(80)},${d(70)},2400,m2,9,ARC,Z2,Type B,BLD-2,,,`,
+`DMC-101,,,A1090,Blockwork (re-baselined),أعمال البلوك,3.3 Superstructure,${d(25)},${d(80)},6400,m2,9,ARC,Z2,Type B,BLD-B,,,`].join('\n');}
 
 // ───────── Data source adapter: DEMO (this browser) or LIVE (Supabase, shared) ─────────
 function connCfg(){const w=window.DMC_CONFIG||{};let l={};try{l=JSON.parse(localStorage.getItem(CONN_KEY)||'{}');}catch(e){}
@@ -1973,24 +1974,36 @@ class Component extends DCLogic {
     const miss=need.filter(c=>head.indexOf(c)<0);
     if(miss.length){this.setState({importRows:[{line:1,ok:false,code:'',name:'',errs:miss.map(t.e_col),rec:null}]});return;}
     const g=(r,c)=>{const i=head.indexOf(c);return i<0?'':String(r[i]||'').trim();};const seen={},data=this.state.data;
-    const out=rows.slice(1).map((r,i)=>{const errs=[],rec={project_code:g(r,'project_code'),project_name:g(r,'project_name'),code:g(r,'activity_id'),name:g(r,'activity_name'),nameAr:g(r,'activity_name_ar'),wbs:g(r,'wbs'),ps:g(r,'planned_start'),pf:g(r,'planned_finish'),qty:Number(g(r,'budget_qty')),unit:g(r,'unit'),w:Number(g(r,'weight')),bldg:g(r,'building')||'SITE',zone:g(r,'zone')||'—',btype:g(r,'building_type'),region:regionKey(g(r,'region')),eng:(x=>ALIAS[x]||x)(g(r,'discipline').toUpperCase().trim().split(/\s+/)[0])};
+    const out=rows.slice(1).map((r,i)=>{const errs=[],rec={project_code:g(r,'project_code'),project_name:g(r,'project_name'),code:g(r,'activity_id'),name:g(r,'activity_name'),nameAr:g(r,'activity_name_ar'),wbs:g(r,'wbs'),ps:g(r,'planned_start'),pf:g(r,'planned_finish'),qty:Number(g(r,'budget_qty')),unit:g(r,'unit'),w:Number(g(r,'weight')),bldg:g(r,'building')||'SITE',zone:g(r,'zone')||'—',btype:g(r,'building_type'),region:regionKey(g(r,'region')),eng:(x=>ALIAS[x]||x)(g(r,'discipline').toUpperCase().trim().split(/\s+/)[0]),aS:g(r,'actual_start'),aF:g(r,'actual_finish'),apRaw:g(r,'actual_pct').replace('%','').trim()};
       if(!rec.project_code||!rec.code||!rec.name||!rec.unit)errs.push(t.e_req);
       if(!isDate(rec.ps)||!isDate(rec.pf))errs.push(t.e_date);else if(rec.pf<rec.ps)errs.push(t.e_order);
       if(!(rec.qty>0))errs.push(t.e_qty);if(!(rec.w>0))errs.push(t.e_w);if(ENG.indexOf(rec.eng)<0)errs.push(t.e_eng);
+      {let ap=rec.apRaw===''?null:Number(rec.apRaw);if(ap!=null&&ap>0&&ap<=1&&rec.apRaw.indexOf('.')>=0)ap=ap*100;
+        if(rec.aS&&!isDate(rec.aS))errs.push(t.e_adate);else if(rec.aF&&!isDate(rec.aF))errs.push(t.e_adate);
+        else if(ap!=null&&!(ap>=0&&ap<=100))errs.push(t.e_apct);
+        else{if(rec.aF&&ap==null)ap=100;if(rec.aF&&rec.aS&&rec.aF<rec.aS)errs.push(t.e_aorder);
+          else if(ap===100&&!rec.aF)errs.push(t.e_afin);else if(rec.aF&&ap!==100)errs.push(t.e_afin100);
+          else if(ap>0&&!rec.aS)errs.push(t.e_astart);
+          else if(rec.aS&&rec.aS>TODAY||rec.aF&&rec.aF>TODAY)errs.push(t.e_afuture);
+          else if(ap>0||rec.aS)rec.open={pct:Math.round(ap||0),aS:rec.aS,aF:rec.aF};}}
       const k=rec.project_code+'|'+rec.code;if(seen[k])errs.push(t.e_dup);seen[k]=1;
       const proj=data.projects.find(p=>p.code===rec.project_code);const exists=!!(proj&&data.activities.find(a=>a.pid===proj.id&&a.code===rec.code));
       return{line:i+2,ok:!errs.length,errs,rec,exists,code:rec.code,name:rec.name};});
     this.setState({importRows:out});}
   doImport(){const s=this.state,t=I18N[s.lang],ok=(s.importRows||[]).filter(r=>r.ok);if(!ok.length){this.toast(t.t_noValid);return;}
-    const projects=s.data.projects.slice(),activities=s.data.activities.slice();
+    const projects=s.data.projects.slice(),activities=s.data.activities.slice(),updates=s.data.updates.slice();
+    const oTs=addD(this.D().nextCut,-7)+'T12:00';let openN=0,openSkip=0;
     ok.forEach(({rec})=>{let p=projects.find(x=>x.code===rec.project_code);
       if(!p){p={id:'P_'+rec.project_code,code:rec.project_code,name:rec.project_name||rec.project_code,nameAr:rec.project_name||rec.project_code,loc:'—',locAr:'—',region:'',value:10,src:'imported'};projects.push(p);}
       if(rec.region&&p.region!==rec.region){const j=projects.indexOf(p);p=Object.assign({},p,{region:rec.region});projects[j]=p;}
       const fields={bldg:rec.bldg,zone:rec.zone,btype:rec.btype||'',code:rec.code,name:rec.name,nameAr:rec.nameAr||rec.name,wbs:rec.wbs||'—',ps:rec.ps,pf:rec.pf,qty:rec.qty,unit:rec.unit,w:rec.w,eng:rec.eng,src:'imported'};
       const i=activities.findIndex(a=>a.pid===p.id&&a.code===rec.code);
-      if(i>=0)activities[i]=Object.assign({},activities[i],fields);else activities.push(Object.assign({id:'X_'+p.code+'_'+rec.code,pid:p.id},fields));});
+      let aid;if(i>=0){activities[i]=Object.assign({},activities[i],fields);aid=activities[i].id;}else{aid='X_'+p.code+'_'+rec.code;activities.push(Object.assign({id:aid,pid:p.id},fields));}
+      if(rec.open){if(updates.some(u=>u.actId===aid&&u.status==='approved')){openSkip++;return;}
+        const o=rec.open,q=Math.round(rec.qty*o.pct)/100;
+        updates.push({id:uid('U'),actId:aid,by:rec.eng,pct:o.pct,qty:q,aStart:o.aS||'',aFinish:o.aF||'',remD:null,remarks:OPEN_NOTE,delay:'',party:'',photos:[],status:'approved',created:oTs,submitted:oTs,reviewed:oTs,reviewer:'PL',comment:'',prevId:'',src:'opening',log:[{at:stamp(),ev:'approved',by:'PL'}]});openN++;}});
     if(this.live()&&this._sb)this._sb.from('schedule_imports').insert({file_name:'csv',row_count:ok.length}).then(()=>{});
-    this.set({data:Object.assign({},s.data,{projects,activities}),importRows:null},()=>this.toast(t.impToast(ok.length)));}
+    this.set({data:Object.assign({},s.data,{projects,activities,updates}),importRows:null},()=>this.toast(t.impToast(ok.length)+(openN||openSkip?' · '+t.impOpenToast(openN,openSkip):'')));}
   exportProgress(){const D=this.D(),rows=[['data_date','project_code','activity_id','activity_name','wbs','zone','building','planned_start','planned_finish','weight','planned_pct','approved_pct','variance_pts','approved_qty','budget_qty','unit','actual_start','actual_finish','delayed','missing_update','pending_review','data_source']];
     D.acts.forEach(a=>rows.push([TODAY,D.projMap[a.pid].code,a.code,a.name,a.wbs,a.zone,a.bldg,a.ps,a.pf,a.w,r1(a.planned),a.actual,r1(a.variance),a.aQty,a.qty,a.unit,a.aStart,a.aFinish,a.delayed?'Y':'N',a.missing?'Y':'N',a.pending?'Y':'N',a.src]));
     rows.push([]);D.projects.forEach(p=>rows.push([TODAY,p.code,'PROJECT TOTAL',p.name,'','','','','','',r1(p.planned),r1(p.actual),r1(p.variance),'','','','','','','','',p.src]));
@@ -2244,7 +2257,7 @@ class Component extends DCLogic {
     // Import
     const ir=s.importRows;
     const imp={has:!!ir,summary:ir?t.impSummary(ir.filter(r=>r.ok).length,ir.filter(r=>!r.ok).length):'',canImport:!!ir&&ir.some(r=>r.ok),btn:ir?t.impBtn(ir.filter(r=>r.ok).length):'',
-      rows:(ir||[]).map(r=>({line:r.line,code:r.code,name:r.name,action:r.ok?(r.exists?t.impUpd:t.impNew):t.impErr,info:r.rec?r.rec.project_code+' · '+r.rec.ps+' → '+r.rec.pf+' · '+r.rec.qty+' '+r.rec.unit+' · w '+r.rec.w+' · '+r.rec.eng+' · '+r.rec.zone+' / '+r.rec.bldg:'',hasErr:!r.ok,err:r.errs.join(' · '),bg:r.ok?'#fff':C.redBg,bd:r.ok?'#e4e0d8':'oklch(0.82 0.08 28)'}))};
+      rows:(ir||[]).map(r=>({line:r.line,code:r.code,name:r.name,action:r.ok?(r.exists?t.impUpd:t.impNew):t.impErr,info:r.rec?r.rec.project_code+' · '+r.rec.ps+' → '+r.rec.pf+' · '+r.rec.qty+' '+r.rec.unit+' · w '+r.rec.w+' · '+r.rec.eng+' · '+r.rec.zone+' / '+r.rec.bldg+(r.rec.open?' · '+t.impOpenTag(r.rec.open.pct):''):'',hasErr:!r.ok,err:r.errs.join(' · '),bg:r.ok?'#fff':C.redBg,bd:r.ok?'#e4e0d8':'oklch(0.82 0.08 28)'}))};
 
     // Portfolio
     const V=D.projects.reduce((x,p)=>x+p.value,0)||1;
