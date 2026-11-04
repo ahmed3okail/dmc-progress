@@ -56,7 +56,7 @@ Supabase (free): PostgreSQL + Auth + Storage (bucket site-photos, private) + Rea
 
 ## Business rules (enforced in DB triggers + RLS, mirror them in UI)
 - Roles: `site` (site engineer), `cm` (Construction Manager), `planner` (Planning Engineer), `pm` (Project Manager), `admin`.
-- Site engineers are identified by **discipline**, not names: `CIV`, `ARC`, `MEC`, `ELE`.
+- Site engineers are identified by **discipline**, not names: `CIV`, `ARC`, `LND` (Landscape, added 2026-11-04, `db/15_landscape.sql` applied), `MEC`, `ELE`.
 - Workflow: `draft → submitted` (site) `→ endorsed` (CM, may adjust %/qty with a note; original values kept, engineer is notified) `→ approved` (Planning). CM can `returned` (to engineer). Planning's return goes back to the CM (`endorsed → submitted`, note in `review_comment`, `reviewer_role='PL'`) — `db/06_return_to_cm.sql`. If `require_cm` is off, Planning returns to the engineer.
 - **Only approved updates affect official actual progress.** Approved rows are immutable. History is preserved (`prev_id`, `log`, `audit_log`).
 - Project progress = weighted by activity `weight`. Portfolio = weighted by `contract_value`.
@@ -80,7 +80,7 @@ update profiles set role='admin', discipline='CIV' where id=(select id from auth
 - Pending: Ahmed creates the `Admin` account on the live site, then runs the SQL above. Supabase "Confirm email" may need to be turned off for username logins.
 
 ## Features added 2026-10-29
-- Demo / sample data v4 (2026-10-31, localStorage key `dmc-erp:demo:v5`): one project `P1` "Evia" (region North Coast, zone "Milestone 4"; Ahmed asked for this naming 2026-10-31) = 11 plots (Plot 55, 54, 53, 52, 42–48; building types CH3/CH6/CH7/CH10), 1,722 activities based on Ahmed's P6 export: names, WBS, planned dates and trade (ST/AR/ME/EL → CIV/ARC/MEC/ELE); zone = `Milestone 4`, building type = CHx, building = `Plot N`; weight = duration days; qty = 1 LS. Activity IDs are generic `B<building>-<n>` and no client name/code is stored — Ahmed chose this (2026-10-31); never commit the real XER, real activity IDs or client identifiers. Stored compactly in `SAMPLE_P6` (dates as days from 2026-10-31, shifted to today). Progress, workflow scenarios, photos, reminders and chat are simulated. Still marked demo. "Load demo data" (admin, Data screen) deletes the old demo rows first, then adds every site engineer + CM as a member of the sample project. `db/04_demo_data.sql` is outdated (old 5-project set).
+- Demo / sample data v4 (2026-10-31, localStorage key `dmc-erp:demo:v5`): one project `P1` "Project X" / "مشروع X" (renamed from "Evia" 2026-11-04 for confidentiality; localStorage key now `dmc-erp:demo:v6`) (region North Coast, zone "Milestone 4"; Ahmed asked for this naming 2026-10-31) = 11 plots (Plot 55, 54, 53, 52, 42–48; building types CH3/CH6/CH7/CH10), 1,722 activities based on Ahmed's P6 export: names, WBS, planned dates and trade (ST/AR/ME/EL → CIV/ARC/MEC/ELE); zone = `Milestone 4`, building type = CHx, building = `Plot N`; weight = duration days; qty = 1 LS. Activity IDs are generic `B<building>-<n>` and no client name/code is stored — Ahmed chose this (2026-10-31); never commit the real XER, real activity IDs or client identifiers. Stored compactly in `SAMPLE_P6` (dates as days from 2026-10-31, shifted to today). Progress, workflow scenarios, photos, reminders and chat are simulated. Still marked demo. "Load demo data" (admin, Data screen) deletes the old demo rows first, then adds every site engineer + CM as a member of the sample project. `db/04_demo_data.sql` is outdated (old 5-project set).
 - Dashboard tab (`dash`) for CM, Planning, PM: KPIs, ring gauge, S-curve, weekly gain, project health / zone breakdown, discipline performance, workflow, delay reasons, most-behind list, look-ahead, activity feed.
 - Users tab: role/pending/disabled filters, search, "Add user" (signUp via a second client without session, then profile update), permissions matrix.
 - Team chat (header "Chat" button): general room, one group per project, private chats, unread badges, read ticks in private chats, photo attach. DEMO = browser only; LIVE needs `db/03_chat.sql`.
@@ -137,3 +137,9 @@ update profiles set role='admin', discipline='CIV' where id=(select id from auth
   - Motion: `@keyframes dmcIn` on cards (`animation:dmcIn`), `button:active` scale, `prefers-reduced-motion` respected. Skeleton (`skel`, `skelRows`, shimmer `dmcShim`) while LIVE data is loading (all `show.*` false).
   - Dashboard charts: S-curve actual = brand green with gradient area (`chart.area` from the chart builder), planned = gold dashed; weekly bars gold (planned) / green (actual).
   - Buildings: drawing bigger (max 380px) with red dashed planned line per floor and a door on GF; floors list beside it (`bv.floors`, state `bvFl` = `<building>|<floor>`), tap a floor → its activities (status + %), tap an activity → detail.
+
+## Changes 2026-11-04
+- App renamed to **DME Progress Tracker** (DME = DMC + CURVE): I18N titles, manifest, index, sw.js.
+- Landscape Engineer discipline `LND` (enum value added on live DB). Demo data adds 6 fictional landscape activities per plot (WBS `External Works › Landscape`, ids `B<plot>-L0n`); Buildings tab has a "Landscape works" trade tile. `supabase/functions/push/index.ts` has the LND label in the repo but is **not redeployed** yet (deployed version falls back to the code "LND").
+- Demo project renamed to Project X / مشروع X.
+- Marketing video + LinkedIn assets live in project files (`video/`, `linkedin/`), built from DEMO mode screens.

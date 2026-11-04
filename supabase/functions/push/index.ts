@@ -33,6 +33,7 @@ type Msg = { ar: { title: string; body: string }; en: { title: string; body: str
 const DISC: Record<string, [string, string]> = {
   CIV: ["المهندس المدني", "Civil Engineer"], ARC: ["المهندس المعماري", "Architectural Engineer"],
   MEC: ["مهندس الميكانيكا", "Mechanical Engineer"], ELE: ["مهندس الكهرباء", "Electrical Engineer"],
+  LND: ["مهندس اللاندسكيب", "Landscape Engineer"],
 };
 const nameOf = (p?: Prof | null) => (p?.full_name || "").replace("@dmc.local", "") || "—";
 
