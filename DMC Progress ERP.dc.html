@@ -9,7 +9,7 @@
 <link rel="apple-touch-icon" href="icon-192.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="DMC Progress">
+<meta name="apple-mobile-web-app-title" content="DME Progress">
 <script src="./support.js"></script>
 </head>
 <body>
@@ -1198,7 +1198,7 @@ const REGIONS=['nc','wc','ec'];
 const regionKey=v=>{v=String(v||'').toLowerCase().replace(/[^a-z]/g,'');return v==='nc'||v==='northcoast'?'nc':v==='wc'||v==='westcairo'?'wc':v==='ec'||v==='eastcairo'?'ec':'';};
 
 const I18N={
-en:{title:'DMC Site Progress',otherLang:'عربي',dataShort:'Data',dataDate:'Data date',
+en:{title:'DME Progress Tracker',otherLang:'عربي',dataShort:'Data',dataDate:'Data date',
 demo:'DEMO DATA — fictional sample projects. Saved only in this browser on this device. Tap for details.',
 role_site:'Site Engineer',role_planner:'Planning Engineer',role_pm:'Project Manager',actingAs:'Acting as site engineer',
 refreshBtn:'Refresh',dows:['Sun','Mon','Tue','Wed','Thu','Fri','Sat'],compTitle:'Weekly update compliance',compAll:'All disciplines',compLine:(u,n)=>`${u} of ${n} activities updated this cycle`,cutLine:(d,c,f)=>`Cut-off: ${d} ${c} · cycle from ${f}`,cutPick:'Cut-off day',cutAuto:'Engineers who have not updated get an automatic reminder the day before and on the cut-off day.',cutAdminOnly:'Only the admin can change the cut-off day.',
@@ -1254,7 +1254,7 @@ impSummary:(v,e)=>`${v} valid · ${e} with errors`,impBtn:n=>`Import ${n} valid 
 e_col:c=>`Missing column: ${c}`,e_req:'Required value missing',e_date:'Invalid date — use YYYY-MM-DD',e_order:'Finish is before start',e_qty:'budget_qty must be > 0',e_w:'weight must be > 0',e_eng:'assigned_to must be E1, E2 or E3',e_dup:'Duplicate activity in file',
 plSummary:(n,v)=>`${n} activities · contract value SAR ${v}M (fictional)`,reports:n=>`${n} reports`,
 stats:(p,a,u,kb)=>`${p} projects · ${a} activities · ${u} updates · ${kb} KB used`},
-ar:{title:'DMC تقدم الموقع',otherLang:'English',dataShort:'البيانات',dataDate:'تاريخ البيانات',
+ar:{title:'DME Progress Tracker',otherLang:'English',dataShort:'البيانات',dataDate:'تاريخ البيانات',
 demo:'بيانات تجريبية — مشاريع وهمية للعرض. محفوظة في هذا المتصفح على هذا الجهاز فقط. اضغط للتفاصيل.',
 role_site:'مهندس موقع',role_planner:'مهندس تخطيط',role_pm:'مدير المشروع',actingAs:'تعمل باسم مهندس الموقع',
 refreshBtn:'تحديث',dows:['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'],compTitle:'الالتزام بالتحديث الأسبوعي',compAll:'كل التخصصات',compLine:(u,n)=>`${u} من ${n} نشاط اتحدّث في الدورة دي`,cutLine:(d,c,f)=>`يوم القفل: ${d} ${c} · الدورة من ${f}`,cutPick:'يوم القفل',cutAuto:'المهندس اللي ماحدّثش بيوصله تذكير أوتوماتيك قبل يوم القفل بيوم وفي يوم القفل.',cutAdminOnly:'الأدمن بس هو اللي يقدر يغيّر يوم القفل.',
@@ -1350,7 +1350,7 @@ adjTitle:'عدّل مدير الإنشاءات تحديثك',adjMsg:(a,b,qa,qb,u
 adjTitleCM:'تعديل قبل الموافقة (اختياري)',adjHelp:'إذا اختلف التحقق في الموقع عن المرسل، عدّل النسبة أو الكمية. يصل إشعار للمهندس ويُحفظ التعديل في السجل كملاحظة. التعليق مطلوب.',
 adjPreview:(p0,p1,q0,q1,u)=>`سيُعتمد بنسبة ${p1}% (المرسل ${p0}%) · ${q1} ${u} (المرسل ${q0})`,adjReset:'استعادة',approveAdj:'موافقة مع التعديل',
 err_adjComment:'التعليق مطلوب عند التعديل',err_adjFinish:'لا يمكن التعديل إلى 100% — لم يُدخل المهندس تاريخ النهاية الفعلية. أعد التحديث بدلاً من ذلك.',t_adjusted:'تم التعديل والموافقة — تم إشعار المهندس',repProjSummary:'ملخص المشروع',repPhotos:'صور الموقع هذا الأسبوع',repNoPhotos:'لا توجد صور مرفقة هذا الأسبوع.',actPhotos:'صور النشاط',ev_adjusted:'عُدّل'});
-Object.assign(I18N.en,{title:'DMC SiteTrack',modules:'Modules',roleView:'Role view',demoUser:'Demo mode · no sign-in',
+Object.assign(I18N.en,{title:'DME Progress Tracker',modules:'Modules',roleView:'Role view',demoUser:'Demo mode · no sign-in',
 connTitle:'Database connection',connDemo:'Not connected — DEMO mode (this browser only)',connLive:h=>'Connected to shared database · '+h,connHelp:'Paste your Supabase Project URL and anon public key (Project Settings → API). Saved in this browser.',connFile:'Connection is set by the site administrator (config.js).',connect:'Connect',disconnect:'Disconnect (back to demo)',connBad:'Enter a valid https URL and anon key',
 signIn:'Sign in',signUp:'Create account',signOut:'Sign out',wait:'Please wait…',email:'Username or email',tab_users:'Users',usersTitle:'Users & permissions',usersHelp:'Colleagues open the site and tap “Create account” with a username (e.g. civil.eng1) and a password. They appear here — set their role, discipline and projects. Changes apply immediately.',you:'You',uActive:'Active',uDisabled:'Disabled',uRole:'Role',uDisc:'Discipline',uProj:'Projects (site engineers & CM see only these)',cantDemoteSelf:'You cannot remove your own admin role',savedOk:'Saved',password:'Password',loginTag:'Site progress · Planning · Reporting',loginSub:'Sign in with your company account. Your role and discipline are assigned by the administrator.',
 signUpNote:'New accounts start without access until an administrator assigns a role and project.',loginNeed:'Enter username and password',signUpNeed:'Enter a username and a password of at least 8 characters',signUpOk:'Account created — confirm your email, then sign in.',
@@ -1361,7 +1361,7 @@ storageBadgeLive:'Shared · Supabase PostgreSQL · real-time',storageLive1:'Data
 storageLive2:'Workflow rules (CM → Planning approval, approved updates locked, roles per discipline) are enforced by the database itself, not only by this screen. Every change is written to an audit log.',
 storageLive3:'Free plan limits apply (database size, file storage, inactive projects may pause). Photos are stored in a private bucket and shown with temporary links.',
 prole_site:'Site engineer',prole_cm:'Construction Manager',prole_planner:'Planning Engineer',prole_pm:'Project Manager',prole_admin:'Administrator'});
-Object.assign(I18N.ar,{title:'DMC SiteTrack',modules:'الوحدات',roleView:'عرض حسب الدور',demoUser:'وضع تجريبي · بدون تسجيل دخول',
+Object.assign(I18N.ar,{title:'DME Progress Tracker',modules:'الوحدات',roleView:'عرض حسب الدور',demoUser:'وضع تجريبي · بدون تسجيل دخول',
 connTitle:'الاتصال بقاعدة البيانات',connDemo:'غير متصل — وضع تجريبي (هذا المتصفح فقط)',connLive:h=>'متصل بقاعدة بيانات مشتركة · '+h,connHelp:'الصق رابط مشروع Supabase والمفتاح العام anon (Project Settings ← API). يُحفظ في هذا المتصفح.',connFile:'الاتصال مضبوط من مسؤول الموقع (config.js).',connect:'اتصال',disconnect:'قطع الاتصال (العودة للتجريبي)',connBad:'أدخل رابط https صحيح والمفتاح العام',
 signIn:'تسجيل الدخول',signUp:'إنشاء حساب',signOut:'تسجيل الخروج',wait:'انتظر…',email:'اسم المستخدم أو البريد',tab_users:'المستخدمون',usersTitle:'المستخدمون والصلاحيات',usersHelp:'الزملاء يفتحون الموقع ويضغطون «إنشاء حساب» باسم مستخدم (مثل civil.eng1) وكلمة مرور. يظهرون هنا — حدد الدور والتخصص والمشاريع. التغيير يطبق فوراً.',you:'أنت',uActive:'نشط',uDisabled:'موقوف',uRole:'الدور',uDisc:'التخصص',uProj:'المشاريع (مهندس الموقع ومدير الإنشاءات يرون هذه فقط)',cantDemoteSelf:'لا يمكنك إزالة صلاحية المسؤول عن نفسك',savedOk:'تم الحفظ',password:'كلمة المرور',loginTag:'متابعة تقدم الموقع · التخطيط · التقارير',loginSub:'سجّل الدخول بحساب الشركة. الدور والتخصص يحددهما مسؤول النظام.',
 signUpNote:'الحسابات الجديدة لا تملك صلاحيات حتى يحدد المسؤول الدور والمشروع.',loginNeed:'أدخل البريد وكلمة المرور',signUpNeed:'أدخل البريد وكلمة مرور 8 أحرف على الأقل',signUpOk:'تم إنشاء الحساب — أكّد بريدك ثم سجّل الدخول.',

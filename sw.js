@@ -1,4 +1,4 @@
-// DMC SiteTrack — service worker: shows push notifications, opens the app when one is tapped,
+// DME Progress Tracker — service worker: shows push notifications, opens the app when one is tapped,
 // and keeps a copy of the app files so it can open without internet (network first, cache as fallback).
 // Supabase API calls are never cached.
 const CACHE = 'dmc-shell-v1';
@@ -32,7 +32,7 @@ self.addEventListener('push', (e) => {
   let d = {};
   try { d = e.data ? e.data.json() : {}; } catch (_) { d = { body: e.data ? e.data.text() : '' }; }
   const rtl = d.lang !== 'en';
-  e.waitUntil(self.registration.showNotification(d.title || 'DMC Progress', {
+  e.waitUntil(self.registration.showNotification(d.title || 'DME Progress Tracker', {
     body: d.body || '',
     tag: d.tag || undefined,
     renotify: !!d.tag,
