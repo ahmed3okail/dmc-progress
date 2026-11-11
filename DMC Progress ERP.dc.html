@@ -70,6 +70,7 @@ button{transition:transform .08s ease,background-color .15s ease}button:active{t
       <div style="font-weight:700;font-size:17px;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ t.title }}</div>
       <div style="font-size:12px;color:#c9c3b8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">DMC-CURVE · {{ t.dataDate }} <span style="font-family:'IBM Plex Mono',monospace">{{ today }}</span></div>
     </sc-if></div>
+    <sc-if value="{{ hasBell }}" hint-placeholder-val="{{ true }}"><button onClick="{{ toggleNotif }}" title="{{ t.notifTitle }}" aria-label="{{ t.notifTitle }}" style="position:relative;min-height:40px;min-width:40px;padding:0;border:1px solid {{ bellBd }};background:{{ bellBg }};border-radius:10px;display:grid;place-items:center"><img src="{{ hic.bell }}" alt="" style="width:20px;height:20px;display:block"><sc-if value="{{ hasRem }}" hint-placeholder-val="{{ true }}"><span style="position:absolute;top:-7px;inset-inline-end:-7px;min-width:21px;height:21px;padding:0 6px;border-radius:999px;background:oklch(0.55 0.19 28);color:#fff;font-size:11.5px;font-weight:700;display:grid;place-items:center;border:2px solid #0e5a4b">{{ remN }}</span></sc-if></button></sc-if>
     <button onClick="{{ openChat }}" title="{{ t.chatBtn }}" aria-label="{{ t.chatBtn }}" style="position:relative;min-height:40px;min-width:40px;padding:0 9px;border:1px solid #c5a45a;background:rgba(197,164,90,.12);color:#f7f5f1;border-radius:10px;font-weight:600;font-size:14px;display:flex;align-items:center;gap:6px"><img src="{{ hic.chat }}" alt="" style="width:20px;height:20px;display:block"><sc-if value="{{ wide }}" hint-placeholder-val="{{ false }}"><span>{{ t.chatBtn }}</span></sc-if><sc-if value="{{ chatHasUnread }}" hint-placeholder-val="{{ false }}"><span style="position:absolute;top:-7px;inset-inline-end:-7px;min-width:21px;height:21px;padding:0 6px;border-radius:999px;background:oklch(0.55 0.15 150);color:#fff;font-size:11.5px;font-weight:700;display:grid;place-items:center;border:2px solid #0e5a4b">{{ chatUnread }}</span></sc-if></button>
     <button onClick="{{ refresh }}" title="{{ t.refreshBtn }}" aria-label="{{ t.refreshBtn }}" style="min-height:40px;min-width:40px;padding:0;border:1px solid #4f8478;background:transparent;border-radius:10px;display:grid;place-items:center"><img src="{{ hic.refresh }}" alt="" style="width:19px;height:19px;display:block"></button>
     <button onClick="{{ toggleDark }}" title="{{ darkLbl }}" aria-label="{{ darkLbl }}" style="min-height:40px;min-width:40px;padding:0;border:1px solid #4f8478;background:transparent;border-radius:10px;display:grid;place-items:center"><img src="{{ hic.dark }}" alt="" style="width:19px;height:19px;display:block"></button>
@@ -87,6 +88,26 @@ button{transition:transform .08s ease,background-color .15s ease}button:active{t
   <sc-if value="{{ offBar.show }}" hint-placeholder-val="{{ false }}"><div style="background:{{ offBar.bg }};color:{{ offBar.fg }};font-size:12.5px;font-weight:700;padding:7px 16px;display:flex;gap:8px;align-items:center;flex-wrap:wrap"><span style="flex:1;min-width:0">{{ offBar.txt }}</span><sc-if value="{{ offBar.canSend }}" hint-placeholder-val="{{ false }}"><button onClick="{{ offBar.send }}" style="min-height:32px;padding:0 12px;border-radius:8px;border:1px solid currentColor;background:transparent;color:inherit;font-weight:700;font-size:12.5px">{{ t.offSendNow }}</button></sc-if></div></sc-if>
   <sc-if value="{{ hasLoadErr }}" hint-placeholder-val="{{ false }}"><div style="background:oklch(0.93 0.05 28);color:oklch(0.38 0.15 28);font-size:12.5px;font-weight:600;padding:7px 16px">⚠ {{ t.loadErrTxt }}: {{ loadErr }}</div></sc-if>
 </header>
+<sc-if value="{{ notifOpen }}" hint-placeholder-val="{{ false }}">
+  <div onClick="{{ closeNotif }}" style="position:fixed;inset:0;z-index:38;background:rgba(0,0,0,.18)"></div>
+  <div style="position:fixed;top:64px;inset-inline-end:10px;z-index:39;width:min(400px,calc(100vw - 20px));max-height:72vh;overflow-y:auto;background:#fff;border:1px solid #e2ded6;border-radius:14px;box-shadow:0 14px 40px rgba(0,0,0,.22);display:flex;flex-direction:column;animation:dmcIn .18s ease-out">
+    <div style="display:flex;align-items:center;gap:8px;padding:12px 14px;border-bottom:1px solid #eee9e0;position:sticky;top:0;background:#fff">
+      <img src="{{ hic.bellDark }}" alt="" style="width:19px;height:19px;display:block">
+      <div style="font-weight:700;font-size:16px;flex:1">{{ t.notifTitle }}</div>
+      <sc-if value="{{ hasRem }}" hint-placeholder-val="{{ true }}"><button onClick="{{ dismissAll }}" style="min-height:36px;padding:0 10px;border:1px solid #d8d2c6;background:#fff;border-radius:8px;font-weight:600;font-size:13px;color:#5f5a52">{{ t.notifClear }}</button></sc-if>
+      <button onClick="{{ closeNotif }}" aria-label="{{ t.close }}" style="min-height:36px;min-width:36px;border:none;background:transparent;font-size:20px;color:#5f5a52">✕</button>
+    </div>
+    <sc-if value="{{ noRem }}" hint-placeholder-val="{{ false }}"><div style="padding:28px 16px;text-align:center;color:#8a8378;font-size:14.5px">{{ t.notifEmpty }}</div></sc-if>
+    <sc-for list="{{ myRem }}" as="m" hint-placeholder-count="2">
+      <div style="padding:12px 14px;border-bottom:1px solid #f0ece4;display:flex;flex-direction:column;gap:6px;background:#fffaf0">
+        <div style="display:flex;gap:8px;align-items:baseline;flex-wrap:wrap"><span style="font-weight:700;color:#5b4310">{{ m.title }}</span><span style="font-size:12px;color:#7a6538;white-space:nowrap">{{ m.when }}</span></div>
+        <div style="font-size:14px;color:#3d2f0c">{{ m.msg }}</div>
+        <div style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#5b4310;word-break:break-word">{{ m.codes }}</div>
+        <div style="display:flex;gap:8px"><button onClick="{{ m.show }}" style="min-height:40px;padding:0 14px;border:none;background:#0b4a3e;color:#fff;border-radius:9px;font-weight:600;font-size:13.5px">{{ m.showLbl }}</button><button onClick="{{ m.dismiss }}" style="min-height:40px;padding:0 14px;border:1px solid #cdb67a;background:transparent;border-radius:9px;font-weight:600;font-size:13.5px;color:#5b4310">{{ t.dismiss }}</button></div>
+      </div>
+    </sc-for>
+  </div>
+</sc-if>
 <sc-if value="{{ skel }}" hint-placeholder-val="{{ false }}"><div data-noprint="1" style="padding:16px;display:flex;flex-direction:column;gap:12px">
   <div style="height:26px;width:55%;border-radius:8px;background:linear-gradient(90deg,#e9e5de 30%,#f6f3ee 50%,#e9e5de 70%);background-size:200% 100%;animation:dmcShim 1.3s linear infinite"></div>
   <div style="display:flex;gap:8px"><div style="height:38px;width:110px;border-radius:999px;background:linear-gradient(90deg,#e9e5de 30%,#f6f3ee 50%,#e9e5de 70%);background-size:200% 100%;animation:dmcShim 1.3s linear infinite"></div><div style="height:38px;width:80px;border-radius:999px;background:linear-gradient(90deg,#e9e5de 30%,#f6f3ee 50%,#e9e5de 70%);background-size:200% 100%;animation:dmcShim 1.3s linear infinite"></div></div>
@@ -102,18 +123,6 @@ button{transition:transform .08s ease,background-color .15s ease}button:active{t
         <sc-for list="{{ engChips }}" as="c" hint-placeholder-count="3"><button onClick="{{ c.onClick }}" style="flex:0 0 auto;min-height:44px;padding:0 14px;border-radius:999px;border:1px solid {{ c.bd }};background:{{ c.bg }};color:{{ c.fg }};font-size:14px;font-weight:600;white-space:nowrap">{{ c.label }}</button></sc-for>
       </div>
     </div>
-    <sc-if value="{{ hasRem }}" hint-placeholder-val="{{ false }}">
-      <div style="padding:0 16px;display:flex;flex-direction:column;gap:8px">
-        <sc-for list="{{ myRem }}" as="m" hint-placeholder-count="1">
-          <div style="background:#fff6e0;border:1px solid #efd38b;border-radius:14px;padding:14px;display:flex;flex-direction:column;gap:8px">
-            <div style="display:flex;gap:8px;align-items:baseline;flex-wrap:wrap"><span style="font-weight:700;color:#5b4310">{{ m.title }}</span><span style="font-size:12px;color:#7a6538;white-space:nowrap">{{ m.when }}</span></div>
-            <div style="font-size:14.5px;color:#3d2f0c">{{ m.msg }}</div>
-            <div style="font-family:'IBM Plex Mono',monospace;font-size:12.5px;color:#5b4310">{{ m.codes }}</div>
-            <div style="display:flex;gap:8px"><button onClick="{{ m.show }}" style="min-height:44px;padding:0 16px;border:none;background:#0b4a3e;color:#fff;border-radius:10px;font-weight:600">{{ m.showLbl }}</button><button onClick="{{ m.dismiss }}" style="min-height:44px;padding:0 16px;border:1px solid #cdb67a;background:transparent;border-radius:10px;font-weight:600;color:#5b4310">{{ t.dismiss }}</button></div>
-          </div>
-        </sc-for>
-      </div>
-    </sc-if>
     <div style="padding:0 16px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px">
       <sc-for list="{{ tiles }}" as="x" hint-placeholder-count="4">
         <button onClick="{{ x.onClick }}" style="background:{{ x.bg }};border:1.5px solid {{ x.bd }};border-radius:12px;padding:10px 10px 9px;min-height:76px;display:flex;flex-direction:column;align-items:flex-start;justify-content:space-between;gap:4px;text-align:start">
@@ -1168,6 +1177,7 @@ const ICO={
  trends:'<path d="M22 12h-4l-3 8L9 4l-3 8H2"/>',
  delays:'<circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2.5M9 2h6"/>',
  users:'<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0M16 4.5a3.5 3.5 0 0 1 0 7M18 14a6 6 0 0 1 3.5 6"/>',
+ bell:'<path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.9 1.9 0 0 0 3.4 0"/>',
  chat:'<path d="M21 12a8 8 0 0 1-11.6 7.1L4 20.5l1.4-4.6A8 8 0 1 1 21 12z"/><path d="M8.5 12h.01M12 12h.01M15.5 12h.01"/>',
  refresh:'<path d="M21 12a9 9 0 1 1-2.6-6.4L21 8"/><path d="M21 3v5h-5"/>',
  moon:'<path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/>',
@@ -1317,7 +1327,7 @@ Object.assign(I18N.en,{spi:'SPI',spiLong:'Schedule performance index = approved 
 overline:'Overview',bulkMode:'Quick update',bulkOff:'Done',bulkHelp:'Quick update: tap −5 / +5 / +10 / 100 on each activity, then submit all at once. Quantity is calculated from %; start date is today if none is recorded. Open an activity to add photos, remarks or exact dates.',
 bulkSubmit:n=>`Submit ${n} updates`,bulkCount:n=>`${n} changed`,bulkDone:(ok,e)=>`Submitted ${ok}`+(e?` · ${e} need details`:''),bulkNone:'No changes yet',bulkCancel:'Cancel',showAll:'✕ Show all',
 f_flagged:'Flagged',f_clean:'Clean',selectClean:n=>`Select all clean (${n})`,clearSel:'Clear',selNotePh:'Note for all selected (optional)',approveSel:n=>`Approve ${n} selected`,verifySel:n=>`Verify ${n} selected`,bulkApproved:n=>`Approved ${n} updates`,selCount:n=>`${n} selected`,
-remind:n=>`Send reminders (${n})`,remindSent:n=>`${n} reminders created — in-app only`,remindTitle:'Reminder from Planning',remindMissing:n=>`${n} of your activities have no progress update for over a week.`,dismiss:'Dismiss',showActs:'Show activities',remindNote:'Reminders appear inside this app only (this browser). No SMS, email or push is sent.',
+remind:n=>`Send reminders (${n})`,remindSent:n=>`${n} reminders created — in-app only`,remindTitle:'Reminder from Planning',remindMissing:n=>`${n} of your activities have no progress update for over a week.`,dismiss:'Dismiss',notifTitle:'Notifications',notifEmpty:'No new notifications',notifClear:'Clear all',showActs:'Show activities',remindNote:'Reminders appear inside this app only (this browser). No SMS, email or push is sent.',
 weeklyReport:'Weekly report',print:'Print / Save as PDF',printNote:'The PDF file downloads directly to your device.',repTitle:'Weekly progress report',repWeek:(a,b)=>`Week ${a} → ${b}`,repDemo:'Contains DEMO data — fictional projects for demonstration only.',repSummary:'Portfolio summary',repProject:'Project',repStatus:'Status',repApproved:'Approved this week',repMissing:'Missing updates',repDelayed:'Delayed',repReasons:'8. Delay reasons (last 10 weeks)',repFooter:'Generated from data stored in this browser. Only approved updates count as actual progress.',none:'None',repBy:'Approved by',
 captionPh:'Caption, e.g. Grid C3 east face',geoOk:(a,b,c)=>`GPS ${a}, ${b} (±${c} m)`,geoPending:'Getting location…',geoNone:'Location not available',openMap:'Map',addPhotoLong:'＋ Add photo — camera or gallery',photoNote:'Up to 4 photos. Time and GPS (if you allow it) are recorded. Compressed and stored in this browser only.',
 la_start:'Starting',la_finish:'Finishing',la_win:n=>`Next ${n} days`,la_in:n=>n<0?`${-n} d overdue`:n===0?'today':`in ${n} d`,lateStart:'Late start',atRisk:'At risk',ready:'Planned',onTrackS:'On track',laHelp:'Activities planned to start or finish soon, with risk based on approved progress.'});
@@ -1325,7 +1335,7 @@ Object.assign(I18N.ar,{spi:'SPI',spiLong:'مؤشر أداء الجدول = ال�
 overline:'نظرة عامة',bulkMode:'تحديث سريع',bulkOff:'إنهاء',bulkHelp:'التحديث السريع: اضغط −5 / +5 / +10 / 100 لكل نشاط ثم أرسل الكل مرة واحدة. تُحسب الكمية من النسبة، وتاريخ البداية هو اليوم إن لم يُسجل. افتح النشاط لإضافة صور أو ملاحظات أو تواريخ دقيقة.',
 bulkSubmit:n=>`إرسال ${n} تحديثات`,bulkCount:n=>`${n} تغيير`,bulkDone:(ok,e)=>`تم إرسال ${ok}`+(e?` · ${e} تحتاج تفاصيل`:''),bulkNone:'لا توجد تغييرات بعد',bulkCancel:'إلغاء',showAll:'✕ عرض الكل',
 f_flagged:'عليها ملاحظات',f_clean:'سليمة',selectClean:n=>`تحديد كل السليمة (${n})`,clearSel:'مسح',selNotePh:'ملاحظة لكل المحدد (اختياري)',approveSel:n=>`اعتماد ${n} محددة`,verifySel:n=>`تحقق من ${n} محددة`,bulkApproved:n=>`تم اعتماد ${n} تحديثات`,selCount:n=>`${n} محدد`,
-remind:n=>`إرسال تذكيرات (${n})`,remindSent:n=>`تم إنشاء ${n} تذكيرات — داخل التطبيق فقط`,remindTitle:'تذكير من التخطيط',remindMissing:n=>`${n} من أنشطتك بدون تحديث للتقدم منذ أكثر من أسبوع.`,dismiss:'إخفاء',showActs:'عرض الأنشطة',remindNote:'التذكيرات تظهر داخل هذا التطبيق فقط (هذا المتصفح). لا تُرسل رسائل نصية أو بريد أو إشعارات.',
+remind:n=>`إرسال تذكيرات (${n})`,remindSent:n=>`تم إنشاء ${n} تذكيرات — داخل التطبيق فقط`,remindTitle:'تذكير من التخطيط',remindMissing:n=>`${n} من أنشطتك بدون تحديث للتقدم منذ أكثر من أسبوع.`,dismiss:'إخفاء',notifTitle:'الإشعارات',notifEmpty:'لا توجد إشعارات جديدة',notifClear:'إخفاء الكل',showActs:'عرض الأنشطة',remindNote:'التذكيرات تظهر داخل هذا التطبيق فقط (هذا المتصفح). لا تُرسل رسائل نصية أو بريد أو إشعارات.',
 weeklyReport:'التقرير الأسبوعي',print:'طباعة / حفظ PDF',printNote:'ملف الـ PDF بينزل على جهازك على طول.',repTitle:'تقرير التقدم الأسبوعي',repWeek:(a,b)=>`الأسبوع ${a} ← ${b}`,repDemo:'يحتوي على بيانات تجريبية — مشاريع وهمية للعرض فقط.',repSummary:'ملخص المحفظة',repProject:'المشروع',repStatus:'الحالة',repApproved:'المعتمد هذا الأسبوع',repMissing:'تحديثات مفقودة',repDelayed:'متأخر',repReasons:'٨. أسباب التأخير (آخر 10 أسابيع)',repFooter:'أُنشئ من البيانات المحفوظة في هذا المتصفح. التحديثات المعتمدة فقط تُحتسب تقدماً فعلياً.',none:'لا يوجد',repBy:'اعتمده',
 captionPh:'وصف، مثل: محور C3 الواجهة الشرقية',geoOk:(a,b,c)=>`GPS ${a}, ${b} (±${c} م)`,geoPending:'جارٍ تحديد الموقع…',geoNone:'الموقع غير متاح',openMap:'خريطة',addPhotoLong:'＋ إضافة صورة — الكاميرا أو المعرض',photoNote:'حتى 4 صور. يُسجل الوقت والموقع (إن سمحت). تُضغط وتُحفظ في هذا المتصفح فقط.',
 la_start:'تبدأ',la_finish:'تنتهي',la_win:n=>`الـ ${n} يوماً القادمة`,la_in:n=>n<0?`متأخر ${-n} يوم`:n===0?'اليوم':`بعد ${n} يوم`,lateStart:'بداية متأخرة',atRisk:'معرّض للخطر',ready:'مخطط',onTrackS:'ضمن الخطة',laHelp:'الأنشطة المخطط بدؤها أو انتهاؤها قريباً، مع تقييم الخطر حسب التقدم المعتمد.'});
@@ -1968,6 +1978,7 @@ class Component extends DCLogic {
   sendReminders(pid){const s=this.state,t=I18N[s.lang],p=this.D().projMap[pid],by={};p.list.filter(a=>a.missing).forEach(a=>{(by[a.eng]=by[a.eng]||[]).push(a.id);});
     const ts=stamp(),rs=Object.keys(by).map(e=>({id:uid('R'),to:e,from:'PL',at:ts,actIds:by[e],type:'missing',done:false}));
     this.set({data:Object.assign({},s.data,{reminders:(s.data.reminders||[]).concat(rs)})},()=>this.toast(t.remindSent(rs.length)));}
+  dismissReminders(ids){const s=this.state;if(!ids.length)return;this.set({data:Object.assign({},s.data,{reminders:s.data.reminders.map(r=>ids.indexOf(r.id)>=0?Object.assign({},r,{done:true}):r)})});this.setState({notifOpen:false});}
   dismissReminder(id){const s=this.state;this.set({data:Object.assign({},s.data,{reminders:s.data.reminders.map(r=>r.id===id?Object.assign({},r,{done:true}):r)})});}
   runValidate(text){const t=I18N[this.state.lang],rows=parseCSV(text||'');if(!rows.length){this.setState({importRows:[]});return;}
     const head=rows[0].map(h=>{h=h.trim().toLowerCase();return h==='assigned_to'?'discipline':h;}),need=['project_code','activity_id','activity_name','planned_start','planned_finish','budget_qty','unit','weight','discipline'];
@@ -2037,9 +2048,8 @@ class Component extends DCLogic {
     const mine=D.acts.filter(a=>a.eng===s.eng);
     const FIL={all:()=>true,needs:a=>a.missing||(!!a.returned&&!a.draft),returned:a=>!!a.returned,drafts:a=>!!a.draft,pending:a=>!!a.pending};
     const needsN=mine.filter(FIL.needs).length;
-    const notifN=(s.data.reminders||[]).filter(r=>r.to===s.eng&&!r.done&&r.type==='adjusted').length;
     const TABS={site:['acts','hist','lookahead'],cm:['review','progress','dash','bldg','report','lookahead'],planner:['review','progress','import','dash','bldg','report','lookahead'],pm:['dash','bldg','portfolio','trends','report','lookahead','delays']};
-    const isAdm=this.live()&&s.profile&&s.profile.role==='admin';const tabs=TABS[role].concat(isAdm?['users']:[]).map(k=>{const bd=k==='review'?pendingAll.length:k==='acts'?notifN:0;const on=k===tab;return{label:t['tab_'+k],icon:TAB_ICON[k]||'•',ic:ico(k,on?'#0b4a3e':'#6b655b'),sic:ico(k,on?'#1b1a17':'#cfe3dc'),pill:on?'#d9ebe4':'transparent',onClick:setTab(k),fg:on?'#0b4a3e':'#605a51',fw:on?'700':'500',bg:'transparent',hasBadge:bd>0,badge:bd};});
+    const isAdm=this.live()&&s.profile&&s.profile.role==='admin';const tabs=TABS[role].concat(isAdm?['users']:[]).map(k=>{const bd=k==='review'?pendingAll.length:0;const on=k===tab;return{label:t['tab_'+k],icon:TAB_ICON[k]||'•',ic:ico(k,on?'#0b4a3e':'#6b655b'),sic:ico(k,on?'#1b1a17':'#cfe3dc'),pill:on?'#d9ebe4':'transparent',onClick:setTab(k),fg:on?'#0b4a3e':'#605a51',fw:on?'700':'500',bg:'transparent',hasBadge:bd>0,badge:bd};});
     const roles=['site','cm','planner','pm'].map(r=>({label:t['role_'+r],onClick:()=>{this.set({role:r,detail:null,review:null,errors:[],bulk:false,bulkVals:{},bulkErr:{},sel:{}});this.top();},bg:r===role?'#c5a45a':'transparent',fg:r===role?'#1b1a17':'#e9e4da'}));
     const inDetail=!!(s.detail&&D.actMap[s.detail]),inReview=isRev&&!!(s.review&&pendingAll.find(u=>u.id===s.review));
     const show={dash:role!=='site'&&tab==='dash'&&!inDetail,users:!!isAdm&&tab==='users'&&!inDetail,siteList:role==='site'&&tab==='acts'&&!inDetail,siteHist:role==='site'&&tab==='hist'&&!inDetail,detail:inDetail,review:isRev&&tab==='review'&&!inReview&&!inDetail,reviewDetail:inReview&&!inDetail,progress:isRev&&tab==='progress'&&!inDetail,import:role==='planner'&&tab==='import'&&!inDetail,portfolio:role==='pm'&&tab==='portfolio'&&!inDetail,trends:role==='pm'&&tab==='trends'&&!inDetail,lookahead:tab==='lookahead'&&!inDetail,report:role!=='site'&&tab==='report'&&!inDetail,bldg:role!=='site'&&tab==='bldg'&&!inDetail,delays:role==='pm'&&tab==='delays'&&!inDetail};
@@ -2082,10 +2092,11 @@ class Component extends DCLogic {
     const sBldgChips=sB.length>1?[chip(t.allBldg,s.sBldg==='all',()=>this.setState({sBldg:'all'}))].concat(sB.map(b=>chip(bl(b),s.sBldg===b,()=>this.setState({sBldg:b,sType:tOf(b),sZone:zOf(a=>a.bldg===b)})))):[];
     const TC={needs:C.red,returned:C.red,drafts:C.amber,pending:C.blue};
     const tiles=['returned','drafts','pending'].map(k=>{const n=mine.filter(FIL[k]).length,on=s.sFilter===k;return{n,l:t['f_'+k],c:n?TC[k]:'#8a8378',bd:on?'#1b1a17':'#e4e0d8',bg:on?'#fbf3e4':'#fff',onClick:()=>this.setState({sFilter:on?'all':k})};});
-    const myRem=show.siteList?(s.data.reminders||[]).filter(r=>r.to===s.eng&&!r.done).map(r=>{
-      if(r.type==='adjusted'){const a=D.actMap[r.actIds[0]];if(!a)return null;return{title:t.adjTitle,when:r.at.replace('T',' '),msg:t.adjMsg(r.from_pct,r.to_pct,r.from_qty,r.to_qty,a.unit)+(r.note?' — “'+r.note+'”':''),codes:a.code+' · '+nm(a)+' · '+locL(a),showLbl:t.openAct,show:()=>{this.dismissReminder(r.id);this.openDetail(a.id);},dismiss:()=>this.dismissReminder(r.id)};}
+    const myRem=role==='site'?(s.data.reminders||[]).filter(r=>r.to===s.eng&&!r.done).map(r=>{
+      if(r.type==='adjusted'){const a=D.actMap[r.actIds[0]];if(!a)return null;return{rid:r.id,title:t.adjTitle,when:r.at.replace('T',' '),msg:t.adjMsg(r.from_pct,r.to_pct,r.from_qty,r.to_qty,a.unit)+(r.note?' — “'+r.note+'”':''),codes:a.code+' · '+nm(a)+' · '+locL(a),showLbl:t.openAct,show:()=>{this.dismissReminder(r.id);this.setState({notifOpen:false});this.openDetail(a.id);},dismiss:()=>this.dismissReminder(r.id)};}
       const left=r.actIds.filter(id=>D.actMap[id]&&D.actMap[id].missing);if(!left.length)return null;
-      return{title:t.remindTitle+' · '+person(r.from),when:r.at.replace('T',' '),msg:t.remindMissing(left.length),codes:left.map(id=>D.actMap[id].code).join(' · '),showLbl:t.showActs,dismiss:()=>this.dismissReminder(r.id),show:()=>this.setState({sFilter:'needs',sProj:'all',sBldg:'all',sZone:'all'})};}).filter(Boolean):[];
+      return{rid:r.id,title:t.remindTitle+' · '+person(r.from),when:r.at.replace('T',' '),msg:t.remindMissing(left.length),codes:left.map(id=>D.actMap[id].code).join(' · '),showLbl:t.showActs,dismiss:()=>this.dismissReminder(r.id),show:()=>{setTab('acts')();this.setState({notifOpen:false,sFilter:'needs',sProj:'all',sBldg:'all',sZone:'all'});}};}).filter(Boolean):[];
+    const remIds=myRem.map(m=>m.rid);
     const bulkChanged=Object.keys(s.bulkVals).filter(id=>D.actMap[id]&&s.bulkVals[id]!==this.bulkBase(D.actMap[id])).length;
     const myHist=!show.siteHist?[]:s.data.updates.filter(u=>u.by===s.eng&&D.actMap[u.actId]).sort((a,b)=>a.created<b.created?1:-1).slice(0,50).map(u=>{const a=D.actMap[u.actId],st=upSt[u.status];return{code:a.code,name:nm(a),when:(u.submitted||u.created).replace('T',' '),pctTxt:u.pct+'%',stLabel:t[st[0]],stBg:st[1],stFg:st[2],open:()=>this.openDetail(a.id)};});
     const geoTxt=p=>p.geo==='ok'?t.geoOk(p.lat.toFixed(5),p.lng.toFixed(5),p.acc):p.geo==='pending'?t.geoPending:t.geoNone;
@@ -2520,7 +2531,7 @@ class Component extends DCLogic {
       isAdmin:!!(live&&prof&&prof.role==='admin'),loadDemoDb:()=>this.loadDemoToDb(),removeDemoDb:()=>this.removeDemoFromDb(),
       loadDemoLbl:s.liveArm==='load'?t.resetConfirm:t.loadDemoDb,removeDemoLbl:s.liveArm==='remove'?t.resetConfirm:t.removeDemoDb,
       stor:live?{badge:t.storageBadgeLive,l1:t.storageLive1,l2:t.storageLive2,l3:t.storageLive3,bg:'oklch(0.94 0.05 150)',fg:'oklch(0.38 0.1 150)'}:{badge:t.storageBadge,l1:t.storage1,l2:t.storage2,l3:t.storage3,bg:'oklch(0.94 0.06 85)',fg:'oklch(0.4 0.09 70)'},
-      skel,skelRows:[{h:'150px'},{h:'120px'},{h:'120px'},{h:'120px'}],hic:{chat:ico('chat','#f1e8cf'),refresh:ico('refresh','#f7f5f1'),dark:ico(s.dark?'sun':'moon','#f7f5f1'),gear:ico('gear','#f7f5f1')},sideTabs:tabs.map(b=>Object.assign({},b,{sbg:b.fw==='700'?'#c5a45a':'transparent',sfg:b.fw==='700'?'#1b1a17':'#e9e4da'})),roleLabel:t['role_'+role],srcTag:live?'LIVE':'DEMO',srcBg:live?'oklch(0.62 0.13 150)':'#f2c14e'};
+      skel,skelRows:[{h:'150px'},{h:'120px'},{h:'120px'},{h:'120px'}],hic:{bell:ico('bell','#f7f5f1'),bellDark:ico('bell','#0b4a3e'),chat:ico('chat','#f1e8cf'),refresh:ico('refresh','#f7f5f1'),dark:ico(s.dark?'sun':'moon','#f7f5f1'),gear:ico('gear','#f7f5f1')},sideTabs:tabs.map(b=>Object.assign({},b,{sbg:b.fw==='700'?'#c5a45a':'transparent',sfg:b.fw==='700'?'#1b1a17':'#e9e4da'})),roleLabel:t['role_'+role],srcTag:live?'LIVE':'DEMO',srcBg:live?'oklch(0.62 0.13 150)':'#f2c14e'};
     return{...liveVals,usersList,usersEmpty:show.users&&!usersList.length,uStats,uq:s.uq,onUq:e=>this.setState({uq:e.target.value}),nuOpen:s.nuOpen,nuBtn:s.nuOpen?t.nuClose:t.nuOpen,toggleNu:()=>this.setState({nuOpen:!s.nuOpen}),nuV,permHead,permCells,
       db,ch,chatOpen:s.chatOpen,chatUnread,chatHasUnread:chatUnread>0,openChat:()=>{this.setState({chatOpen:true,settings:false});if(this.live())this.reloadChat();},
       photoNote:live?t.photoNoteLive:t.photoNote,retTitle:d.retBy?t.returnedBy(d.retBy):t.returnedNote,importJson:e=>this.importJson(e),t,dir:L==='ar'?'rtl':'ltr',lang:L,today:TODAY,roles,tabs,show,toast:s.toast,hasToast:!!s.toast,
@@ -2530,7 +2541,7 @@ class Component extends DCLogic {
       pushEnable:()=>this.pushEnable(),pushDisable:()=>this.pushDisable(),pushTest:()=>this.pushTest(),pushDismiss:()=>this.pushDismiss(),
       settingsOpen:s.settings,openSettings:()=>{this.setState({settings:true,resetArm:false});this.pushCheck();},closeSettings:()=>this.setState({settings:false}),
       toggleLang:()=>this.set({lang:L==='en'?'ar':'en'}),refresh:()=>window.location.reload(),langChips:[chip('English',L==='en',()=>this.set({lang:'en'})),chip('العربية',L==='ar',()=>this.set({lang:'ar'}))],
-      engChips,q:s.q,onSearch:e=>this.setState({q:e.target.value}),sProjChips,tiles,myRem,hasRem:myRem.length>0,filterOn:s.sFilter!=='all',clearFilter:()=>this.setState({sFilter:'all'}),
+      engChips,q:s.q,onSearch:e=>this.setState({q:e.target.value}),sProjChips,tiles,myRem,hasRem:myRem.length>0,noRem:!myRem.length,remN:myRem.length>9?'9+':String(myRem.length),hasBell:role==='site',notifOpen:!!s.notifOpen&&role==='site',bellBg:s.notifOpen?'rgba(197,164,90,.25)':'transparent',bellBd:myRem.length?'#c5a45a':'#4f8478',toggleNotif:()=>this.setState({notifOpen:!s.notifOpen,chatOpen:false,settings:false}),closeNotif:()=>this.setState({notifOpen:false}),dismissAll:()=>this.dismissReminders(remIds),filterOn:s.sFilter!=='all',clearFilter:()=>this.setState({sFilter:'all'}),
       siteCountTxt:t.siteCount(siteList.length,mine.length),siteSecs:(()=>{// no separate "this week" section (Ahmed 2026-10-31: execution priority can change) — everything goes under WBS
         const wkL=[],rest=siteList,cw=a=>Object.assign(card(a,s.bulk),{hasWk:true,wkTxt:a.updW?t.wkDone:'⏳ '+t.wkTodo,wkC:a.updW?C.green:C.red});
         const H={ind:'16px',gap:'8px',mg:'4px 16px 0',pd:'10px 12px',fs:'15px',caret:'',cur:'default',toggle:()=>{}};
