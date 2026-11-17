@@ -149,3 +149,7 @@ update profiles set role='admin', discipline='CIV' where id=(select id from auth
 - `db/17_push_timeout.sql` (applied 2026-11-05): `push_notify()` pg_net timeout 5 s → 15 s (cold-start push calls take 7–8 s and returned 200 but were logged as timeouts). Daily DB check runs as a scheduled task at 10:17 Cairo.
 - Bulk approve note (2026-11-07): the review selection bar (CM / Planning "select all clean") has an optional note field (`selNote`, `t.selNotePh`); `approveMany` passes it to `decideU`, so it lands in `cm_comment` (CM) or `review_comment` (Planning) on every selected update.
 - Notifications bell (2026-11-08): reminders to the site engineer (Planning "missing update" reminders + CM "adjusted your update") moved from cards at the top of the site list to a 🔔 button in the header (site role only, red count badge) that opens a dropdown panel (`notifOpen`, `myRem`, `dismissReminders(ids)` for "Clear all"). The Activities tab badge for adjustments was removed (the bell shows the count).
+
+## Changes 2026-11-17
+- IT admin account: username `it.admin` (→ `it.admin@dmc.local`), display name "أدمن", role admin. Created via MCP; temporary password given to Ahmed only (not stored here). Ahmed's own account is `Admin` (`admin@dmc.local`) = the **primary admin**.
+- Only the primary admin can set passwords (`db/18_primary_admin_password.sql`, applied + verified with a rolled-back test: it.admin blocked, Admin allowed). The Users tab hides "🔑 New password" for every other admin (`canPw`).

@@ -894,13 +894,13 @@ button{transition:transform .08s ease,background-color .15s ease}button:active{t
         <div style="font-size:12px;font-weight:700;color:#5f5a52">{{ t.uRole }}</div><div style="display:flex;gap:6px;flex-wrap:wrap"><sc-for list="{{ u.roleChips }}" as="c" hint-placeholder-count="4"><button onClick="{{ c.onClick }}" style="min-height:40px;padding:0 12px;border-radius:999px;border:1px solid {{ c.bd }};background:{{ c.bg }};color:{{ c.fg }};font-size:13px">{{ c.label }}</button></sc-for></div>
         <div style="font-size:12px;font-weight:700;color:#5f5a52">{{ t.uDisc }}</div><div style="display:flex;gap:6px;flex-wrap:wrap"><sc-for list="{{ u.discChips }}" as="c" hint-placeholder-count="4"><button onClick="{{ c.onClick }}" style="min-height:40px;padding:0 12px;border-radius:999px;border:1px solid {{ c.bd }};background:{{ c.bg }};color:{{ c.fg }};font-size:13px">{{ c.label }}</button></sc-for></div>
         <sc-if value="{{ u.hasProj }}" hint-placeholder-val="{{ true }}"><div style="font-size:12px;font-weight:700;color:#5f5a52">{{ t.uProj }}</div><div style="display:flex;gap:6px;flex-wrap:wrap"><sc-for list="{{ u.projChips }}" as="c" hint-placeholder-count="4"><button onClick="{{ c.onClick }}" style="min-height:40px;padding:0 12px;border-radius:999px;border:1px solid {{ c.bd }};background:{{ c.bg }};color:{{ c.fg }};font-size:13px">{{ c.label }}</button></sc-for></div></sc-if>
-        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;border-top:1px solid #f0ede7;padding-top:10px">
+        <sc-if value="{{ canPw }}" hint-placeholder-val="{{ true }}"><div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;border-top:1px solid #f0ede7;padding-top:10px">
           <button onClick="{{ u.pwToggle }}" style="min-height:38px;padding:0 12px;border:1px solid #cfc9bf;background:#fff;border-radius:10px;font-weight:600;font-size:13px">🔑 {{ t.pwNew }}</button>
           <sc-if value="{{ u.pwOpen }}" hint-placeholder-val="{{ false }}">
             <input type="text" autocomplete="off" autocapitalize="none" spellcheck="false" value="{{ pwVal }}" onChange="{{ onPwVal }}" placeholder="{{ t.pwPh }}" style="flex:1;min-width:160px;min-height:40px;padding:0 12px;border:1px solid #cfc9bf;border-radius:10px;background:#fff;font-size:15px;direction:ltr">
             <button onClick="{{ u.pwSave }}" style="min-height:40px;padding:0 14px;border:none;background:#0e5a4b;color:#fff;border-radius:10px;font-weight:700;font-size:13.5px">{{ pwBtn }}</button>
           </sc-if>
-        </div>
+        </div></sc-if>
       </div>
     </sc-for>
     <sc-if value="{{ usersEmpty }}" hint-placeholder-val="{{ false }}"><div style="padding:24px;text-align:center;color:#5f5a52;border:1px dashed #cfc9bf;border-radius:12px">{{ t.noItems }}</div></sc-if>
@@ -2060,6 +2060,8 @@ class Component extends DCLogic {
     const UF={all:()=>true,pending:isPendU,disabled:u=>u.active===false};['site','cm','planner','pm','admin'].forEach(r=>{UF[r]=u=>u.role===r;});
     const uStats=!show.users?[]:[['all',t.uAll],['pending',t.uPendingL]].concat(['site','cm','planner','pm','admin'].map(r=>[r,t['prole_'+r]])).concat([['disabled',t.uDisabledL]]).map(([k,l])=>{const n=allUsers.filter(UF[k]).length,on=s.uFilter===k;
       return{k,l,n,c:k==='pending'&&n?C.amber:k==='disabled'&&n?C.red:'#1b1a17',bg:on?'#fbf3e4':'#fff',bd:on?'#1b1a17':'#e4e0d8',onClick:()=>this.setState({uFilter:on?'all':k})};});
+    // only the primary admin (Admin = admin@dmc.local) may set passwords — enforced in db/18 too
+    const canPw=s.mode==='demo'||!!(s.user&&(s.user.email||'').toLowerCase()==='admin@dmc.local');
     const usersList=show.users?allUsers.filter(u=>UF[s.uFilter]?UF[s.uFilter](u):true).filter(u=>!uQ||(u.full_name||'').toLowerCase().indexOf(uQ)>=0).map(u=>{const mem=memOf(u.id),me=!!(s.user&&u.id===s.user.id);
       return{name:(u.full_name||'—').replace('@dmc.local',''),hasMe:me,hasPending:isPendU(u),
         roleChips:['site','cm','planner','pm','admin'].map(r=>chip(t['prole_'+r],u.role===r,()=>{if(me&&r!=='admin'){this.toast(t.cantDemoteSelf);return;}this.updProfile(u.id,{role:r});})),
@@ -2532,7 +2534,7 @@ class Component extends DCLogic {
       loadDemoLbl:s.liveArm==='load'?t.resetConfirm:t.loadDemoDb,removeDemoLbl:s.liveArm==='remove'?t.resetConfirm:t.removeDemoDb,
       stor:live?{badge:t.storageBadgeLive,l1:t.storageLive1,l2:t.storageLive2,l3:t.storageLive3,bg:'oklch(0.94 0.05 150)',fg:'oklch(0.38 0.1 150)'}:{badge:t.storageBadge,l1:t.storage1,l2:t.storage2,l3:t.storage3,bg:'oklch(0.94 0.06 85)',fg:'oklch(0.4 0.09 70)'},
       skel,skelRows:[{h:'150px'},{h:'120px'},{h:'120px'},{h:'120px'}],hic:{bell:ico('bell','#f7f5f1'),bellDark:ico('bell','#0b4a3e'),chat:ico('chat','#f1e8cf'),refresh:ico('refresh','#f7f5f1'),dark:ico(s.dark?'sun':'moon','#f7f5f1'),gear:ico('gear','#f7f5f1')},sideTabs:tabs.map(b=>Object.assign({},b,{sbg:b.fw==='700'?'#c5a45a':'transparent',sfg:b.fw==='700'?'#1b1a17':'#e9e4da'})),roleLabel:t['role_'+role],srcTag:live?'LIVE':'DEMO',srcBg:live?'oklch(0.62 0.13 150)':'#f2c14e'};
-    return{...liveVals,usersList,usersEmpty:show.users&&!usersList.length,uStats,uq:s.uq,onUq:e=>this.setState({uq:e.target.value}),nuOpen:s.nuOpen,nuBtn:s.nuOpen?t.nuClose:t.nuOpen,toggleNu:()=>this.setState({nuOpen:!s.nuOpen}),nuV,permHead,permCells,
+    return{...liveVals,canPw,usersList,usersEmpty:show.users&&!usersList.length,uStats,uq:s.uq,onUq:e=>this.setState({uq:e.target.value}),nuOpen:s.nuOpen,nuBtn:s.nuOpen?t.nuClose:t.nuOpen,toggleNu:()=>this.setState({nuOpen:!s.nuOpen}),nuV,permHead,permCells,
       db,ch,chatOpen:s.chatOpen,chatUnread,chatHasUnread:chatUnread>0,openChat:()=>{this.setState({chatOpen:true,settings:false});if(this.live())this.reloadChat();},
       photoNote:live?t.photoNoteLive:t.photoNote,retTitle:d.retBy?t.returnedBy(d.retBy):t.returnedNote,importJson:e=>this.importJson(e),t,dir:L==='ar'?'rtl':'ltr',lang:L,today:TODAY,roles,tabs,show,toast:s.toast,hasToast:!!s.toast,
       showPushAsk:live&&s.auth==='ready'&&s.push==='off'&&!s.pushAskHidden&&!s.settings,pushIsOn:s.push==='on',pushIsIOS:s.push==='ios',pushCanOn:s.push==='off'||s.push==='',
