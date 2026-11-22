@@ -1959,8 +1959,16 @@ function xerGuess(m){const f=re=>{const x=m.types.find(t=>re.test(t.name));retur
   wl('bldg',/build|plot|villa|block|unit|bldg|مبنى|قطع|فيلا|عمار/i);wl('zone',/zone|area|sector|phase|cluster|منطق|زون|قطاع|مرحل/i);wl('btype',/type|model|نموذج|موديل|نوع/i);
   if(g.btype===g.bldg)g.btype='';return g;}
 // Weight like P6: cost (earned value) / labour units / duration; activities without cost or units fall back to their duration
-const FL_RE=[['found',/^(earth ?works?|excavat|sub[- ]?structure|foundation|footing|raft|slab on grade|basement|أعمال الحفر|حفر|أساسات|الأساسات|بدروم)/i],['gf',/^(ground floor|g\.?\s?f\b|الدور الأرضي|الأرضي|أرضي)/i],['f1',/^(first floor|1st floor|1 ?st|1f\b|floor 1\b|الدور الأول|الأول)/i],['f2',/^(second floor|2nd floor|2 ?nd|2f\b|floor 2\b|الدور الثاني|الثاني)/i],['f3',/^(third floor|3rd floor|3 ?rd|3f\b|floor 3\b|الدور الثالث|الثالث)/i],['roof',/^(roof|upper roof|roofing|السطح|الروف|سطح)/i]],FL_KEYS=FL_RE.map(x=>x[0]);
-function floorKey(wbs){const seg=String(wbs||'').split(' › ').map(x=>x.trim());for(const x of seg){const m=FL_RE.find(([k,re])=>re.test(x));if(m)return m[0];}return '';}
+// Floors: foundation, GF, 1st…40th, roof — from any WBS level (English, short forms, Arabic)
+const FL_FOUND=/^(earth ?works?|excavat|sub[- ]?structure|foundation|footing|raft|slab on grade|basement|أعمال الحفر|حفر|أساسات|الأساسات|بدروم)/i,FL_ROOF=/^(roof|upper roof|roofing|السطح|الروف|سطح)/i,FL_GF=/^(ground floor|g\.?\s?f\b|الدور الأرضي|الأرضي|أرضي)/i;
+const FL_EN=['first','second','third','fourth','fifth','sixth','seventh','eighth','ninth','tenth','eleventh','twelfth','thirteenth','fourteenth','fifteenth','sixteenth','seventeenth','eighteenth','nineteenth','twentieth'];
+const FL_AR=[['أول','اول'],['ثاني','تاني'],['ثالث','تالت'],['رابع'],['خامس'],['سادس'],['سابع'],['ثامن','تامن'],['تاسع'],['عاشر']];
+function floorNum(x){let m=/^(\d{1,2})\s*(st|nd|rd|th)?\s*(floor|fl\b|f\b)/i.exec(x)||/^(?:floor|level)\s*(\d{1,2})\b/i.exec(x)||/^(?:الدور|دور)\s*(\d{1,2})\b/.exec(x);if(m)return Number(m[1]);
+  const lo=x.toLowerCase();for(let i=0;i<FL_EN.length;i++)if(lo.indexOf(FL_EN[i]+' floor')===0)return i+1;
+  m=/^(?:الدور\s+)?ال(\S+)/.exec(x.trim());if(m){const w=m[1].replace(/^أ/,'ا');for(let i=0;i<FL_AR.length;i++)if(FL_AR[i].some(v=>v.replace(/^أ/,'ا')===w))return i+1;}return 0;}
+function floorKey(wbs){const seg=String(wbs||'').split(' › ').map(x=>x.trim());for(const x of seg){if(FL_ROOF.test(x))return 'roof';if(FL_FOUND.test(x))return 'found';if(FL_GF.test(x))return 'gf';const n=floorNum(x);if(n>0&&n<=40)return 'f'+n;}return '';}
+function floorRank(k){return k==='found'?-1:k==='gf'?0:k==='roof'?99:k==='all'?50:Number(k.slice(1))||50;}
+function flLbl(k,t,lang){if(t['fl_'+k])return t['fl_'+k];const n=Number(k.slice(1));return lang==='ar'?'الدور '+n:n+(n%10===1&&n!==11?'st':n%10===2&&n!==12?'nd':n%10===3&&n!==13?'rd':'th');}
 function xerW(t,g){const b=g.wb||'dur';if(b==='cost'&&t.cost>0)return Math.round(t.cost*100)/100;if(b==='units'&&t.lab>0)return Math.round(t.lab*100)/100;return t.days;}
 function xerVal(t,src){if(!src)return '';if(src==='n:')return p6NameDisc(t.name);if(src.slice(0,2)==='c:')return t.codes[src.slice(2)]||'';const n=Number(src.slice(2));return t.wbs[n-1]||'';}
 function xerName(m,src,v){if(!v||!src||src.slice(0,2)!=='c:')return v;const n=(m.cn&&m.cn[src.slice(2)]||{})[v];return n||v;}
@@ -2632,8 +2640,8 @@ class Component extends DCLogic {
         // floor = first WBS level (at any depth) whose name is a floor, so full P6 paths (Construction › Group › Building › Civil › Super-Structure › Ground Floor) work too
         const lv={};LF.forEach(a=>{const k=floorKey(a.wbs);if(k)(lv[k]=lv[k]||[]).push(a);});
         if(!Object.keys(lv).length&&LF.length)lv.all=LF;
-        const levels=FL_KEYS.concat(['all']).filter(k=>lv[k]).map(k=>({k,r:roll(lv[k],TODAY)}));
-        const ups=levels.filter(l=>l.k!=='found'),H=ups.length?Math.min(42,150/ups.length):40,X0=70,W=180,G=196;
+        const levels=Object.keys(lv).sort((a,b)=>floorRank(a)-floorRank(b)).map(k=>({k,r:roll(lv[k],TODAY)}));
+        const ups=levels.filter(l=>l.k!=='found'),H=ups.length?Math.min(42,(ups.length>6?172:150)/ups.length):40,X0=70,W=180,G=196;
         const col=p=>p>=99.5?'#145457':p>0?'#ff7a59':'#e7e2d8',txt=p=>p>=99.5?'#ffffff':'#1b1a17';
         let svg='<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 340 230" width="340" height="230"><defs><linearGradient id="sk" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffe1d6"/><stop offset="1" stop-color="#fbf8f1"/></linearGradient></defs><rect width="340" height="230" fill="url(#sk)"/>';
         svg+='<line x1="276" y1="210" x2="276" y2="22" stroke="#ff7a59" stroke-width="5"/><line x1="200" y1="28" x2="330" y2="28" stroke="#ff7a59" stroke-width="5"/><line x1="296" y1="28" x2="296" y2="70" stroke="#605a51" stroke-width="1.5"/><rect x="289" y="70" width="14" height="9" fill="#605a51"/>';
@@ -2646,15 +2654,15 @@ class Component extends DCLogic {
           svg+='<rect x="'+(X0-4)+'" y="'+(y-3)+'" width="'+(W+8)+'" height="4" fill="#605a51"/>';
           for(let w=0;w<4;w++)svg+='<rect x="'+(X0+w*W/4+12)+'" y="'+(y+H*0.3)+'" width="'+(W/4-24)+'" height="'+(H*0.4)+'" fill="#ffffff" opacity="0.45"/>';
           const px=X0+Math.max(0,Math.min(1,l.r.p/100))*W;svg+='<line x1="'+px.toFixed(1)+'" y1="'+(y+1)+'" x2="'+px.toFixed(1)+'" y2="'+(y+H-1)+'" stroke="#b3261e" stroke-width="2" stroke-dasharray="3 2"/>';
-          if(l.k==='gf')svg+='<rect x="'+(X0+W/2-9)+'" y="'+(y+H-22)+'" width="18" height="22" fill="#5c4a2e" opacity="0.8"/>';
-          const lbT=L==='ar'?Math.round(l.r.a)+'% · '+t['fl_'+l.k]:t['fl_'+l.k]+' · '+Math.round(l.r.a)+'%',pw=Math.min(W-8,Math.max(92,lbT.length*7.6+18));
-          svg+='<rect x="'+(X0+W/2-pw/2).toFixed(1)+'" y="'+(y+H/2-10)+'" width="'+pw.toFixed(1)+'" height="20" rx="10" fill="#ffffff" opacity="0.92"/>';
-          svg+='<text x="'+(X0+W/2)+'" y="'+(y+H/2+5)+'" font-family="IBM Plex Sans,Arial" font-size="13" font-weight="700" text-anchor="middle" fill="#0f3d3e">'+lbT+'</text>';});
+          if(l.k==='gf'){const dh=Math.min(22,H-2);svg+='<rect x="'+(X0+W/2-9)+'" y="'+(y+H-dh)+'" width="18" height="'+dh+'" fill="#5c4a2e" opacity="0.8"/>';}
+          const lbT=L==='ar'?Math.round(l.r.a)+'% · '+flLbl(l.k,t,L):flLbl(l.k,t,L)+' · '+Math.round(l.r.a)+'%',fs=Math.max(8,Math.min(13,H*0.62)),ph=Math.min(20,H-2),pw=Math.min(W-8,Math.max(fs*7,lbT.length*fs*0.58+16));
+          svg+='<rect x="'+(X0+W/2-pw/2).toFixed(1)+'" y="'+(y+H/2-ph/2).toFixed(1)+'" width="'+pw.toFixed(1)+'" height="'+ph.toFixed(1)+'" rx="'+(ph/2).toFixed(1)+'" fill="#ffffff" opacity="0.92"/>';
+          svg+='<text x="'+(X0+W/2)+'" y="'+(y+H/2+fs*0.36).toFixed(1)+'" font-family="IBM Plex Sans,Arial" font-size="'+fs.toFixed(1)+'" font-weight="700" text-anchor="middle" fill="#0f3d3e">'+lbT+'</text>';});
         svg+='</svg>';
         const rF=roll(LF,TODAY),NT=48,aT=Math.round(rF.a/100*NT),pT=Math.round(rF.p/100*NT);
         const flOpen=s.bvFl||'';
         const floors=levels.slice().reverse().map(l=>{const v=l.r.a-l.r.p,L2=lv[l.k],on=flOpen===cur+'|'+l.k;
-          return{label:t['fl_'+l.k],pct:Math.round(l.r.a)+'%',planL:t.k_planShort,planV:Math.round(l.r.p)+'%',v:sg(v),vc:vc(v),aW:Math.max(0,Math.min(100,l.r.a)).toFixed(1)+'%',pW:Math.max(0,Math.min(100,l.r.p)).toFixed(1)+'%',bar:l.r.a>=99.5?'#145457':'#ff7a59',
+          return{label:flLbl(l.k,t,L),pct:Math.round(l.r.a)+'%',planL:t.k_planShort,planV:Math.round(l.r.p)+'%',v:sg(v),vc:vc(v),aW:Math.max(0,Math.min(100,l.r.a)).toFixed(1)+'%',pW:Math.max(0,Math.min(100,l.r.p)).toFixed(1)+'%',bar:l.r.a>=99.5?'#145457':'#ff7a59',
             n:t.bvActs(L2.length)+(L2.some(a=>a.delayed)?' · '+L2.filter(a=>a.delayed).length+' '+t.f_delayed:''),caret:on?'▾':'▸',open:on,
             toggle:()=>this.setState({bvFl:on?'':cur+'|'+l.k}),
             acts:on?L2.slice().sort((x,y)=>x.ps<y.ps?-1:1).map(a=>{const st=stOf(a);return{code:a.code,name:nm(a),pct:p0(a.actual),stL:t[st[0]],stBg:st[1],stFg:st[2],go:()=>this.openDetail(a.id)};}):[]};});
@@ -2668,8 +2676,8 @@ class Component extends DCLogic {
           aTxt:Math.round(rF.a)+'%',pTxt:Math.round(rF.p)+'%',vTxt:sg(rF.a-rF.p),vC:vc(rF.a-rF.p),start:dm(startOf(LF)),end:dm(endOf(LF)),nActs:t.bvActs(LF.length),
           trTxt:trSel?trSel[1]+' '+t[trSel[0]]+' · '+t.bvOnly:t.bvAllTr,hasTr:!!trSel,clrTr:()=>this.setState({bvTr:'',bvFl:''}),
           noFl:!!lv.all,hot:hot.map(h=>{const on=flOpen===cur+'|'+h.k,v=h.r.a-h.r.p;return{left:(h.x/340*100).toFixed(2)+'%',top:(h.y/230*100).toFixed(2)+'%',w:(h.w/340*100).toFixed(2)+'%',h:(h.h/230*100).toFixed(2)+'%',bd:on?'3px solid #e85d3c':'2px solid transparent',bg:on?'rgba(255,122,89,.12)':'transparent',
-            tip:t['fl_'+h.k]+' · '+t.actualShort+' '+Math.round(h.r.a)+'% · '+t.k_planShort+' '+Math.round(h.r.p)+'%',pick:()=>this.setState({bvFl:on?'':cur+'|'+h.k})};}),
-          flSel:(()=>{const h=hot.find(x=>flOpen===cur+'|'+x.k);if(!h)return{show:false};const v=h.r.a-h.r.p,L2=lv[h.k]||[];return{show:true,label:t['fl_'+h.k],a:Math.round(h.r.a)+'%',p:Math.round(h.r.p)+'%',v:sg(v),vc:vc(v),n:t.bvActs(L2.length),late:L2.filter(a=>a.delayed).length+' '+t.f_delayed};})(),
+            tip:flLbl(h.k,t,L)+' · '+t.actualShort+' '+Math.round(h.r.a)+'% · '+t.k_planShort+' '+Math.round(h.r.p)+'%',pick:()=>this.setState({bvFl:on?'':cur+'|'+h.k})};}),
+          flSel:(()=>{const h=hot.find(x=>flOpen===cur+'|'+x.k);if(!h)return{show:false};const v=h.r.a-h.r.p,L2=lv[h.k]||[];return{show:true,label:flLbl(h.k,t,L),a:Math.round(h.r.a)+'%',p:Math.round(h.r.p)+'%',v:sg(v),vc:vc(v),n:t.bvActs(L2.length),late:L2.filter(a=>a.delayed).length+' '+t.f_delayed};})(),
           strip:bks.map(k=>{const L3=pool.filter(a=>bkey(a)===k),x=roll(L3,TODAY),v=x.a-x.p,on=k===cur,a=L3[0];return{name:bl(a.bldg),sub:a.btype||'',pct:p0(x.a),v:sg(v),vc:vc(v),fill:clamp(x.a,0,100)+'%',plan:clamp(x.p,0,100)+'%',col:v<-5?C.barBad:v<-2?C.barWarn:C.barOk,
             bg:on?'#fff1eb':'#faf8f4',bd:on?'2px solid #ff7a59':'1px solid #e6e1d8',pick:()=>{this.setState({dbBld:k,bvFl:''});if(s.qrOpen)this.makeQR(qrLink(a.pid,a.bldg));}};})};}}
 
