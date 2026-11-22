@@ -253,6 +253,32 @@ button{transition:transform .08s ease,background-color .15s ease}button:active{t
       </div>
     </sc-if>
 
+    <sc-if value="{{ d.qcShow }}" hint-placeholder-val="{{ false }}">
+      <div style="background:#fff;border:1px solid #e4e0d8;border-inline-start:5px solid {{ d.qcFg }};border-radius:12px;padding:12px 14px;display:flex;flex-direction:column;gap:10px">
+        <div style="display:flex;align-items:center;gap:8px"><span style="font-weight:700;font-size:15px">🛡 {{ t.qcBox }}</span><span style="margin-inline-start:auto;font-size:12px;font-weight:700;padding:3px 10px;border-radius:999px;background:{{ d.qcBg }};color:{{ d.qcFg }}">{{ d.qcStL }}</span></div>
+        <sc-if value="{{ d.qcNoIr }}" hint-placeholder-val="{{ false }}"><div style="font-size:13px;color:#605a51">{{ t.qcNone }}</div></sc-if>
+        <sc-if value="{{ d.qcHasHist }}" hint-placeholder-val="{{ false }}"><div style="display:flex;flex-direction:column;gap:6px">
+          <sc-for list="{{ d.qcHist }}" as="h" hint-placeholder-count="1"><div style="border:1px solid #ece9e3;border-radius:10px;padding:8px 10px;display:flex;flex-direction:column;gap:3px">
+            <div style="display:flex;align-items:center;gap:8px"><b style="font-family:'IBM Plex Mono',monospace;font-size:12.5px">{{ h.no }}</b><span style="margin-inline-start:auto;font-size:11.5px;font-weight:700;padding:2px 8px;border-radius:999px;background:{{ h.bg }};color:{{ h.fg }}">{{ h.st }}</span></div>
+            <div style="font-size:12px;color:#605a51">{{ h.line }}</div>
+            <sc-if value="{{ h.hasNotes }}" hint-placeholder-val="{{ false }}"><div style="font-size:12.5px;color:#3f3a33">{{ h.notes }}</div></sc-if>
+            <sc-if value="{{ h.hasRes }}" hint-placeholder-val="{{ false }}"><div style="font-size:12.5px;color:{{ h.fg }};font-weight:600">“{{ h.res }}”</div></sc-if>
+          </div></sc-for></div></sc-if>
+        <sc-if value="{{ d.qcCanNew }}" hint-placeholder-val="{{ false }}"><div style="display:flex;flex-direction:column;gap:8px;background:#f7f5f1;border-radius:10px;padding:10px">
+          <label style="font-size:13px;color:#605a51">{{ t.qcDate }}</label><input type="date" value="{{ d.qcDate }}" onChange="{{ d.onQcDate }}" style="min-height:44px;border:1px solid #cfc9bf;border-radius:10px;padding:0 10px;font-size:15px;background:#fff">
+          <textarea value="{{ d.qcNotes }}" onChange="{{ d.onQcNotes }}" placeholder="{{ t.qcNotes }}" rows="2" style="border:1px solid #cfc9bf;border-radius:10px;padding:8px 10px;font-size:14px;font-family:inherit;resize:vertical"></textarea>
+          <button onClick="{{ d.qcCreate }}" style="min-height:46px;border:none;border-radius:10px;background:#145457;color:#fff;font-weight:700;font-size:15px">{{ d.qcNewLbl }}</button></div></sc-if>
+        <sc-if value="{{ d.qcCanRes }}" hint-placeholder-val="{{ false }}"><div style="display:flex;flex-direction:column;gap:8px;background:#f7f5f1;border-radius:10px;padding:10px">
+          <div style="font-weight:700;font-size:14px">{{ t.qcResult }} · <span style="font-family:'IBM Plex Mono',monospace">{{ d.qcOpenNo }}</span></div>
+          <textarea value="{{ d.qcRes }}" onChange="{{ d.onQcRes }}" placeholder="{{ t.qcResNote }}" rows="2" style="border:1px solid #cfc9bf;border-radius:10px;padding:8px 10px;font-size:14px;font-family:inherit;resize:vertical"></textarea>
+          <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px">
+            <button onClick="{{ d.qcPass }}" style="min-height:46px;border:none;border-radius:10px;background:#1f7a46;color:#fff;font-weight:700;font-size:14px">{{ t.qcPass }}</button>
+            <button onClick="{{ d.qcCom }}" style="min-height:46px;border:1px solid #1f7a46;border-radius:10px;background:#fff;color:#1f7a46;font-weight:700;font-size:14px">{{ t.qcCom }}</button>
+            <button onClick="{{ d.qcRej }}" style="min-height:46px;border:none;border-radius:10px;background:#b3261e;color:#fff;font-weight:700;font-size:14px">{{ t.qcRej }}</button></div></div></sc-if>
+        <div style="font-size:11.5px;color:#8a8378;line-height:1.5">{{ t.qcPctNote }}</div>
+      </div>
+    </sc-if>
+
     <sc-if value="{{ d.canCorrect }}" hint-placeholder-val="{{ false }}">
       <div style="background:#fff;border:1px dashed #b23c1d;border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:10px">
         <button onClick="{{ d.corrToggle }}" style="display:flex;align-items:center;gap:8px;border:none;background:transparent;padding:0;text-align:start;font-weight:700;font-size:15px;color:#b23c1d">✎ {{ t.corrTitle }}<span style="margin-inline-start:auto">{{ d.corrArrow }}</span></button>
@@ -790,6 +816,31 @@ button{transition:transform .08s ease,background-color .15s ease}button:active{t
 </div></sc-if>
 <sc-if value="{{ show.lookahead }}" hint-placeholder-val="{{ false }}"><div style="display:flex;flex-direction:column;gap:12px;padding:16px 0"><div style="padding:0 16px;font-size:20px;font-weight:700">{{ t.tab_lookahead }}</div><div style="padding:0 16px;font-size:13px;color:#605a51">{{ t.laHelp }}</div><div style="display:flex;gap:8px;overflow-x:auto;padding:0 16px 2px"><sc-for list="{{ laChips }}" as="c" hint-placeholder-count="3"><button onClick="{{ c.onClick }}" style="flex:0 0 auto;min-height:40px;padding:0 14px;border-radius:999px;border:1px solid {{ c.bd }};background:{{ c.bg }};color:{{ c.fg }};font-size:14px;white-space:nowrap">{{ c.label }}</button></sc-for></div><div style="display:flex;gap:8px;overflow-x:auto;padding:0 16px 2px"><sc-for list="{{ laWin }}" as="c" hint-placeholder-count="3"><button onClick="{{ c.onClick }}" style="flex:0 0 auto;min-height:40px;padding:0 14px;border-radius:999px;border:1px solid {{ c.bd }};background:{{ c.bg }};color:{{ c.fg }};font-size:14px;white-space:nowrap">{{ c.label }}</button></sc-for></div><div style="padding:0 16px;font-size:16px;font-weight:700">{{ t.la_start }}</div><div style="padding:0 16px;display:flex;flex-direction:column;gap:8px"><sc-for list="{{ laStart }}" as="a" hint-placeholder-count="3"><button onClick="{{ a.open }}" style="text-align:start;width:100%;background:#fff;border:1px solid #e4e0d8;border-radius:12px;padding:12px 14px;display:flex;gap:12px;align-items:center;color:inherit"><div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:3px"><div style="display:flex;gap:8px"><span style="font-family:'IBM Plex Mono',monospace;font-size:12.5px;font-weight:600">{{ a.code }}</span><span style="font-size:12px;color:#605a51;white-space:nowrap">{{ a.proj }}</span><span style="font-size:12px;color:#605a51;white-space:nowrap">{{ a.eng }}</span></div><div style="font-size:15px;font-weight:600">{{ a.name }}</div><div style="font-size:12.5px;color:#605a51">{{ a.date }} · {{ a.when }} · {{ t.actualShort }} {{ a.actual }}</div></div><span style="font-size:12px;font-weight:700;padding:4px 9px;border-radius:999px;background:{{ a.stBg }};color:{{ a.stFg }};white-space:nowrap">{{ a.stLabel }}</span></button></sc-for><sc-if value="{{ laStartEmpty }}" hint-placeholder-val="{{ false }}"><div style="padding:16px;text-align:center;color:#605a51;border:1px dashed #cfc9bf;border-radius:12px">{{ t.noItems }}</div></sc-if></div><div style="padding:0 16px;font-size:16px;font-weight:700">{{ t.la_finish }}</div><div style="padding:0 16px;display:flex;flex-direction:column;gap:8px"><sc-for list="{{ laFinish }}" as="a" hint-placeholder-count="3"><button onClick="{{ a.open }}" style="text-align:start;width:100%;background:#fff;border:1px solid #e4e0d8;border-radius:12px;padding:12px 14px;display:flex;gap:12px;align-items:center;color:inherit"><div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:3px"><div style="display:flex;gap:8px"><span style="font-family:'IBM Plex Mono',monospace;font-size:12.5px;font-weight:600">{{ a.code }}</span><span style="font-size:12px;color:#605a51;white-space:nowrap">{{ a.proj }}</span><span style="font-size:12px;color:#605a51;white-space:nowrap">{{ a.eng }}</span></div><div style="font-size:15px;font-weight:600">{{ a.name }}</div><div style="font-size:12.5px;color:#605a51">{{ a.date }} · {{ a.when }} · {{ t.actualShort }} {{ a.actual }}</div></div><span style="font-size:12px;font-weight:700;padding:4px 9px;border-radius:999px;background:{{ a.stBg }};color:{{ a.stFg }};white-space:nowrap">{{ a.stLabel }}</span></button></sc-for><sc-if value="{{ laFinishEmpty }}" hint-placeholder-val="{{ false }}"><div style="padding:16px;text-align:center;color:#605a51;border:1px dashed #cfc9bf;border-radius:12px">{{ t.noItems }}</div></sc-if></div></div></sc-if>
 
+<sc-if value="{{ show.qc }}" hint-placeholder-val="{{ false }}"><div style="display:flex;flex-direction:column;gap:12px;padding:16px 0">
+  <div style="padding:0 16px;display:flex;align-items:center;gap:10px"><img src="{{ qcIcon }}" alt="" data-ico="1" style="width:26px;height:26px"><div style="font-size:20px;font-weight:700">{{ t.qcTitle }}</div></div>
+  <div style="padding:0 16px;font-size:13px;color:#605a51;line-height:1.55">{{ t.qcHelp }}</div>
+  <div style="padding:0 16px;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px">
+    <sc-for list="{{ qcV.tiles }}" as="k" hint-placeholder-count="4"><button onClick="{{ k.onClick }}" style="background:{{ k.bg }};border:1.5px solid {{ k.bd }};border-radius:12px;padding:10px 6px;display:flex;flex-direction:column;align-items:center;gap:2px;color:inherit;min-width:0"><span style="font-size:24px;font-weight:800;color:{{ k.c }}">{{ k.n }}</span><span style="font-size:12px;color:#3f3a33;text-align:center;line-height:1.25">{{ k.l }}</span></button></sc-for>
+  </div>
+  <sc-if value="{{ qcV.hasProj }}" hint-placeholder-val="{{ false }}"><div style="display:flex;gap:8px;overflow-x:auto;padding:0 16px 2px"><sc-for list="{{ qcV.projChips }}" as="c" hint-placeholder-count="3"><button onClick="{{ c.onClick }}" style="flex:0 0 auto;min-height:38px;padding:0 14px;border-radius:999px;border:1px solid {{ c.bd }};background:{{ c.bg }};color:{{ c.fg }};font-size:14px;white-space:nowrap">{{ c.label }}</button></sc-for></div></sc-if>
+  <div style="padding:0 16px"><input type="search" value="{{ qcV.q }}" onChange="{{ qcV.onQ }}" placeholder="{{ t.qcSearch }}" style="width:100%;box-sizing:border-box;min-height:44px;border:1px solid #cfc9bf;border-radius:10px;padding:0 12px;font-size:15px;background:#fff"></div>
+  <div style="padding:0 16px;display:flex;flex-direction:column;gap:8px">
+    <sc-for list="{{ qcV.list }}" as="it" hint-placeholder-count="4">
+      <sc-if value="{{ it.isHead }}" hint-placeholder-val="{{ false }}"><div style="display:flex;align-items:center;gap:8px;margin-top:6px;font-weight:700;font-size:14px;color:#0f3d3e"><span>{{ it.head }}</span><span style="font-size:12px;font-weight:600;background:#d9ecec;color:#0f3d3e;border-radius:999px;padding:2px 8px">{{ it.n }}</span></div></sc-if>
+      <sc-if value="{{ it.isItem }}" hint-placeholder-val="{{ true }}"><div style="display:flex;align-items:stretch;gap:8px;background:#fff;border:1px solid #e4e0d8;border-inline-start:4px solid {{ it.fg }};border-radius:12px;animation:dmcIn .25s ease both">
+        <button onClick="{{ it.open }}" style="flex:1;min-width:0;text-align:start;background:transparent;border:none;padding:10px 12px;display:flex;flex-direction:column;gap:3px;color:inherit">
+          <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><span style="font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:700;background:#f2efe9;border-radius:6px;padding:1px 6px">{{ it.code }}</span><span style="font-size:12px;color:#605a51">{{ it.eng }}</span><span style="margin-inline-start:auto;font-size:11.5px;font-weight:700;padding:3px 9px;border-radius:999px;background:{{ it.bg }};color:{{ it.fg }};white-space:nowrap">{{ it.st }}</span></div>
+          <div style="font-size:15px;font-weight:600">{{ it.name }}</div>
+          <div style="font-size:12px;color:#605a51;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ it.wbs }}</div>
+          <div style="font-size:12.5px;color:#3f3a33;direction:ltr;unicode-bidi:plaintext;text-align:start">{{ it.irTxt }}</div>
+          <sc-if value="{{ it.hasRes }}" hint-placeholder-val="{{ false }}"><div style="font-size:12.5px;color:#5f5a52;font-style:italic">{{ it.res }}</div></sc-if>
+        </button>
+        <sc-if value="{{ it.canQuick }}" hint-placeholder-val="{{ false }}"><button onClick="{{ it.quick }}" style="flex:0 0 auto;align-self:center;margin-inline-end:10px;min-height:40px;padding:0 12px;border-radius:10px;border:none;background:#145457;color:#fff;font-weight:700;font-size:13px;white-space:nowrap">{{ t.qcQuick }}</button></sc-if>
+      </div></sc-if>
+    </sc-for>
+    <sc-if value="{{ qcV.empty }}" hint-placeholder-val="{{ false }}"><div style="padding:20px;text-align:center;color:#605a51;border:1px dashed #cfc9bf;border-radius:12px">{{ t.qcEmpty }}</div></sc-if>
+  </div>
+</div></sc-if>
 <sc-if value="{{ show.bldg }}" hint-placeholder-val="{{ false }}">
   <div style="display:flex;flex-direction:column;gap:12px;padding:16px 0">
     <div style="padding:0 16px;display:flex;flex-direction:column;gap:4px"><div style="font-size:22px;font-weight:700">{{ t.bldgTitle }}</div><div style="font-size:13px;color:#605a51">{{ t.bldgHelp }}</div></div>
@@ -1165,7 +1216,7 @@ button{transition:transform .08s ease,background-color .15s ease}button:active{t
     </sc-if>
     <div style="background:#fff;border:1px solid #e4e0d8;border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:8px">
       <div style="font-weight:700;font-size:16px">{{ t.permTitle }}</div>
-      <div style="overflow-x:auto"><div style="display:grid;grid-template-columns:minmax(160px,1.7fr) repeat(5,minmax(78px,1fr));min-width:560px;font-size:13px;border:1px solid #ece9e3;border-radius:8px;overflow:hidden">
+      <div style="overflow-x:auto"><div style="display:grid;grid-template-columns:minmax(160px,1.7fr) repeat(6,minmax(78px,1fr));min-width:640px;font-size:13px;border:1px solid #ece9e3;border-radius:8px;overflow:hidden">
         <sc-for list="{{ permHead }}" as="h" hint-placeholder-count="6"><div style="padding:8px;background:#f2efe9;font-weight:700;font-size:12px;text-align:center">{{ h.l }}</div></sc-for>
         <sc-for list="{{ permCells }}" as="c" hint-placeholder-count="12"><div style="padding:8px;border-top:1px solid #ece9e3;color:{{ c.c }};font-weight:{{ c.fw }};text-align:{{ c.al }}">{{ c.v }}</div></sc-for>
       </div></div>
@@ -1412,7 +1463,7 @@ button{transition:transform .08s ease,background-color .15s ease}button:active{t
 </div>
 </x-dc>
 <script type="text/x-dc" data-dc-script data-props="{&quot;requireCM&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Rules&quot;},&quot;staleDays&quot;:{&quot;editor&quot;:&quot;int&quot;,&quot;default&quot;:7,&quot;min&quot;:1,&quot;max&quot;:30,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Rules&quot;},&quot;delayThreshold&quot;:{&quot;editor&quot;:&quot;int&quot;,&quot;default&quot;:10,&quot;min&quot;:1,&quot;max&quot;:40,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Rules&quot;}}">
-const KEY='dmc-erp:demo:v7',PREF_KEY='dmc-erp:prefs',CONN_KEY='dmc-erp:conn';
+const KEY='dmc-erp:demo:v8',PREF_KEY='dmc-erp:prefs',CONN_KEY='dmc-erp:conn';
 const locOf=()=>['SITE','—'];
 const uniq=arr=>Array.from(new Set(arr));
 const DAY=864e5;
@@ -1440,7 +1491,7 @@ const COL_GUIDE=[['project_code',1,'PX-106','Project code','رمز المشرو�
   ['actual_start',0,'2026-11-01','Opening balance: actual start','رصيد افتتاحي: البداية الفعلية'],['actual_finish',0,'','Opening balance: actual finish (= 100%)','رصيد افتتاحي: النهاية الفعلية (= 100%)'],['actual_pct',0,'30','Opening balance: % complete 0–100','رصيد افتتاحي: نسبة الإنجاز 0–100'],['predecessors',0,'A1010; A1020','Predecessor activity ids (finish-to-start), separated by ; — used to flag out-of-sequence progress','أكواد الأنشطة السابقة (نهاية ← بداية) مفصولة بـ ; — بتستخدم لاكتشاف التقدّم خارج التسلسل'],['pct_type',0,'Duration','% complete type like P6: Physical (engineer enters %), Duration (% from remaining days) or Units (% from quantity done). Empty = Physical','نوع نسبة الإنجاز زي بريمافيرا: Physical (المهندس يكتب النسبة) أو Duration (النسبة من الأيام الباقية) أو Units (النسبة من الكمية المنفذة). فاضي = Physical'],['work_days',0,'Sat-Thu','Working days of the project (planned % counts working days like P6), e.g. Sat-Thu, Sun-Thu, Mon-Fri','أيام الشغل في المشروع (النسبة المخططة بأيام الشغل زي بريمافيرا)، مثلاً Sat-Thu أو Sun-Thu أو Mon-Fri']];
 const DELAYS=['material','manpower','equipment','weather','design','client','subcon','permit','other'];
 // Line icons (24x24, stroke) — rendered as <img data-ico> data URLs so templates stay plain lookups
-const ICO={
+const ICO={qc:'<path d="M12 3l7 3v5c0 5-3.5 8.5-7 10-3.5-1.5-7-5-7-10V6z"/><path d="M9 12l2 2 4-4"/>',
  acts:'<rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 3v3h6V3M9 11h6M9 15h4"/>',
  hist:'<path d="M22 2 11 13M22 2l-7 20-4-9-9-4z"/>',
  lookahead:'<rect x="3" y="4" width="18" height="17" rx="2"/><path d="M16 2v4M8 2v4M3 10h18M8 14h2M14 14h2M8 18h2"/>',
@@ -1472,11 +1523,11 @@ const ICO={
 };
 const _icoC={};
 function ico(n,c){c=String(c).replace(OKLCH_RE,oklchRgb);const k=n+'|'+c;if(_icoC[k])return _icoC[k];const svg='<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="'+c+'" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">'+(ICO[n]||ICO.acts)+'</svg>';return _icoC[k]='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(svg);}
-const TAB_ICON={acts:'📋',hist:'📤',lookahead:'📅',review:'✅',progress:'📈',import:'📥',dash:'📊',bldg:'🏢',report:'📄',portfolio:'💼',trends:'📉',delays:'⏱️',users:'👥'};
+const TAB_ICON={qc:'🛡️',acts:'📋',hist:'📤',lookahead:'📅',review:'✅',progress:'📈',import:'📥',dash:'📊',bldg:'🏢',report:'📄',portfolio:'💼',trends:'📉',delays:'⏱️',users:'👥'};
 const PARTIES=['contractor','owner','consultant','subcon','other'];
 const DPARTY={material:'contractor',manpower:'contractor',equipment:'contractor',weather:'other',design:'consultant',client:'owner',subcon:'subcon',permit:'owner',other:'other'};
 const ENG=['CIV','ARC','LND','MEC','ELE'];
-const PEOPLE={CIV:{en:'Civil Engineer',ar:'المهندس المدني'},ARC:{en:'Architectural Engineer',ar:'المهندس المعماري'},MEC:{en:'Mechanical Engineer',ar:'المهندس الميكانيكي'},ELE:{en:'Electrical Engineer',ar:'المهندس الكهربائي'},LND:{en:'Landscape Engineer',ar:'مهندس اللاندسكيب'},CM:{en:'Construction Manager',ar:'مدير الإنشاءات'},PL:{en:'Planning Engineer',ar:'مهندس التخطيط'},PM:{en:'Project Manager / Planning Manager',ar:'مدير المشروع / مدير التخطيط'},AD:{en:'Administrator',ar:'الأدمن'}};
+const PEOPLE={CIV:{en:'Civil Engineer',ar:'المهندس المدني'},ARC:{en:'Architectural Engineer',ar:'المهندس المعماري'},MEC:{en:'Mechanical Engineer',ar:'المهندس الميكانيكي'},ELE:{en:'Electrical Engineer',ar:'المهندس الكهربائي'},LND:{en:'Landscape Engineer',ar:'مهندس اللاندسكيب'},CM:{en:'Construction Manager',ar:'مدير الإنشاءات'},PL:{en:'Planning Engineer',ar:'مهندس التخطيط'},PM:{en:'Project Manager / Planning Manager',ar:'مدير المشروع / مدير التخطيط'},AD:{en:'Administrator',ar:'الأدمن'},QC:{en:'QC Engineer',ar:'مهندس الجودة'}};
 const ALIAS={CIVIL:'CIV',ARCH:'ARC',ARCHITECTURAL:'ARC',MECH:'MEC',MECHANICAL:'MEC',ELEC:'ELE',ELECTRICAL:'ELE',LAND:'LND',LANDSCAPE:'LND'};
 function decideU(u,ok,role,c,ts,toCm){const cm=role==='cm',by=cm?'CM':'PL';
   if(!ok&&!cm&&toCm)return Object.assign({},u,{status:'submitted',cmAt:'',cmBy:'',reviewed:ts,reviewer:'PL',comment:c,log:u.log.concat([{at:ts,ev:'returned_cm',by}])});
@@ -1665,6 +1716,18 @@ storageBadgeLive:'مشترك · Supabase PostgreSQL · لحظي',storageLive1:'�
 storageLive2:'قواعد سير العمل (موافقة مدير الإنشاءات ثم التخطيط، قفل التحديثات المعتمدة، الصلاحيات حسب التخصص) تفرضها قاعدة البيانات نفسها وليس الشاشة فقط. كل تغيير يُسجَّل في سجل تدقيق.',
 storageLive3:'تنطبق حدود الخطة المجانية (حجم القاعدة، تخزين الملفات، وقد يتوقف المشروع غير النشط مؤقتاً). الصور في مخزن خاص وتُعرض بروابط مؤقتة.',
 prole_site:'مهندس موقع',prole_cm:'مدير الإنشاءات',prole_planner:'مهندس التخطيط',prole_pm:'مدير المشروع / مدير التخطيط',prole_admin:'مسؤول النظام'});
+Object.assign(I18N.en,{role_qc:'QC Engineer',prole_qc:'QC Engineer',tab_qc:'Inspections',qcTitle:'Quality inspections',qcHelp:'Every activity that reached 100% approved progress comes here. Create an inspection request (IR), inspect on site, then record the result.',
+ qcF:{ready:'Ready to inspect',open:'IR open',rejected:'Rejected',passed:'Accepted'},qcSt:{ready:'Ready for IR',open:'IR open',rejected:'Rejected',passed:'Accepted',comments:'Accepted with comments'},
+ qcBox:'QC inspection',qcNone:'No inspection request yet.',qcNotDone:'Inspection opens when the activity reaches 100% approved progress.',qcNew:'Create inspection request',qcReNew:'New inspection request (re-inspection)',qcDate:'Inspection date',qcNotes:'Notes for the inspection (optional)',
+ qcResult:'Record the result',qcResNote:'Result notes (required when rejected)',qcPass:'✓ Accepted',qcCom:'✓ With comments',qcRej:'✕ Rejected',qcRejNeed:'Write why it was rejected.',qcCreated:n=>'Inspection request '+n+' created',qcSaved:'Result saved',qcRejSent:'Rejected — the engineer was notified',
+ qcPctNote:'QC does not change the progress %. A rejection goes back to the engineer to fix, then QC raises a new request.',qcRejTitle:'Inspection rejected by QC',qcRejMsg:'Fix the work; QC will raise a new inspection request.',qcHist:'Inspection requests',qcSearch:'Search code, name or IR no.',qcEmpty:'Nothing here.',qcQuick:'+ IR',qcRaised:'raised',qcResAt:'result',
+ st_qcrej:'QC rejected',st_qcopen:'IR open',st_qcok:'Accepted by QC',perm_qc:'Inspect finished work (IR)',qcKpi:'QC inspections',qcKpiSub:(r,o,j)=>r+' ready · '+o+' open · '+j+' rejected'});
+Object.assign(I18N.ar,{role_qc:'مهندس الجودة',prole_qc:'مهندس الجودة',tab_qc:'الاستلامات',qcTitle:'استلامات الجودة',qcHelp:'هنا كل نشاط وصل 100% معتمد. اعمل طلب استلام، وبعد المعاينة في الموقع سجّل النتيجة.',
+ qcF:{ready:'جاهز للاستلام',open:'طلب مفتوح',rejected:'مرفوض',passed:'مستلم'},qcSt:{ready:'جاهز لطلب استلام',open:'طلب مفتوح',rejected:'مرفوض',passed:'مستلم',comments:'مستلم بملاحظات'},
+ qcBox:'استلام الجودة',qcNone:'لسه مفيش طلب استلام.',qcNotDone:'الاستلام بيتفتح لما النشاط يوصل 100% معتمد.',qcNew:'اعمل طلب استلام',qcReNew:'طلب استلام جديد (إعادة استلام)',qcDate:'تاريخ الاستلام',qcNotes:'ملاحظات للاستلام (اختياري)',
+ qcResult:'سجّل النتيجة',qcResNote:'ملاحظات النتيجة (لازم لو مرفوض)',qcPass:'✓ مستلم',qcCom:'✓ بملاحظات',qcRej:'✕ مرفوض',qcRejNeed:'اكتب سبب الرفض.',qcCreated:n=>'اتعمل طلب الاستلام '+n,qcSaved:'اتسجلت النتيجة',qcRejSent:'اترفض — وصل تنبيه للمهندس',
+ qcPctNote:'الجودة مش بتغيّر نسبة الإنجاز. الرفض بيرجع للمهندس يصلّح، وبعدها الجودة تعمل طلب جديد.',qcRejTitle:'الجودة رفضت الاستلام',qcRejMsg:'صلّح الشغل، والجودة هتعمل طلب استلام جديد.',qcHist:'طلبات الاستلام',qcSearch:'دوّر بالكود أو الاسم أو رقم الطلب',qcEmpty:'مفيش حاجة هنا.',qcQuick:'+ طلب',qcRaised:'اتعمل',qcResAt:'النتيجة',
+ st_qcrej:'مرفوض من الجودة',st_qcopen:'طلب استلام مفتوح',st_qcok:'مستلم من الجودة',perm_qc:'استلام الشغل المنتهي',qcKpi:'استلامات الجودة',qcKpiSub:(r,o,j)=>r+' جاهز · '+o+' مفتوح · '+j+' مرفوض'});
 Object.assign(I18N.en,{chkConfirm:'CONFIRM',chkLegH:'Colours',chkLegR:'Red cell = must be fixed before import',chkLegY:'Yellow cell = please confirm',chkAll:'All of them:',chkApply:'Apply',chkSkip:'Leave out',chkInc:'Bring back',chkKeep:'Keep',chkMore:n=>`Show ${n} more`,chkSkipped:n=>`${n} activities left out of the import`,chkPh:{zone:'Zone name',bldg:'Building / plot, e.g. Villa 12'},
   chkHelpK:{disc0:'Tap the discipline for each activity, or give all of them one discipline.',discN:'We guessed from the name. Tap to change any that are wrong.',zone0:'Type the zone, or one zone for all of them. Better: pick the right WBS level / code above.',bldg0:'Type the building or plot, or pick the right WBS level / code above.',floor0:'The Buildings drawing uses the WBS level under the building as the floor. Fix it in P6 if you need the drawing.',date0:'Schedule the project in P6 (F9) and export again.',dur0:'Check the duration / dates in P6.',rel0:'Fine to import; out-of-sequence alerts need relationships.',phase:'Activities under Engineering, Procurement, Testing & Commissioning or Handover are not ours, so they are left out of the import. Tap Keep for any you want.',pctNoStart:'Add the actual start in P6, or the % will be rejected.'},chkHead:(b,n)=>`${b} of ${n} activities need a look`,chkBtn:'Download Excel to check (.xlsx)',chkHelp:'The Excel file has every activity with a “check_notes” column; rows that need fixing come first. Fix them in Excel (or in P6), save, then pick the file with “Choose CSV / Excel file” below.',chkFix:'CHECK',chkDone:'Excel downloaded — fix the rows marked CHECK, then import it',chkSumTitle:'What needs checking',chkTotal:'Activities in the file',chkQty1:'No material quantity — set to 1 LS (fine, but no productivity)',chkHow1:'1. Open the Activities sheet and filter column “check” = CHECK.',chkHow2:'2. Fill or correct the cells (discipline: CIV, ARC, LND, MEC or ELE). Do not change activity_id.',chkHow3:'3. Save and import the file from the app (Import › Choose CSV / Excel file).',
   xerNon:'Not ours',xerRgL:'Region (required)',xerRgReq:'Choose the region before converting',xerRgNeed:'Choose the region of the project first',xerRgNew:'New region',ptK:{P:'Physical %',D:'Duration %',U:'Units %'},ptHelp:{P:()=>'Type the % complete you see on site.',D:(od)=>`Duration % like P6: type the remaining working days and the % is worked out from the original duration (${od} working days).`,U:(od,q)=>`Units % like P6: type the quantity done and the % is worked out from the budget (${q}).`},ptLbl:'% complete type',e_pt:'pct_type must be Physical, Duration or Units',xerWbL:'Weight of each activity',xerWbK:{cost:'Planned cost',units:'Labour units',dur:'Duration'},xerWbHelp:'How much each activity counts in the project %. Cost = earned value, like P6 cost-loaded schedules.',xerWbNote:(n,N,k)=>n>=N?`All ${N} activities have a ${k.toLowerCase()} in the file.`:`${n} of ${N} activities have a ${k.toLowerCase()}; the other ${N-n} use their duration, so they count very little.`,xerWbDurN:'Each activity counts by its original duration (working days).',xerWbNone:k=>`No activity in this file has ${k.toLowerCase()} — assign resources in P6 first.`,xerWdL:'Working week',xerWdFrom:'from the P6 calendar',xerWdHelp:'Planned % counts working days only, like P6. Tap a day to switch it on or off.',xerSavedTxt:d=>`Using your choices from the last import (${d}): region, fields, “Not ours” and fixes. Check and continue.`,xerSavedRst:'Start fresh',xerRgPh:'Region name, e.g. Ain Sokhna',xerRgAddBtn:'Add',chkWhy:{ph:'Engineering / procurement / testing / handover',non:'Marked “Not ours”',man:'Left out by hand'},
@@ -1810,7 +1873,17 @@ function seed(){
     {id:'R_seed3',to:'MEC',from:'PL',at:d(1)+'T09:05',actIds:byE('MEC'),type:'missing',done:false}].filter(r=>r.actIds.length);
   updates.forEach(u=>{if(u.status==='approved'&&u.remD==null&&u.pct<100){const a=activities.find(x=>x.id===u.actId);u.remD=Math.max(1,Math.round(dd(a.ps,a.pf)*(100-u.pct)/100*1.1));}});
   updates.forEach(u=>{if(u.delay&&!u.party)u.party=DPARTY[u.delay]||'other';});
-  return {projects,activities,updates,reminders,chat:seedChat(),seededAt:stamp()};
+  // QC inspections on finished work: some accepted, one with comments, one rejected, some open, the rest ready
+  const irs=[];{const done100={};updates.forEach(u=>{if(u.status==='approved'&&u.pct>=100&&(!done100[u.actId]||u.reviewed>done100[u.actId]))done100[u.actId]=u.reviewed;});
+    const old=Object.keys(done100).filter(id=>done100[id].slice(0,10)<d(21)),fin=Object.keys(done100).filter(id=>done100[id].slice(0,10)>=d(21)).sort((x,y)=>done100[x]<done100[y]?-1:1),seq={};
+    // work finished more than 3 weeks ago was already inspected and accepted
+    old.forEach(id=>{const a=activities.find(x=>x.id===id),k=projects.find(x=>x.id===a.pid).code.replace(/\s+/g,'');seq[k]=(seq[k]||0)+1;const dt=addD(done100[id].slice(0,10),3);
+      irs.push({id:'IR_seedA'+seq[k],actId:id,pid:a.pid,no:'IR-'+k+'-'+String(seq[k]).padStart(3,'0'),status:'passed',date:dt,notes:'',res:'',at:done100[id].slice(0,10)+'T12:00',resAt:dt+'T11:00',src:'demo'});});
+    fin.forEach((id,i)=>{if(i>=9)return;const a=activities.find(x=>x.id===id),p=projects.find(x=>x.id===a.pid),k=p.code.replace(/\s+/g,'');seq[k]=(seq[k]||0)+1;
+      const st=i<4?'passed':i===4?'comments':i===5?'rejected':'open',at=d(8-i)+'T10:00';
+      irs.push({id:'IR_seed'+i,actId:id,pid:a.pid,no:'IR-'+k+'-'+String(seq[k]).padStart(3,'0'),status:st,date:st==='open'?addD(TODAY,1):d(7-i),notes:i%3===0?'Joint inspection with the consultant.':'',res:st==='comments'?'Minor touch-up needed at the corners.':st==='rejected'?'Surface not level — redo and call for re-inspection.':'',at,resAt:st==='open'?'':d(7-i)+'T13:00',src:'demo'});
+      if(st==='rejected')reminders.push({id:'R_seedQ',to:a.eng,from:'QC',at:d(7-i)+'T13:00',actIds:[id],type:'qc',note:irs[irs.length-1].no+' — Surface not level — redo and call for re-inspection.',done:false});});}
+  return {projects,activities,updates,reminders,irs,chat:seedChat(),seededAt:stamp()};
 }
 
 // Demo chat: people are identified by discipline / role code (CIV, ARC, MEC, ELE, CM, PL, PM)
@@ -1838,7 +1911,7 @@ function seedChat(){const now=Date.now(),M=[];let k=0;
 
 function svgToJpeg(src){return new Promise((res,rej)=>{const img=new Image();img.onload=()=>{const c=document.createElement('canvas');c.width=img.width||320;c.height=img.height||240;const x=c.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,c.width,c.height);x.drawImage(img,0,0,c.width,c.height);res(c.toDataURL('image/jpeg',0.75));};img.onerror=rej;img.src=src;});}
 function normPhoto(p,i){return typeof p==='string'?{id:'ph'+i,src:p,caption:'',at:'',lat:null,lng:null,acc:null,geo:'none'}:p;}
-function normalize(d){d.reminders=d.reminders||[];d.chat=d.chat||{messages:[],reads:{}};d.activities=d.activities.map(a=>Object.assign({bldg:locOf(a.code)[0],zone:locOf(a.code)[1]},a));d.updates=d.updates.map(u=>Object.assign({},u,{photos:(u.photos||[]).map(normPhoto),party:u.party||(u.delay?DPARTY[u.delay]||'other':'')}));return d;}
+function normalize(d){d.reminders=d.reminders||[];d.irs=d.irs||[];d.chat=d.chat||{messages:[],reads:{}};d.activities=d.activities.map(a=>Object.assign({bldg:locOf(a.code)[0],zone:locOf(a.code)[1]},a));d.updates=d.updates.map(u=>Object.assign({},u,{photos:(u.photos||[]).map(normPhoto),party:u.party||(u.delay?DPARTY[u.delay]||'other':'')}));return d;}
 function load(){try{for(const k of [KEY]){const r=localStorage.getItem(k);if(r){const d=JSON.parse(r);if(d&&d.data){d.data=normalize(d.data);return d;}}}}catch(e){}return null;}
 function makeUpdate(ups,f,status,eng){const ts=stamp(),ev=status==='submitted'?'submitted':'saved';
   const vals={pct:clamp(Math.round(Number(f.pct)||0),0,100),qty:Number(f.qty)||0,aStart:f.aStart||'',aFinish:f.aFinish||'',remD:f.remD===''||f.remD==null?null:Math.max(0,Math.round(Number(f.remD))),remarks:f.remarks||'',delay:f.delay||'',party:f.delay?(f.party||DPARTY[f.delay]||'other'):'',photos:f.photos||[]};
@@ -1882,6 +1955,7 @@ function derive(data,cfg){
   data.updates.forEach(u=>{(byAct[u.actId]=byAct[u.actId]||[]).push(u);});
   Object.values(byAct).forEach(l=>l.sort((a,b)=>a.created<b.created?-1:1));
   const PWD={};data.projects.forEach(p=>PWD[p.id]=p.wd||'');
+  const IRB={};(data.irs||[]).forEach(x=>{(IRB[x.actId]=IRB[x.actId]||[]).push(x);});
   const acts=data.activities.map(a0=>{const a=PWD[a0.pid]?Object.assign({},a0,{wd:PWD[a0.pid]}):a0;
     const ups=byAct[a.id]||[];
     const appr=ups.filter(u=>u.status==='approved').sort((x,y)=>x.reviewed<y.reviewed?-1:1);
@@ -1897,7 +1971,8 @@ function derive(data,cfg){
     const delayed=actual<100&&(planned-actual>cfg.thr||a.pf<TODAY);
     const rr=nd.slice().reverse().find(u=>u.status!=='returned'&&u.remD!=null&&u.remD!=='');const remRep=rr?{days:Number(rr.remD),at:(rr.submitted||rr.created).slice(0,10),pending:rr.status!=='approved'}:null;
     const due=a.ps<=nextCut&&actual<100,updW=nd.some(u=>u.status!=='returned'&&(u.submitted||u.created).slice(0,10)>=cycStart);
-    return Object.assign({},a,{ups,appr,off,planned,actual,pending,draft,returned,lastDate,missing,delayed,due,updW,remRep,variance:actual-planned,aStart:off?off.aStart:'',aFinish:off?off.aFinish:'',aQty:off?off.qty:0});
+    const irs=(IRB[a.id]||[]).slice().sort((x,y)=>x.at<y.at?-1:x.at>y.at?1:0),ir=irs[irs.length-1]||null,qc=ir?ir.status:actual>=100&&!(off&&off.src==='opening')?'ready':''; // opening balance (work done before the app) does not go to QC
+    return Object.assign({},a,{irs,ir,qc,ups,appr,off,planned,actual,pending,draft,returned,lastDate,missing,delayed,due,updW,remRep,variance:actual-planned,aStart:off?off.aStart:'',aFinish:off?off.aFinish:'',aQty:off?off.qty:0});
   });
   const actMap={};acts.forEach(a=>actMap[a.id]=a);
   // Out of sequence: progress recorded while a predecessor (finish-to-start) is not finished yet.
@@ -2074,13 +2149,15 @@ const MAP={
   from:r=>({id:r.id,actId:r.activity_id,by:r.discipline,pct:r.pct,qty:Number(r.qty),aStart:r.actual_start||'',aFinish:r.actual_finish||'',remarks:r.remarks||'',delay:r.delay_reason||'',party:r.delay_party||'',remD:r.remaining_days==null?null:r.remaining_days,photos:(r.photos||[]).map(p=>Object.assign({src:''},p)),
    status:r.status,created:fromTs(r.created_at),submitted:fromTs(r.submitted_at),cmAt:fromTs(r.cm_at),cmBy:r.cm_at?'CM':'',cmComment:r.cm_comment||'',origPct:r.orig_pct==null?undefined:r.orig_pct,origQty:r.orig_qty==null?undefined:Number(r.orig_qty),adjAt:fromTs(r.adj_at),adjNote:r.adj_note||'',adjBy:r.adj_at?'CM':'',
    reviewed:fromTs(r.reviewed_at),reviewer:r.reviewer_role||'',comment:r.review_comment||'',prevId:r.prev_id||'',src:r.source||'user',log:r.log||[]})},
+ irs:{t:'inspection_requests',to:x=>({id:x.id,activity_id:x.actId,project_id:x.pid,ir_no:x.no,status:x.status,inspect_date:x.date||null,notes:x.notes||'',result_note:x.res||'',created_at:toTs(x.at),result_at:toTs(x.resAt),result_by:x.resBy||null,is_demo:x.src==='demo'}),
+  from:r=>({id:r.id,actId:r.activity_id,pid:r.project_id,no:r.ir_no,status:r.status,date:r.inspect_date||'',notes:r.notes||'',res:r.result_note||'',at:fromTs(r.created_at),resAt:fromTs(r.result_at),resBy:r.result_by||'',src:r.is_demo?'demo':'user'})},
  reminders:{t:'notifications',to:r=>({id:r.id,to_discipline:r.to,from_role:r.from,type:r.type,activity_ids:r.actIds||[],from_pct:r.from_pct==null?null:r.from_pct,to_pct:r.to_pct==null?null:r.to_pct,from_qty:r.from_qty==null?null:r.from_qty,to_qty:r.to_qty==null?null:r.to_qty,note:r.note||'',done:!!r.done,created_at:toTs(r.at)}),
   from:r=>({id:r.id,to:r.to_discipline,from:r.from_role,type:r.type,actIds:r.activity_ids||[],from_pct:r.from_pct,to_pct:r.to_pct,from_qty:r.from_qty,to_qty:r.to_qty,note:r.note||'',done:r.done,at:fromTs(r.created_at)})}};
-const TABLE_ORDER=['projects','activities','updates','reminders'];
+const TABLE_ORDER=['projects','activities','updates','irs','reminders'];
 
 class Component extends DCLogic {
   state=(()=>{const s=load();return{data:s?s.data:seed(),lang:(s&&s.prefs&&s.prefs.lang)||'en',role:(s&&s.prefs&&s.prefs.role)||'site',eng:(s&&s.prefs&&ENG.indexOf(s.prefs.eng)>=0&&s.prefs.eng)||'CIV',
-    tab:{site:'acts',cm:'review',planner:'review',pm:'dash'},offline:false,obN:0,pwFor:null,pwVal:'',pwBusy:false,bvFl:'',repMode:'ext',repNotes:null,repGhost:false,pdfBusy:false,wrList:[],wrOpen:false,wrTo:{cm:true,pm:true,consultant:false},wrNote:'',wrBusy:false,cutDow:(()=>{try{const v=localStorage.getItem('dmc-erp:cutDow');return v==null?4:Number(v);}catch(e){return 4;}})(),push:'',pushAskHidden:(()=>{try{return localStorage.getItem('dmc-erp:pushAsk')==='no';}catch(e){return false;}})(),detail:null,review:null,form:null,errors:[],q:'',sProj:'all',sFilter:'all',plProj:'P1',plFilter:'all',mode:'demo',auth:'none',user:null,profile:null,syncing:false,lastSync:'',loadErr:'',settingsDb:{},loginEmail:'',loginPw:'',loginErr:'',loginBusy:false,connUrl:connCfg().url,connKey:connCfg().key,wide:false,liveArm:'',pmProj:'all',dlProj:'all',
+    tab:{site:'acts',cm:'review',planner:'review',pm:'dash',qc:'qc'},offline:false,obN:0,pwFor:null,pwVal:'',pwBusy:false,bvFl:'',repMode:'ext',repNotes:null,repGhost:false,pdfBusy:false,wrList:[],wrOpen:false,wrTo:{cm:true,pm:true,consultant:false},wrNote:'',wrBusy:false,cutDow:(()=>{try{const v=localStorage.getItem('dmc-erp:cutDow');return v==null?4:Number(v);}catch(e){return 4;}})(),push:'',pushAskHidden:(()=>{try{return localStorage.getItem('dmc-erp:pushAsk')==='no';}catch(e){return false;}})(),detail:null,review:null,form:null,errors:[],q:'',sProj:'all',sFilter:'all',plProj:'P1',plFilter:'all',mode:'demo',auth:'none',user:null,profile:null,syncing:false,lastSync:'',loadErr:'',settingsDb:{},loginEmail:'',loginPw:'',loginErr:'',loginBusy:false,connUrl:connCfg().url,connKey:connCfg().key,wide:false,liveArm:'',pmProj:'all',dlProj:'all',
     comment:'',importText:'',xer:null,xerMap:null,xerSaved:null,xerRgAdd:null,xerRgTxt:'',xerOpen:null,xerMore:false,xerTxt:{},p6Proj:'',importRows:null,settings:false,toast:'',resetArm:false,bulk:false,bulkVals:{},bulkErr:{},sel:{},rvProj:'all',rvFlag:'all',sBldg:'all',sZone:'all',sRegion:'all',sType:'all',sWbsOpen:{},dark:(()=>{try{return localStorage.getItem(DARK_KEY)==='1';}catch(e){return false;}})(),alOpen:false,alBusy:false,alRows:[],alErr:'',alKind:'all',dbBld:'',plWbsOpen:{},plBldg:'all',plZone:'all',plType:'all',adjPct:'',adjQty:'',laProj:'all',laDays:14,report:false,repProj:'all',dbProj:'all',dbHov:-1,dbWk:-1,tpHov:-1,bvTr:'',uq:'',uFilter:'all',nuOpen:false,nu:{name:'',pw:'',role:'site',disc:'CIV'},nuBusy:false,
     chatOpen:false,chatRoom:null,chatText:'',chatImg:null,chatNew:false,chatQ:'',chatMsgs:[],chatReads:[],chatDir:[],chatErr:''};})();
   live(){return this.state.mode==='live';}
@@ -2140,7 +2217,7 @@ class Component extends DCLogic {
     if(location.hash==='#chat'){this._openChatAfterLogin=true;try{history.replaceState(null,'',location.pathname+location.search);}catch(e){}}}
   componentWillUnmount(){window.removeEventListener('resize',this._onResize);if(this._ch&&this._sb)try{this._sb.removeChannel(this._ch);}catch(e){}}
   async initConn(){const c=connCfg();if(!c.url||!c.key){this.setState({mode:'demo',auth:'none'},()=>this.applyGoBldg());return;}
-    this.setState({mode:'live',auth:'checking',connUrl:c.url,connKey:c.key,data:{projects:[],activities:[],updates:[],reminders:[]},detail:null,review:null});
+    this.setState({mode:'live',auth:'checking',connUrl:c.url,connKey:c.key,data:{projects:[],activities:[],updates:[],reminders:[],irs:[]},detail:null,review:null});
     try{const sb=await getSB(c);this._sb=sb;const {data}=await sb.auth.getSession();
       if(!this._authSub){this._authSub=sb.auth.onAuthStateChange(ev=>{if(ev==='SIGNED_OUT')this.setState({auth:'signedOut',user:null,profile:null});});}
       if(data&&data.session)await this.afterLogin(data.session.user);else this.setState({auth:'signedOut'});
@@ -2150,7 +2227,7 @@ class Component extends DCLogic {
     else if(r.data){try{localStorage.setItem(PK,JSON.stringify(r.data));}catch(e){}}
     if(r.error||!r.data){this.setState({auth:'signedOut',loginErr:(r.error&&r.error.message)||t.noProfile});return;}
     const prof=r.data;if(prof.active===false){this.setState({auth:'signedOut',loginErr:t.inactive});await sb.auth.signOut();return;}
-    const role=prof.role==='admin'?(['site','cm','planner','pm'].indexOf(this.state.role)>=0?this.state.role:'planner'):prof.role;
+    const role=prof.role==='admin'?(['site','cm','planner','pm','qc'].indexOf(this.state.role)>=0?this.state.role:'planner'):prof.role;
     this.setState({user:{id:user.id,email:user.email},profile:prof,role,eng:prof.discipline||'CIV',auth:'ready',loginErr:''});
     await this.reloadLive();this.reloadChat();this.pushCheck();
     if(this._openChatAfterLogin){this._openChatAfterLogin=false;this.setState({chatOpen:true});}
@@ -2161,14 +2238,14 @@ class Component extends DCLogic {
   async reloadLive(){const sb=this._sb;if(!sb||this.state.auth!=='ready')return;
     try{// the API returns at most 1000 rows per request, so read in pages (up to 20,000 rows per table)
       const q=async(n,ord)=>{let all=[];for(let i=0;i<20000;i+=1000){const r=await sb.from(n).select('*').order(ord||'id').range(i,i+999);if(r.error)return r;all=all.concat(r.data||[]);if(!r.data||r.data.length<1000)break;}return{data:all,error:null};};
-      const res=await Promise.all([q('projects'),q('activities'),q('progress_updates'),q('notifications'),q('app_settings','key')]);
+      const res=await Promise.all([q('projects'),q('activities'),q('progress_updates'),q('notifications'),q('app_settings','key'),q('inspection_requests').then(r=>r.error?{data:[],error:null}:r,()=>({data:[],error:null}))]);
       res.forEach(x=>{if(x.error)throw x.error;});
       const updates=res[2].data.map(MAP.updates.from),cache=this._signed||{},need=[];
       updates.forEach(x=>x.photos.forEach(p=>{if(p.path&&!cache[p.path])need.push(p.path);}));
       if(need.length){const sr=await sb.storage.from('site-photos').createSignedUrls(need,43200);(sr.data||[]).forEach(d=>{if(d.signedUrl&&d.path)cache[d.path]=d.signedUrl;});}
       this._signed=cache;updates.forEach(x=>{x.photos=x.photos.map(p=>p.path&&cache[p.path]?Object.assign({},p,{src:cache[p.path]}):p);});
       const st={};(res[4].data||[]).forEach(r=>{st[r.key]=r.value;});
-      let data={projects:res[0].data.map(MAP.projects.from),activities:res[1].data.map(MAP.activities.from),updates,reminders:res[3].data.map(MAP.reminders.from)};
+      let data={projects:res[0].data.map(MAP.projects.from),activities:res[1].data.map(MAP.activities.from),updates,reminders:res[3].data.map(MAP.reminders.from),irs:(res[5].data||[]).map(MAP.irs.from)};
       idb('snap','put',this.obKey(),{data,st,at:stamp()});data=await this.mergeOutbox(data);
       this.setState({data,settingsDb:st,lastSync:stamp(),loadErr:'',offline:false});this.loadAdmin();this.obCount().then(n=>{if(n)this.flushOutbox();});
     }catch(e){if(isNetErr(e)){const sn=await idb('snap','get',this.obKey());if(sn&&sn.data&&!this.state.data.activities.length){const data=await this.mergeOutbox(sn.data);this.setState({data,settingsDb:sn.st||{},lastSync:sn.at||''});}
@@ -2248,7 +2325,7 @@ class Component extends DCLogic {
       const all=TABLE_ORDER.map(k=>[k,(d[k]||[]).map(MAP[k].to)]),tot=all.reduce((n,x)=>n+x[1].length,0);let done=0;
       for(const [k,rows] of all){for(let i=0;i<rows.length;i+=200){const r=await sb.from(MAP[k].t).upsert(rows.slice(i,i+200));if(r.error)throw r.error;done+=Math.min(200,rows.length-i);this.toast(t.demoLoading+' '+Math.round(done*100/tot)+'%');}}
       // site engineers and CMs see the sample project
-      const pr=await sb.from('profiles').select('id,role').in('role',['site','cm']);
+      const pr=await sb.from('profiles').select('id,role').in('role',['site','cm','qc']);
       const mem=[];(pr.data||[]).forEach(u=>d.projects.forEach(p=>mem.push({project_id:p.id,user_id:u.id})));if(mem.length){const r=await sb.from('project_members').upsert(mem);if(r.error)throw r.error;}
       this.toast(t.demoLoaded);}
     catch(e){this.toast(t.syncErr+' '+(e.message||e));}this._demoBusy=false;this.setState({syncing:false});await this.reloadLive();}
@@ -2271,7 +2348,7 @@ class Component extends DCLogic {
     r.onload=()=>{try{const j=JSON.parse(String(r.result)),d=j&&j.data;if(!d||!Array.isArray(d.projects)||!Array.isArray(d.activities)||!Array.isArray(d.updates))throw 0;
       this.set({data:normalize(d),settings:false,detail:null,review:null,form:null},()=>this.toast(t.t_imported));}catch(x){this.toast(t.t_badJson);}};r.readAsText(file);}
   // ───────── Team chat: DEMO = this browser (people are role/discipline codes), LIVE = Supabase tables chat_messages / chat_reads ─────────
-  chatMe(){const s=this.state;if(this.live())return s.user?s.user.id:'';return s.role==='site'?s.eng:({cm:'CM',planner:'PL',pm:'PM'})[s.role];}
+  chatMe(){const s=this.state;if(this.live())return s.user?s.user.id:'';return s.role==='site'?s.eng:({cm:'CM',planner:'PL',pm:'PM',qc:'QC'})[s.role];}
   chatAll(){return this.live()?(this.state.chatMsgs||[]):((this.state.data.chat||{}).messages||[]);}
   chatReadAt(user,room){if(this.live()){const r=(this.state.chatReads||[]).find(x=>x.user_id===user&&x.room===room);return r?Date.parse(r.last_read):0;}
     return (((this.state.data.chat||{}).reads||{})[user]||{})[room]||0;}
@@ -2351,6 +2428,16 @@ class Component extends DCLogic {
     this.set({data:Object.assign({},s.data,{updates:ups}),form:Object.assign({},f,{draftId:id}),errors:[]},()=>this.toast(status==='submitted'?t.t_submitted:t.t_saved));
   }
   T(){const b=I18N[this.state.lang];return this.state.role==='cm'?Object.assign({},b,b.cm):b;}
+  // QC: inspection requests (IR) on finished activities — never changes progress %
+  qcCreate(actId,quick){const s=this.state,t=this.T(),D=this.D(),a=D.actMap[actId];if(!a||!(a.qc==='ready'||a.qc==='rejected'))return;const p=D.projMap[a.pid],pre='IR-'+(p?String(p.code).replace(/\s+/g,''):'X')+'-';
+    const mx=(s.data.irs||[]).filter(x=>x.no&&x.no.indexOf(pre)===0).reduce((m,x)=>Math.max(m,parseInt(x.no.slice(pre.length),10)||0),0),no=pre+String(mx+1).padStart(3,'0');
+    const ir={id:uid('IR'),actId,pid:a.pid,no,status:'open',date:quick?addD(TODAY,1):(s.qcDate||addD(TODAY,1)),notes:quick?'':(s.qcNotes||'').trim(),res:'',at:stamp(),resAt:'',resBy:'',src:'user'};
+    this.set({data:Object.assign({},s.data,{irs:(s.data.irs||[]).concat([ir])}),qcDate:'',qcNotes:''},()=>this.toast(t.qcCreated(no)));}
+  qcResult(actId,st){const s=this.state,t=this.T(),D=this.D(),a=D.actMap[actId];if(!a||!a.ir||a.ir.status!=='open')return;const note=(s.qcRes||'').trim();
+    if(st==='rejected'&&!note){this.toast(t.qcRejNeed);return;}
+    const ts=stamp(),ir=Object.assign({},a.ir,{status:st,res:note,resAt:ts,resBy:this.live()&&s.user?s.user.id:''}),irs=(s.data.irs||[]).map(x=>x.id===ir.id?ir:x);
+    const reminders=st==='rejected'?(s.data.reminders||[]).concat([{id:uid('R'),to:a.eng,from:'QC',type:'qc',actIds:[a.id],note:ir.no+(note?' — '+note:''),done:false,at:ts}]):s.data.reminders;
+    this.set({data:Object.assign({},s.data,{irs,reminders}),qcRes:''},()=>this.toast(st==='rejected'?t.qcRejSent:t.qcSaved));}
   qStatuses(role){return role==='cm'?['submitted']:this.reqCM()?['endorsed']:['submitted','endorsed'];}
   withdraw(){const s=this.state,a=this.D().actMap[s.detail];if(!a||!a.pending||a.pending.status!=='submitted')return;const ts=stamp(),pid=a.pending.id;
     const ups=s.data.updates.map(u=>u.id===pid?Object.assign({},u,{status:'draft',submitted:'',log:u.log.concat([{at:ts,ev:'withdrawn',by:s.eng}])}):u);
@@ -2529,7 +2616,7 @@ class Component extends DCLogic {
     const spiOf=(a,p)=>p>0.5?a/p:null,spiTxt=x=>x==null?'—':x.toFixed(2),spiC=x=>x==null?'#1b1a17':x>=0.95?C.green:x>=0.85?C.amber:C.red;
     const chip=(label,active,onClick)=>({label,onClick,bg:active?'#145457':'#fff',fg:active?'#fff':'#1b1a17',bd:active?'#145457':'#cfc9bf'});
     const srcL=x=>x==='imported'?t.src_imported:x==='user'?t.src_user:x==='correction'?t.src_correction:x==='opening'?t.src_opening:t.src_demo;
-    const stOf=a=>a.pending?(a.pending.status==='endorsed'?['st_endorsed',C.blueBg,C.blue]:['st_submitted',C.blueBg,C.blue]):a.draft?['st_draft',C.amberBg,C.amber]:a.returned?['st_returned',C.redBg,C.red]:a.actual>=100?['st_complete',C.greenBg,C.green]:a.missing?['st_needs',C.redBg,C.red]:a.ps>TODAY?['st_notstarted',C.greyBg,C.grey]:a.delayed?['f_delayed',C.amberBg,C.amber]:['st_uptodate',C.greenBg,C.green];
+    const stOf=a=>a.pending?(a.pending.status==='endorsed'?['st_endorsed',C.blueBg,C.blue]:['st_submitted',C.blueBg,C.blue]):a.draft?['st_draft',C.amberBg,C.amber]:a.returned?['st_returned',C.redBg,C.red]:a.actual>=100?(a.qc==='rejected'?['st_qcrej',C.redBg,C.red]:a.qc==='open'?['st_qcopen',C.blueBg,C.blue]:a.qc==='passed'||a.qc==='comments'?['st_qcok',C.greenBg,C.green]:['st_complete',C.greenBg,C.green]):a.missing?['st_needs',C.redBg,C.red]:a.ps>TODAY?['st_notstarted',C.greyBg,C.grey]:a.delayed?['f_delayed',C.amberBg,C.amber]:['st_uptodate',C.greenBg,C.green];
     const upSt={draft:['st_draft',C.amberBg,C.amber],submitted:['st_submitted',C.blueBg,C.blue],endorsed:['st_endorsed',C.blueBg,C.blue],approved:['st_approved',C.greenBg,C.green],returned:['st_returned',C.redBg,C.red]};
     const card=(a,bulk)=>{const st=stOf(a);const o={code:a.code,projCode:D.projMap[a.pid].code,name:nm(a),srcLabel:srcL(a.src),stLabel:t[st[0]],stBg:st[1],stFg:st[2],plannedW:W(a.planned),plannedTxt:p0(a.planned),actualW:W(a.actual),actualTxt:p0(a.actual),barColor:a.delayed?C.barBad:a.variance<-2?C.barWarn:C.barOk,
       meta:locL(a)+' · '+t.planned+' '+p0(a.planned)+' · '+sg(a.variance)+' · '+t.lastUpd(a.lastDate),showSrc:a.src==='demo'&&this.live(),actC:a.actual>=100?C.green:a.delayed?C.red:a.variance<-2?C.amber:'#1b1a17',barColor2:a.delayed?'oklch(0.66 0.16 35)':a.variance<-2?'oklch(0.75 0.12 80)':'oklch(0.68 0.12 160)',varTxt:sg(a.variance),varC:vc(a.variance),varBg:a.variance>=-2?C.greenBg:a.variance>=-cfg.thr/2?C.amberBg:C.redBg,lastTxt:a.lastDate?t.ago(dd(a.lastDate,TODAY)):t.noUpdYet,open:()=>this.openDetail(a.id),bulkOn:false,hasBulkErr:false};
@@ -2542,24 +2629,24 @@ class Component extends DCLogic {
     const mine=D.acts.filter(a=>a.eng===s.eng);
     const FIL={all:()=>true,needs:a=>a.missing||(!!a.returned&&!a.draft),returned:a=>!!a.returned,drafts:a=>!!a.draft,pending:a=>!!a.pending};
     const needsN=mine.filter(FIL.needs).length;
-    const TABS={site:['acts','hist','lookahead'],cm:['review','progress','dash','bldg','report','lookahead'],planner:['review','progress','import','dash','bldg','report','lookahead'],pm:['dash','bldg','portfolio','trends','report','lookahead','delays']};
-    const isAdm=this.live()&&s.profile&&s.profile.role==='admin';const tabs=TABS[role].concat(isAdm?['users']:[]).map(k=>{const bd=k==='review'?pendingAll.length:0;const on=k===tab;return{label:t['tab_'+k],icon:TAB_ICON[k]||'•',ic:ico(k,on?'#0f3d3e':'#6b655b'),sic:ico(k,on?'#1b1a17':'#cde3e3'),pill:on?'#d9ecec':'transparent',onClick:setTab(k),fg:on?'#0f3d3e':'#605a51',fw:on?'700':'500',bg:'transparent',hasBadge:bd>0,badge:bd};});
-    const roles=['site','cm','planner','pm'].map(r=>({label:t['role_'+r],onClick:()=>{this.set({role:r,detail:null,review:null,errors:[],bulk:false,bulkVals:{},bulkErr:{},sel:{}});this.top();},bg:r===role?'#ff7a59':'transparent',fg:r===role?'#1b1a17':'#e9e4da'}));
+    const TABS={site:['acts','hist','lookahead'],cm:['review','progress','dash','bldg','report','lookahead'],planner:['review','progress','import','dash','bldg','report','lookahead'],pm:['dash','bldg','portfolio','trends','report','lookahead','delays'],qc:['qc','bldg','lookahead']};
+    const isAdm=this.live()&&s.profile&&s.profile.role==='admin';const tabs=TABS[role].concat(isAdm?['users']:[]).map(k=>{const bd=k==='review'?pendingAll.length:k==='qc'?D.acts.filter(a=>a.qc==='ready'||a.qc==='open').length:0;const on=k===tab;return{label:t['tab_'+k],icon:TAB_ICON[k]||'•',ic:ico(k,on?'#0f3d3e':'#6b655b'),sic:ico(k,on?'#1b1a17':'#cde3e3'),pill:on?'#d9ecec':'transparent',onClick:setTab(k),fg:on?'#0f3d3e':'#605a51',fw:on?'700':'500',bg:'transparent',hasBadge:bd>0,badge:bd};});
+    const roles=['site','cm','planner','pm','qc'].map(r=>({label:t['role_'+r],onClick:()=>{this.set({role:r,detail:null,review:null,errors:[],bulk:false,bulkVals:{},bulkErr:{},sel:{}});this.top();},bg:r===role?'#ff7a59':'transparent',fg:r===role?'#1b1a17':'#e9e4da'}));
     const inDetail=!!(s.detail&&D.actMap[s.detail]),inReview=isRev&&!!(s.review&&pendingAll.find(u=>u.id===s.review));
-    const show={dash:role!=='site'&&tab==='dash'&&!inDetail,users:!!isAdm&&tab==='users'&&!inDetail,siteList:role==='site'&&tab==='acts'&&!inDetail,siteHist:role==='site'&&tab==='hist'&&!inDetail,detail:inDetail,review:isRev&&tab==='review'&&!inReview&&!inDetail,reviewDetail:inReview&&!inDetail,progress:isRev&&tab==='progress'&&!inDetail,import:role==='planner'&&tab==='import'&&!inDetail,portfolio:role==='pm'&&tab==='portfolio'&&!inDetail,trends:role==='pm'&&tab==='trends'&&!inDetail,lookahead:tab==='lookahead'&&!inDetail,report:role!=='site'&&tab==='report'&&!inDetail,bldg:role!=='site'&&tab==='bldg'&&!inDetail,delays:role==='pm'&&tab==='delays'&&!inDetail};
+    const show={dash:role!=='site'&&tab==='dash'&&!inDetail,users:!!isAdm&&tab==='users'&&!inDetail,siteList:role==='site'&&tab==='acts'&&!inDetail,siteHist:role==='site'&&tab==='hist'&&!inDetail,detail:inDetail,review:isRev&&tab==='review'&&!inReview&&!inDetail,reviewDetail:inReview&&!inDetail,progress:isRev&&tab==='progress'&&!inDetail,import:role==='planner'&&tab==='import'&&!inDetail,portfolio:role==='pm'&&tab==='portfolio'&&!inDetail,trends:role==='pm'&&tab==='trends'&&!inDetail,lookahead:tab==='lookahead'&&!inDetail,report:role!=='site'&&tab==='report'&&!inDetail,bldg:role!=='site'&&tab==='bldg'&&!inDetail,delays:role==='pm'&&tab==='delays'&&!inDetail,qc:role==='qc'&&tab==='qc'&&!inDetail};
     const skel=this.live()&&s.auth==='ready'&&!s.lastSync&&!s.loadErr&&!s.data.activities.length;if(skel)Object.keys(show).forEach(k=>{show[k]=false;});
 
     const memOf=id=>new Set((s.members||[]).filter(m=>m.user_id===id).map(m=>m.project_id));
     const allUsers=s.users||[],isPendU=u=>u.active!==false&&u.role==='site'&&(!u.discipline||!memOf(u.id).size),uQ=(s.uq||'').trim().toLowerCase();
-    const UF={all:()=>true,pending:isPendU,disabled:u=>u.active===false};['site','cm','planner','pm','admin'].forEach(r=>{UF[r]=u=>u.role===r;});
-    const uStats=!show.users?[]:[['all',t.uAll],['pending',t.uPendingL]].concat(['site','cm','planner','pm','admin'].map(r=>[r,t['prole_'+r]])).concat([['disabled',t.uDisabledL]]).map(([k,l])=>{const n=allUsers.filter(UF[k]).length,on=s.uFilter===k;
+    const UF={all:()=>true,pending:isPendU,disabled:u=>u.active===false};['site','cm','planner','pm','qc','admin'].forEach(r=>{UF[r]=u=>u.role===r;});
+    const uStats=!show.users?[]:[['all',t.uAll],['pending',t.uPendingL]].concat(['site','cm','planner','pm','qc','admin'].map(r=>[r,t['prole_'+r]])).concat([['disabled',t.uDisabledL]]).map(([k,l])=>{const n=allUsers.filter(UF[k]).length,on=s.uFilter===k;
       return{k,l,n,c:k==='pending'&&n?C.amber:k==='disabled'&&n?C.red:'#1b1a17',bg:on?'#fff1eb':'#fff',bd:on?'#1b1a17':'#e4e0d8',onClick:()=>this.setState({uFilter:on?'all':k})};});
     // only the primary admin (Admin = admin@dmc.local) may set passwords — enforced in db/18 too
     const canPw=s.mode==='demo'||!!(s.user&&(s.user.email||'').toLowerCase()==='admin@dmc.local');
     const uById={};allUsers.forEach(u=>uById[u.id]=u);const kids={};allUsers.forEach(u=>{if(u.reports_to&&uById[u.reports_to])(kids[u.reports_to]=kids[u.reports_to]||[]).push(u);});
     const uNm=u=>(u.full_name||u.email||'—').replace('@dmc.local',''),uMail=u=>u.email||((u.full_name||'').indexOf('@')>0?u.full_name:'—');
     const under=id=>{const out=new Set();const walk=x=>(kids[x]||[]).forEach(k=>{if(!out.has(k.id)){out.add(k.id);walk(k.id);}});walk(id);return out;};
-    const RORD={admin:0,pm:1,planner:2,cm:3,site:4};const bySeniority=(a,b)=>(RORD[a.role]-RORD[b.role])||uNm(a).localeCompare(uNm(b));
+    const RORD={admin:0,pm:1,planner:2,cm:3,qc:4,site:5};const bySeniority=(a,b)=>(RORD[a.role]-RORD[b.role])||uNm(a).localeCompare(uNm(b));
     const mgrChipsFor=(u,cur,pick)=>{const bad=u?under(u.id):new Set();return [chip(t.uNoMgr,!cur,()=>pick(null))].concat(allUsers.filter(m=>m.active!==false&&(!u||m.id!==u.id)&&!bad.has(m.id)&&m.role!=='site').sort(bySeniority).map(m=>chip(uNm(m)+' · '+t['prole_'+m.role],cur===m.id,()=>pick(m.id))));};
     const AVC={admin:'#3d3933',pm:'#0f3d3e',planner:'#145457',cm:'#e85d3c',site:'#7a7368'};
     const uTree=[];if(show.users&&s.uView==='tree'){const seen=new Set();const add=(u,depth,last)=>{if(seen.has(u.id))return;seen.add(u.id);const k=(kids[u.id]||[]).slice().sort(bySeniority);
@@ -2575,7 +2662,7 @@ class Component extends DCLogic {
         editOpen:s.uEdFor===u.id,editToggle:()=>this.setState({uEdFor:s.uEdFor===u.id?null:u.id,uEd:{full:u.full_name&&u.full_name.indexOf('@')<0?u.full_name:'',title:u.job_title||''}}),
         editSave:()=>{const e2=s.uEd||{};this.setState({uEdFor:null});this.updProfile(u.id,{full_name:(e2.full||'').trim()||u.full_name,job_title:(e2.title||'').trim()||null});},
         hasMe:me,hasPending:isPendU(u),
-        roleChips:['site','cm','planner','pm','admin'].map(r=>chip(t['prole_'+r],u.role===r,()=>{if(me&&r!=='admin'){this.toast(t.cantDemoteSelf);return;}this.updProfile(u.id,{role:r});})),
+        roleChips:['site','cm','planner','pm','qc','admin'].map(r=>chip(t['prole_'+r],u.role===r,()=>{if(me&&r!=='admin'){this.toast(t.cantDemoteSelf);return;}this.updProfile(u.id,{role:r});})),
         discChips:ENG.map(e=>chip(person(e),u.discipline===e,()=>this.updProfile(u.id,{discipline:e}))),
         projChips:D.projects.map(p=>chip((mem.has(p.id)?'✓ ':'')+p.code,mem.has(p.id),()=>this.toggleMember(p.id,u.id,mem.has(p.id)))),hasProj:D.projects.length>0,
         activeLbl:u.active!==false?t.uActive:t.uDisabled,activeBg:u.active!==false?C.greenBg:C.redBg,activeFg:u.active!==false?C.green:C.red,toggleActive:()=>{if(me)return;this.updProfile(u.id,{active:u.active===false});},
@@ -2585,15 +2672,15 @@ class Component extends DCLogic {
     const uNoTeam=show.users?D.projects.filter(p=>!actU.some(u=>(u.role==='site'||u.role==='cm')&&memP(p.id).has(u.id))).map(p=>p.code):[];
     const uProj=show.users&&s.uView==='proj'?D.projects.map(p=>{const ms=memP(p.id),uc=u=>chip((ms.has(u.id)?'✓ ':'')+uNm(u),ms.has(u.id),()=>this.toggleMember(p.id,u.id,ms.has(u.id)));
       const newAcc=(role,disc)=>()=>this.setState({nuOpen:true,nu:{name:'',pw:'',role,disc:disc||'CIV',full:'',title:'',mgr:null,projs:[p.id]}},()=>{try{window.scrollTo({top:0,behavior:'smooth'});}catch(e){}});
-      const rows=[{label:t.prole_cm,list:actU.filter(u=>u.role==='cm'),add:newAcc('cm','CIV')}].concat(ENG.map(e=>({label:person(e),list:actU.filter(u=>u.role==='site'&&u.discipline===e),add:newAcc('site',e)})));
+      const rows=[{label:t.prole_cm,list:actU.filter(u=>u.role==='cm'),add:newAcc('cm','CIV')},{label:t.prole_qc,list:actU.filter(u=>u.role==='qc'),add:newAcc('qc','CIV')}].concat(ENG.map(e=>({label:person(e),list:actU.filter(u=>u.role==='site'&&u.discipline===e),add:newAcc('site',e)})));
       const n=actU.filter(u=>(u.role==='site'||u.role==='cm')&&ms.has(u.id)).length;
       return{title:p.code+' · '+nm(p),n:n?t.uProjN(n):t.uProjNone,nC:n?'#1f6b3a':'#b3261e',bd:n?'#e4e0d8':'#e85d3c',
         rows:rows.map(r=>({label:r.label,chips:r.list.map(uc),none:!r.list.length,add:r.add,assigned:r.list.filter(u=>ms.has(u.id)).length>0}))};}):[];
     const nu=s.nu,setNu=p=>this.setState(st=>({nu:Object.assign({},st.nu,p)}));
-    const nuV={name:nu.name,pw:nu.pw,full:nu.full||'',title:nu.title||'',onFull:e=>setNu({full:e.target.value}),onTitle:e=>setNu({title:e.target.value}),mgrChips:show.users&&s.nuOpen?mgrChipsFor(null,nu.mgr||null,id=>setNu({mgr:id})):[],onName:e=>setNu({name:e.target.value}),onPw:e=>setNu({pw:e.target.value}),roleChips:['site','cm','planner','pm','admin'].map(r=>chip(t['prole_'+r],nu.role===r,()=>setNu({role:r}))),
+    const nuV={name:nu.name,pw:nu.pw,full:nu.full||'',title:nu.title||'',onFull:e=>setNu({full:e.target.value}),onTitle:e=>setNu({title:e.target.value}),mgrChips:show.users&&s.nuOpen?mgrChipsFor(null,nu.mgr||null,id=>setNu({mgr:id})):[],onName:e=>setNu({name:e.target.value}),onPw:e=>setNu({pw:e.target.value}),roleChips:['site','cm','planner','pm','qc','admin'].map(r=>chip(t['prole_'+r],nu.role===r,()=>setNu({role:r}))),
       hasProj:D.projects.length>0,projChips:D.projects.map(p=>{const on=(nu.projs||[]).indexOf(p.id)>=0;return chip((on?'✓ ':'')+p.code,on,()=>setNu({projs:on?(nu.projs||[]).filter(x=>x!==p.id):(nu.projs||[]).concat([p.id])}));}),discChips:ENG.map(e=>chip(person(e),nu.disc===e,()=>setNu({disc:e}))),btn:s.nuBusy?t.nuBusy:t.nuCreate,create:()=>{if(!s.nuBusy)this.createUser();}};
-    const PERM=[['perm_scope',['permAssigned','permAssigned','permAll','permAll','permAll']],['perm_update',[1,0,0,0,1]],['perm_cm',[0,1,0,0,1]],['perm_pl',[0,0,1,0,1]],['perm_import',[0,0,1,0,1]],['perm_reports',[0,1,1,1,1]],['perm_users',[0,0,0,0,1]],['perm_chat',[1,1,1,1,1]]];
-    const permHead=[{l:''}].concat(['site','cm','planner','pm','admin'].map(r=>({l:t['prole_'+r]})));
+    const PERM=[['perm_scope',['permAssigned','permAssigned','permAll','permAll','permAssigned','permAll']],['perm_update',[1,0,0,0,0,1]],['perm_cm',[0,1,0,0,0,1]],['perm_pl',[0,0,1,0,0,1]],['perm_qc',[0,0,0,0,1,1]],['perm_import',[0,0,1,0,0,1]],['perm_reports',[0,1,1,1,0,1]],['perm_users',[0,0,0,0,0,1]],['perm_chat',[1,1,1,1,1,1]]];
+    const permHead=[{l:''}].concat(['site','cm','planner','pm','qc','admin'].map(r=>({l:t['prole_'+r]})));
     const permCells=[];PERM.forEach(([k,v])=>{permCells.push({v:t[k],c:'#1b1a17',fw:'600',al:'start'});v.forEach(x=>permCells.push(typeof x==='string'?{v:t[x],c:'#3f3a33',fw:'500',al:'center'}:{v:x?'✓':'—',c:x?C.green:'#b3ac9f',fw:'700',al:'center'}));});
     // Site
     const q=s.q.trim().toLowerCase();
@@ -2615,6 +2702,7 @@ class Component extends DCLogic {
     const TC={needs:C.red,returned:C.red,drafts:C.amber,pending:C.blue};
     const tiles=['returned','drafts','pending'].map(k=>{const n=mine.filter(FIL[k]).length,on=s.sFilter===k;return{n,l:t['f_'+k],c:n?TC[k]:'#8a8378',bd:on?'#1b1a17':'#e4e0d8',bg:on?'#fff1eb':'#fff',onClick:()=>this.setState({sFilter:on?'all':k})};});
     const myRem=role==='site'?(s.data.reminders||[]).filter(r=>r.to===s.eng&&!r.done).map(r=>{
+      if(r.type==='qc'){const a=D.actMap[r.actIds[0]];if(!a)return null;return{rid:r.id,title:'🛡 '+t.qcRejTitle,when:r.at.replace('T',' '),msg:(()=>{const i=(r.note||'').indexOf(' — '),why=i>=0?r.note.slice(i+3):'';return (why?'“\u2068'+why+'\u2069” ':'')+t.qcRejMsg;})(),codes:'\u2068'+((r.note||'').split(' — ')[0]||'IR')+'\u2069 · '+a.code+' · '+nm(a)+' · '+locL(a),showLbl:t.openAct,show:()=>{this.dismissReminder(r.id);this.setState({notifOpen:false});this.openDetail(a.id);},dismiss:()=>this.dismissReminder(r.id)};}
       if(r.type==='adjusted'){const a=D.actMap[r.actIds[0]];if(!a)return null;return{rid:r.id,title:t.adjTitle,when:r.at.replace('T',' '),msg:t.adjMsg(r.from_pct,r.to_pct,r.from_qty,r.to_qty,a.unit)+(r.note?' — “'+r.note+'”':''),codes:a.code+' · '+nm(a)+' · '+locL(a),showLbl:t.openAct,show:()=>{this.dismissReminder(r.id);this.setState({notifOpen:false});this.openDetail(a.id);},dismiss:()=>this.dismissReminder(r.id)};}
       const left=r.actIds.filter(id=>D.actMap[id]&&D.actMap[id].missing);if(!left.length)return null;
       return{rid:r.id,title:t.remindTitle+' · '+person(r.from),when:r.at.replace('T',' '),msg:t.remindMissing(left.length),codes:left.map(id=>D.actMap[id].code).join(' · '),showLbl:t.showActs,dismiss:()=>this.dismissReminder(r.id),show:()=>{setTab('acts')();this.setState({notifOpen:false,sFilter:'needs',sProj:'all',sBldg:'all',sZone:'all'});}};}).filter(Boolean):[];
@@ -2623,6 +2711,21 @@ class Component extends DCLogic {
     const myHist=!show.siteHist?[]:s.data.updates.filter(u=>u.by===s.eng&&D.actMap[u.actId]).sort((a,b)=>a.created<b.created?1:-1).slice(0,50).map(u=>{const a=D.actMap[u.actId],st=upSt[u.status];return{code:a.code,name:nm(a),when:(u.submitted||u.created).replace('T',' '),pctTxt:u.pct+'%',stLabel:t[st[0]],stBg:st[1],stFg:st[2],open:()=>this.openDetail(a.id)};});
     const geoTxt=p=>p.geo==='ok'?t.geoOk(p.lat.toFixed(5),p.lng.toFixed(5),p.acc):p.geo==='pending'?t.geoPending:t.geoNone;
     const mapUrl=p=>p.geo==='ok'?'https://www.openstreetmap.org/?mlat='+p.lat+'&mlon='+p.lng+'#map=18/'+p.lat+'/'+p.lng:'';
+
+    // QC tab: finished activities → inspection requests
+    const qcV={tiles:[],list:[],projChips:[],hasProj:false,empty:false,q:s.qcQ||'',onQ:e=>this.setState({qcQ:e.target.value})};
+    if(show.qc){const qp=s.qcProj||'all',qf=s.qcF||'ready',qq=(s.qcQ||'').trim().toLowerCase(),pool=D.acts.filter(a=>a.qc&&(qp==='all'||a.pid===qp));
+      const FQ={ready:a=>a.qc==='ready',open:a=>a.qc==='open',rejected:a=>a.qc==='rejected',passed:a=>a.qc==='passed'||a.qc==='comments'};
+      const QCC={ready:['#ffe1d6','#b23c1d'],open:[C.blueBg,C.blue],rejected:[C.redBg,C.red],passed:[C.greenBg,C.green],comments:[C.greenBg,C.green]};
+      qcV.tiles=['ready','open','rejected','passed'].map(k=>{const n=pool.filter(FQ[k]).length,on=qf===k;return{n,l:t.qcF[k],c:QCC[k][1],bg:on?QCC[k][0]:'#fff',bd:on?QCC[k][1]:'#e4e0d8',onClick:()=>this.setState({qcF:k})};});
+      const projs=D.projects.filter(p=>D.acts.some(a=>a.pid===p.id&&a.qc));qcV.hasProj=projs.length>1;
+      qcV.projChips=[chip(t.f_all,qp==='all',()=>this.setState({qcProj:'all'}))].concat(projs.map(p=>chip(p.code,qp===p.id,()=>this.setState({qcProj:p.id}))));
+      const L=pool.filter(FQ[qf]).filter(a=>!qq||(a.code+' '+a.name+' '+a.nameAr+' '+(a.ir?a.ir.no:'')).toLowerCase().indexOf(qq)>=0)
+        .sort((x,y)=>(x.pid+'|'+(x.btype||'')+'|'+x.bldg).localeCompare(y.pid+'|'+(y.btype||'')+'|'+y.bldg,'en',{numeric:true})||(x.ps<y.ps?-1:x.ps>y.ps?1:0));
+      const cnt={};L.forEach(a=>{const k=a.pid+'|'+a.bldg;cnt[k]=(cnt[k]||0)+1;});let last='';
+      L.slice(0,300).forEach(a=>{const k=a.pid+'|'+a.bldg;if(k!==last){last=k;qcV.list.push({isHead:true,isItem:false,head:'🏢 '+[D.projects.length>1?(D.projMap[a.pid]||{}).code:'',a.btype,a.bldg].filter(Boolean).join(' · '),n:String(cnt[k])});}
+        const c=QCC[a.qc];qcV.list.push({isHead:false,isItem:true,code:a.code,eng:person(a.eng),name:nm(a),wbs:a.wbs,irTxt:a.ir?a.ir.no+' · '+t.qcDate+' '+(a.ir.date||'—'):t.k_done+' '+(a.aFinish||a.lastDate||''),res:a.ir&&a.ir.res?'“'+a.ir.res+'”':'',hasRes:!!(a.ir&&a.ir.res),st:t.qcSt[a.qc],bg:c[0],fg:c[1],open:()=>this.openDetail(a.id),canQuick:a.qc==='ready'||a.qc==='rejected',quick:()=>this.qcCreate(a.id,true)});});
+      qcV.empty=!L.length;}
 
     // Detail
     let d={pend:{},pr:{}},fm={},f={},quick=[],delayChips=[],partyChips=[],photos=[],detailHist=[];
@@ -2635,6 +2738,11 @@ class Component extends DCLogic {
         barColor:a.delayed?C.barBad:a.variance<-2?C.barWarn:C.barOk,varTxt:sg(a.variance),varColor:vc(a.variance),unit:a.unit,pr:(()=>{const x=prodOf(a),q=v=>(Math.round(v*10)/10).toLocaleString('en')+' '+a.unit;
           return{rem:q(x.rem),remD:x.done?'—':t.daysN(x.remD),rate:x.rate==null?t.notStartedRate:q(x.rate)+t.perDay,req:x.done?'—':x.req==null?t.overduePf:q(x.req)+t.perDay,reqC:x.rate!=null&&x.req!=null&&x.req>x.rate*1.1?C.red:'#1b1a17',
             fc:x.fc,fcC:x.late?C.red:C.green,fcNote:x.done?t.k_done:x.late?t.fcLate(x.late):t.fcOk,src:x.done?'':x.site?t.remSrcSite(a.remRep.days,a.remRep.at)+(a.remRep.pending?' · '+t.remSrcPend:''):t.remSrcCalc};})(),showProd:role!=='site',remHint:t.remHint(a.pf),
+        ...(()=>{const QC={ready:['#ffe1d6','#b23c1d'],open:[C.blueBg,C.blue],rejected:[C.redBg,C.red],passed:[C.greenBg,C.green],comments:[C.greenBg,C.green]},isQ=role==='qc',q=QC[a.qc]||[C.greyBg,C.grey];
+          return{qcShow:a.actual>=100||a.irs.length>0,qcStL:a.qc?t.qcSt[a.qc]:'',qcBg:q[0],qcFg:q[1],qcNoIr:!a.irs.length,qcHasHist:a.irs.length>0,
+            qcHist:a.irs.slice().reverse().map(x=>{const c=QC[x.status]||q;return{no:x.no,st:t.qcSt[x.status]||x.status,bg:c[0],fg:c[1],line:t.qcDate+': '+(x.date||'—')+' · '+t.qcRaised+' '+(x.at||'').replace('T',' ')+(x.resAt?' · '+t.qcResAt+' '+x.resAt.replace('T',' '):''),notes:x.notes||'',hasNotes:!!x.notes,res:x.res||'',hasRes:!!x.res};}),
+            qcCanNew:isQ&&(a.qc==='ready'||a.qc==='rejected'),qcNewLbl:a.qc==='rejected'?t.qcReNew:t.qcNew,qcDate:s.qcDate||addD(TODAY,1),onQcDate:e=>this.setState({qcDate:e.target.value}),qcNotes:s.qcNotes||'',onQcNotes:e=>this.setState({qcNotes:e.target.value}),qcCreate:()=>this.qcCreate(a.id),
+            qcCanRes:isQ&&a.qc==='open',qcOpenNo:a.ir?a.ir.no:'',qcRes:s.qcRes||'',onQcRes:e=>this.setState({qcRes:e.target.value}),qcPass:()=>this.qcResult(a.id,'passed'),qcCom:()=>this.qcResult(a.id,'comments'),qcRej:()=>this.qcResult(a.id,'rejected')};})(),
         hasSeq:!!a.oseq,seqList:(a.seqOpen||[]).map(x=>({code:x.code,name:nm(x),pct:p0(x.actual),go:()=>this.openDetail(x.id)})),seqAuto:a.autoPred?t.seqAuto:'',
         canCorrect:(this.live()?!!(s.profile&&s.profile.role==='admin'):role==='planner')&&!!a.off&&!a.pending,corrOpen:!!s.corrOpen,corrArrow:s.corrOpen?'▾':'▸',corrToggle:()=>this.setState({corrOpen:!s.corrOpen,corrPct:a.actual,corrNote:''}),
         corrPct:s.corrPct==null?a.actual:s.corrPct,corrNote:s.corrNote||'',corrPctOn:e=>this.setState({corrPct:e.target.value}),corrNoteOn:e=>this.setState({corrNote:e.target.value}),corrSave:()=>this.correctProgress(a.id),
@@ -3126,7 +3234,7 @@ class Component extends DCLogic {
       loadDemoLbl:s.liveArm==='load'?t.resetConfirm:t.loadDemoDb,removeDemoLbl:s.liveArm==='remove'?t.resetConfirm:t.removeDemoDb,
       stor:live?{badge:t.storageBadgeLive,l1:t.storageLive1,l2:t.storageLive2,l3:t.storageLive3,bg:'oklch(0.94 0.05 150)',fg:'oklch(0.38 0.1 150)'}:{badge:t.storageBadge,l1:t.storage1,l2:t.storage2,l3:t.storage3,bg:'oklch(0.94 0.06 85)',fg:'oklch(0.4 0.09 70)'},
       skel,skelRows:[{h:'150px'},{h:'120px'},{h:'120px'},{h:'120px'}],hic:{bell:ico('bell','#f7f5f1'),bellDark:ico('bell','#0f3d3e'),chat:ico('chat','#ffe1d6'),refresh:ico('refresh','#f7f5f1'),dark:ico(s.dark?'sun':'moon','#f7f5f1'),gear:ico('gear','#f7f5f1')},sideTabs:tabs.map(b=>Object.assign({},b,{sbg:b.fw==='700'?'#ff7a59':'transparent',sfg:b.fw==='700'?'#1b1a17':'#e9e4da'})),roleLabel:t['role_'+role],srcTag:live?'LIVE':'DEMO',srcBg:live?'oklch(0.62 0.13 150)':'#f2c14e'};
-    return{...liveVals,canPw,usersList,uTree,uViews,uTreeOn:show.users&&s.uView==='tree',uListOn:s.uView!=='tree'&&s.uView!=='proj',uProjOn:show.users&&s.uView==='proj',uProj,uNoTeam,uNoTeamOn:show.users&&uNoTeam.length>0,uNoTeamTxt:t.uNoTeam(uNoTeam.length),uNoTeamCodes:uNoTeam.join(', '),uNoTeamGo:()=>this.setState({uView:'proj'}),edV,usersEmpty:show.users&&!usersList.length,uStats,uq:s.uq,onUq:e=>this.setState({uq:e.target.value}),nuOpen:s.nuOpen,nuBtn:s.nuOpen?t.nuClose:t.nuOpen,toggleNu:()=>this.setState({nuOpen:!s.nuOpen}),nuV,permHead,permCells,
+    return{...liveVals,qcV,qcIcon:ico('qc','#0f3d3e'),canPw,usersList,uTree,uViews,uTreeOn:show.users&&s.uView==='tree',uListOn:s.uView!=='tree'&&s.uView!=='proj',uProjOn:show.users&&s.uView==='proj',uProj,uNoTeam,uNoTeamOn:show.users&&uNoTeam.length>0,uNoTeamTxt:t.uNoTeam(uNoTeam.length),uNoTeamCodes:uNoTeam.join(', '),uNoTeamGo:()=>this.setState({uView:'proj'}),edV,usersEmpty:show.users&&!usersList.length,uStats,uq:s.uq,onUq:e=>this.setState({uq:e.target.value}),nuOpen:s.nuOpen,nuBtn:s.nuOpen?t.nuClose:t.nuOpen,toggleNu:()=>this.setState({nuOpen:!s.nuOpen}),nuV,permHead,permCells,
       db,ch,chatOpen:s.chatOpen,chatUnread,chatHasUnread:chatUnread>0,openChat:()=>{this.setState({chatOpen:true,settings:false});if(this.live())this.reloadChat();},
       photoNote:live?t.photoNoteLive:t.photoNote,retTitle:d.retBy?t.returnedBy(d.retBy):t.returnedNote,importJson:e=>this.importJson(e),t,dir:L==='ar'?'rtl':'ltr',lang:L,today:TODAY,roles,tabs,show,toast:s.toast,hasToast:!!s.toast,
       showPushAsk:live&&s.auth==='ready'&&s.push==='off'&&!s.pushAskHidden&&!s.settings,pushIsOn:s.push==='on',pushIsIOS:s.push==='ios',pushCanOn:s.push==='off'||s.push==='',
