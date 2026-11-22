@@ -244,6 +244,19 @@ button{transition:transform .08s ease,background-color .15s ease}button:active{t
       </div>
     </div>
 
+    <sc-if value="{{ d.canCorrect }}" hint-placeholder-val="{{ false }}">
+      <div style="background:#fff;border:1px dashed #b23c1d;border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:10px">
+        <button onClick="{{ d.corrToggle }}" style="display:flex;align-items:center;gap:8px;border:none;background:transparent;padding:0;text-align:start;font-weight:700;font-size:15px;color:#b23c1d">✎ {{ t.corrTitle }}<span style="margin-inline-start:auto">{{ d.corrArrow }}</span></button>
+        <sc-if value="{{ d.corrOpen }}" hint-placeholder-val="{{ false }}"><div style="display:flex;flex-direction:column;gap:10px">
+          <div style="font-size:12.5px;color:#605a51;line-height:1.5">{{ t.corrHelp }}</div>
+          <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap"><span style="font-size:13px;color:#605a51">{{ t.corrNow }} <b style="color:#1b1a17">{{ d.actualTxt }}</b> →</span>
+            <input type="number" min="0" max="100" step="1" value="{{ d.corrPct }}" onChange="{{ d.corrPctOn }}" style="width:96px;min-height:48px;font-size:22px;font-weight:700;text-align:center;border:1px solid #cfc9bf;border-radius:10px;background:#fff"><span style="font-size:20px;font-weight:700">%</span></div>
+          <textarea rows="2" value="{{ d.corrNote }}" onChange="{{ d.corrNoteOn }}" placeholder="{{ t.corrNotePh }}" style="padding:10px 12px;font-size:14px;border:1px solid #cfc9bf;border-radius:10px;background:#fff;resize:vertical"></textarea>
+          <button onClick="{{ d.corrSave }}" style="align-self:flex-start;min-height:46px;padding:0 18px;border:none;background:#b23c1d;color:#fff;border-radius:10px;font-weight:700">{{ t.corrSave }}</button>
+        </div></sc-if>
+      </div>
+    </sc-if>
+
     <sc-if value="{{ d.hasGallery }}" hint-placeholder-val="{{ false }}">
       <div style="background:#fff;border:1px solid #e2ded6;border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:10px">
         <div style="font-weight:700;font-size:16px">{{ t.actPhotos }} · {{ d.galleryN }}</div>
@@ -436,7 +449,8 @@ button{transition:transform .08s ease,background-color .15s ease}button:active{t
 
 <sc-if value="{{ show.progress }}" hint-placeholder-val="{{ false }}">
   <div style="display:flex;flex-direction:column;gap:12px;padding:16px 0">
-    <div style="padding:0 16px;font-size:22px;font-weight:700">{{ t.progressTitle }}</div>
+    <div style="padding:0 16px;display:flex;align-items:center;gap:10px;flex-wrap:wrap"><div style="font-size:22px;font-weight:700;flex:1;min-width:0">{{ t.progressTitle }}</div><sc-if value="{{ hasMissing }}" hint-placeholder-val="{{ false }}"><button onClick="{{ sendReminders }}" title="{{ t.remindHint }}" style="min-height:40px;border:1px solid #ff7a59;background:#ffe1d6;color:#b23c1d;border-radius:999px;font-weight:700;font-size:13.5px;padding:0 14px;white-space:nowrap">🔔 {{ remindTxt }}</button></sc-if></div>
+    <sc-if value="{{ hasMissing }}" hint-placeholder-val="{{ false }}"><div style="padding:0 16px;font-size:12px;color:#605a51">{{ t.remindHint }}</div></sc-if>
     <div style="display:flex;gap:8px;overflow-x:auto;padding:0 16px 2px">
       <sc-for list="{{ plChips }}" as="c" hint-placeholder-count="3"><button onClick="{{ c.onClick }}" style="flex:0 0 auto;min-height:40px;padding:0 14px;border-radius:999px;border:1px solid {{ c.bd }};background:{{ c.bg }};color:{{ c.fg }};font-size:14px;white-space:nowrap">{{ c.label }}</button></sc-for>
     </div>
@@ -494,7 +508,7 @@ button{transition:transform .08s ease,background-color .15s ease}button:active{t
     </div></div></sc-for>
     <sc-if value="{{ plEmpty }}" hint-placeholder-val="{{ false }}"><div style="margin:0 16px;padding:28px;text-align:center;color:#5f5a52;border:1px dashed #cfc9bf;border-radius:12px">{{ t.noItems }}</div></sc-if>
     <div style="padding:4px 16px 0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px">
-      <sc-if value="{{ hasMissing }}" hint-placeholder-val="{{ false }}"><button onClick="{{ sendReminders }}" style="min-height:50px;border:1px solid #1b1a17;background:#fff;border-radius:10px;font-weight:700;font-size:14px;padding:0 12px;grid-column:1 / -1;background:#fff6e0;border-color:#cdb67a">🔔 {{ remindTxt }}</button></sc-if><button onClick="{{ openReport }}" style="min-height:50px;border:1px solid #1b1a17;background:#fff;border-radius:10px;font-weight:700;font-size:14px;padding:0 12px;grid-column:1 / -1;background:#0f3d3e;color:#fff">{{ t.weeklyReport }}</button>
+      <button onClick="{{ openReport }}" style="min-height:50px;border:1px solid #1b1a17;background:#fff;border-radius:10px;font-weight:700;font-size:14px;padding:0 12px;grid-column:1 / -1;background:#0f3d3e;color:#fff">{{ t.weeklyReport }}</button>
       <button onClick="{{ exportProgress }}" style="min-height:52px;border:1px solid #1d1b18;background:#fff;border-radius:10px;font-weight:700;font-size:14px">↓ {{ t.exportProgress }}</button>
       <button onClick="{{ exportHistory }}" style="min-height:52px;border:1px solid #1d1b18;background:#fff;border-radius:10px;font-weight:700;font-size:14px">↓ {{ t.exportHistory }}</button>
     </div>
@@ -505,11 +519,19 @@ button{transition:transform .08s ease,background-color .15s ease}button:active{t
   <div style="display:flex;flex-direction:column;gap:12px;padding:16px">
     <div style="font-size:22px;font-weight:700">{{ t.importTitle }}</div>
     <div style="font-size:14px;line-height:1.5;color:#3d3933;text-wrap:pretty">{{ t.importHelp }}</div>
-    <div style="background:#fff;border:1px solid #e2ded6;border-radius:10px;padding:12px;display:flex;flex-direction:column;gap:6px">
-      <div style="font-size:12.5px;font-weight:600;color:#5f5a52">{{ t.columns }}</div>
-      <div style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;line-height:1.6;direction:ltr;text-align:left;overflow-wrap:anywhere">{{ csvCols }}</div>
+    <div style="background:#fff;border:1px solid #e2ded6;border-radius:10px;overflow:hidden">
+      <button onClick="{{ toggleGuide }}" style="width:100%;text-align:start;border:none;background:transparent;padding:12px;display:flex;gap:8px;align-items:center;font-weight:700;font-size:14px;color:inherit">{{ guideBtn }} {{ t.columns }}<span style="margin-inline-start:auto;font-size:12px;font-weight:600;color:#605a51">{{ t.colGuideHint }}</span></button>
+      <sc-if value="{{ guideOpen }}" hint-placeholder-val="{{ false }}"><div style="display:flex;flex-direction:column;border-top:1px solid #f0ede7">
+        <sc-for list="{{ colGuide }}" as="c" hint-placeholder-count="4"><div style="display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2px 8px;padding:8px 12px;border-bottom:1px solid #f4f1ec;font-size:13px">
+          <span style="font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:12.5px;direction:ltr;unicode-bidi:isolate;text-align:start">{{ c.col }}</span>
+          <span style="font-size:11px;font-weight:700;padding:2px 8px;border-radius:999px;background:{{ c.reqBg }};color:{{ c.reqC }};white-space:nowrap">{{ c.req }}</span>
+          <span style="grid-column:1 / -1;color:#3d3933">{{ c.desc }} <span style="color:#7a7368;direction:ltr;unicode-bidi:isolate">· {{ c.ex }}</span></span>
+        </div></sc-for>
+      </div></sc-if>
+      <sc-if value="{{ guideClosed }}" hint-placeholder-val="{{ true }}"><div style="padding:0 12px 12px;font-family:'IBM Plex Mono',monospace;font-size:11.5px;line-height:1.6;direction:ltr;text-align:left;overflow-wrap:anywhere;color:#5f5a52">{{ csvCols }}</div></sc-if>
     </div>
     <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px">
+      <button onClick="{{ dlTemplate }}" style="min-height:50px;border:1px solid #145457;background:#145457;color:#fff;border-radius:10px;font-weight:700;font-size:14px;grid-column:1 / -1">↓ {{ t.dlTemplate }}</button>
       <button onClick="{{ loadSample }}" style="min-height:50px;border:1px solid #1d1b18;background:#fff;border-radius:10px;font-weight:600;font-size:14px">{{ t.loadSample }}</button>
       <label style="min-height:50px;border:1px solid #1d1b18;background:#fff;border-radius:10px;font-weight:600;font-size:14px;display:grid;place-items:center;cursor:pointer;text-align:center;padding:0 8px">{{ t.chooseFile }}<input type="file" accept=".csv,text/csv" onChange="{{ onCsvFile }}" style="display:none"></label>
     </div>
@@ -518,6 +540,11 @@ button{transition:transform .08s ease,background-color .15s ease}button:active{t
     <sc-if value="{{ imp.has }}" hint-placeholder-val="{{ false }}">
       <div style="display:flex;flex-direction:column;gap:8px">
         <div style="font-weight:700">{{ imp.summary }}</div>
+        <sc-if value="{{ imp.allOk }}" hint-placeholder-val="{{ false }}"><div style="font-size:13px;color:#1f6b3a;background:#e3f3e8;border-radius:8px;padding:8px 10px">✓ {{ t.impAllOk }}</div></sc-if>
+        <sc-if value="{{ imp.hasErr }}" hint-placeholder-val="{{ false }}"><div style="display:flex;gap:8px;flex-wrap:wrap">
+          <button onClick="{{ imp.toggleErr }}" style="min-height:40px;padding:0 14px;border-radius:999px;border:1px solid #c0392b;background:#fdecea;color:#a93226;font-weight:700;font-size:13px">{{ imp.errBtn }}</button>
+          <button onClick="{{ imp.dlErr }}" style="min-height:40px;padding:0 14px;border-radius:999px;border:1px solid #cfc9bf;background:#fff;font-weight:600;font-size:13px">↓ {{ t.impDlErr }}</button>
+        </div><div style="font-size:12px;color:#605a51">{{ t.impErrHint }}</div></sc-if>
         <sc-for list="{{ imp.rows }}" as="r" hint-placeholder-count="3">
           <div style="background:{{ r.bg }};border:1px solid {{ r.bd }};border-radius:10px;padding:10px 12px;display:flex;flex-direction:column;gap:3px;font-size:13.5px">
             <div style="display:flex;gap:8px"><span style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#5f5a52">#{{ r.line }}</span><span style="font-family:'IBM Plex Mono',monospace;font-weight:600">{{ r.code }}</span><span style="flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ r.name }}</span><span style="font-weight:600">{{ r.action }}</span></div>
@@ -572,7 +599,7 @@ button{transition:transform .08s ease,background-color .15s ease}button:active{t
     <div style="margin:0 16px;background:#fff;border:1px solid #e2ded6;border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:10px">
       <div style="display:flex;gap:16px;font-size:13px;flex-wrap:wrap">
         <span style="display:flex;align-items:center;gap:6px"><span style="width:18px;height:3px;background:#8f887c"></span>{{ t.planned }}</span>
-        <span style="display:flex;align-items:center;gap:6px"><span style="width:18px;height:4px;background:oklch(0.62 0.16 50)"></span>{{ t.actual }}</span><span style="display:flex;align-items:center;gap:6px"><span style="width:2px;height:14px;background:#0f3d3e"></span>{{ t.todayL }}</span>
+        <span style="display:flex;align-items:center;gap:6px"><span style="width:18px;height:4px;background:oklch(0.62 0.16 50)"></span>{{ t.actual }}</span><span style="display:flex;align-items:center;gap:6px"><span style="width:2px;height:14px;background:#0f3d3e"></span>{{ t.todayL }}</span><sc-if value="{{ chart.hasFc }}" hint-placeholder-val="{{ false }}"><span style="display:flex;align-items:center;gap:6px"><span style="width:18px;border-top:3px dotted oklch(0.62 0.16 50)"></span>{{ t.forecast }}</span></sc-if>
       </div>
       <div style="direction:ltr;position:relative">
         <svg viewBox="0 0 300 130" preserveAspectRatio="none" style="width:100%;height:200px;display:block;overflow:visible">
@@ -582,7 +609,8 @@ button{transition:transform .08s ease,background-color .15s ease}button:active{t
           <line x1="0" y1="95" x2="300" y2="95" style="stroke:#ece9e3;stroke-width:1;vector-effect:non-scaling-stroke"></line>
           <line x1="0" y1="125" x2="300" y2="125" style="stroke:#cfc9bf;stroke-width:1;vector-effect:non-scaling-stroke"></line>
           <line x1="{{ chart.tx }}" y1="0" x2="{{ chart.tx }}" y2="125" style="stroke:#1b1a17;stroke-width:1.5;vector-effect:non-scaling-stroke"></line>
-          <polyline points="{{ chart.planPts }}" style="fill:none;stroke:#8f887c;stroke-width:2;stroke-dasharray:5 4;vector-effect:non-scaling-stroke"></polyline>
+          <polyline points="{{ chart.planPts }}" style="fill:none;stroke:#8f887c;stroke-width:2;vector-effect:non-scaling-stroke"></polyline>
+          <polyline points="{{ chart.fcPts }}" style="fill:none;stroke:oklch(0.62 0.16 50);stroke-width:2.5;stroke-dasharray:1 5;stroke-linecap:round;vector-effect:non-scaling-stroke"></polyline>
           <polyline points="{{ chart.actPts }}" style="fill:none;stroke:oklch(0.62 0.16 50);stroke-width:3.5;vector-effect:non-scaling-stroke;stroke-linejoin:round"></polyline>
         </svg>
         <div style="position:absolute;inset-inline-start:2px;top:-2px;font-size:10px;color:#5f5a52">100%</div>
@@ -761,7 +789,8 @@ button{transition:transform .08s ease,background-color .15s ease}button:active{t
       </div>
       <div style="break-inside:avoid;margin-bottom:12px;animation:dmcIn .35s ease both;box-shadow:0 1px 3px rgba(27,26,23,.05);background:#fff;border:1px solid #e2ded6;border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:10px">
         <div style="font-weight:700;font-size:15px">{{ t.p_scurve }}</div>
-        <div style="display:flex;gap:16px;font-size:12.5px;flex-wrap:wrap"><span style="display:flex;align-items:center;gap:6px"><span style="width:18px;height:3px;background:#ff7a59"></span>{{ t.planned }}</span><span style="display:flex;align-items:center;gap:6px"><span style="width:18px;height:4px;background:#145457;border-radius:2px"></span>{{ t.actual }}</span><span style="display:flex;align-items:center;gap:6px"><span style="width:2px;height:14px;background:#0f3d3e"></span>{{ t.todayL }}</span></div>
+        <div style="display:flex;gap:16px;font-size:12.5px;flex-wrap:wrap"><span style="display:flex;align-items:center;gap:6px"><span style="width:18px;height:3px;background:#ff7a59"></span>{{ t.planned }}</span><span style="display:flex;align-items:center;gap:6px"><span style="width:18px;height:4px;background:#145457;border-radius:2px"></span>{{ t.actual }}</span><span style="display:flex;align-items:center;gap:6px"><span style="width:2px;height:14px;background:#0f3d3e"></span>{{ t.todayL }}</span><sc-if value="{{ db.chart.hasFc }}" hint-placeholder-val="{{ false }}"><span style="display:flex;align-items:center;gap:6px"><span style="width:18px;border-top:3px dotted #145457"></span>{{ t.forecast }}</span></sc-if></div>
+        <sc-if value="{{ db.chart.hasFc }}" hint-placeholder-val="{{ false }}"><div style="font-size:12px;color:#605a51">{{ db.chart.fcTxt }}</div></sc-if>
         <div style="direction:ltr;position:relative">
           <svg viewBox="0 0 300 130" preserveAspectRatio="none" style="width:100%;height:190px;display:block;overflow:visible">
             <line x1="0" y1="5" x2="300" y2="5" style="stroke:#ece9e3;stroke-width:1;vector-effect:non-scaling-stroke"></line>
@@ -770,7 +799,8 @@ button{transition:transform .08s ease,background-color .15s ease}button:active{t
             <line x1="{{ db.chart.tx }}" y1="0" x2="{{ db.chart.tx }}" y2="125" style="stroke:#1b1a17;stroke-width:1.5;vector-effect:non-scaling-stroke"></line>
             <defs><linearGradient id="dmcArea" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#145457" stop-opacity=".32"></stop><stop offset="1" stop-color="#145457" stop-opacity=".02"></stop></linearGradient></defs>
             <polygon points="{{ db.chart.area }}" style="fill:url(#dmcArea);stroke:none"></polygon>
-            <polyline points="{{ db.chart.planPts }}" style="fill:none;stroke:#ff7a59;stroke-width:2.5;stroke-dasharray:6 4;vector-effect:non-scaling-stroke"></polyline>
+            <polyline points="{{ db.chart.planPts }}" style="fill:none;stroke:#ff7a59;stroke-width:2.5;vector-effect:non-scaling-stroke"></polyline>
+            <polyline points="{{ db.chart.fcPts }}" style="fill:none;stroke:#145457;stroke-width:3;stroke-dasharray:1 6;stroke-linecap:round;vector-effect:non-scaling-stroke"></polyline>
             <polyline points="{{ db.chart.actPts }}" style="fill:none;stroke:#145457;stroke-width:3.5;vector-effect:non-scaling-stroke;stroke-linejoin:round;stroke-linecap:round"></polyline>
           </svg>
           <div style="position:absolute;left:2px;top:-2px;font-size:10px;color:#5f5a52">100%</div>
@@ -974,7 +1004,7 @@ button{transition:transform .08s ease,background-color .15s ease}button:active{t
 <div style="font-size:13.5px;font-weight:700;color:#0f3d3e;border-bottom:2px solid #ff7a59;padding-bottom:3px">{{ t.repExec }}</div>
 <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(100px,1fr));gap:6px"><sc-for list="{{ rp.kpis }}" as="k" hint-placeholder-count="6"><div style="border:1px solid #d8d3ca;border-top:3px solid #145457;padding:8px 10px;display:flex;flex-direction:column;gap:2px;break-inside:avoid"><div style="font-size:10.5px;color:#5f5a52;font-weight:600">{{ k.l }}</div><div style="font-size:16px;font-weight:700;color:{{ k.c }};direction:ltr;unicode-bidi:isolate;text-align:start;font-family:'IBM Plex Mono',monospace">{{ k.v }}</div><div style="font-size:10px;color:#5f5a52">{{ k.s }}</div></div></sc-for></div>
 <div style="font-size:12px;line-height:1.6">{{ rp.narr }}</div>
-<div style="border:1px solid #d8d3ca;padding:10px 12px;break-inside:avoid"><div style="display:flex;gap:14px;align-items:center;flex-wrap:wrap;margin-bottom:6px"><div style="font-weight:700;flex:1">{{ t.repCurve }}</div><span style="display:flex;align-items:center;gap:6px;font-size:10.5px"><span style="width:18px;border-top:2px dashed #8f887c"></span>{{ t.planned }}</span><span style="display:flex;align-items:center;gap:6px;font-size:10.5px"><span style="width:18px;height:3px;background:#ff7a59"></span>{{ t.actualShort }}</span></div><div style="direction:ltr"><svg viewBox="0 0 300 130" preserveAspectRatio="none" style="width:100%;height:150px;display:block"><line x1="0" y1="125" x2="300" y2="125" style="stroke:#cfc9bf;stroke-width:1;vector-effect:non-scaling-stroke"></line><line x1="0" y1="65" x2="300" y2="65" style="stroke:#ece9e3;stroke-width:1;vector-effect:non-scaling-stroke"></line><line x1="0" y1="5" x2="300" y2="5" style="stroke:#ece9e3;stroke-width:1;vector-effect:non-scaling-stroke"></line><line x1="{{ rp.chart.tx }}" y1="0" x2="{{ rp.chart.tx }}" y2="125" style="stroke:#0f3d3e;stroke-width:1;vector-effect:non-scaling-stroke"></line><polyline points="{{ rp.chart.planPts }}" style="fill:none;stroke:#8f887c;stroke-width:1.5;stroke-dasharray:4 3;vector-effect:non-scaling-stroke"></polyline><polyline points="{{ rp.chart.actPts }}" style="fill:none;stroke:#ff7a59;stroke-width:2.5;vector-effect:non-scaling-stroke"></polyline></svg><div style="font-size:10px;color:#605a51;font-family:'IBM Plex Mono',monospace">{{ rp.range }}</div></div></div>
+<div style="border:1px solid #d8d3ca;padding:10px 12px;break-inside:avoid"><div style="display:flex;gap:14px;align-items:center;flex-wrap:wrap;margin-bottom:6px"><div style="font-weight:700;flex:1">{{ t.repCurve }}</div><span style="display:flex;align-items:center;gap:6px;font-size:10.5px"><span style="width:18px;border-top:2px solid #8f887c"></span>{{ t.planned }}</span><span style="display:flex;align-items:center;gap:6px;font-size:10.5px"><span style="width:18px;height:3px;background:#ff7a59"></span>{{ t.actualShort }}</span><sc-if value="{{ rp.chart.hasFc }}" hint-placeholder-val="{{ false }}"><span style="display:flex;align-items:center;gap:6px;font-size:10.5px"><span style="width:18px;border-top:2px dotted #ff7a59"></span>{{ t.forecast }}</span></sc-if></div><div style="direction:ltr"><svg viewBox="0 0 300 130" preserveAspectRatio="none" style="width:100%;height:150px;display:block"><line x1="0" y1="125" x2="300" y2="125" style="stroke:#cfc9bf;stroke-width:1;vector-effect:non-scaling-stroke"></line><line x1="0" y1="65" x2="300" y2="65" style="stroke:#ece9e3;stroke-width:1;vector-effect:non-scaling-stroke"></line><line x1="0" y1="5" x2="300" y2="5" style="stroke:#ece9e3;stroke-width:1;vector-effect:non-scaling-stroke"></line><line x1="{{ rp.chart.tx }}" y1="0" x2="{{ rp.chart.tx }}" y2="125" style="stroke:#0f3d3e;stroke-width:1;vector-effect:non-scaling-stroke"></line><polyline points="{{ rp.chart.planPts }}" style="fill:none;stroke:#8f887c;stroke-width:1.5;vector-effect:non-scaling-stroke"></polyline><polyline points="{{ rp.chart.fcPts }}" style="fill:none;stroke:#ff7a59;stroke-width:2;stroke-dasharray:1 4;stroke-linecap:round;vector-effect:non-scaling-stroke"></polyline><polyline points="{{ rp.chart.actPts }}" style="fill:none;stroke:#ff7a59;stroke-width:2.5;vector-effect:non-scaling-stroke"></polyline></svg><div style="font-size:10px;color:#605a51;font-family:'IBM Plex Mono',monospace">{{ rp.range }}</div></div></div>
 <sc-for list="{{ rp.tables }}" as="tb" hint-placeholder-count="4"><div style="display:flex;flex-direction:column;gap:6px"><div style="font-size:13.5px;font-weight:700;color:#0f3d3e;border-bottom:2px solid #ff7a59;padding-bottom:3px;break-after:avoid">{{ tb.title }}</div><sc-if value="{{ tb.empty }}" hint-placeholder-val="{{ false }}"><div style="padding:6px 8px;color:#5f5a52;border:1px solid #e4e0d8">{{ t.none }}</div></sc-if><div style="display:grid;grid-template-columns:{{ tb.cols }};border:1px solid #d8d3ca"><sc-for list="{{ tb.cells }}" as="c" hint-placeholder-count="12"><div style="padding:4px 6px;font-size:10.5px;background:{{ c.bg }};color:{{ c.fg }};font-weight:{{ c.fw }};text-align:{{ c.al }};border-top:{{ c.bt }};direction:{{ c.dir }};unicode-bidi:isolate;overflow-wrap:anywhere;-webkit-print-color-adjust:exact;print-color-adjust:exact">{{ c.v }}</div></sc-for></div><sc-if value="{{ tb.hasNote }}" hint-placeholder-val="{{ false }}"><div style="font-size:10px;color:#5f5a52">{{ tb.note }}</div></sc-if></div></sc-for>
 <div style="font-size:13.5px;font-weight:700;color:#0f3d3e;border-bottom:2px solid #ff7a59;padding-bottom:3px">{{ t.repPhotos }}</div>
 <sc-if value="{{ rp.noPhotosAll }}" hint-placeholder-val="{{ false }}"><div style="color:#605a51">{{ t.repNoPhotos }}</div></sc-if>
@@ -1161,6 +1191,19 @@ const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
 const r1=v=>Math.round(v*10)/10;
 const uid=p=>p+Date.now().toString(36)+Math.random().toString(36).slice(2,6);
 const isDate=s=>/^\d{4}-\d{2}-\d{2}$/.test(s)&&!isNaN(Date.parse(s));
+// Accepts P6 / Excel style dates too: 2026-11-05, 2026/11/05, 05/11/2026, 05-Nov-26, 05-Nov-2026, 5 Nov 2026 (time part ignored) → YYYY-MM-DD
+const MON3={jan:1,feb:2,mar:3,apr:4,may:5,jun:6,jul:7,aug:8,sep:9,oct:10,nov:11,dec:12};
+function normDate(v){v=String(v||'').trim().replace(/[A*]$/,'').trim();if(!v)return '';v=v.split(/[ T](?=\d{1,2}:)/)[0].trim();const p2=n=>String(n).padStart(2,'0');let m;
+  if((m=v.match(/^(\d{4})[-\/.](\d{1,2})[-\/.](\d{1,2})$/)))return m[1]+'-'+p2(m[2])+'-'+p2(m[3]);
+  if((m=v.match(/^(\d{1,2})[-\/.](\d{1,2})[-\/.](\d{4})$/)))return m[3]+'-'+p2(m[2])+'-'+p2(m[1]);
+  if((m=v.match(/^(\d{1,2})[-\s]([A-Za-z]{3})[A-Za-z]*[-\s,]+(\d{2}|\d{4})$/))&&MON3[m[2].toLowerCase()]){const y=m[3].length===2?'20'+m[3]:m[3];return y+'-'+p2(MON3[m[2].toLowerCase()])+'-'+p2(m[1]);}
+  return v;}
+const COL_GUIDE=[['project_code',1,'PX-106','Project code','رمز المشروع'],['project_name',0,'Coastal School','Project name (new projects)','اسم المشروع (للمشاريع الجديدة)'],['region',0,'North Coast','North Coast / West Cairo / East Cairo','الساحل / غرب القاهرة / شرق القاهرة'],
+  ['activity_id',1,'A1010','P6 Activity ID (unique in the project)','رقم النشاط من P6 (مايتكررش في المشروع)'],['activity_name',1,'Strip footings','Activity name','اسم النشاط'],['activity_name_ar',0,'القواعد','Arabic name','الاسم بالعربي'],
+  ['wbs',0,'2.1 Substructure','WBS path','مسار WBS'],['planned_start',1,'2026-11-05','Date: YYYY-MM-DD, DD/MM/YYYY or 05-Nov-26','تاريخ: YYYY-MM-DD أو DD/MM/YYYY أو 05-Nov-26'],['planned_finish',1,'2026-12-20','Same date formats, not before the start','نفس صيغ التاريخ، ومايكونش قبل البداية'],
+  ['budget_qty',1,'260','Number > 0 (use 1 for LS)','رقم أكبر من صفر (1 لو مقطوعية)'],['unit',1,'m3','Unit','الوحدة'],['weight',1,'10','Number > 0 (e.g. duration or cost)','رقم أكبر من صفر (المدة أو التكلفة)'],
+  ['discipline',1,'CIV','CIV / ARC / LND / MEC / ELE','CIV / ARC / LND / MEC / ELE'],['zone',0,'Z1','Zone','الزون'],['building_type',0,'Type A','Building type','نوع المبنى'],['building',0,'BLD-1','Building / plot (empty = SITE)','المبنى / القطعة (فاضي = SITE)'],
+  ['actual_start',0,'2026-11-01','Opening balance: actual start','رصيد افتتاحي: البداية الفعلية'],['actual_finish',0,'','Opening balance: actual finish (= 100%)','رصيد افتتاحي: النهاية الفعلية (= 100%)'],['actual_pct',0,'30','Opening balance: % complete 0–100','رصيد افتتاحي: نسبة الإنجاز 0–100']];
 const DELAYS=['material','manpower','equipment','weather','design','client','subcon','permit','other'];
 // Line icons (24x24, stroke) — rendered as <img data-ico> data URLs so templates stay plain lookups
 const ICO={
@@ -1196,7 +1239,7 @@ const TAB_ICON={acts:'📋',hist:'📤',lookahead:'📅',review:'✅',progress:'
 const PARTIES=['contractor','owner','consultant','subcon','other'];
 const DPARTY={material:'contractor',manpower:'contractor',equipment:'contractor',weather:'other',design:'consultant',client:'owner',subcon:'subcon',permit:'owner',other:'other'};
 const ENG=['CIV','ARC','LND','MEC','ELE'];
-const PEOPLE={CIV:{en:'Civil Engineer',ar:'المهندس المدني'},ARC:{en:'Architectural Engineer',ar:'المهندس المعماري'},MEC:{en:'Mechanical Engineer',ar:'المهندس الميكانيكي'},ELE:{en:'Electrical Engineer',ar:'المهندس الكهربائي'},LND:{en:'Landscape Engineer',ar:'مهندس اللاندسكيب'},CM:{en:'Construction Manager',ar:'مدير الإنشاءات'},PL:{en:'Planning Engineer',ar:'مهندس التخطيط'},PM:{en:'Project Manager / Planning Manager',ar:'مدير المشروع / مدير التخطيط'}};
+const PEOPLE={CIV:{en:'Civil Engineer',ar:'المهندس المدني'},ARC:{en:'Architectural Engineer',ar:'المهندس المعماري'},MEC:{en:'Mechanical Engineer',ar:'المهندس الميكانيكي'},ELE:{en:'Electrical Engineer',ar:'المهندس الكهربائي'},LND:{en:'Landscape Engineer',ar:'مهندس اللاندسكيب'},CM:{en:'Construction Manager',ar:'مدير الإنشاءات'},PL:{en:'Planning Engineer',ar:'مهندس التخطيط'},PM:{en:'Project Manager / Planning Manager',ar:'مدير المشروع / مدير التخطيط'},AD:{en:'Administrator',ar:'الأدمن'}};
 const ALIAS={CIVIL:'CIV',ARCH:'ARC',ARCHITECTURAL:'ARC',MECH:'MEC',MECHANICAL:'MEC',ELEC:'ELE',ELECTRICAL:'ELE',LAND:'LND',LANDSCAPE:'LND'};
 function decideU(u,ok,role,c,ts,toCm){const cm=role==='cm',by=cm?'CM':'PL';
   if(!ok&&!cm&&toCm)return Object.assign({},u,{status:'submitted',cmAt:'',cmBy:'',reviewed:ts,reviewer:'PL',comment:c,log:u.log.concat([{at:ts,ev:'returned_cm',by}])});
@@ -1242,7 +1285,7 @@ progressTitle:'Planned vs approved progress',weightedNote:'Project % = Σ(activi
 k_planned:'Planned',k_actual:'Actual',k_var:'Variance',k_pending:'In review',k_missing:'Missing',k_delayed:'Delayed',
 exportProgress:'Progress CSV',exportHistory:'Update history CSV',
 importTitle:'Import schedule (CSV)',importHelp:'Export activities from Primavera P6 (or any scheduler) to Excel/CSV and arrange them in these columns. This app does not connect to P6 directly; XER/XML import is planned for a later version. Rows are matched by project_code + activity_id: existing activities are updated, new ones are added. Optional actual_start, actual_finish and actual_pct (from your latest P6 update) are loaded once as an approved opening balance, dated at the previous cut-off; activities that already have approved progress are skipped.',
-columns:'Expected columns',loadSample:'Load sample CSV',chooseFile:'Choose CSV file',validate:'Validate',
+columns:'Expected columns',loadSample:'Try the sample here',corrTitle:'Correct approved progress',corrHelp:'For fixing a mistake after the update was approved (for example a completed activity that is not really 100%). The approved history stays as it is; a new approved correction is added with your reason, your name and the time.',corrNow:'Now',corrNotePh:'Reason for the correction (required)',corrSave:'Save correction',corrErrPct:'Enter a % between 0 and 100',corrErrNote:'Write the reason (at least 5 characters)',corrErrSame:'The new % is the same as the current one',corrDone:(a,b)=>`Corrected ${a}% → ${b}%`,corrRemark:(a,b)=>`Correction ${a}% → ${b}%`,src_correction:'Correction',src_opening:'Opening balance',ev_corrected:'corrected',dlTemplate:'Download CSV template',colReq:'Required',colOpt:'Optional',colGuideHint:'What goes in each column',impErrOnly:n=>`Show errors only (${n})`,impShowAll:'Show all rows',impDlErr:'Download error list',impErrHint:'Rows with errors are listed first and are not imported. Fix them in Excel, save as CSV and choose the file again. Valid rows can be imported now.',impAllOk:'All rows are valid. Check the list, then import.',chooseFile:'Choose CSV file',validate:'Validate',
 portfolio:'Portfolio progress',byValue:'Weighted by contract value',projectsTitle:'Projects',st_attn:'Needs attention',st_watch:'Watch',st_ok:'On track',
 trendTitle:'S-curve — planned vs approved actual',weekCol:'Week ending',delaysTitle:'Delay reasons reported',delayedActs:'Delayed activities',
 settings:'Settings & data',language:'Language',storageTitle:'Where is data stored?',storageBadge:'Personal · this device only · not synchronised',
@@ -1262,7 +1305,7 @@ flags:(d,m,p)=>`${d} delayed · ${m} missing updates · ${p} in review`,
 w_qty:(x,y)=>`Quantity implies ${x}% but ${y}% was entered`,w_jump:x=>`Large jump: +${x} points since last approval`,w_ahead:x=>`Ahead of plan by ${x} points`,w_lower:x=>`Lower than current approved ${x}%`,w_delay:'Behind plan — delay reason given',
 plannedLine:(p,a)=>`Planned today ${p}% · currently approved ${a}%`,byLine:(n,w)=>`${n} · ${w}`,
 impSummary:(v,e)=>`${v} valid · ${e} with errors`,impBtn:n=>`Import ${n} valid rows`,impNew:'New',impUpd:'Update',impErr:'Error',impToast:n=>`Imported ${n} activities`,
-e_col:c=>`Missing column: ${c}`,e_req:'Required value missing',e_date:'Invalid date — use YYYY-MM-DD',e_adate:'Invalid actual date — use YYYY-MM-DD',e_apct:'actual_pct must be 0–100',e_aorder:'Actual finish is before actual start',e_afin:'Actual finish is needed when progress is 100%',e_afin100:'An activity with an actual finish must be 100%',e_astart:'Actual start is needed when progress is above 0',e_afuture:'Actual dates cannot be in the future',impOpenTag:p=>`opening balance ${p}%`,impOpenToast:(n,k)=>`opening balance for ${n} activities`+(k?` (${k} skipped — already have approved progress)`:''),e_order:'Finish is before start',e_qty:'budget_qty must be > 0',e_w:'weight must be > 0',e_eng:'assigned_to must be E1, E2 or E3',e_dup:'Duplicate activity in file',
+e_col:c=>`Missing column: ${c}`,e_req:'Required value missing',e_date:'Invalid date — use YYYY-MM-DD, DD/MM/YYYY or 05-Nov-26',e_adate:'Invalid actual date — use YYYY-MM-DD',e_apct:'actual_pct must be 0–100',e_aorder:'Actual finish is before actual start',e_afin:'Actual finish is needed when progress is 100%',e_afin100:'An activity with an actual finish must be 100%',e_astart:'Actual start is needed when progress is above 0',e_afuture:'Actual dates cannot be in the future',impOpenTag:p=>`opening balance ${p}%`,impOpenToast:(n,k)=>`opening balance for ${n} activities`+(k?` (${k} skipped — already have approved progress)`:''),e_order:'Finish is before start',e_qty:'budget_qty must be > 0',e_w:'weight must be > 0',e_eng:'assigned_to must be E1, E2 or E3',e_dup:'Duplicate activity in file',
 plSummary:(n,v)=>`${n} activities · contract value SAR ${v}M (fictional)`,reports:n=>`${n} reports`,
 stats:(p,a,u,kb)=>`${p} projects · ${a} activities · ${u} updates · ${kb} KB used`},
 ar:{title:'إنجاز',otherLang:'English',dataShort:'البيانات',dataDate:'تاريخ البيانات',
@@ -1298,7 +1341,7 @@ progressTitle:'المخطط مقابل التقدم المعتمد',weightedNote
 k_planned:'المخطط',k_actual:'الفعلي',k_var:'الانحراف',k_pending:'قيد المراجعة',k_missing:'مفقود',k_delayed:'متأخر',
 exportProgress:'تقرير التقدم CSV',exportHistory:'سجل التحديثات CSV',
 importTitle:'استيراد الجدول الزمني (CSV)',importHelp:'صدّر الأنشطة من Primavera P6 (أو أي برنامج جدولة) إلى Excel/CSV ورتبها حسب هذه الأعمدة. هذا التطبيق لا يتصل ببرنامج P6 مباشرة، واستيراد ملفات XER/XML مخطط لإصدار لاحق. تتم المطابقة برمز المشروع ورقم النشاط: الأنشطة الموجودة تُحدَّث والجديدة تُضاف. الأعمدة الاختيارية actual_start و actual_finish و actual_pct (من آخر تحديث على P6) بتتسجل مرة واحدة كرصيد افتتاحي معتمد بتاريخ القفل اللي فات، والأنشطة اللي عندها تقدم معتمد بتتساب زي ما هي.',
-columns:'الأعمدة المطلوبة',loadSample:'تحميل ملف نموذجي',chooseFile:'اختيار ملف CSV',validate:'تحقق',
+columns:'الأعمدة المطلوبة',loadSample:'جرّب المثال هنا',corrTitle:'تصحيح نسبة معتمدة',corrHelp:'لتصحيح غلط بعد اعتماد التحديث (زي نشاط اتقفل 100% وهو مش خلصان فعلاً). السجل القديم بيفضل زي ما هو، وبيتضاف تصحيح معتمد جديد فيه السبب واسمك والوقت.',corrNow:'دلوقتي',corrNotePh:'سبب التصحيح (مطلوب)',corrSave:'حفظ التصحيح',corrErrPct:'اكتب نسبة من 0 لـ 100',corrErrNote:'اكتب السبب (5 حروف على الأقل)',corrErrSame:'النسبة الجديدة هي نفس الحالية',corrDone:(a,b)=>`تم التصحيح ${a}% ← ${b}%`,corrRemark:(a,b)=>`تصحيح ${a}% → ${b}%`,src_correction:'تصحيح',src_opening:'رصيد افتتاحي',ev_corrected:'تم التصحيح',dlTemplate:'تحميل نموذج CSV',colReq:'مطلوب',colOpt:'اختياري',colGuideHint:'إيه اللي يتكتب في كل عمود',impErrOnly:n=>`الأخطاء بس (${n})`,impShowAll:'عرض كل الصفوف',impDlErr:'تحميل قايمة الأخطاء',impErrHint:'الصفوف اللي فيها أخطاء بتظهر الأول ومش بتتستورد. صلّحها في Excel واحفظ CSV واختار الملف تاني. الصفوف السليمة ممكن تستوردها دلوقتي.',impAllOk:'كل الصفوف سليمة. راجع القايمة وبعدين استورد.',chooseFile:'اختيار ملف CSV',validate:'تحقق',
 portfolio:'تقدم المحفظة',byValue:'مرجّح بقيمة العقد',projectsTitle:'المشاريع',st_attn:'يحتاج اهتمام',st_watch:'مراقبة',st_ok:'ضمن الخطة',
 trendTitle:'منحنى S — المخطط مقابل الفعلي المعتمد',weekCol:'نهاية الأسبوع',delaysTitle:'أسباب التأخير المبلغ عنها',delayedActs:'الأنشطة المتأخرة',
 settings:'الإعدادات والبيانات',language:'اللغة',storageTitle:'أين تُحفظ البيانات؟',storageBadge:'شخصي · هذا الجهاز فقط · غير متزامن',
@@ -1318,24 +1361,24 @@ flags:(d,m,p)=>`${d} متأخر · ${m} تحديث مفقود · ${p} قيد ا�
 w_qty:(x,y)=>`الكمية تعادل ${x}% بينما أُدخل ${y}%`,w_jump:x=>`قفزة كبيرة: +${x} نقطة منذ آخر اعتماد`,w_ahead:x=>`متقدم عن المخطط بـ ${x} نقطة`,w_lower:x=>`أقل من المعتمد الحالي ${x}%`,w_delay:'متأخر عن المخطط — تم ذكر السبب',
 plannedLine:(p,a)=>`المخطط اليوم ${p}% · المعتمد حالياً ${a}%`,byLine:(n,w)=>`${n} · ${w}`,
 impSummary:(v,e)=>`${v} صالح · ${e} به أخطاء`,impBtn:n=>`استيراد ${n} صفوف صالحة`,impNew:'جديد',impUpd:'تحديث',impErr:'خطأ',impToast:n=>`تم استيراد ${n} نشاط`,
-e_col:c=>`عمود مفقود: ${c}`,e_req:'قيمة مطلوبة مفقودة',e_date:'تاريخ غير صالح — استخدم YYYY-MM-DD',e_adate:'تاريخ فعلي غير صالح — استخدم YYYY-MM-DD',e_apct:'نسبة الإنجاز لازم تكون من 0 لـ 100',e_aorder:'النهاية الفعلية قبل البداية الفعلية',e_afin:'لازم نهاية فعلية لما النسبة 100%',e_afin100:'النشاط اللي له نهاية فعلية لازم يكون 100%',e_astart:'لازم بداية فعلية لما النسبة أكبر من صفر',e_afuture:'التواريخ الفعلية مينفعش تكون في المستقبل',impOpenTag:p=>`رصيد افتتاحي ${p}%`,impOpenToast:(n,k)=>`رصيد افتتاحي لـ ${n} نشاط`+(k?` (اتساب ${k} لأن عندهم تقدم معتمد)`:''),e_order:'النهاية قبل البداية',e_qty:'الكمية يجب أن تكون أكبر من 0',e_w:'الوزن يجب أن يكون أكبر من 0',e_eng:'المسند إليه يجب أن يكون E1 أو E2 أو E3',e_dup:'نشاط مكرر في الملف',
+e_col:c=>`عمود مفقود: ${c}`,e_req:'قيمة مطلوبة مفقودة',e_date:'تاريخ غير صالح — استخدم YYYY-MM-DD أو DD/MM/YYYY أو 05-Nov-26',e_adate:'تاريخ فعلي غير صالح — استخدم YYYY-MM-DD',e_apct:'نسبة الإنجاز لازم تكون من 0 لـ 100',e_aorder:'النهاية الفعلية قبل البداية الفعلية',e_afin:'لازم نهاية فعلية لما النسبة 100%',e_afin100:'النشاط اللي له نهاية فعلية لازم يكون 100%',e_astart:'لازم بداية فعلية لما النسبة أكبر من صفر',e_afuture:'التواريخ الفعلية مينفعش تكون في المستقبل',impOpenTag:p=>`رصيد افتتاحي ${p}%`,impOpenToast:(n,k)=>`رصيد افتتاحي لـ ${n} نشاط`+(k?` (اتساب ${k} لأن عندهم تقدم معتمد)`:''),e_order:'النهاية قبل البداية',e_qty:'الكمية يجب أن تكون أكبر من 0',e_w:'الوزن يجب أن يكون أكبر من 0',e_eng:'المسند إليه يجب أن يكون E1 أو E2 أو E3',e_dup:'نشاط مكرر في الملف',
 plSummary:(n,v)=>`${n} نشاط · قيمة العقد ${v} مليون ريال (وهمية)`,reports:n=>`${n} بلاغ`,
 stats:(p,a,u,kb)=>`${p} مشاريع · ${a} نشاط · ${u} تحديث · ${kb} KB مستخدم`}
 };
 
-Object.assign(I18N.en,{spi:'SPI',spiLong:'Schedule performance index = approved actual ÷ planned',fcFinish:'Forecast finish at current SPI',plFinish:'Planned finish',todayL:'Today',legendBar:'Bar = approved actual · tick = planned today',
+Object.assign(I18N.en,{spi:'SPI',spiLong:'Schedule performance index = approved actual ÷ planned',fcFinish:'Forecast finish at current SPI',plFinish:'Planned finish',todayL:'Today',forecast:'Forecast',fcLine:(f,p,l)=>`Forecast finish at the current pace: ${f}`+(l>0?` — ${l} days after the planned finish (${p})`:` — on or before the planned finish (${p})`),legendBar:'Bar = approved actual · tick = planned today',
 overline:'Overview',bulkMode:'Quick update',bulkOff:'Done',bulkHelp:'Quick update: tap −5 / +5 / +10 / 100 on each activity, then submit all at once. Quantity is calculated from %; start date is today if none is recorded. Open an activity to add photos, remarks or exact dates.',
 bulkSubmit:n=>`Submit ${n} updates`,bulkCount:n=>`${n} changed`,bulkDone:(ok,e)=>`Submitted ${ok}`+(e?` · ${e} need details`:''),bulkNone:'No changes yet',bulkCancel:'Cancel',showAll:'✕ Show all',
 f_flagged:'Flagged',f_clean:'Clean',selectClean:n=>`Select all clean (${n})`,clearSel:'Clear',selNotePh:'Note for all selected (optional)',approveSel:n=>`Approve ${n} selected`,verifySel:n=>`Verify ${n} selected`,bulkApproved:n=>`Approved ${n} updates`,selCount:n=>`${n} selected`,
-remind:n=>`Send reminders (${n})`,remindSent:n=>`${n} reminders created — in-app only`,remindTitle:'Reminder from Planning',remindMissing:n=>`${n} of your activities have no progress update for over a week.`,dismiss:'Dismiss',notifTitle:'Notifications',notifEmpty:'No new notifications',notifClear:'Clear all',showActs:'Show activities',remindNote:'Reminders appear inside this app only (this browser). No SMS, email or push is sent.',
+remind:n=>`Send reminders (${n})`,remindSent:(d,n)=>`Reminder sent to ${d} discipline${d===1?'':'s'} (${n} activities) — they get it in the app and as a phone notification`,remindHint:'One reminder goes to each discipline that has activities without an update this week.',remindTitle:'Reminder from Planning',remindMissing:n=>`${n} of your activities have no progress update for over a week.`,dismiss:'Dismiss',notifTitle:'Notifications',notifEmpty:'No new notifications',notifClear:'Clear all',showActs:'Show activities',remindNote:'Reminders appear inside this app only (this browser). No SMS, email or push is sent.',
 weeklyReport:'Weekly report',print:'Print / Save as PDF',printNote:'The PDF file downloads directly to your device.',repTitle:'Weekly progress report',repWeek:(a,b)=>`Week ${a} → ${b}`,repDemo:'Contains DEMO data — fictional projects for demonstration only.',repSummary:'Portfolio summary',repProject:'Project',repStatus:'Status',repApproved:'Approved this week',repMissing:'Missing updates',repDelayed:'Delayed',repReasons:'8. Delay reasons (last 10 weeks)',repFooter:'Generated from data stored in this browser. Only approved updates count as actual progress.',none:'None',repBy:'Approved by',
 captionPh:'Caption, e.g. Grid C3 east face',geoOk:(a,b,c)=>`GPS ${a}, ${b} (±${c} m)`,geoPending:'Getting location…',geoNone:'Location not available',openMap:'Map',addPhotoLong:'＋ Add photo — camera or gallery',photoNote:'Up to 4 photos. Time and GPS (if you allow it) are recorded. Compressed and stored in this browser only.',
 la_start:'Starting',la_finish:'Finishing',la_win:n=>`Next ${n} days`,la_in:n=>n<0?`${-n} d overdue`:n===0?'today':`in ${n} d`,lateStart:'Late start',atRisk:'At risk',ready:'Planned',onTrackS:'On track',laHelp:'Activities planned to start or finish soon, with risk based on approved progress.'});
-Object.assign(I18N.ar,{spi:'SPI',spiLong:'مؤشر أداء الجدول = الفعلي المعتمد ÷ المخطط',fcFinish:'النهاية المتوقعة وفق SPI الحالي',plFinish:'النهاية المخططة',todayL:'اليوم',legendBar:'الشريط = الفعلي المعتمد · العلامة = المخطط اليوم',
+Object.assign(I18N.ar,{spi:'SPI',spiLong:'مؤشر أداء الجدول = الفعلي المعتمد ÷ المخطط',fcFinish:'النهاية المتوقعة وفق SPI الحالي',plFinish:'النهاية المخططة',todayL:'اليوم',forecast:'المتوقع',fcLine:(f,p,l)=>`النهاية المتوقعة بالمعدل الحالي: ${f}`+(l>0?` — متأخر ${l} يوم عن النهاية المخططة (${p})`:` — في معاد النهاية المخططة أو قبلها (${p})`),legendBar:'الشريط = الفعلي المعتمد · العلامة = المخطط اليوم',
 overline:'نظرة عامة',bulkMode:'تحديث سريع',bulkOff:'إنهاء',bulkHelp:'التحديث السريع: اضغط −5 / +5 / +10 / 100 لكل نشاط ثم أرسل الكل مرة واحدة. تُحسب الكمية من النسبة، وتاريخ البداية هو اليوم إن لم يُسجل. افتح النشاط لإضافة صور أو ملاحظات أو تواريخ دقيقة.',
 bulkSubmit:n=>`إرسال ${n} تحديثات`,bulkCount:n=>`${n} تغيير`,bulkDone:(ok,e)=>`تم إرسال ${ok}`+(e?` · ${e} تحتاج تفاصيل`:''),bulkNone:'لا توجد تغييرات بعد',bulkCancel:'إلغاء',showAll:'✕ عرض الكل',
 f_flagged:'عليها ملاحظات',f_clean:'سليمة',selectClean:n=>`تحديد كل السليمة (${n})`,clearSel:'مسح',selNotePh:'ملاحظة لكل المحدد (اختياري)',approveSel:n=>`اعتماد ${n} محددة`,verifySel:n=>`تحقق من ${n} محددة`,bulkApproved:n=>`تم اعتماد ${n} تحديثات`,selCount:n=>`${n} محدد`,
-remind:n=>`إرسال تذكيرات (${n})`,remindSent:n=>`تم إنشاء ${n} تذكيرات — داخل التطبيق فقط`,remindTitle:'تذكير من التخطيط',remindMissing:n=>`${n} من أنشطتك بدون تحديث للتقدم منذ أكثر من أسبوع.`,dismiss:'إخفاء',notifTitle:'الإشعارات',notifEmpty:'لا توجد إشعارات جديدة',notifClear:'إخفاء الكل',showActs:'عرض الأنشطة',remindNote:'التذكيرات تظهر داخل هذا التطبيق فقط (هذا المتصفح). لا تُرسل رسائل نصية أو بريد أو إشعارات.',
+remind:n=>`إرسال تذكيرات (${n})`,remindSent:(d,n)=>`تم إرسال تذكير لـ ${d} تخصص (${n} نشاط) — يوصل في التطبيق وكإشعار على الموبايل`,remindHint:'بيتبعت تذكير واحد لكل تخصص عنده أنشطة من غير تحديث الأسبوع ده.',remindTitle:'تذكير من التخطيط',remindMissing:n=>`${n} من أنشطتك بدون تحديث للتقدم منذ أكثر من أسبوع.`,dismiss:'إخفاء',notifTitle:'الإشعارات',notifEmpty:'لا توجد إشعارات جديدة',notifClear:'إخفاء الكل',showActs:'عرض الأنشطة',remindNote:'التذكيرات تظهر داخل هذا التطبيق فقط (هذا المتصفح). لا تُرسل رسائل نصية أو بريد أو إشعارات.',
 weeklyReport:'التقرير الأسبوعي',print:'طباعة / حفظ PDF',printNote:'ملف الـ PDF بينزل على جهازك على طول.',repTitle:'تقرير التقدم الأسبوعي',repWeek:(a,b)=>`الأسبوع ${a} ← ${b}`,repDemo:'يحتوي على بيانات تجريبية — مشاريع وهمية للعرض فقط.',repSummary:'ملخص المحفظة',repProject:'المشروع',repStatus:'الحالة',repApproved:'المعتمد هذا الأسبوع',repMissing:'تحديثات مفقودة',repDelayed:'متأخر',repReasons:'٨. أسباب التأخير (آخر 10 أسابيع)',repFooter:'أُنشئ من البيانات المحفوظة في هذا المتصفح. التحديثات المعتمدة فقط تُحتسب تقدماً فعلياً.',none:'لا يوجد',repBy:'اعتمده',
 captionPh:'وصف، مثل: محور C3 الواجهة الشرقية',geoOk:(a,b,c)=>`GPS ${a}, ${b} (±${c} م)`,geoPending:'جارٍ تحديد الموقع…',geoNone:'الموقع غير متاح',openMap:'خريطة',addPhotoLong:'＋ إضافة صورة — الكاميرا أو المعرض',photoNote:'حتى 4 صور. يُسجل الوقت والموقع (إن سمحت). تُضغط وتُحفظ في هذا المتصفح فقط.',
 la_start:'تبدأ',la_finish:'تنتهي',la_win:n=>`الـ ${n} يوماً القادمة`,la_in:n=>n<0?`متأخر ${-n} يوم`:n===0?'اليوم':`بعد ${n} يوم`,lateStart:'بداية متأخرة',atRisk:'معرّض للخطر',ready:'مخطط',onTrackS:'ضمن الخطة',laHelp:'الأنشطة المخطط بدؤها أو انتهاؤها قريباً، مع تقييم الخطر حسب التقدم المعتمد.'});
@@ -1542,14 +1585,20 @@ function makeUpdate(ups,f,status,eng){const ts=stamp(),ev=status==='submitted'?'
   if(id&&ups.some(u=>u.id===id&&u.status==='draft'))return{id,ups:ups.map(u=>u.id===id?Object.assign({},u,vals,{status,submitted:status==='submitted'?ts:'',log:u.log.concat([{at:ts,ev,by:eng}])}):u)};
   id=uid('U');return{id,ups:ups.concat([Object.assign({id,actId:f.actId,by:eng},vals,{status,created:ts,submitted:status==='submitted'?ts:'',reviewed:'',reviewer:'',comment:'',prevId:f.prevId||'',src:'user',log:[{at:ts,ev,by:eng}]})])};}
 function warnsOf(u,a,t){const w=[],imp=a.qty?Math.round(u.qty/a.qty*100):0;if(Math.abs(imp-u.pct)>10)w.push(t.w_qty(imp,u.pct));if(u.pct-a.actual>30)w.push(t.w_jump(u.pct-a.actual));if(u.pct-a.planned>15)w.push(t.w_ahead(Math.round(u.pct-a.planned)));if(u.pct<a.actual)w.push(t.w_lower(a.actual));return w;}
-function curve(lists,vals){const all=[].concat(...lists);if(!all.length)return{plan:'',act:'',tx:0,start:TODAY,end:TODAY};
+function curve(lists,vals){const all=[].concat(...lists);if(!all.length)return{plan:'',act:'',fc:'',tx:0,start:TODAY,end:TODAY,fcEnd:''};
   const start=all.reduce((m,a)=>a.ps<m?a.ps:m,all[0].ps),end=all.reduce((m,a)=>a.pf>m?a.pf:m,all[0].pf),span=Math.max(1,dd(start,end)),step=Math.max(7,Math.ceil(span/40));
-  const dates=[];for(let x=0;x<span;x+=step)dates.push(addD(start,x));dates.push(end);
   const val=(d,k)=>{let V=0,S=0;lists.forEach((l,i)=>{if(!l.length)return;const r=roll(l,d);V+=vals[i];S+=vals[i]*r[k];});return V?S/V:0;};
-  const X=d=>r1(clamp(dd(start,d)/span,0,1)*300),Y=v=>r1(125-v*1.2);
+  // Forecast (earned schedule): find the planned date whose planned % equals today's actual, then keep that pace to 100%
+  let fcEnd='',es=0,spiT=1;const actNow=TODAY>=start?val(TODAY<=end?TODAY:end,'a'):0;
+  if(TODAY>start&&TODAY<end&&actNow<99.9&&actNow>0){let lo=0,hi=span;for(let n=0;n<14;n++){const mid=(lo+hi)/2;if(val(addD(start,Math.round(mid)),'p')<actNow)lo=mid;else hi=mid;}
+    es=hi;spiT=clamp(es/Math.max(1,dd(start,TODAY)),0.25,2);fcEnd=addD(TODAY,Math.ceil((span-es)/spiT));}
+  const end2=fcEnd&&fcEnd>end?(dd(start,fcEnd)>span*3?addD(start,span*3):fcEnd):end,span2=Math.max(1,dd(start,end2));
+  const dates=[];for(let x=0;x<span;x+=step)dates.push(addD(start,x));dates.push(end);if(end2>end)dates.push(end2);
+  const X=d=>r1(clamp(dd(start,d)/span2,0,1)*300),Y=v=>r1(125-v*1.2);
   const ad=dates.filter(d=>d<TODAY);if(TODAY>=start)ad.push(TODAY<=end?TODAY:end);
   const act=ad.map(d=>X(d)+','+Y(val(d,'a'))).join(' ');
-  return{plan:dates.map(d=>X(d)+','+Y(val(d,'p'))).join(' '),act,area:ad.length?X(ad[0])+',125 '+act+' '+X(ad[ad.length-1])+',125':'',tx:X(TODAY),start,end};}
+  let fc='';if(fcEnd){const n=Math.max(2,Math.min(30,Math.ceil(dd(TODAY,fcEnd)/step)));const pts=[];for(let k=0;k<=n;k++){const d=addD(TODAY,Math.round(dd(TODAY,fcEnd)*k/n));const v=k===0?actNow:k===n?100:val(addD(start,Math.round(es+dd(TODAY,d)*spiT)),'p');pts.push(X(d)+','+Y(Math.max(actNow,v)));}fc=pts.join(' ');}
+  return{plan:dates.map(d=>X(d)+','+Y(d>end?100:val(d,'p'))).join(' '),act,fc,area:ad.length?X(ad[0])+',125 '+act+' '+X(ad[ad.length-1])+',125':'',tx:X(TODAY),start,end:end2,planEnd:end,fcEnd,fcLate:fcEnd&&fcEnd>end?dd(end,fcEnd):0};}
 const fmtMs=ms=>{const d=new Date(ms);return `${d.getFullYear()}-${p2(d.getMonth()+1)}-${p2(d.getDate())} ${p2(d.getHours())}:${p2(d.getMinutes())}`;};
 
 function derive(data,cfg){
@@ -1975,9 +2024,18 @@ class Component extends DCLogic {
   approveMany(ids){const s=this.state,t=this.T(),ts=stamp(),set=new Set(ids);let n=0;
     const okSt=this.qStatuses(s.role);const ups=s.data.updates.map(u=>{if(!set.has(u.id)||okSt.indexOf(u.status)<0)return u;n++;return decideU(u,true,s.role,(s.selNote||'').trim(),ts);});
     this.set({data:Object.assign({},s.data,{updates:ups}),sel:{},selNote:''},()=>this.toast(t.bulkApproved(n)));}
+  correctProgress(aid){const s=this.state,t=I18N[s.lang],a=this.D().actMap[aid];if(!a||!a.off)return;
+    const pct=Math.round(Number(s.corrPct)),note=String(s.corrNote||'').trim();
+    if(!(pct>=0&&pct<=100)||String(s.corrPct).trim()===''){this.toast(t.corrErrPct);return;}
+    if(note.length<5){this.toast(t.corrErrNote);return;}
+    if(pct===a.actual){this.toast(t.corrErrSame);return;}
+    const ts=stamp(),who=this.live()?'AD':'PL',o=a.off,q=a.qty?Math.round(a.qty*pct/100*100)/100:0;
+    const u={id:uid('U'),actId:a.id,by:a.eng,pct,qty:q,aStart:pct>0?(o.aStart||a.aStart||TODAY):'',aFinish:pct>=100?(o.aFinish||TODAY):'',remD:pct>=100?0:null,remarks:t.corrRemark(a.actual,pct)+' — '+note,delay:'',party:'',photos:[],status:'approved',created:ts,submitted:ts,reviewed:ts,reviewer:who,comment:'',prevId:o.id,src:'correction',
+      log:[{at:ts,ev:'corrected',by:who,detail:a.actual+'% → '+pct+'%'}]};
+    this.set({data:Object.assign({},s.data,{updates:s.data.updates.concat([u])}),corrOpen:false,corrNote:'',corrPct:null},()=>this.toast(t.corrDone(a.actual,pct)));}
   sendReminders(pid){const s=this.state,t=I18N[s.lang],p=this.D().projMap[pid],by={};p.list.filter(a=>a.missing).forEach(a=>{(by[a.eng]=by[a.eng]||[]).push(a.id);});
     const ts=stamp(),rs=Object.keys(by).map(e=>({id:uid('R'),to:e,from:'PL',at:ts,actIds:by[e],type:'missing',done:false}));
-    this.set({data:Object.assign({},s.data,{reminders:(s.data.reminders||[]).concat(rs)})},()=>this.toast(t.remindSent(rs.length)));}
+    this.set({data:Object.assign({},s.data,{reminders:(s.data.reminders||[]).concat(rs)})},()=>this.toast(t.remindSent(rs.length,rs.reduce((x,r)=>x+r.actIds.length,0))));}
   dismissReminders(ids){const s=this.state;if(!ids.length)return;this.set({data:Object.assign({},s.data,{reminders:s.data.reminders.map(r=>ids.indexOf(r.id)>=0?Object.assign({},r,{done:true}):r)})});this.setState({notifOpen:false});}
   dismissReminder(id){const s=this.state;this.set({data:Object.assign({},s.data,{reminders:s.data.reminders.map(r=>r.id===id?Object.assign({},r,{done:true}):r)})});}
   runValidate(text){const t=I18N[this.state.lang],rows=parseCSV(text||'');if(!rows.length){this.setState({importRows:[]});return;}
@@ -1985,10 +2043,10 @@ class Component extends DCLogic {
     const miss=need.filter(c=>head.indexOf(c)<0);
     if(miss.length){this.setState({importRows:[{line:1,ok:false,code:'',name:'',errs:miss.map(t.e_col),rec:null}]});return;}
     const g=(r,c)=>{const i=head.indexOf(c);return i<0?'':String(r[i]||'').trim();};const seen={},data=this.state.data;
-    const out=rows.slice(1).map((r,i)=>{const errs=[],rec={project_code:g(r,'project_code'),project_name:g(r,'project_name'),code:g(r,'activity_id'),name:g(r,'activity_name'),nameAr:g(r,'activity_name_ar'),wbs:g(r,'wbs'),ps:g(r,'planned_start'),pf:g(r,'planned_finish'),qty:Number(g(r,'budget_qty')),unit:g(r,'unit'),w:Number(g(r,'weight')),bldg:g(r,'building')||'SITE',zone:g(r,'zone')||'—',btype:g(r,'building_type'),region:regionKey(g(r,'region')),eng:(x=>ALIAS[x]||x)(g(r,'discipline').toUpperCase().trim().split(/\s+/)[0]),aS:g(r,'actual_start'),aF:g(r,'actual_finish'),apRaw:g(r,'actual_pct').replace('%','').trim()};
-      if(!rec.project_code||!rec.code||!rec.name||!rec.unit)errs.push(t.e_req);
-      if(!isDate(rec.ps)||!isDate(rec.pf))errs.push(t.e_date);else if(rec.pf<rec.ps)errs.push(t.e_order);
-      if(!(rec.qty>0))errs.push(t.e_qty);if(!(rec.w>0))errs.push(t.e_w);if(ENG.indexOf(rec.eng)<0)errs.push(t.e_eng);
+    const out=rows.slice(1).map((r,i)=>{const errs=[],rec={project_code:g(r,'project_code'),project_name:g(r,'project_name'),code:g(r,'activity_id'),name:g(r,'activity_name'),nameAr:g(r,'activity_name_ar'),wbs:g(r,'wbs'),ps:normDate(g(r,'planned_start')),pf:normDate(g(r,'planned_finish')),qty:Number(g(r,'budget_qty').replace(/,/g,'')),unit:g(r,'unit'),w:Number(g(r,'weight').replace(/,/g,'')),bldg:g(r,'building')||'SITE',zone:g(r,'zone')||'—',btype:g(r,'building_type'),region:regionKey(g(r,'region')),eng:(x=>ALIAS[x]||x)(g(r,'discipline').toUpperCase().trim().split(/\s+/)[0]),aS:normDate(g(r,'actual_start')),aF:normDate(g(r,'actual_finish')),apRaw:g(r,'actual_pct').replace('%','').trim()};
+      {const em=[['project_code',rec.project_code],['activity_id',rec.code],['activity_name',rec.name],['unit',rec.unit]].filter(x=>!x[1]).map(x=>x[0]);if(em.length)errs.push(t.e_req+': '+em.join(', '));}
+      if(!isDate(rec.ps)||!isDate(rec.pf))errs.push(t.e_date+' ('+(!isDate(rec.ps)?'planned_start “'+g(r,'planned_start')+'”':'planned_finish “'+g(r,'planned_finish')+'”')+')');else if(rec.pf<rec.ps)errs.push(t.e_order);
+      if(!(rec.qty>0))errs.push(t.e_qty);if(!(rec.w>0))errs.push(t.e_w);if(ENG.indexOf(rec.eng)<0)errs.push(t.e_eng+' (“'+g(r,'discipline')+'”)');
       {let ap=rec.apRaw===''?null:Number(rec.apRaw);if(ap!=null&&ap>0&&ap<=1&&rec.apRaw.indexOf('.')>=0)ap=ap*100;
         if(rec.aS&&!isDate(rec.aS))errs.push(t.e_adate);else if(rec.aF&&!isDate(rec.aF))errs.push(t.e_adate);
         else if(ap!=null&&!(ap>=0&&ap<=100))errs.push(t.e_apct);
@@ -2034,7 +2092,7 @@ class Component extends DCLogic {
     const vc=v=>v>=-2?C.green:v>=-cfg.thr/2?C.amber:C.red;
     const spiOf=(a,p)=>p>0.5?a/p:null,spiTxt=x=>x==null?'—':x.toFixed(2),spiC=x=>x==null?'#1b1a17':x>=0.95?C.green:x>=0.85?C.amber:C.red;
     const chip=(label,active,onClick)=>({label,onClick,bg:active?'#145457':'#fff',fg:active?'#fff':'#1b1a17',bd:active?'#145457':'#cfc9bf'});
-    const srcL=x=>x==='imported'?t.src_imported:x==='user'?t.src_user:t.src_demo;
+    const srcL=x=>x==='imported'?t.src_imported:x==='user'?t.src_user:x==='correction'?t.src_correction:x==='opening'?t.src_opening:t.src_demo;
     const stOf=a=>a.pending?(a.pending.status==='endorsed'?['st_endorsed',C.blueBg,C.blue]:['st_submitted',C.blueBg,C.blue]):a.draft?['st_draft',C.amberBg,C.amber]:a.returned?['st_returned',C.redBg,C.red]:a.actual>=100?['st_complete',C.greenBg,C.green]:a.missing?['st_needs',C.redBg,C.red]:a.ps>TODAY?['st_notstarted',C.greyBg,C.grey]:a.delayed?['f_delayed',C.amberBg,C.amber]:['st_uptodate',C.greenBg,C.green];
     const upSt={draft:['st_draft',C.amberBg,C.amber],submitted:['st_submitted',C.blueBg,C.blue],endorsed:['st_endorsed',C.blueBg,C.blue],approved:['st_approved',C.greenBg,C.green],returned:['st_returned',C.redBg,C.red]};
     const card=(a,bulk)=>{const st=stOf(a);const o={code:a.code,projCode:D.projMap[a.pid].code,name:nm(a),srcLabel:srcL(a.src),stLabel:t[st[0]],stBg:st[1],stFg:st[2],plannedW:W(a.planned),plannedTxt:p0(a.planned),actualW:W(a.actual),actualTxt:p0(a.actual),barColor:a.delayed?C.barBad:a.variance<-2?C.barWarn:C.barOk,
@@ -2115,6 +2173,8 @@ class Component extends DCLogic {
         barColor:a.delayed?C.barBad:a.variance<-2?C.barWarn:C.barOk,varTxt:sg(a.variance),varColor:vc(a.variance),unit:a.unit,pr:(()=>{const x=prodOf(a),q=v=>(Math.round(v*10)/10).toLocaleString('en')+' '+a.unit;
           return{rem:q(x.rem),remD:x.done?'—':t.daysN(x.remD),rate:x.rate==null?t.notStartedRate:q(x.rate)+t.perDay,req:x.done?'—':x.req==null?t.overduePf:q(x.req)+t.perDay,reqC:x.rate!=null&&x.req!=null&&x.req>x.rate*1.1?C.red:'#1b1a17',
             fc:x.fc,fcC:x.late?C.red:C.green,fcNote:x.done?t.k_done:x.late?t.fcLate(x.late):t.fcOk,src:x.done?'':x.site?t.remSrcSite(a.remRep.days,a.remRep.at)+(a.remRep.pending?' · '+t.remSrcPend:''):t.remSrcCalc};})(),showProd:role!=='site',remHint:t.remHint(a.pf),
+        canCorrect:(this.live()?!!(s.profile&&s.profile.role==='admin'):role==='planner')&&!!a.off&&!a.pending,corrOpen:!!s.corrOpen,corrArrow:s.corrOpen?'▾':'▸',corrToggle:()=>this.setState({corrOpen:!s.corrOpen,corrPct:a.actual,corrNote:''}),
+        corrPct:s.corrPct==null?a.actual:s.corrPct,corrNote:s.corrNote||'',corrPctOn:e=>this.setState({corrPct:e.target.value}),corrNoteOn:e=>this.setState({corrNote:e.target.value}),corrSave:()=>this.correctProgress(a.id),
         showReturned:!!a.returned&&!a.pending,retBy:a.returned&&a.returned.reviewer?person(a.returned.reviewer):'',retComment:a.returned?a.returned.comment:'',retWhen:a.returned?a.returned.reviewed.replace('T',' '):'',
         isPending:!!a.pending,canWithdraw:!!a.pending&&own&&a.pending.status==='submitted',awaitTxt:a.pending&&a.pending.status==='endorsed'?t.awaitingPL:t.awaiting,
         pend:a.pending?{pct:a.pending.pct+'%',qty:a.pending.qty+' '+a.unit,dates:(a.pending.aStart||'—')+' → '+(a.pending.aFinish||'—'),remD:a.pending.remD==null||a.pending.remD===''?'—':t.daysN(a.pending.remD),delay:dlP(a.pending),remarks:a.pending.remarks,hasAdj:!!a.pending.adjAt,adj:a.pending.adjAt?t.adjNoteTxt(a.pending.origPct,a.pending.pct)+(a.pending.adjNote?' — '+a.pending.adjNote:''):''}:{},
@@ -2269,8 +2329,9 @@ class Component extends DCLogic {
 
     // Import
     const ir=s.importRows;
-    const imp={has:!!ir,summary:ir?t.impSummary(ir.filter(r=>r.ok).length,ir.filter(r=>!r.ok).length):'',canImport:!!ir&&ir.some(r=>r.ok),btn:ir?t.impBtn(ir.filter(r=>r.ok).length):'',
-      rows:(ir||[]).map(r=>({line:r.line,code:r.code,name:r.name,action:r.ok?(r.exists?t.impUpd:t.impNew):t.impErr,info:r.rec?r.rec.project_code+' · '+r.rec.ps+' → '+r.rec.pf+' · '+r.rec.qty+' '+r.rec.unit+' · w '+r.rec.w+' · '+r.rec.eng+' · '+r.rec.zone+' / '+r.rec.bldg+(r.rec.open?' · '+t.impOpenTag(r.rec.open.pct):''):'',hasErr:!r.ok,err:r.errs.join(' · '),bg:r.ok?'#fff':C.redBg,bd:r.ok?'#e4e0d8':'oklch(0.82 0.08 28)'}))};
+    const irs=ir?ir.slice().sort((a,b)=>(a.ok-b.ok)||(a.line-b.line)):null,nErr=ir?ir.filter(r=>!r.ok).length:0;
+    const imp={has:!!ir,hasErr:nErr>0,errOnly:!!s.impErrOnly,errBtn:s.impErrOnly?t.impShowAll:t.impErrOnly(nErr),toggleErr:()=>this.setState({impErrOnly:!s.impErrOnly}),dlErr:()=>download('Injaz_import_errors.csv',toCSV([['line','activity_id','activity_name','errors']].concat(ir.filter(r=>!r.ok).map(r=>[r.line,r.code,r.name,r.errs.join(' | ')])))),allOk:!!ir&&ir.length>0&&!nErr,summary:ir?t.impSummary(ir.filter(r=>r.ok).length,ir.filter(r=>!r.ok).length):'',canImport:!!ir&&ir.some(r=>r.ok),btn:ir?t.impBtn(ir.filter(r=>r.ok).length):'',
+      rows:(irs||[]).filter(r=>!s.impErrOnly||!r.ok).slice(0,400).map(r=>({line:r.line,code:r.code,name:r.name,action:r.ok?(r.exists?t.impUpd:t.impNew):t.impErr,info:r.rec?r.rec.project_code+' · '+r.rec.ps+' → '+r.rec.pf+' · '+r.rec.qty+' '+r.rec.unit+' · w '+r.rec.w+' · '+r.rec.eng+' · '+r.rec.zone+' / '+r.rec.bldg+(r.rec.open?' · '+t.impOpenTag(r.rec.open.pct):''):'',hasErr:!r.ok,err:r.errs.join(' · '),bg:r.ok?'#fff':C.redBg,bd:r.ok?'#e4e0d8':'oklch(0.82 0.08 28)'}))};
 
     // Portfolio
     const V=D.projects.reduce((x,p)=>x+p.value,0)||1;
@@ -2284,8 +2345,8 @@ class Component extends DCLogic {
 
     // S-curve + weekly table
     const tp=D.projMap[s.pmProj];
-    let chart={planPts:'',actPts:'',tx:0},scStats=[],trendRows=[],axis={a:'',b:''};
-    if(show.trends){const c=tp?curve([tp.list],[1]):curve(D.projects.map(p=>p.list),D.projects.map(p=>p.value));chart={planPts:c.plan,actPts:c.act,tx:c.tx};axis={a:c.start,b:c.end};
+    let chart={planPts:'',actPts:'',fcPts:'',hasFc:false,tx:0},scStats=[],trendRows=[],axis={a:'',b:''};
+    if(show.trends){const c=tp?curve([tp.list],[1]):curve(D.projects.map(p=>p.list),D.projects.map(p=>p.value));chart={planPts:c.plan,actPts:c.act,fcPts:c.fc,hasFc:!!c.fc,tx:c.tx};axis={a:c.start,b:c.end};
       const P=tp?tp.planned:pfP,A=tp?tp.actual:pfA,sp=spiOf(A,P),fc=sp&&A<100?addD(TODAY,Math.round(Math.max(0,dd(TODAY,c.end))/Math.max(sp,0.2))):c.end;
       scStats=[{l:t.planned,v:p1(P),c:'#1b1a17'},{l:t.actualShort,v:p1(A),c:'#1b1a17'},{l:t.spi,v:spiTxt(sp),c:spiC(sp)},{l:t.plFinish,v:c.end,c:'#1b1a17'},{l:t.fcFinish,v:fc,c:fc>c.end?C.red:C.green}];
       const weeks=[];for(let k=7;k>=0;k--)weeks.push(addD(TODAY,-7*k));
@@ -2320,7 +2381,7 @@ class Component extends DCLogic {
     const partyCounts=pid=>{const c={},since=addD(TODAY,-70);s.data.updates.forEach(u=>{const a=D.actMap[u.actId];if(!a||!u.delay||['approved','submitted','endorsed'].indexOf(u.status)<0||(u.submitted||u.created).slice(0,10)<since||(pid&&a.pid!==pid))return;const k=u.party||DPARTY[u.delay]||'other';c[k]=(c[k]||0)+1;});return c;};
 
     // Dashboard
-    let db={chips:[],kpis:[],weeks:[],health:[],disc:[],comp:[],cutChips:[],risks:[],parties:[],flow:[],reasons:[],behind:[],feed:[],ahead:[],chart:{planPts:'',actPts:'',tx:0},axis:{a:'',b:''}};
+    let db={chips:[],kpis:[],weeks:[],health:[],disc:[],comp:[],cutChips:[],risks:[],parties:[],flow:[],reasons:[],behind:[],feed:[],ahead:[],chart:{planPts:'',actPts:'',fcPts:'',hasFc:false,fcTxt:'',tx:0},axis:{a:'',b:''}};
     if(show.dash){const sp=D.projMap[s.dbProj]||null,acts=sp?sp.list:D.acts,ids=new Set(acts.map(a=>a.id));
       const rollS=d=>{if(sp)return roll(sp.list,d);let Pp=0,Aa=0;D.projects.forEach(p=>{const x=roll(p.list,d);Pp+=p.value*x.p;Aa+=p.value*x.a;});return{p:Pp/V,a:Aa/V};};
       const P=sp?sp.planned:pfP,A=sp?sp.actual:pfA,spx=spiOf(A,P),c=sp?curve([sp.list],[1]):curve(D.projects.map(p=>p.list),D.projects.map(p=>p.value));
@@ -2336,7 +2397,7 @@ class Component extends DCLogic {
         kpis:[{l:t.k_total,v:acts.length,sub:t.kOfTotal(n(a=>a.actual>=100),acts.length)+' '+t.k_done.toLowerCase(),c:'#1b1a17'},{l:t.k_inprog,v:n(a=>started(a)&&a.actual<100),sub:t.k_notstarted+' '+n(a=>!started(a)&&a.actual<100),c:C.blue},
           {l:t.k_delayed,v:n(a=>a.delayed),sub:t.kDelayedSub(cfg.thr),c:n(a=>a.delayed)?C.red:C.green},{l:t.k_missing,v:n(a=>a.missing),sub:t.kMissingSub(cfg.stale),c:n(a=>a.missing)?C.red:C.green},
           {l:t.k_awaitCM,v:cnt.cm,sub:t.p_flow,c:cnt.cm?C.blue:'#1b1a17'},{l:t.k_awaitPL,v:cnt.pl,sub:t.p_flow,c:cnt.pl?C.blue:'#1b1a17'},{l:t.k_returnedN,v:cnt.ret,sub:t.fl_ret,c:cnt.ret?C.amber:'#1b1a17'},{l:t.k_appr7,v:cnt.appr,sub:t.fl_appr,c:C.green}].map(k=>Object.assign(k,{v:String(k.v)})),
-        chart:{planPts:c.plan,actPts:c.act,area:c.area,tx:c.tx},axis:{a:c.start,b:c.end}};
+        chart:{planPts:c.plan,actPts:c.act,fcPts:c.fc,hasFc:!!c.fc,fcTxt:c.fc?t.fcLine(c.fcEnd,c.planEnd,c.fcLate):'',area:c.area,tx:c.tx},axis:{a:c.start,b:c.end}};
       const wks=[];for(let k=7;k>=0;k--){const e=addD(TODAY,-7*k),r0=rollS(addD(e,-7)),r=rollS(e);wks.push({e,p:Math.max(0,r.p-r0.p),a:Math.max(0,r.a-r0.a)});}
       const wm=Math.max(0.5,...wks.map(w=>Math.max(w.p,w.a)));
       db.weeks=wks.map(w=>({lbl:w.e.slice(5),aT:r1(w.a).toFixed(1),pH:(w.p/wm*100)+'%',aH:(w.a/wm*100)+'%'}));
@@ -2453,7 +2514,7 @@ class Component extends DCLogic {
         kpis:[{l:t.planned,v:p1(rpP),s:t.repToDate,c:'#1d1b18'},{l:t.actualShort,v:p1(rpA),s:t.repApprovedOnly,c:'#145457'},{l:t.variance,v:sg(rpA-rpP),s:t.repVsPlan,c:vc(rpA-rpP)},{l:'SPI',v:spiTxt(rpS),s:t.repSpiS,c:rpS==null?'#1d1b18':rpS>=0.95?C.green:rpS>=0.85?C.amber:C.red},
           {l:t.repWeekGain,v:sg(now.a-bef.a),s:t.repPlannedGain(sg(now.p-bef.p)),c:'#145457'},{l:t.fcFinish,v:fc,s:t.plFinish+' '+c.end,c:fc>c.end?C.red:C.green}],
         narr:t.repNarr({a:p1(rpA),p:p1(rpP),v:sg(rpA-rpP),spi:spiTxt(rpS),g:sg(now.a-bef.a),gp:sg(now.p-bef.p),n:prog.length,d:delayedActs.length,r:DELAYS.filter(k=>rc[k]).sort((a,b)=>rc[b]-rc[a]).map(k=>t.delays[k])[0]||'',fc,end:c.end}),
-        chart:{planPts:c.plan,actPts:c.act,area:c.area,tx:c.tx},range:c.start+' → '+c.end,tables,
+        chart:{planPts:c.plan,actPts:c.act,fcPts:c.fc,hasFc:!!c.fc,fcTxt:c.fc?t.fcLine(c.fcEnd,c.planEnd,c.fcLate):'',area:c.area,tx:c.tx},range:c.start+' → '+c.end,tables,
         projects:rList.map(p=>{const photoActs=p.list.map(a=>{const ph=[];a.ups.filter(u=>u.status!=='draft'&&u.status!=='returned'&&(u.submitted||u.created).slice(0,10)>=wk0).forEach(u=>(u.photos||[]).forEach(x=>ph.push({src:x.src||'',cap:x.caption||'—',meta:(x.at||'')+' · '+u.pct+'% · '+t[upSt[u.status][0]]+(x.geo==='ok'?' · GPS '+x.lat.toFixed(5)+', '+x.lng.toFixed(5):'')})));return ph.length?{title:a.code+' · '+nm(a),sub:locL(a)+' · '+t.actualShort+' '+p0(a.actual),photos:ph}:null;}).filter(Boolean);return{title:p.code+' · '+nm(p),photoActs,noPhotos:!photoActs.length};}).filter(p=>rP||!p.noPhotos),
         notes:s.repNotes==null?(()=>{try{return localStorage.getItem(nKey)||'';}catch(e){return '';}})():s.repNotes,
         onNotes:e=>{const v=e.target.value;this.setState({repNotes:v});try{localStorage.setItem(nKey,v);}catch(x){}},
@@ -2566,7 +2627,7 @@ class Component extends DCLogic {
       hasMissing:pp.missing>0,remindTxt:t.remind(pp.missing),sendReminders:()=>this.sendReminders(pp.id),openReport,
       importText:s.importText,onImportText:e=>this.setState({importText:e.target.value,importRows:null}),loadSample:()=>{const x=sampleCSV();this.setState({importText:x});this.runValidate(x);},
       onCsvFile:e=>{const file=e.target.files&&e.target.files[0];e.target.value='';if(!file)return;const r=new FileReader();r.onload=()=>{this.setState({importText:String(r.result)});this.runValidate(String(r.result));};r.readAsText(file);},
-      validateImport:()=>this.runValidate(s.importText),imp,doImport:()=>this.doImport(),csvCols:CSV_COLS.join(', '),
+      validateImport:()=>this.runValidate(s.importText),imp,doImport:()=>this.doImport(),csvCols:CSV_COLS.join(', '),guideClosed:!s.colGuideOpen,colGuide:COL_GUIDE.map(c=>({col:c[0],req:c[1]?t.colReq:t.colOpt,reqC:c[1]?'#b23c1d':'#605a51',reqBg:c[1]?'#ffe1d6':'#f2efe9',ex:c[2]||'—',desc:s.lang==='ar'?c[4]:c[3]})),guideOpen:!!s.colGuideOpen,guideBtn:s.colGuideOpen?'▾':'▸',toggleGuide:()=>this.setState({colGuideOpen:!s.colGuideOpen}),dlTemplate:()=>download('Injaz_import_template.csv',sampleCSV().split('\n').slice(0,4).join('\n')),
       pf,pmProjects,chart,axis,scStats,trendRows,pmChips,laChips,laWin,laStart,laFinish,laStartEmpty:!laStart.length,laFinishEmpty:!laFinish.length,
       dlChips,reasons,reasonsEmpty:show.delays&&!reasons.length,delayedList,delayedEmpty:show.delays&&!delayedList.length,
       reportOpen:s.report,repOp:s.repGhost?'0':'1',repPe:s.repGhost?'none':'auto',rp,rs,wrOpen:s.wrOpen,repLock:role==='planner'?'0':'1',repCanDl:role==='planner',wrHasList:show.report&&rs.list.length>0,wrNoList:show.report&&!rs.list.length,repSum:(D.projMap[s.repProj]?D.projMap[s.repProj].code:t.allProjects)+' · '+(s.repMode==='int'?t.repModeInt:t.repModeExt),closeReport:()=>this.setState({report:false}),printReport:()=>this.pdfCurrent(),
