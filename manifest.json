@@ -1,7 +1,7 @@
 {
   "name": "Injaz | إنجاز",
   "short_name": "Injaz",
-  "start_url": "./DMC%20Progress%20ERP.dc.html",
+  "start_url": "./injaz.dc.html",
   "scope": "./",
   "display": "standalone",
   "background_color": "#0f3d3e",

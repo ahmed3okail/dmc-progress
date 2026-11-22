@@ -1,4 +1,4 @@
-// DMC Progress ERP — Edge Function "push"
+// Injaz — Edge Function "push"
 // Called by the database trigger push_notify() (header x-hook-secret) for:
 //   progress_updates (submitted / endorsed / returned / approved), notifications, chat_messages, weekly_reports (insert)
 // and by a signed-in user (Authorization: Bearer <jwt>, body {test:true}) to send a test to their own devices.
@@ -227,8 +227,8 @@ Deno.serve(async (req) => {
       const me = await profiles((q) => q.eq("id", u.user!.id));
       if (!me.length) return json({ error: "no profile" }, 403);
       const r = await send(me, {
-        ar: { title: "DMC Progress ✓", body: "الإشعارات شغالة على الجهاز ده." },
-        en: { title: "DMC Progress ✓", body: "Notifications work on this device." }, tag: "test",
+        ar: { title: "Injaz ✓", body: "الإشعارات شغالة على الجهاز ده." },
+        en: { title: "Injaz ✓", body: "Notifications work on this device." }, tag: "test",
       });
       return json(r);
     }
