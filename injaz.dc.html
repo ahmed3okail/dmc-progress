@@ -244,6 +244,23 @@ button{transition:transform .08s ease,background-color .15s ease}button:active{t
       </div>
     </div>
 
+    <sc-if value="{{ d.canOos }}" hint-placeholder-val="{{ false }}">
+      <div style="background:#fff;border:1px dashed #7a7368;border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:10px">
+        <button onClick="{{ d.oosToggle }}" style="display:flex;align-items:center;gap:8px;border:none;background:transparent;padding:0;text-align:start;font-weight:700;font-size:15px;color:#3d3933">⊘ {{ t.oosTitle }}<span style="margin-inline-start:auto">{{ d.oosArrow }}</span></button>
+        <sc-if value="{{ d.oosOpen }}" hint-placeholder-val="{{ false }}"><div style="display:flex;flex-direction:column;gap:10px">
+          <div style="font-size:12.5px;color:#605a51;line-height:1.5">{{ t.oosHelp }}</div>
+          <sc-if value="{{ d.isOos }}" hint-placeholder-val="{{ false }}">
+            <div style="background:#ece9e3;border-radius:10px;padding:10px 12px;font-size:13.5px;line-height:1.5">{{ d.oosInfo }}</div>
+            <button onClick="{{ d.oosClear }}" style="align-self:flex-start;min-height:46px;padding:0 18px;border:none;background:#145457;color:#fff;border-radius:10px;font-weight:700">{{ t.oosBack }}</button>
+          </sc-if>
+          <sc-if value="{{ d.notOos }}" hint-placeholder-val="{{ true }}">
+            <textarea rows="2" value="{{ d.oosNote }}" onChange="{{ d.oosNoteOn }}" placeholder="{{ t.oosNotePh }}" style="padding:10px 12px;font-size:14px;border:1px solid #cfc9bf;border-radius:10px;background:#fff;resize:vertical"></textarea>
+            <button onClick="{{ d.oosSet }}" style="align-self:flex-start;min-height:46px;padding:0 18px;border:none;background:#3d3933;color:#fff;border-radius:10px;font-weight:700">⊘ {{ t.oosMark }}</button>
+          </sc-if>
+        </div></sc-if>
+      </div>
+    </sc-if>
+
     <sc-if value="{{ d.canCorrect }}" hint-placeholder-val="{{ false }}">
       <div style="background:#fff;border:1px dashed #b23c1d;border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:10px">
         <button onClick="{{ d.corrToggle }}" style="display:flex;align-items:center;gap:8px;border:none;background:transparent;padding:0;text-align:start;font-weight:700;font-size:15px;color:#b23c1d">✎ {{ t.corrTitle }}<span style="margin-inline-start:auto">{{ d.corrArrow }}</span></button>
@@ -1331,7 +1348,7 @@ const COL_GUIDE=[['project_code',1,'PX-106','Project code','رمز المشرو�
   ['wbs',0,'2.1 Substructure','WBS path','مسار WBS'],['planned_start',1,'2026-11-05','Date: YYYY-MM-DD, DD/MM/YYYY or 05-Nov-26','تاريخ: YYYY-MM-DD أو DD/MM/YYYY أو 05-Nov-26'],['planned_finish',1,'2026-12-20','Same date formats, not before the start','نفس صيغ التاريخ، ومايكونش قبل البداية'],
   ['budget_qty',1,'260','Number > 0 (use 1 for LS)','رقم أكبر من صفر (1 لو مقطوعية)'],['unit',1,'m3','Unit','الوحدة'],['weight',1,'10','Number > 0 (e.g. duration or cost)','رقم أكبر من صفر (المدة أو التكلفة)'],
   ['discipline',1,'CIV','CIV / ARC / LND / MEC / ELE','CIV / ARC / LND / MEC / ELE'],['zone',0,'Z1','Zone','الزون'],['building_type',0,'Type A','Building type','نوع المبنى'],['building',0,'BLD-1','Building / plot (empty = SITE)','المبنى / القطعة (فاضي = SITE)'],
-  ['actual_start',0,'2026-11-01','Opening balance: actual start','رصيد افتتاحي: البداية الفعلية'],['actual_finish',0,'','Opening balance: actual finish (= 100%)','رصيد افتتاحي: النهاية الفعلية (= 100%)'],['actual_pct',0,'30','Opening balance: % complete 0–100','رصيد افتتاحي: نسبة الإنجاز 0–100']];
+  ['actual_start',0,'2026-11-01','Opening balance: actual start','رصيد افتتاحي: البداية الفعلية'],['actual_finish',0,'','Opening balance: actual finish (= 100%)','رصيد افتتاحي: النهاية الفعلية (= 100%)'],['actual_pct',0,'30','Opening balance: % complete 0–100','رصيد افتتاحي: نسبة الإنجاز 0–100'],['out_of_scope',0,'yes','yes = out of scope (not counted in %) · no = back in scope · empty = no change','yes = خارج النطاق (مش محسوب في النسب) · no = يرجع للنطاق · فاضي = من غير تغيير']];
 const DELAYS=['material','manpower','equipment','weather','design','client','subcon','permit','other'];
 // Line icons (24x24, stroke) — rendered as <img data-ico> data URLs so templates stay plain lookups
 const ICO={
@@ -1378,7 +1395,7 @@ function decideU(u,ok,role,c,ts,toCm){const cm=role==='cm',by=cm?'CM':'PL';
   return Object.assign({},u,{status:ok?'approved':'returned',reviewed:ts,reviewer:by,comment:c,log:u.log.concat([{at:ts,ev:ok?'approved':'returned',by}])});}
 const C={green:'oklch(0.48 0.12 150)',greenBg:'oklch(0.94 0.04 150)',red:'oklch(0.48 0.17 28)',redBg:'oklch(0.95 0.035 28)',amber:'oklch(0.45 0.1 70)',amberBg:'oklch(0.94 0.06 85)',blue:'oklch(0.45 0.12 250)',blueBg:'oklch(0.94 0.03 250)',grey:'#5f5a52',greyBg:'#ece9e3',barOk:'oklch(0.58 0.13 150)',barWarn:'oklch(0.68 0.14 70)',barBad:'oklch(0.56 0.18 28)'};
 const OPEN_NOTE='Opening balance from P6 · رصيد افتتاحي من P6';
-const CSV_COLS=['project_code','project_name','region','activity_id','activity_name','activity_name_ar','wbs','planned_start','planned_finish','budget_qty','unit','weight','discipline','zone','building_type','building','actual_start','actual_finish','actual_pct'];
+const CSV_COLS=['project_code','project_name','region','activity_id','activity_name','activity_name_ar','wbs','planned_start','planned_finish','budget_qty','unit','weight','discipline','zone','building_type','building','actual_start','actual_finish','actual_pct','out_of_scope'];
 const REGIONS=['nc','wc','ec'];
 const regionKey=v=>{v=String(v||'').toLowerCase().replace(/[^a-z]/g,'');return v==='nc'||v==='northcoast'?'nc':v==='wc'||v==='westcairo'?'wc':v==='ec'||v==='eastcairo'?'ec':'';};
 
@@ -1557,7 +1574,7 @@ storageBadgeLive:'مشترك · Supabase PostgreSQL · لحظي',storageLive1:'�
 storageLive2:'قواعد سير العمل (موافقة مدير الإنشاءات ثم التخطيط، قفل التحديثات المعتمدة، الصلاحيات حسب التخصص) تفرضها قاعدة البيانات نفسها وليس الشاشة فقط. كل تغيير يُسجَّل في سجل تدقيق.',
 storageLive3:'تنطبق حدود الخطة المجانية (حجم القاعدة، تخزين الملفات، وقد يتوقف المشروع غير النشط مؤقتاً). الصور في مخزن خاص وتُعرض بروابط مؤقتة.',
 prole_site:'مهندس موقع',prole_cm:'مدير الإنشاءات',prole_planner:'مهندس التخطيط',prole_pm:'مدير المشروع / مدير التخطيط',prole_admin:'مسؤول النظام'});
-Object.assign(I18N.en,{bvShown:'Shown on the drawing',bvTapTr:'Tap to show on the drawing',bvOnly:'only',bvAllTr:'All trades',bvShowAll:'Show all trades',bvTapFloor:'Tap a floor on the drawing to see its activities',bvPlots:'Buildings',dashSub:'Execution, performance and project health',vsLastWk:'vs last week',wkSel:(d,p,a)=>`Week ending ${d}: planned ${p} · actual ${a}`,wkTap:'Tap a week to read it',chartTap:'Tap or move over the chart to read the values on any date',hSched:'Schedule',bldT:'Buildings',bldTap:'Tap a building to open its drawing and trades',projT:'Projects',projTap:'Tap a project to see its buildings',tab_dash:'Dashboard',dashTitle:'Project dashboard',dashScopeAll:n=>`${n} projects · weighted by contract value`,dashScopeOne:n=>`${n} activities · weighted by activity weight`,
+Object.assign(I18N.en,{oosFromCsv:'marked in the imported schedule',st_oos:'Out of scope',f_oos:'Out of scope',oosTag:'Out of scope',oosTitle:'Out of scope (OOS)',oosHelp:'An out-of-scope activity stays in the lists with a tag, but it is not counted in any progress %, delays, missing updates or reminders. You can return it to scope at any time.',oosNotePh:'Reason (required) — e.g. removed by variation order no. …',oosMark:'Mark as out of scope',oosBack:'Return to scope',oosErrNote:'Write the reason first',oosDoneOn:'Marked as out of scope — removed from progress %',oosDoneOff:'Returned to scope',oosInfo:(n,b,d)=>`Out of scope: ${n}${b?' · '+b:''}${d?' · '+d:''}`,oosExcl:n=>`${n} out of scope (not counted)`,bvShown:'Shown on the drawing',bvTapTr:'Tap to show on the drawing',bvOnly:'only',bvAllTr:'All trades',bvShowAll:'Show all trades',bvTapFloor:'Tap a floor on the drawing to see its activities',bvPlots:'Buildings',dashSub:'Execution, performance and project health',vsLastWk:'vs last week',wkSel:(d,p,a)=>`Week ending ${d}: planned ${p} · actual ${a}`,wkTap:'Tap a week to read it',chartTap:'Tap or move over the chart to read the values on any date',hSched:'Schedule',bldT:'Buildings',bldTap:'Tap a building to open its drawing and trades',projT:'Projects',projTap:'Tap a project to see its buildings',tab_dash:'Dashboard',dashTitle:'Project dashboard',dashScopeAll:n=>`${n} projects · weighted by contract value`,dashScopeOne:n=>`${n} activities · weighted by activity weight`,
 k_total:'Activities',k_inprog:'In progress',k_done:'Completed',k_notstarted:'Not started',k_awaitCM:'Awaiting CM',k_awaitPL:'Awaiting Planning',k_appr7:'Approved · 7 days',k_returnedN:'Returned',kDelayedSub:n=>`> ${n} pts behind or overdue`,kMissingSub:n=>`no update for ${n}+ days`,kOfTotal:(n,a)=>`${n} of ${a}`,
 p_scurve:'S-curve — planned vs approved actual',p_weekly:'Weekly progress gain — last 8 weeks',p_weeklyHelp:'Light bar = planned gain · dark bar = approved actual gain (percentage points)',p_health:'Project health',p_disc:'Performance by discipline',p_flow:'Approval workflow',p_reasons:'Top delay reasons · last 10 weeks',p_behind:'Most behind plan',p_ahead:'Next 14 days',p_feed:'Recent activity',
 fl_draft:'Drafts (not submitted)',fl_cm:'Awaiting Construction Manager',fl_pl:'Awaiting Planning Engineer',fl_ret:'Returned for correction',fl_appr:'Approved in the last 7 days',
@@ -1571,7 +1588,7 @@ chatErr:'Chat is not set up in the database yet. The administrator must run db/0
 returnedBy:n=>`Returned by ${n}`,photoNoteLive:'Up to 4 photos. Time and GPS (if you allow it) are recorded. Photos are compressed and stored in the shared database.',
 signUpOk:'Account created. Ask the administrator to give you a role, discipline and project.',importJson:'Restore backup (JSON)',t_imported:'Backup restored',t_badJson:'Not a valid backup file',
 e_eng:'discipline must be CIV, ARC, LND, MEC or ELE (or Civil, Architectural, Landscape, Mechanical, Electrical)'});
-Object.assign(I18N.ar,{bvShown:'ظاهر على الرسم',bvTapTr:'اضغط لعرضه على الرسم',bvOnly:'فقط',bvAllTr:'كل التخصصات',bvShowAll:'عرض كل التخصصات',bvTapFloor:'اضغط على أي دور في الرسم لعرض أنشطته',bvPlots:'المباني',dashSub:'التنفيذ والأداء وحالة المشروع',vsLastWk:'عن الأسبوع اللي فات',wkSel:(d,p,a)=>`أسبوع ينتهي ${d}: المخطط ${p} · الفعلي ${a}`,wkTap:'اضغط على أي أسبوع لقراءته',chartTap:'اضغط أو حرّك على المنحنى لقراءة القيم في أي تاريخ',hSched:'الجدول الزمني',bldT:'المباني',bldTap:'اضغط على أي مبنى لفتح رسمه وتقدّم كل تخصص',projT:'المشاريع',projTap:'اضغط على مشروع لعرض مبانيه',tab_dash:'لوحة المتابعة',dashTitle:'لوحة متابعة المشاريع',dashScopeAll:n=>`${n} مشاريع · مرجّح بقيمة العقد`,dashScopeOne:n=>`${n} نشاط · مرجّح بوزن النشاط`,
+Object.assign(I18N.ar,{oosFromCsv:'متعلّم في ملف الجدول المستورد',st_oos:'خارج النطاق',f_oos:'خارج النطاق',oosTag:'خارج النطاق',oosTitle:'خارج النطاق',oosHelp:'النشاط خارج النطاق بيفضل ظاهر في القوائم بعلامة، بس مش بيدخل في أي نسبة تقدّم أو متأخرات أو تحديثات ناقصة أو تذكيرات. تقدر ترجّعه للنطاق في أي وقت.',oosNotePh:'السبب (مطلوب) — مثلاً: اتشال بأمر تغيير رقم …',oosMark:'اعتبره خارج النطاق',oosBack:'رجّعه للنطاق',oosErrNote:'اكتب السبب الأول',oosDoneOn:'اتعلّم خارج النطاق — اتشال من النسب',oosDoneOff:'رجع للنطاق',oosInfo:(n,b,d)=>`خارج النطاق: ${n}${b?' · '+b:''}${d?' · '+d:''}`,oosExcl:n=>`${n} خارج النطاق (مش محسوبين)`,bvShown:'ظاهر على الرسم',bvTapTr:'اضغط لعرضه على الرسم',bvOnly:'فقط',bvAllTr:'كل التخصصات',bvShowAll:'عرض كل التخصصات',bvTapFloor:'اضغط على أي دور في الرسم لعرض أنشطته',bvPlots:'المباني',dashSub:'التنفيذ والأداء وحالة المشروع',vsLastWk:'عن الأسبوع اللي فات',wkSel:(d,p,a)=>`أسبوع ينتهي ${d}: المخطط ${p} · الفعلي ${a}`,wkTap:'اضغط على أي أسبوع لقراءته',chartTap:'اضغط أو حرّك على المنحنى لقراءة القيم في أي تاريخ',hSched:'الجدول الزمني',bldT:'المباني',bldTap:'اضغط على أي مبنى لفتح رسمه وتقدّم كل تخصص',projT:'المشاريع',projTap:'اضغط على مشروع لعرض مبانيه',tab_dash:'لوحة المتابعة',dashTitle:'لوحة متابعة المشاريع',dashScopeAll:n=>`${n} مشاريع · مرجّح بقيمة العقد`,dashScopeOne:n=>`${n} نشاط · مرجّح بوزن النشاط`,
 k_total:'الأنشطة',k_inprog:'قيد التنفيذ',k_done:'مكتمل',k_notstarted:'لم يبدأ',k_awaitCM:'بانتظار مدير الإنشاءات',k_awaitPL:'بانتظار التخطيط',k_appr7:'معتمد · 7 أيام',k_returnedN:'مُعاد',kDelayedSub:n=>`متأخر أكثر من ${n} نقاط أو تجاوز النهاية`,kMissingSub:n=>`بدون تحديث ${n} أيام أو أكثر`,kOfTotal:(n,a)=>`${n} من ${a}`,
 p_scurve:'منحنى S — المخطط مقابل الفعلي المعتمد',p_weekly:'التقدم الأسبوعي — آخر 8 أسابيع',p_weeklyHelp:'العمود الفاتح = المخطط · الغامق = الفعلي المعتمد (نقاط مئوية)',p_health:'حالة المشاريع',p_disc:'الأداء حسب التخصص',p_flow:'دورة الاعتماد',p_reasons:'أهم أسباب التأخير · آخر 10 أسابيع',p_behind:'الأكثر تأخراً عن المخطط',p_ahead:'الـ 14 يوماً القادمة',p_feed:'آخر الأحداث',
 fl_draft:'مسودات (لم تُرسل)',fl_cm:'بانتظار مدير الإنشاءات',fl_pl:'بانتظار مهندس التخطيط',fl_ret:'مُعادة للتصحيح',fl_appr:'معتمدة في آخر 7 أيام',
@@ -1762,11 +1779,12 @@ function derive(data,cfg){
     const lastSub=nd[nd.length-1]||null;
     const returned=lastSub&&lastSub.status==='returned'?lastSub:null;
     const lastDate=lastSub?(lastSub.submitted||lastSub.created).slice(0,10):'';
-    const missing=a.ps<=TODAY&&actual<100&&(!lastDate||dd(lastDate,TODAY)>cfg.stale);
-    const delayed=actual<100&&(planned-actual>cfg.thr||a.pf<TODAY);
+    // out-of-scope activities: visible with a tag, but never late, missing, due, or counted in any %
+    const missing=!a.oos&&a.ps<=TODAY&&actual<100&&(!lastDate||dd(lastDate,TODAY)>cfg.stale);
+    const delayed=!a.oos&&actual<100&&(planned-actual>cfg.thr||a.pf<TODAY);
     const rr=nd.slice().reverse().find(u=>u.status!=='returned'&&u.remD!=null&&u.remD!=='');const remRep=rr?{days:Number(rr.remD),at:(rr.submitted||rr.created).slice(0,10),pending:rr.status!=='approved'}:null;
-    const due=a.ps<=nextCut&&actual<100,updW=nd.some(u=>u.status!=='returned'&&(u.submitted||u.created).slice(0,10)>=cycStart);
-    return Object.assign({},a,{ups,appr,off,planned,actual,pending,draft,returned,lastDate,missing,delayed,due,updW,remRep,variance:actual-planned,aStart:off?off.aStart:'',aFinish:off?off.aFinish:'',aQty:off?off.qty:0});
+    const due=!a.oos&&a.ps<=nextCut&&actual<100,updW=nd.some(u=>u.status!=='returned'&&(u.submitted||u.created).slice(0,10)>=cycStart);
+    return Object.assign({},a,{ups,appr,off,planned,actual,pending,draft,returned,lastDate,missing,delayed,due,updW,remRep,variance:a.oos?0:actual-planned,aStart:off?off.aStart:'',aFinish:off?off.aFinish:'',aQty:off?off.qty:0});
   });
   const actMap={};acts.forEach(a=>actMap[a.id]=a);
   const projects=data.projects.map(p=>{
@@ -1810,7 +1828,7 @@ function prodOf(a){const rem=Math.max(0,(a.qty||0)-(a.aQty||0)),dur=Math.max(1,d
   if(a.remRep){fc=addD(a.remRep.at,a.remRep.days);remD=Math.max(0,dd(TODAY,fc));site=true;}
   const left=dd(TODAY,a.pf);
   return{rem,rate,req:left>0?rem/left:null,remD,fc,late:Math.max(0,dd(a.pf,fc)),done:false,over:left<=0,site};}
-function roll(list,at){let W=0,P=0,A=0;list.forEach(a=>{W+=a.w;P+=a.w*plannedPct(a,at);A+=a.w*actualAt(a,at);});return W?{p:P/W,a:A/W}:{p:0,a:0};}
+function roll(list,at){let W=0,P=0,A=0;list.forEach(a=>{if(a.oos)return;W+=a.w;P+=a.w*plannedPct(a,at);A+=a.w*actualAt(a,at);});return W?{p:P/W,a:A/W}:{p:0,a:0};}
 
 function parseCSV(text){text=text.replace(/^\ufeff/,'');const rows=[];let row=[],cell='',q=false;
   for(let i=0;i<text.length;i++){const c=text[i];
@@ -1832,12 +1850,12 @@ function idb(store,op,key,val){return new Promise(res=>{try{const rq=indexedDB.o
 function isNetErr(e){const m=String((e&&(e.message||e))||'');return (typeof navigator!=='undefined'&&navigator.onLine===false)||/failed to fetch|networkerror|load failed|network request failed|fetch failed|timeout/i.test(m);}
 function compress(file){return new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>{const img=new Image();img.onload=()=>{const sc=Math.min(1,800/Math.max(img.width,img.height));const c=document.createElement('canvas');c.width=Math.round(img.width*sc);c.height=Math.round(img.height*sc);c.getContext('2d').drawImage(img,0,0,c.width,c.height);res(c.toDataURL('image/jpeg',0.6));};img.onerror=rej;img.src=r.result;};r.onerror=rej;r.readAsDataURL(file);});}
 function sampleCSV(){const d=n=>addD(TODAY,n);return [CSV_COLS.join(','),
-`PX-106,Coastal School Annex,North Coast,F6010,Site clearance,تنظيف الموقع,1.1 Enabling,${d(-20)},${d(-5)},6000,m2,4,CIV,—,,SITE,${d(-19)},${d(-6)},100`,
-`PX-106,Coastal School Annex,North Coast,F6020,Strip footings,القواعد الشريطية,2.1 Substructure,${d(-8)},${d(20)},260,m3,10,CIV,Z1,Type A,BLD-1,${d(-7)},,30`,
-`PX-106,Coastal School Annex,North Coast,F6030,Ground beams,الجسور الأرضية,2.2 Substructure,${d(10)},${d(35)},140,m3,8,CIV,Z1,Type A,BLD-2,,,`,
-`PX-106,Coastal School Annex,North Coast,F6040,Steel frame,الهيكل الفولاذي,3.1 Superstructure,${d(30)},${d(75)},210,t,16,CIV,Z2,Type B,BLD-1,,,`,
-`PX-106,Coastal School Annex,North Coast,F6050,Roof deck,سطح السقف,3.2 Superstructure,${d(80)},${d(70)},2400,m2,9,ARC,Z2,Type B,BLD-2,,,`,
-`PX-101,,,A1090,Blockwork (re-baselined),أعمال البلوك,3.3 Superstructure,${d(25)},${d(80)},6400,m2,9,ARC,Z2,Type B,BLD-B,,,`].join('\n');}
+`PX-106,Coastal School Annex,North Coast,F6010,Site clearance,تنظيف الموقع,1.1 Enabling,${d(-20)},${d(-5)},6000,m2,4,CIV,—,,SITE,${d(-19)},${d(-6)},100,`,
+`PX-106,Coastal School Annex,North Coast,F6020,Strip footings,القواعد الشريطية,2.1 Substructure,${d(-8)},${d(20)},260,m3,10,CIV,Z1,Type A,BLD-1,${d(-7)},,30,`,
+`PX-106,Coastal School Annex,North Coast,F6030,Ground beams,الجسور الأرضية,2.2 Substructure,${d(10)},${d(35)},140,m3,8,CIV,Z1,Type A,BLD-2,,,,`,
+`PX-106,Coastal School Annex,North Coast,F6040,Steel frame,الهيكل الفولاذي,3.1 Superstructure,${d(30)},${d(75)},210,t,16,CIV,Z2,Type B,BLD-1,,,,`,
+`PX-106,Coastal School Annex,North Coast,F6050,Roof deck,سطح السقف,3.2 Superstructure,${d(80)},${d(70)},2400,m2,9,ARC,Z2,Type B,BLD-2,,,,`,
+`PX-101,,,A1090,Blockwork (re-baselined),أعمال البلوك,3.3 Superstructure,${d(25)},${d(80)},6400,m2,9,ARC,Z2,Type B,BLD-B,,,,`].join('\n');}
 
 // ───────── Data source adapter: DEMO (this browser) or LIVE (Supabase, shared) ─────────
 function connCfg(){const w=window.DMC_CONFIG||{};let l={};try{l=JSON.parse(localStorage.getItem(CONN_KEY)||'{}');}catch(e){}
@@ -1851,8 +1869,8 @@ const EMPTYP={id:'',code:'—',name:'—',nameAr:'—',list:[],planned:0,actual:
 const MAP={
  projects:{t:'projects',to:p=>({id:p.id,code:p.code,name:p.name,name_ar:p.nameAr,location:p.loc,location_ar:p.locAr,region:p.region||null,contract_value:p.value,source:p.src,is_demo:p.src==='demo'}),
   from:r=>({id:r.id,code:r.code,name:r.name,nameAr:r.name_ar||r.name,loc:r.location||'—',locAr:r.location_ar||r.location||'—',region:r.region||'',value:Number(r.contract_value)||0,src:r.source||'imported'})},
- activities:{t:'activities',to:a=>({id:a.id,project_id:a.pid,code:a.code,name:a.name,name_ar:a.nameAr,wbs:a.wbs,zone:a.zone||'—',building_type:a.btype||null,building:a.bldg||'SITE',planned_start:a.ps,planned_finish:a.pf,budget_qty:a.qty,unit:a.unit,weight:a.w,discipline:a.eng,source:a.src,is_demo:a.src==='demo'}),
-  from:r=>({id:r.id,pid:r.project_id,code:r.code,name:r.name,nameAr:r.name_ar||r.name,wbs:r.wbs||'—',zone:r.zone||'—',btype:r.building_type||'',bldg:r.building||'SITE',ps:r.planned_start,pf:r.planned_finish,qty:Number(r.budget_qty),unit:r.unit,w:Number(r.weight),eng:r.discipline,src:r.source||'imported'})},
+ activities:{t:'activities',to:a=>({id:a.id,project_id:a.pid,code:a.code,name:a.name,name_ar:a.nameAr,wbs:a.wbs,zone:a.zone||'—',building_type:a.btype||null,building:a.bldg||'SITE',planned_start:a.ps,planned_finish:a.pf,budget_qty:a.qty,unit:a.unit,weight:a.w,discipline:a.eng,source:a.src,is_demo:a.src==='demo',out_of_scope:!!a.oos,oos_note:a.oos?(a.oosNote||null):null,oos_at:a.oos?(a.oosAt||null):null,oos_by:a.oos?(a.oosBy||null):null}),
+  from:r=>({id:r.id,pid:r.project_id,code:r.code,name:r.name,nameAr:r.name_ar||r.name,wbs:r.wbs||'—',zone:r.zone||'—',btype:r.building_type||'',bldg:r.building||'SITE',ps:r.planned_start,pf:r.planned_finish,qty:Number(r.budget_qty),unit:r.unit,w:Number(r.weight),eng:r.discipline,src:r.source||'imported',oos:!!r.out_of_scope,oosNote:r.oos_note||'',oosAt:r.oos_at||'',oosBy:r.oos_by||''})},
  updates:{t:'progress_updates',to:u=>({id:u.id,activity_id:u.actId,discipline:u.by,pct:u.pct,qty:u.qty,actual_start:u.aStart||null,actual_finish:u.aFinish||null,remarks:u.remarks||'',delay_reason:u.delay||null,delay_party:u.delay?(u.party||DPARTY[u.delay]||'other'):null,remaining_days:u.remD==null||u.remD===''?null:u.remD,
    photos:(u.photos||[]).map(p=>({id:p.id,path:p.path||null,caption:p.caption||'',at:p.at||'',lat:p.lat==null?null:p.lat,lng:p.lng==null?null:p.lng,acc:p.acc==null?null:p.acc,geo:p.geo||'none'})),
    status:u.status,created_at:toTs(u.created),submitted_at:toTs(u.submitted),cm_at:toTs(u.cmAt),cm_comment:u.cmComment||'',orig_pct:u.origPct==null?null:u.origPct,orig_qty:u.origQty==null?null:u.origQty,adj_at:toTs(u.adjAt),adj_note:u.adjNote||'',
@@ -2183,6 +2201,11 @@ class Component extends DCLogic {
     if(role==='site')this.setState({tab:Object.assign({},s.tab,{site:'acts'}),detail:null,sProj:g.pid,sRegion:'all',sZone:'all',sType:'all',sBldg:g.b,sFilter:'all',q:''});
     else this.setState({tab:Object.assign({},s.tab,{[role]:'bldg'}),detail:null,dbProj:g.pid,dbBld:g.pid+'|'+g.b});
     this.toast(I18N[s.lang].qrOpened(g.b));}
+  setOos(aid,on){const s=this.state,t=I18N[s.lang],a=this.D().actMap[aid];if(!a)return;const note=String(s.oosNote||'').trim();
+    if(on&&note.length<3){this.toast(t.oosErrNote);return;}
+    const who=this.live()?((s.profile&&(s.profile.full_name||''))||(s.user&&s.user.email)||'').replace('@dmc.local',''):PEOPLE.PL[s.lang];
+    const acts=s.data.activities.map(x=>x.id!==aid?x:Object.assign({},x,on?{oos:true,oosNote:note,oosAt:stamp(),oosBy:who}:{oos:false,oosNote:'',oosAt:'',oosBy:''}));
+    this.set({data:Object.assign({},s.data,{activities:acts}),oosOpen:false,oosNote:''},()=>this.toast(on?t.oosDoneOn:t.oosDoneOff));}
   correctProgress(aid){const s=this.state,t=I18N[s.lang],a=this.D().actMap[aid];if(!a||!a.off)return;
     const pct=Math.round(Number(s.corrPct)),note=String(s.corrNote||'').trim();
     if(!(pct>=0&&pct<=100)||String(s.corrPct).trim()===''){this.toast(t.corrErrPct);return;}
@@ -2202,7 +2225,7 @@ class Component extends DCLogic {
     const miss=need.filter(c=>head.indexOf(c)<0);
     if(miss.length){this.setState({importRows:[{line:1,ok:false,code:'',name:'',errs:miss.map(t.e_col),rec:null}]});return;}
     const g=(r,c)=>{const i=head.indexOf(c);return i<0?'':String(r[i]||'').trim();};const seen={},data=this.state.data;
-    const out=rows.slice(1).map((r,i)=>{const errs=[],rec={project_code:g(r,'project_code'),project_name:g(r,'project_name'),code:g(r,'activity_id'),name:g(r,'activity_name'),nameAr:g(r,'activity_name_ar'),wbs:g(r,'wbs'),ps:normDate(g(r,'planned_start')),pf:normDate(g(r,'planned_finish')),qty:Number(g(r,'budget_qty').replace(/,/g,'')),unit:g(r,'unit'),w:Number(g(r,'weight').replace(/,/g,'')),bldg:g(r,'building')||'SITE',zone:g(r,'zone')||'—',btype:g(r,'building_type'),region:regionKey(g(r,'region')),eng:(x=>ALIAS[x]||x)(g(r,'discipline').toUpperCase().trim().split(/\s+/)[0]),aS:normDate(g(r,'actual_start')),aF:normDate(g(r,'actual_finish')),apRaw:g(r,'actual_pct').replace('%','').trim()};
+    const out=rows.slice(1).map((r,i)=>{const errs=[],rec={project_code:g(r,'project_code'),project_name:g(r,'project_name'),code:g(r,'activity_id'),name:g(r,'activity_name'),nameAr:g(r,'activity_name_ar'),wbs:g(r,'wbs'),ps:normDate(g(r,'planned_start')),pf:normDate(g(r,'planned_finish')),qty:Number(g(r,'budget_qty').replace(/,/g,'')),unit:g(r,'unit'),w:Number(g(r,'weight').replace(/,/g,'')),bldg:g(r,'building')||'SITE',zone:g(r,'zone')||'—',btype:g(r,'building_type'),region:regionKey(g(r,'region')),eng:(x=>ALIAS[x]||x)(g(r,'discipline').toUpperCase().trim().split(/\s+/)[0]),aS:normDate(g(r,'actual_start')),aF:normDate(g(r,'actual_finish')),apRaw:g(r,'actual_pct').replace('%','').trim(),oosRaw:String(g(r,'out_of_scope')||'').trim().toLowerCase()};
       {const em=[['project_code',rec.project_code],['activity_id',rec.code],['activity_name',rec.name],['unit',rec.unit]].filter(x=>!x[1]).map(x=>x[0]);if(em.length)errs.push(t.e_req+': '+em.join(', '));}
       if(!isDate(rec.ps)||!isDate(rec.pf))errs.push(t.e_date+' ('+(!isDate(rec.ps)?'planned_start “'+g(r,'planned_start')+'”':'planned_finish “'+g(r,'planned_finish')+'”')+')');else if(rec.pf<rec.ps)errs.push(t.e_order);
       if(!(rec.qty>0))errs.push(t.e_qty);if(!(rec.w>0))errs.push(t.e_w);if(ENG.indexOf(rec.eng)<0)errs.push(t.e_eng+' (“'+g(r,'discipline')+'”)');
@@ -2226,6 +2249,8 @@ class Component extends DCLogic {
       if(rec.region&&p.region!==rec.region){const j=projects.indexOf(p);p=Object.assign({},p,{region:rec.region});projects[j]=p;}
       const fields={bldg:rec.bldg,zone:rec.zone,btype:rec.btype||'',code:rec.code,name:rec.name,nameAr:rec.nameAr||rec.name,wbs:rec.wbs||'—',ps:rec.ps,pf:rec.pf,qty:rec.qty,unit:rec.unit,w:rec.w,eng:rec.eng,src:'imported'};
       const i=activities.findIndex(a=>a.pid===p.id&&a.code===rec.code);
+      if(['yes','y','1','true','oos','x','نعم'].indexOf(rec.oosRaw)>=0){if(!(i>=0&&activities[i].oos))Object.assign(fields,{oos:true,oosNote:t.oosFromCsv,oosAt:stamp(),oosBy:'CSV'});}
+      else if(['no','n','0','false','لا'].indexOf(rec.oosRaw)>=0)Object.assign(fields,{oos:false,oosNote:'',oosAt:'',oosBy:''});
       let aid;if(i>=0){activities[i]=Object.assign({},activities[i],fields);aid=activities[i].id;}else{aid='X_'+p.code+'_'+rec.code;activities.push(Object.assign({id:aid,pid:p.id},fields));}
       if(rec.open){if(updates.some(u=>u.actId===aid&&u.status==='approved')){openSkip++;return;}
         const o=rec.open,q=Math.round(rec.qty*o.pct)/100;
@@ -2252,7 +2277,7 @@ class Component extends DCLogic {
     const spiOf=(a,p)=>p>0.5?a/p:null,spiTxt=x=>x==null?'—':x.toFixed(2),spiC=x=>x==null?'#1b1a17':x>=0.95?C.green:x>=0.85?C.amber:C.red;
     const chip=(label,active,onClick)=>({label,onClick,bg:active?'#145457':'#fff',fg:active?'#fff':'#1b1a17',bd:active?'#145457':'#cfc9bf'});
     const srcL=x=>x==='imported'?t.src_imported:x==='user'?t.src_user:x==='correction'?t.src_correction:x==='opening'?t.src_opening:t.src_demo;
-    const stOf=a=>a.pending?(a.pending.status==='endorsed'?['st_endorsed',C.blueBg,C.blue]:['st_submitted',C.blueBg,C.blue]):a.draft?['st_draft',C.amberBg,C.amber]:a.returned?['st_returned',C.redBg,C.red]:a.actual>=100?['st_complete',C.greenBg,C.green]:a.missing?['st_needs',C.redBg,C.red]:a.ps>TODAY?['st_notstarted',C.greyBg,C.grey]:a.delayed?['f_delayed',C.amberBg,C.amber]:['st_uptodate',C.greenBg,C.green];
+    const stOf=a=>a.oos?['st_oos',C.greyBg,C.grey]:a.pending?(a.pending.status==='endorsed'?['st_endorsed',C.blueBg,C.blue]:['st_submitted',C.blueBg,C.blue]):a.draft?['st_draft',C.amberBg,C.amber]:a.returned?['st_returned',C.redBg,C.red]:a.actual>=100?['st_complete',C.greenBg,C.green]:a.missing?['st_needs',C.redBg,C.red]:a.ps>TODAY?['st_notstarted',C.greyBg,C.grey]:a.delayed?['f_delayed',C.amberBg,C.amber]:['st_uptodate',C.greenBg,C.green];
     const upSt={draft:['st_draft',C.amberBg,C.amber],submitted:['st_submitted',C.blueBg,C.blue],endorsed:['st_endorsed',C.blueBg,C.blue],approved:['st_approved',C.greenBg,C.green],returned:['st_returned',C.redBg,C.red]};
     const card=(a,bulk)=>{const st=stOf(a);const o={code:a.code,projCode:D.projMap[a.pid].code,name:nm(a),srcLabel:srcL(a.src),stLabel:t[st[0]],stBg:st[1],stFg:st[2],plannedW:W(a.planned),plannedTxt:p0(a.planned),actualW:W(a.actual),actualTxt:p0(a.actual),barColor:a.delayed?C.barBad:a.variance<-2?C.barWarn:C.barOk,
       meta:locL(a)+' · '+t.planned+' '+p0(a.planned)+' · '+sg(a.variance)+' · '+t.lastUpd(a.lastDate),showSrc:a.src==='demo'&&this.live(),actC:a.actual>=100?C.green:a.delayed?C.red:a.variance<-2?C.amber:'#1b1a17',barColor2:a.delayed?'oklch(0.66 0.16 35)':a.variance<-2?'oklch(0.75 0.12 80)':'oklch(0.68 0.12 160)',varTxt:sg(a.variance),varC:vc(a.variance),varBg:a.variance>=-2?C.greenBg:a.variance>=-cfg.thr/2?C.amberBg:C.redBg,lastTxt:a.lastDate?t.ago(dd(a.lastDate,TODAY)):t.noUpdYet,open:()=>this.openDetail(a.id),bulkOn:false,hasBulkErr:false};
@@ -2349,6 +2374,8 @@ class Component extends DCLogic {
         barColor:a.delayed?C.barBad:a.variance<-2?C.barWarn:C.barOk,varTxt:sg(a.variance),varColor:vc(a.variance),unit:a.unit,pr:(()=>{const x=prodOf(a),q=v=>(Math.round(v*10)/10).toLocaleString('en')+' '+a.unit;
           return{rem:q(x.rem),remD:x.done?'—':t.daysN(x.remD),rate:x.rate==null?t.notStartedRate:q(x.rate)+t.perDay,req:x.done?'—':x.req==null?t.overduePf:q(x.req)+t.perDay,reqC:x.rate!=null&&x.req!=null&&x.req>x.rate*1.1?C.red:'#1b1a17',
             fc:x.fc,fcC:x.late?C.red:C.green,fcNote:x.done?t.k_done:x.late?t.fcLate(x.late):t.fcOk,src:x.done?'':x.site?t.remSrcSite(a.remRep.days,a.remRep.at)+(a.remRep.pending?' · '+t.remSrcPend:''):t.remSrcCalc};})(),showProd:role!=='site',remHint:t.remHint(a.pf),
+        canOos:(this.live()?!!(s.profile&&(s.profile.role==='admin'||s.profile.role==='planner')):role==='planner'),isOos:!!a.oos,oosOpen:!!s.oosOpen||!!a.oos,oosArrow:s.oosOpen||a.oos?'▾':'▸',oosToggle:()=>this.setState({oosOpen:!s.oosOpen,oosNote:''}),
+        oosInfo:a.oos?t.oosInfo(a.oosNote||'—',a.oosBy||'',(a.oosAt||'').slice(0,10)):'',oosNote:s.oosNote||'',oosNoteOn:e=>this.setState({oosNote:e.target.value}),oosSet:()=>this.setOos(a.id,true),oosClear:()=>this.setOos(a.id,false),notOos:!a.oos,
         canCorrect:(this.live()?!!(s.profile&&s.profile.role==='admin'):role==='planner')&&!!a.off&&!a.pending,corrOpen:!!s.corrOpen,corrArrow:s.corrOpen?'▾':'▸',corrToggle:()=>this.setState({corrOpen:!s.corrOpen,corrPct:a.actual,corrNote:''}),
         corrPct:s.corrPct==null?a.actual:s.corrPct,corrNote:s.corrNote||'',corrPctOn:e=>this.setState({corrPct:e.target.value}),corrNoteOn:e=>this.setState({corrNote:e.target.value}),corrSave:()=>this.correctProgress(a.id),
         showReturned:!!a.returned&&!a.pending,retBy:a.returned&&a.returned.reviewer?person(a.returned.reviewer):'',retComment:a.returned?a.returned.comment:'',retWhen:a.returned?a.returned.reviewed.replace('T',' '):'',
@@ -2490,8 +2517,8 @@ class Component extends DCLogic {
     const plChips=D.projects.map(p=>chip(p.code,p.id===pp.id,()=>this.setState({plProj:p.id,plBldg:'all',plZone:'all',plType:'all'})));
     const plPool=pp.list.filter(a=>(s.plBldg==='all'||a.bldg===s.plBldg)&&(s.plZone==='all'||a.zone===s.plZone)&&(s.plType==='all'||a.btype===s.plType));
     const plBreak=show.progress?bdown(pp.list,s.plZone,s.plBldg,z=>this.setState(st=>({plZone:st.plZone===z&&st.plBldg==='all'&&st.plType==='all'?'all':z,plBldg:'all',plType:'all'})),(z,b,ty)=>this.setState(st=>({plZone:z,plType:ty||'all',plBldg:st.plZone===z&&st.plBldg===b?'all':b})),s.plType,(z,ty)=>this.setState(st=>({plZone:z,plBldg:'all',plType:st.plZone===z&&st.plType===ty&&st.plBldg==='all'?'all':ty}))):[];
-    const PF={all:()=>true,delayed:a=>a.delayed,missing:a=>a.missing,pending:a=>!!a.pending};
-    const plFilterChips=[['all','f_all'],['delayed','f_delayed'],['missing','f_missing'],['pending','f_pending']].map(([k,l])=>chip(t[l]+' · '+plPool.filter(PF[k]).length,s.plFilter===k,()=>this.setState({plFilter:k})));
+    const PF={all:()=>true,delayed:a=>a.delayed,missing:a=>a.missing,pending:a=>!!a.pending,oos:a=>!!a.oos};
+    const plFilterChips=[['all','f_all'],['delayed','f_delayed'],['missing','f_missing'],['pending','f_pending']].concat(plPool.some(a=>a.oos)?[['oos','f_oos']]:[]).map(([k,l])=>chip(t[l]+' · '+plPool.filter(PF[k]).length,s.plFilter===k,()=>this.setState({plFilter:k})));
     // activity list grouped by building (when several are listed), then WBS under each building, in schedule order; headers open / close (state key stKey)
     const wbsGroups=(rest,stKey,Q,bulkOn)=>{
         // grouped by building (when several are listed), then WBS under each building, in schedule order; tap a header to open / close it
@@ -2575,7 +2602,7 @@ class Component extends DCLogic {
 
     // Shared: top risks and delays by responsibility (dashboard + weekly report)
     const lastReasonA=a=>{const lr=a.ups.slice().reverse().find(u=>u.delay);return lr?dlP(lr):(a.missing?t.f_missing:'—');};
-    const risksOf=(acts,k)=>{const lim14=addD(TODAY,14);return acts.filter(a=>a.actual<100&&a.ps<=lim14).map(a=>{const pr=prodOf(a),gap=Math.max(0,a.planned-a.actual),over=a.pf<TODAY,soon=!over&&a.pf<=lim14,noUpd=a.missing;
+    const risksOf=(acts,k)=>{const lim14=addD(TODAY,14);return acts.filter(a=>!a.oos&&a.actual<100&&a.ps<=lim14).map(a=>{const pr=prodOf(a),gap=Math.max(0,a.planned-a.actual),over=a.pf<TODAY,soon=!over&&a.pf<=lim14,noUpd=a.missing;
         const sc=a.w*(gap+(over?30:soon&&a.planned-a.actual>0?15:0)+Math.min(30,pr.late)+(noUpd?5:0));
         const why=[gap>0.5?t.riskBehind(p0(gap)):'',over?t.riskOverdue:soon?t.riskDueSoon(a.pf):'',noUpd?t.riskNoUpd:''].filter(Boolean).join(' · ');
         return{a,pr,sc,why};}).filter(x=>x.sc>0&&x.why).sort((x,y)=>y.sc-x.sc).slice(0,k||5);};
@@ -2597,7 +2624,7 @@ class Component extends DCLogic {
       const cnt={draft:n(a=>!!a.draft),cm:ups.filter(u=>u.status==='submitted').length,pl:ups.filter(u=>u.status==='endorsed').length,ret:n(a=>!!a.returned&&!a.draft&&!a.pending),appr:ups.filter(u=>u.status==='approved'&&u.reviewed.slice(0,10)>=wk).length};
       const RC=2*Math.PI*50,RP=2*Math.PI*36;
       db={chips:[chip(t.allProjects,!sp,()=>this.setState({dbProj:'all',dbHov:-1,dbWk:-1}))].concat(D.projects.map(p=>chip(p.code,!!sp&&sp.id===p.id,()=>this.setState({dbProj:p.id,dbHov:-1,dbWk:-1})))),
-        scopeNote:sp?nm(sp)+' · '+t.dashScopeOne(acts.length):t.dashScopeAll(D.projects.length),
+        scopeNote:(sp?nm(sp)+' · '+t.dashScopeOne(acts.length):t.dashScopeAll(D.projects.length))+(acts.some(a=>a.oos)?' · '+t.oosExcl(acts.filter(a=>a.oos).length):''),
         actual:p1(A),planned:p1(P),planAt:t.planAt(PLAN_AT||TODAY),variance:sg(A-P),varColor:A-P>=-2?'oklch(0.82 0.12 150)':'oklch(0.8 0.13 45)',spi:spiTxt(spx),fc,fcColor:fc>c.end?'oklch(0.8 0.13 45)':'oklch(0.82 0.12 150)',plFinish:c.end,
         ringA:r1(RC*clamp(A,0,100)/100)+' '+r1(RC),ringP:r1(RP*clamp(P,0,100)/100)+' '+r1(RP),
         kpis:[{l:t.k_total,v:acts.length,sub:t.kOfTotal(n(a=>a.actual>=100),acts.length)+' '+t.k_done.toLowerCase(),c:'#1b1a17'},{l:t.k_inprog,v:n(a=>started(a)&&a.actual<100),sub:t.k_notstarted+' '+n(a=>!started(a)&&a.actual<100),c:C.blue},
