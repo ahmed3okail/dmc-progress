@@ -244,6 +244,15 @@ button{transition:transform .08s ease,background-color .15s ease}button:active{t
       </div>
     </div>
 
+    <sc-if value="{{ d.hasSeq }}" hint-placeholder-val="{{ false }}">
+      <div style="background:#fff7e8;border:1px solid #e9b44c;border-inline-start:5px solid #d98a00;border-radius:12px;padding:12px 14px;display:flex;flex-direction:column;gap:8px">
+        <div style="font-weight:700;font-size:15px;color:#8a5300">⤴ {{ t.seqTitle }}</div>
+        <div style="font-size:13px;color:#5f4a22;line-height:1.5">{{ t.seqHelp }}</div>
+        <sc-for list="{{ d.seqList }}" as="x" hint-placeholder-count="1"><button onClick="{{ x.go }}" style="display:flex;align-items:center;gap:8px;width:100%;text-align:start;background:#fff;border:1px solid #f0dcb0;border-radius:10px;padding:8px 10px;color:inherit"><span style="font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:700">{{ x.code }}</span><span style="flex:1;min-width:0;font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ x.name }}</span><b style="font-size:13px;color:#8a5300">{{ x.pct }}</b><span style="color:#8a8378">›</span></button></sc-for>
+        <div style="font-size:11.5px;color:#8a7a5a">{{ d.seqAuto }}</div>
+      </div>
+    </sc-if>
+
     <sc-if value="{{ d.canCorrect }}" hint-placeholder-val="{{ false }}">
       <div style="background:#fff;border:1px dashed #b23c1d;border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:10px">
         <button onClick="{{ d.corrToggle }}" style="display:flex;align-items:center;gap:8px;border:none;background:transparent;padding:0;text-align:start;font-weight:700;font-size:15px;color:#b23c1d">✎ {{ t.corrTitle }}<span style="margin-inline-start:auto">{{ d.corrArrow }}</span></button>
@@ -985,6 +994,15 @@ button{transition:transform .08s ease,background-color .15s ease}button:active{t
           <span style="font-size:16px;font-weight:700;color:{{ a.vc }};direction:ltr;unicode-bidi:isolate;white-space:nowrap">{{ a.v }}</span>
         </button></sc-for>
       </div>
+      <div style="break-inside:avoid;margin-bottom:12px;animation:dmcIn .35s ease both;box-shadow:0 1px 3px rgba(27,26,23,.05);background:#fff;border:1px solid #e2ded6;border-inline-start:4px solid #d98a00;border-radius:12px;overflow:hidden;display:flex;flex-direction:column">
+        <div style="padding:14px 14px 2px;font-weight:700;font-size:15px;display:flex;gap:8px;align-items:center">⤴ {{ t.seqCard }}<span style="margin-inline-start:auto;font-size:13px;font-weight:700;color:#8a5300;background:#fff3dc;border-radius:999px;padding:2px 10px">{{ db.seqN }}</span></div>
+        <div style="padding:0 14px 8px;font-size:12px;color:#605a51">{{ t.seqCardHelp }}</div>
+        <sc-for list="{{ db.seq }}" as="a" hint-placeholder-count="3"><button onClick="{{ a.open }}" style="display:flex;gap:10px;align-items:center;width:100%;text-align:start;border:none;border-top:1px solid #f0ede7;background:#fff;padding:9px 14px;color:inherit">
+          <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:2px"><span style="font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:600">{{ a.code }}</span><span style="font-size:13.5px;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ a.name }}</span><span style="font-size:12px;color:#8a5300">{{ a.waits }}</span></div>
+          <b style="font-size:15px">{{ a.pct }}</b>
+        </button></sc-for>
+        <sc-if value="{{ db.noSeq }}" hint-placeholder-val="{{ false }}"><div style="color:#5f5a52;text-align:center;padding:12px">{{ t.seqNone }}</div></sc-if>
+      </div>
       <div style="break-inside:avoid;margin-bottom:12px;animation:dmcIn .35s ease both;box-shadow:0 1px 3px rgba(27,26,23,.05);background:#fff;border:1px solid #e2ded6;border-radius:12px;overflow:hidden;display:flex;flex-direction:column">
         <div style="padding:14px 14px 4px;font-weight:700;font-size:15px">{{ t.p_ahead }}</div>
         <div style="padding:0 14px 10px;display:flex;flex-direction:column;gap:4px"><sc-for list="{{ db.ahead }}" as="x" hint-placeholder-count="3"><div style="font-size:13.5px;font-weight:600;color:{{ x.c }}">{{ x.l }}</div></sc-for></div>
@@ -1331,7 +1349,7 @@ const COL_GUIDE=[['project_code',1,'PX-106','Project code','رمز المشرو�
   ['wbs',0,'2.1 Substructure','WBS path','مسار WBS'],['planned_start',1,'2026-11-05','Date: YYYY-MM-DD, DD/MM/YYYY or 05-Nov-26','تاريخ: YYYY-MM-DD أو DD/MM/YYYY أو 05-Nov-26'],['planned_finish',1,'2026-12-20','Same date formats, not before the start','نفس صيغ التاريخ، ومايكونش قبل البداية'],
   ['budget_qty',1,'260','Number > 0 (use 1 for LS)','رقم أكبر من صفر (1 لو مقطوعية)'],['unit',1,'m3','Unit','الوحدة'],['weight',1,'10','Number > 0 (e.g. duration or cost)','رقم أكبر من صفر (المدة أو التكلفة)'],
   ['discipline',1,'CIV','CIV / ARC / LND / MEC / ELE','CIV / ARC / LND / MEC / ELE'],['zone',0,'Z1','Zone','الزون'],['building_type',0,'Type A','Building type','نوع المبنى'],['building',0,'BLD-1','Building / plot (empty = SITE)','المبنى / القطعة (فاضي = SITE)'],
-  ['actual_start',0,'2026-11-01','Opening balance: actual start','رصيد افتتاحي: البداية الفعلية'],['actual_finish',0,'','Opening balance: actual finish (= 100%)','رصيد افتتاحي: النهاية الفعلية (= 100%)'],['actual_pct',0,'30','Opening balance: % complete 0–100','رصيد افتتاحي: نسبة الإنجاز 0–100']];
+  ['actual_start',0,'2026-11-01','Opening balance: actual start','رصيد افتتاحي: البداية الفعلية'],['actual_finish',0,'','Opening balance: actual finish (= 100%)','رصيد افتتاحي: النهاية الفعلية (= 100%)'],['actual_pct',0,'30','Opening balance: % complete 0–100','رصيد افتتاحي: نسبة الإنجاز 0–100'],['predecessors',0,'A1010; A1020','Predecessor activity ids (finish-to-start), separated by ; — used to flag out-of-sequence progress','أكواد الأنشطة السابقة (نهاية ← بداية) مفصولة بـ ; — بتستخدم لاكتشاف التقدّم خارج التسلسل']];
 const DELAYS=['material','manpower','equipment','weather','design','client','subcon','permit','other'];
 // Line icons (24x24, stroke) — rendered as <img data-ico> data URLs so templates stay plain lookups
 const ICO={
@@ -1378,7 +1396,7 @@ function decideU(u,ok,role,c,ts,toCm){const cm=role==='cm',by=cm?'CM':'PL';
   return Object.assign({},u,{status:ok?'approved':'returned',reviewed:ts,reviewer:by,comment:c,log:u.log.concat([{at:ts,ev:ok?'approved':'returned',by}])});}
 const C={green:'oklch(0.48 0.12 150)',greenBg:'oklch(0.94 0.04 150)',red:'oklch(0.48 0.17 28)',redBg:'oklch(0.95 0.035 28)',amber:'oklch(0.45 0.1 70)',amberBg:'oklch(0.94 0.06 85)',blue:'oklch(0.45 0.12 250)',blueBg:'oklch(0.94 0.03 250)',grey:'#5f5a52',greyBg:'#ece9e3',barOk:'oklch(0.58 0.13 150)',barWarn:'oklch(0.68 0.14 70)',barBad:'oklch(0.56 0.18 28)'};
 const OPEN_NOTE='Opening balance from P6 · رصيد افتتاحي من P6';
-const CSV_COLS=['project_code','project_name','region','activity_id','activity_name','activity_name_ar','wbs','planned_start','planned_finish','budget_qty','unit','weight','discipline','zone','building_type','building','actual_start','actual_finish','actual_pct'];
+const CSV_COLS=['project_code','project_name','region','activity_id','activity_name','activity_name_ar','wbs','planned_start','planned_finish','budget_qty','unit','weight','discipline','zone','building_type','building','actual_start','actual_finish','actual_pct','predecessors'];
 const REGIONS=['nc','wc','ec'];
 const regionKey=v=>{v=String(v||'').toLowerCase().replace(/[^a-z]/g,'');return v==='nc'||v==='northcoast'?'nc':v==='wc'||v==='westcairo'?'wc':v==='ec'||v==='eastcairo'?'ec':'';};
 
@@ -1557,7 +1575,7 @@ storageBadgeLive:'مشترك · Supabase PostgreSQL · لحظي',storageLive1:'�
 storageLive2:'قواعد سير العمل (موافقة مدير الإنشاءات ثم التخطيط، قفل التحديثات المعتمدة، الصلاحيات حسب التخصص) تفرضها قاعدة البيانات نفسها وليس الشاشة فقط. كل تغيير يُسجَّل في سجل تدقيق.',
 storageLive3:'تنطبق حدود الخطة المجانية (حجم القاعدة، تخزين الملفات، وقد يتوقف المشروع غير النشط مؤقتاً). الصور في مخزن خاص وتُعرض بروابط مؤقتة.',
 prole_site:'مهندس موقع',prole_cm:'مدير الإنشاءات',prole_planner:'مهندس التخطيط',prole_pm:'مدير المشروع / مدير التخطيط',prole_admin:'مسؤول النظام'});
-Object.assign(I18N.en,{bvShown:'Shown on the drawing',bvTapTr:'Tap to show on the drawing',bvOnly:'only',bvAllTr:'All trades',bvShowAll:'Show all trades',bvTapFloor:'Tap a floor on the drawing to see its activities',bvPlots:'Buildings',dashSub:'Execution, performance and project health',vsLastWk:'vs last week',wkSel:(d,p,a)=>`Week ending ${d}: planned ${p} · actual ${a}`,wkTap:'Tap a week to read it',chartTap:'Tap or move over the chart to read the values on any date',hSched:'Schedule',bldT:'Buildings',bldTap:'Tap a building to open its drawing and trades',projT:'Projects',projTap:'Tap a project to see its buildings',tab_dash:'Dashboard',dashTitle:'Project dashboard',dashScopeAll:n=>`${n} projects · weighted by contract value`,dashScopeOne:n=>`${n} activities · weighted by activity weight`,
+Object.assign(I18N.en,{w_seq:x=>`Out of sequence: predecessor not finished — ${x}`,f_oseq:'Out of sequence',seqTitle:'Out of sequence',seqHelp:'Progress was recorded on this activity while these predecessors are not finished yet:',seqAuto:'(sample data: predecessor = previous activity in the same building and WBS)',seqCard:'Out of sequence',seqCardHelp:'Activities with progress while a predecessor is not finished. Tap one to open it.',seqNone:'No out-of-sequence progress',seqWaits:x=>`waits for ${x}`,k_oseq:'Out of sequence',k_oseqSub:'progress before the predecessor finished',bvShown:'Shown on the drawing',bvTapTr:'Tap to show on the drawing',bvOnly:'only',bvAllTr:'All trades',bvShowAll:'Show all trades',bvTapFloor:'Tap a floor on the drawing to see its activities',bvPlots:'Buildings',dashSub:'Execution, performance and project health',vsLastWk:'vs last week',wkSel:(d,p,a)=>`Week ending ${d}: planned ${p} · actual ${a}`,wkTap:'Tap a week to read it',chartTap:'Tap or move over the chart to read the values on any date',hSched:'Schedule',bldT:'Buildings',bldTap:'Tap a building to open its drawing and trades',projT:'Projects',projTap:'Tap a project to see its buildings',tab_dash:'Dashboard',dashTitle:'Project dashboard',dashScopeAll:n=>`${n} projects · weighted by contract value`,dashScopeOne:n=>`${n} activities · weighted by activity weight`,
 k_total:'Activities',k_inprog:'In progress',k_done:'Completed',k_notstarted:'Not started',k_awaitCM:'Awaiting CM',k_awaitPL:'Awaiting Planning',k_appr7:'Approved · 7 days',k_returnedN:'Returned',kDelayedSub:n=>`> ${n} pts behind or overdue`,kMissingSub:n=>`no update for ${n}+ days`,kOfTotal:(n,a)=>`${n} of ${a}`,
 p_scurve:'S-curve — planned vs approved actual',p_weekly:'Weekly progress gain — last 8 weeks',p_weeklyHelp:'Light bar = planned gain · dark bar = approved actual gain (percentage points)',p_health:'Project health',p_disc:'Performance by discipline',p_flow:'Approval workflow',p_reasons:'Top delay reasons · last 10 weeks',p_behind:'Most behind plan',p_ahead:'Next 14 days',p_feed:'Recent activity',
 fl_draft:'Drafts (not submitted)',fl_cm:'Awaiting Construction Manager',fl_pl:'Awaiting Planning Engineer',fl_ret:'Returned for correction',fl_appr:'Approved in the last 7 days',
@@ -1571,7 +1589,7 @@ chatErr:'Chat is not set up in the database yet. The administrator must run db/0
 returnedBy:n=>`Returned by ${n}`,photoNoteLive:'Up to 4 photos. Time and GPS (if you allow it) are recorded. Photos are compressed and stored in the shared database.',
 signUpOk:'Account created. Ask the administrator to give you a role, discipline and project.',importJson:'Restore backup (JSON)',t_imported:'Backup restored',t_badJson:'Not a valid backup file',
 e_eng:'discipline must be CIV, ARC, LND, MEC or ELE (or Civil, Architectural, Landscape, Mechanical, Electrical)'});
-Object.assign(I18N.ar,{bvShown:'ظاهر على الرسم',bvTapTr:'اضغط لعرضه على الرسم',bvOnly:'فقط',bvAllTr:'كل التخصصات',bvShowAll:'عرض كل التخصصات',bvTapFloor:'اضغط على أي دور في الرسم لعرض أنشطته',bvPlots:'المباني',dashSub:'التنفيذ والأداء وحالة المشروع',vsLastWk:'عن الأسبوع اللي فات',wkSel:(d,p,a)=>`أسبوع ينتهي ${d}: المخطط ${p} · الفعلي ${a}`,wkTap:'اضغط على أي أسبوع لقراءته',chartTap:'اضغط أو حرّك على المنحنى لقراءة القيم في أي تاريخ',hSched:'الجدول الزمني',bldT:'المباني',bldTap:'اضغط على أي مبنى لفتح رسمه وتقدّم كل تخصص',projT:'المشاريع',projTap:'اضغط على مشروع لعرض مبانيه',tab_dash:'لوحة المتابعة',dashTitle:'لوحة متابعة المشاريع',dashScopeAll:n=>`${n} مشاريع · مرجّح بقيمة العقد`,dashScopeOne:n=>`${n} نشاط · مرجّح بوزن النشاط`,
+Object.assign(I18N.ar,{w_seq:x=>`خارج التسلسل: النشاط السابق لسه مخلصش — ${x}`,f_oseq:'خارج التسلسل',seqTitle:'خارج التسلسل',seqHelp:'اتسجّل تقدّم على النشاط ده والأنشطة السابقة دي لسه مخلصتش:',seqAuto:'(بيانات تجريبية: السابق = النشاط اللي قبله في نفس المبنى ونفس الـ WBS)',seqCard:'خارج التسلسل',seqCardHelp:'أنشطة عليها تقدّم والنشاط اللي قبلها لسه مخلصش. اضغط على أي واحد يفتح.',seqNone:'مفيش تقدّم خارج التسلسل',seqWaits:x=>`مستني ${x}`,k_oseq:'خارج التسلسل',k_oseqSub:'تقدّم قبل ما السابق يخلص',bvShown:'ظاهر على الرسم',bvTapTr:'اضغط لعرضه على الرسم',bvOnly:'فقط',bvAllTr:'كل التخصصات',bvShowAll:'عرض كل التخصصات',bvTapFloor:'اضغط على أي دور في الرسم لعرض أنشطته',bvPlots:'المباني',dashSub:'التنفيذ والأداء وحالة المشروع',vsLastWk:'عن الأسبوع اللي فات',wkSel:(d,p,a)=>`أسبوع ينتهي ${d}: المخطط ${p} · الفعلي ${a}`,wkTap:'اضغط على أي أسبوع لقراءته',chartTap:'اضغط أو حرّك على المنحنى لقراءة القيم في أي تاريخ',hSched:'الجدول الزمني',bldT:'المباني',bldTap:'اضغط على أي مبنى لفتح رسمه وتقدّم كل تخصص',projT:'المشاريع',projTap:'اضغط على مشروع لعرض مبانيه',tab_dash:'لوحة المتابعة',dashTitle:'لوحة متابعة المشاريع',dashScopeAll:n=>`${n} مشاريع · مرجّح بقيمة العقد`,dashScopeOne:n=>`${n} نشاط · مرجّح بوزن النشاط`,
 k_total:'الأنشطة',k_inprog:'قيد التنفيذ',k_done:'مكتمل',k_notstarted:'لم يبدأ',k_awaitCM:'بانتظار مدير الإنشاءات',k_awaitPL:'بانتظار التخطيط',k_appr7:'معتمد · 7 أيام',k_returnedN:'مُعاد',kDelayedSub:n=>`متأخر أكثر من ${n} نقاط أو تجاوز النهاية`,kMissingSub:n=>`بدون تحديث ${n} أيام أو أكثر`,kOfTotal:(n,a)=>`${n} من ${a}`,
 p_scurve:'منحنى S — المخطط مقابل الفعلي المعتمد',p_weekly:'التقدم الأسبوعي — آخر 8 أسابيع',p_weeklyHelp:'العمود الفاتح = المخطط · الغامق = الفعلي المعتمد (نقاط مئوية)',p_health:'حالة المشاريع',p_disc:'الأداء حسب التخصص',p_flow:'دورة الاعتماد',p_reasons:'أهم أسباب التأخير · آخر 10 أسابيع',p_behind:'الأكثر تأخراً عن المخطط',p_ahead:'الـ 14 يوماً القادمة',p_feed:'آخر الأحداث',
 fl_draft:'مسودات (لم تُرسل)',fl_cm:'بانتظار مدير الإنشاءات',fl_pl:'بانتظار مهندس التخطيط',fl_ret:'مُعادة للتصحيح',fl_appr:'معتمدة في آخر 7 أيام',
@@ -1715,7 +1733,7 @@ function makeUpdate(ups,f,status,eng){const ts=stamp(),ev=status==='submitted'?'
   let id=f.draftId;
   if(id&&ups.some(u=>u.id===id&&u.status==='draft'))return{id,ups:ups.map(u=>u.id===id?Object.assign({},u,vals,{status,submitted:status==='submitted'?ts:'',log:u.log.concat([{at:ts,ev,by:eng}])}):u)};
   id=uid('U');return{id,ups:ups.concat([Object.assign({id,actId:f.actId,by:eng},vals,{status,created:ts,submitted:status==='submitted'?ts:'',reviewed:'',reviewer:'',comment:'',prevId:f.prevId||'',src:'user',log:[{at:ts,ev,by:eng}]})])};}
-function warnsOf(u,a,t){const w=[],imp=a.qty?Math.round(u.qty/a.qty*100):0;if(Math.abs(imp-u.pct)>10)w.push(t.w_qty(imp,u.pct));if(u.pct-a.actual>30)w.push(t.w_jump(u.pct-a.actual));if(u.pct-a.planned>15)w.push(t.w_ahead(Math.round(u.pct-a.planned)));if(u.pct<a.actual)w.push(t.w_lower(a.actual));return w;}
+function warnsOf(u,a,t){const w=[];if(u.pct>0&&a.seqOpen&&a.seqOpen.length)w.push(t.w_seq(a.seqOpen.map(x=>x.code+' ('+Math.round(x.actual)+'%)').join(', ')));const imp=a.qty?Math.round(u.qty/a.qty*100):0;if(Math.abs(imp-u.pct)>10)w.push(t.w_qty(imp,u.pct));if(u.pct-a.actual>30)w.push(t.w_jump(u.pct-a.actual));if(u.pct-a.planned>15)w.push(t.w_ahead(Math.round(u.pct-a.planned)));if(u.pct<a.actual)w.push(t.w_lower(a.actual));return w;}
 // QR codes per building: link opens the app on that building (#b=<project id>|<building>)
 const qrLink=(pid,b)=>location.origin+location.pathname+'#b='+encodeURIComponent(pid+'|'+b);
 let _qrLib=null;function loadQR(){if(window.qrcode)return Promise.resolve(window.qrcode);if(_qrLib)return _qrLib;
@@ -1769,6 +1787,14 @@ function derive(data,cfg){
     return Object.assign({},a,{ups,appr,off,planned,actual,pending,draft,returned,lastDate,missing,delayed,due,updW,remRep,variance:actual-planned,aStart:off?off.aStart:'',aFinish:off?off.aFinish:'',aQty:off?off.qty:0});
   });
   const actMap={};acts.forEach(a=>actMap[a.id]=a);
+  // Out of sequence: progress recorded while a predecessor (finish-to-start) is not finished yet.
+  // Predecessors come from the CSV column "predecessors" (activity ids, same project). Sample data without logic gets a simple
+  // automatic chain: inside the same building + WBS, each activity follows the previous one by planned dates.
+  const byCode={};acts.forEach(a=>{byCode[a.pid+'|'+a.code]=a;});
+  const auto={},grp={};acts.forEach(a=>{if(a.src==='demo'&&!(a.preds&&a.preds.length)){const k=a.pid+'|'+a.bldg+'|'+a.wbs;(grp[k]=grp[k]||[]).push(a);}});
+  Object.values(grp).forEach(l=>{l.sort((x,y)=>x.ps<y.ps?-1:x.ps>y.ps?1:0);for(let i=1;i<l.length;i++)if(l[i-1].pf<=l[i].ps)auto[l[i].id]=[l[i-1].code];});
+  acts.forEach(a=>{const pc=a.preds&&a.preds.length?a.preds:(auto[a.id]||[]);a.predList=pc.map(c=>byCode[a.pid+'|'+c]).filter(x=>x&&x.id!==a.id);
+    const started=a.actual>0||!!(a.pending&&a.pending.pct>0);a.seqOpen=a.predList.filter(x=>x.actual<100);a.oseq=started&&a.seqOpen.length>0;a.autoPred=!(a.preds&&a.preds.length)&&!!auto[a.id];});
   const projects=data.projects.map(p=>{
     const list=acts.filter(a=>a.pid===p.id),r=roll(list,TODAY);
     const missing=list.filter(a=>a.missing).length,delayed=list.filter(a=>a.delayed).length,pending=list.filter(a=>a.pending).length,v=r.a-r.p;
@@ -1832,12 +1858,12 @@ function idb(store,op,key,val){return new Promise(res=>{try{const rq=indexedDB.o
 function isNetErr(e){const m=String((e&&(e.message||e))||'');return (typeof navigator!=='undefined'&&navigator.onLine===false)||/failed to fetch|networkerror|load failed|network request failed|fetch failed|timeout/i.test(m);}
 function compress(file){return new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>{const img=new Image();img.onload=()=>{const sc=Math.min(1,800/Math.max(img.width,img.height));const c=document.createElement('canvas');c.width=Math.round(img.width*sc);c.height=Math.round(img.height*sc);c.getContext('2d').drawImage(img,0,0,c.width,c.height);res(c.toDataURL('image/jpeg',0.6));};img.onerror=rej;img.src=r.result;};r.onerror=rej;r.readAsDataURL(file);});}
 function sampleCSV(){const d=n=>addD(TODAY,n);return [CSV_COLS.join(','),
-`PX-106,Coastal School Annex,North Coast,F6010,Site clearance,تنظيف الموقع,1.1 Enabling,${d(-20)},${d(-5)},6000,m2,4,CIV,—,,SITE,${d(-19)},${d(-6)},100`,
-`PX-106,Coastal School Annex,North Coast,F6020,Strip footings,القواعد الشريطية,2.1 Substructure,${d(-8)},${d(20)},260,m3,10,CIV,Z1,Type A,BLD-1,${d(-7)},,30`,
-`PX-106,Coastal School Annex,North Coast,F6030,Ground beams,الجسور الأرضية,2.2 Substructure,${d(10)},${d(35)},140,m3,8,CIV,Z1,Type A,BLD-2,,,`,
-`PX-106,Coastal School Annex,North Coast,F6040,Steel frame,الهيكل الفولاذي,3.1 Superstructure,${d(30)},${d(75)},210,t,16,CIV,Z2,Type B,BLD-1,,,`,
-`PX-106,Coastal School Annex,North Coast,F6050,Roof deck,سطح السقف,3.2 Superstructure,${d(80)},${d(70)},2400,m2,9,ARC,Z2,Type B,BLD-2,,,`,
-`PX-101,,,A1090,Blockwork (re-baselined),أعمال البلوك,3.3 Superstructure,${d(25)},${d(80)},6400,m2,9,ARC,Z2,Type B,BLD-B,,,`].join('\n');}
+`PX-106,Coastal School Annex,North Coast,F6010,Site clearance,تنظيف الموقع,1.1 Enabling,${d(-20)},${d(-5)},6000,m2,4,CIV,—,,SITE,${d(-19)},${d(-6)},100,`,
+`PX-106,Coastal School Annex,North Coast,F6020,Strip footings,القواعد الشريطية,2.1 Substructure,${d(-8)},${d(20)},260,m3,10,CIV,Z1,Type A,BLD-1,${d(-7)},,30,F6010`,
+`PX-106,Coastal School Annex,North Coast,F6030,Ground beams,الجسور الأرضية,2.2 Substructure,${d(10)},${d(35)},140,m3,8,CIV,Z1,Type A,BLD-2,,,,F6020`,
+`PX-106,Coastal School Annex,North Coast,F6040,Steel frame,الهيكل الفولاذي,3.1 Superstructure,${d(30)},${d(75)},210,t,16,CIV,Z2,Type B,BLD-1,,,,`,
+`PX-106,Coastal School Annex,North Coast,F6050,Roof deck,سطح السقف,3.2 Superstructure,${d(80)},${d(70)},2400,m2,9,ARC,Z2,Type B,BLD-2,,,,`,
+`PX-101,,,A1090,Blockwork (re-baselined),أعمال البلوك,3.3 Superstructure,${d(25)},${d(80)},6400,m2,9,ARC,Z2,Type B,BLD-B,,,,`].join('\n');}
 
 // ───────── Data source adapter: DEMO (this browser) or LIVE (Supabase, shared) ─────────
 function connCfg(){const w=window.DMC_CONFIG||{};let l={};try{l=JSON.parse(localStorage.getItem(CONN_KEY)||'{}');}catch(e){}
@@ -1851,8 +1877,8 @@ const EMPTYP={id:'',code:'—',name:'—',nameAr:'—',list:[],planned:0,actual:
 const MAP={
  projects:{t:'projects',to:p=>({id:p.id,code:p.code,name:p.name,name_ar:p.nameAr,location:p.loc,location_ar:p.locAr,region:p.region||null,contract_value:p.value,source:p.src,is_demo:p.src==='demo'}),
   from:r=>({id:r.id,code:r.code,name:r.name,nameAr:r.name_ar||r.name,loc:r.location||'—',locAr:r.location_ar||r.location||'—',region:r.region||'',value:Number(r.contract_value)||0,src:r.source||'imported'})},
- activities:{t:'activities',to:a=>({id:a.id,project_id:a.pid,code:a.code,name:a.name,name_ar:a.nameAr,wbs:a.wbs,zone:a.zone||'—',building_type:a.btype||null,building:a.bldg||'SITE',planned_start:a.ps,planned_finish:a.pf,budget_qty:a.qty,unit:a.unit,weight:a.w,discipline:a.eng,source:a.src,is_demo:a.src==='demo'}),
-  from:r=>({id:r.id,pid:r.project_id,code:r.code,name:r.name,nameAr:r.name_ar||r.name,wbs:r.wbs||'—',zone:r.zone||'—',btype:r.building_type||'',bldg:r.building||'SITE',ps:r.planned_start,pf:r.planned_finish,qty:Number(r.budget_qty),unit:r.unit,w:Number(r.weight),eng:r.discipline,src:r.source||'imported'})},
+ activities:{t:'activities',to:a=>({id:a.id,project_id:a.pid,code:a.code,name:a.name,name_ar:a.nameAr,wbs:a.wbs,zone:a.zone||'—',building_type:a.btype||null,building:a.bldg||'SITE',planned_start:a.ps,planned_finish:a.pf,budget_qty:a.qty,unit:a.unit,weight:a.w,discipline:a.eng,source:a.src,is_demo:a.src==='demo',predecessors:a.preds&&a.preds.length?a.preds:null}),
+  from:r=>({id:r.id,pid:r.project_id,code:r.code,name:r.name,nameAr:r.name_ar||r.name,wbs:r.wbs||'—',zone:r.zone||'—',btype:r.building_type||'',bldg:r.building||'SITE',ps:r.planned_start,pf:r.planned_finish,qty:Number(r.budget_qty),unit:r.unit,w:Number(r.weight),eng:r.discipline,src:r.source||'imported',preds:Array.isArray(r.predecessors)?r.predecessors:[]})},
  updates:{t:'progress_updates',to:u=>({id:u.id,activity_id:u.actId,discipline:u.by,pct:u.pct,qty:u.qty,actual_start:u.aStart||null,actual_finish:u.aFinish||null,remarks:u.remarks||'',delay_reason:u.delay||null,delay_party:u.delay?(u.party||DPARTY[u.delay]||'other'):null,remaining_days:u.remD==null||u.remD===''?null:u.remD,
    photos:(u.photos||[]).map(p=>({id:p.id,path:p.path||null,caption:p.caption||'',at:p.at||'',lat:p.lat==null?null:p.lat,lng:p.lng==null?null:p.lng,acc:p.acc==null?null:p.acc,geo:p.geo||'none'})),
    status:u.status,created_at:toTs(u.created),submitted_at:toTs(u.submitted),cm_at:toTs(u.cmAt),cm_comment:u.cmComment||'',orig_pct:u.origPct==null?null:u.origPct,orig_qty:u.origQty==null?null:u.origQty,adj_at:toTs(u.adjAt),adj_note:u.adjNote||'',
@@ -2202,7 +2228,7 @@ class Component extends DCLogic {
     const miss=need.filter(c=>head.indexOf(c)<0);
     if(miss.length){this.setState({importRows:[{line:1,ok:false,code:'',name:'',errs:miss.map(t.e_col),rec:null}]});return;}
     const g=(r,c)=>{const i=head.indexOf(c);return i<0?'':String(r[i]||'').trim();};const seen={},data=this.state.data;
-    const out=rows.slice(1).map((r,i)=>{const errs=[],rec={project_code:g(r,'project_code'),project_name:g(r,'project_name'),code:g(r,'activity_id'),name:g(r,'activity_name'),nameAr:g(r,'activity_name_ar'),wbs:g(r,'wbs'),ps:normDate(g(r,'planned_start')),pf:normDate(g(r,'planned_finish')),qty:Number(g(r,'budget_qty').replace(/,/g,'')),unit:g(r,'unit'),w:Number(g(r,'weight').replace(/,/g,'')),bldg:g(r,'building')||'SITE',zone:g(r,'zone')||'—',btype:g(r,'building_type'),region:regionKey(g(r,'region')),eng:(x=>ALIAS[x]||x)(g(r,'discipline').toUpperCase().trim().split(/\s+/)[0]),aS:normDate(g(r,'actual_start')),aF:normDate(g(r,'actual_finish')),apRaw:g(r,'actual_pct').replace('%','').trim()};
+    const out=rows.slice(1).map((r,i)=>{const errs=[],rec={project_code:g(r,'project_code'),project_name:g(r,'project_name'),code:g(r,'activity_id'),name:g(r,'activity_name'),nameAr:g(r,'activity_name_ar'),wbs:g(r,'wbs'),ps:normDate(g(r,'planned_start')),pf:normDate(g(r,'planned_finish')),qty:Number(g(r,'budget_qty').replace(/,/g,'')),unit:g(r,'unit'),w:Number(g(r,'weight').replace(/,/g,'')),bldg:g(r,'building')||'SITE',zone:g(r,'zone')||'—',btype:g(r,'building_type'),region:regionKey(g(r,'region')),eng:(x=>ALIAS[x]||x)(g(r,'discipline').toUpperCase().trim().split(/\s+/)[0]),aS:normDate(g(r,'actual_start')),aF:normDate(g(r,'actual_finish')),apRaw:g(r,'actual_pct').replace('%','').trim(),preds:String(g(r,'predecessors')||'').split(/[;,|]+/).map(x=>x.trim().split(/\s+/)[0]).filter(Boolean)};
       {const em=[['project_code',rec.project_code],['activity_id',rec.code],['activity_name',rec.name],['unit',rec.unit]].filter(x=>!x[1]).map(x=>x[0]);if(em.length)errs.push(t.e_req+': '+em.join(', '));}
       if(!isDate(rec.ps)||!isDate(rec.pf))errs.push(t.e_date+' ('+(!isDate(rec.ps)?'planned_start “'+g(r,'planned_start')+'”':'planned_finish “'+g(r,'planned_finish')+'”')+')');else if(rec.pf<rec.ps)errs.push(t.e_order);
       if(!(rec.qty>0))errs.push(t.e_qty);if(!(rec.w>0))errs.push(t.e_w);if(ENG.indexOf(rec.eng)<0)errs.push(t.e_eng+' (“'+g(r,'discipline')+'”)');
@@ -2224,7 +2250,7 @@ class Component extends DCLogic {
     ok.forEach(({rec})=>{let p=projects.find(x=>x.code===rec.project_code);
       if(!p){p={id:'P_'+rec.project_code,code:rec.project_code,name:rec.project_name||rec.project_code,nameAr:rec.project_name||rec.project_code,loc:'—',locAr:'—',region:'',value:10,src:'imported'};projects.push(p);}
       if(rec.region&&p.region!==rec.region){const j=projects.indexOf(p);p=Object.assign({},p,{region:rec.region});projects[j]=p;}
-      const fields={bldg:rec.bldg,zone:rec.zone,btype:rec.btype||'',code:rec.code,name:rec.name,nameAr:rec.nameAr||rec.name,wbs:rec.wbs||'—',ps:rec.ps,pf:rec.pf,qty:rec.qty,unit:rec.unit,w:rec.w,eng:rec.eng,src:'imported'};
+      const fields={bldg:rec.bldg,zone:rec.zone,btype:rec.btype||'',code:rec.code,name:rec.name,nameAr:rec.nameAr||rec.name,wbs:rec.wbs||'—',ps:rec.ps,pf:rec.pf,qty:rec.qty,unit:rec.unit,w:rec.w,eng:rec.eng,src:'imported',preds:rec.preds||[]};
       const i=activities.findIndex(a=>a.pid===p.id&&a.code===rec.code);
       let aid;if(i>=0){activities[i]=Object.assign({},activities[i],fields);aid=activities[i].id;}else{aid='X_'+p.code+'_'+rec.code;activities.push(Object.assign({id:aid,pid:p.id},fields));}
       if(rec.open){if(updates.some(u=>u.actId===aid&&u.status==='approved')){openSkip++;return;}
@@ -2349,6 +2375,7 @@ class Component extends DCLogic {
         barColor:a.delayed?C.barBad:a.variance<-2?C.barWarn:C.barOk,varTxt:sg(a.variance),varColor:vc(a.variance),unit:a.unit,pr:(()=>{const x=prodOf(a),q=v=>(Math.round(v*10)/10).toLocaleString('en')+' '+a.unit;
           return{rem:q(x.rem),remD:x.done?'—':t.daysN(x.remD),rate:x.rate==null?t.notStartedRate:q(x.rate)+t.perDay,req:x.done?'—':x.req==null?t.overduePf:q(x.req)+t.perDay,reqC:x.rate!=null&&x.req!=null&&x.req>x.rate*1.1?C.red:'#1b1a17',
             fc:x.fc,fcC:x.late?C.red:C.green,fcNote:x.done?t.k_done:x.late?t.fcLate(x.late):t.fcOk,src:x.done?'':x.site?t.remSrcSite(a.remRep.days,a.remRep.at)+(a.remRep.pending?' · '+t.remSrcPend:''):t.remSrcCalc};})(),showProd:role!=='site',remHint:t.remHint(a.pf),
+        hasSeq:!!a.oseq,seqList:(a.seqOpen||[]).map(x=>({code:x.code,name:nm(x),pct:p0(x.actual),go:()=>this.openDetail(x.id)})),seqAuto:a.autoPred?t.seqAuto:'',
         canCorrect:(this.live()?!!(s.profile&&s.profile.role==='admin'):role==='planner')&&!!a.off&&!a.pending,corrOpen:!!s.corrOpen,corrArrow:s.corrOpen?'▾':'▸',corrToggle:()=>this.setState({corrOpen:!s.corrOpen,corrPct:a.actual,corrNote:''}),
         corrPct:s.corrPct==null?a.actual:s.corrPct,corrNote:s.corrNote||'',corrPctOn:e=>this.setState({corrPct:e.target.value}),corrNoteOn:e=>this.setState({corrNote:e.target.value}),corrSave:()=>this.correctProgress(a.id),
         showReturned:!!a.returned&&!a.pending,retBy:a.returned&&a.returned.reviewer?person(a.returned.reviewer):'',retComment:a.returned?a.returned.comment:'',retWhen:a.returned?a.returned.reviewed.replace('T',' '):'',
@@ -2490,8 +2517,8 @@ class Component extends DCLogic {
     const plChips=D.projects.map(p=>chip(p.code,p.id===pp.id,()=>this.setState({plProj:p.id,plBldg:'all',plZone:'all',plType:'all'})));
     const plPool=pp.list.filter(a=>(s.plBldg==='all'||a.bldg===s.plBldg)&&(s.plZone==='all'||a.zone===s.plZone)&&(s.plType==='all'||a.btype===s.plType));
     const plBreak=show.progress?bdown(pp.list,s.plZone,s.plBldg,z=>this.setState(st=>({plZone:st.plZone===z&&st.plBldg==='all'&&st.plType==='all'?'all':z,plBldg:'all',plType:'all'})),(z,b,ty)=>this.setState(st=>({plZone:z,plType:ty||'all',plBldg:st.plZone===z&&st.plBldg===b?'all':b})),s.plType,(z,ty)=>this.setState(st=>({plZone:z,plBldg:'all',plType:st.plZone===z&&st.plType===ty&&st.plBldg==='all'?'all':ty}))):[];
-    const PF={all:()=>true,delayed:a=>a.delayed,missing:a=>a.missing,pending:a=>!!a.pending};
-    const plFilterChips=[['all','f_all'],['delayed','f_delayed'],['missing','f_missing'],['pending','f_pending']].map(([k,l])=>chip(t[l]+' · '+plPool.filter(PF[k]).length,s.plFilter===k,()=>this.setState({plFilter:k})));
+    const PF={all:()=>true,delayed:a=>a.delayed,missing:a=>a.missing,pending:a=>!!a.pending,oseq:a=>!!a.oseq};
+    const plFilterChips=[['all','f_all'],['delayed','f_delayed'],['missing','f_missing'],['pending','f_pending']].concat(plPool.some(a=>a.oseq)?[['oseq','f_oseq']]:[]).map(([k,l])=>chip(t[l]+' · '+plPool.filter(PF[k]).length,s.plFilter===k,()=>this.setState({plFilter:k})));
     // activity list grouped by building (when several are listed), then WBS under each building, in schedule order; headers open / close (state key stKey)
     const wbsGroups=(rest,stKey,Q,bulkOn)=>{
         // grouped by building (when several are listed), then WBS under each building, in schedule order; tap a header to open / close it
@@ -2620,8 +2647,8 @@ class Component extends DCLogic {
       const cAll=dueL.length?dueL.filter(a=>a.updW).length/dueL.length*100:100,lateN=acts.filter(a=>a.actual<100&&prodOf(a).late>0).length,g0=cum[7],g1=cum[6],gNow=A-g0.a,gPrev=g0.a-g1.a;
       db.kpis.unshift({l:t.k_comp,v:p0(cAll),sub:t.k_compSub(t.dows[cfg.cut]+' '+D.nextCut),c:cAll>=90?C.green:cAll>=70?C.amber:C.red},
         {l:t.k_gain,v:(gNow>=gPrev?'▲ ':'▼ ')+sg(gNow),sub:t.k_gainSub(sg(gPrev)),c:gNow>=gPrev?C.green:C.red},{l:t.k_fcLate,v:String(lateN),sub:t.k_fcLateSub,c:lateN?C.red:C.green});
-      db.kpis=db.kpis.filter(k=>k.l!==t.k_awaitCM&&k.l!==t.k_awaitPL&&k.l!==t.k_returnedN);
-      const KI={[t.k_comp]:'check',[t.k_gain]:'progress',[t.k_fcLate]:'delays',[t.k_total]:'layers',[t.k_inprog]:'play',[t.k_delayed]:'alert',[t.k_missing]:'target',[t.k_appr7]:'review'};
+      db.kpis=db.kpis.filter(k=>k.l!==t.k_awaitCM&&k.l!==t.k_awaitPL&&k.l!==t.k_returnedN);{const nS=acts.filter(a=>a.oseq).length;db.kpis.push({l:t.k_oseq,v:String(nS),sub:t.k_oseqSub,c:nS?C.amber:C.green});}
+      const KI={[t.k_comp]:'check',[t.k_gain]:'progress',[t.k_fcLate]:'delays',[t.k_total]:'layers',[t.k_inprog]:'play',[t.k_delayed]:'alert',[t.k_missing]:'target',[t.k_appr7]:'review',[t.k_oseq]:'trends'};
       db.kpis.forEach(k=>{k.ic=ico(KI[k.l]||'dash',k.c);k.icBg=k.c===C.red?C.redBg:k.c===C.green?C.greenBg:k.c===C.amber?C.amberBg:k.c===C.blue?C.blueBg:'#f2efe9';});
       db.risks=risksOf(acts,5).map((x,i)=>({n:String(i+1),code:x.a.code,proj:D.projMap[x.a.pid].code+' · '+person(x.a.eng),name:nm(x.a),why:x.why,cause:lastReasonA(x.a),fc:x.pr.fc,fcC:x.pr.late?C.red:C.green,open:()=>this.openDetail(x.a.id)}));
       db.hasRisks=db.risks.length>0;db.noRisks=!db.risks.length;
@@ -2634,6 +2661,8 @@ class Component extends DCLogic {
       const rc=countReasons(sp?sp.id:null),rm=Math.max(1,...Object.values(rc));
       db.reasons=DELAYS.filter(k=>rc[k]).sort((a,b)=>rc[b]-rc[a]).slice(0,6).map(k=>({label:t.delays[k],n:t.reports(rc[k]),w:(rc[k]/rm*100)+'%'}));
       db.behind=acts.filter(a=>a.actual<100&&a.ps<=TODAY&&a.variance<0).sort((a,b)=>a.variance-b.variance).slice(0,6).map(a=>({code:a.code,proj:D.projMap[a.pid].code+' · '+person(a.eng),name:nm(a),v:sg(a.variance),vc:vc(a.variance),aT:p0(a.actual)+' / '+p0(a.planned),open:()=>this.openDetail(a.id)}));
+      const sq=acts.filter(a=>a.oseq).sort((x,y)=>y.actual-x.actual);db.seqN=String(sq.length);db.noSeq=!sq.length;
+      db.seq=sq.slice(0,6).map(a=>({code:a.code,name:nm(a),pct:p0(a.actual),waits:t.seqWaits(a.seqOpen.map(x=>x.code+' '+p0(x.actual)).join(', ')),open:()=>this.openDetail(a.id)}));
       const lim=addD(TODAY,14),fin=acts.filter(a=>a.actual<100&&a.pf>=TODAY&&a.pf<=lim);
       db.ahead=[{l:t.la_startsN(n(a=>a.actual===0&&a.ps>=TODAY&&a.ps<=lim)),c:'#1b1a17'},{l:t.la_finishesN(fin.length),c:'#1b1a17'},{l:t.la_riskN(fin.filter(a=>a.planned-a.actual>cfg.thr||(dd(TODAY,a.pf)<7&&a.actual<70)).length),c:C.red}];
       const ev=[];ups.forEach(u=>(u.log||[]).forEach(l=>ev.push({l,u})));
@@ -2658,7 +2687,7 @@ class Component extends DCLogic {
         {l:t.k_comp,v:p0(cAll),c:cAll>=90?C.green:cAll>=70?C.amber:C.red,ic:ico('check',cAll>=90?C.green:cAll>=70?C.amber:C.red),icBg:cAll>=90?C.greenBg:cAll>=70?C.amberBg:C.redBg,go:null},
         {l:t.fcFinish,v:fcD,c:fcLate?C.red:C.green,ic:ico('lookahead',fcLate?C.red:C.green),icBg:fcLate?C.redBg:C.greenBg,go:null},
         {l:t.k_delayed,v:String(delN),c:delN?C.red:C.green,ic:ico('alert',delN?C.red:C.green),icBg:delN?C.redBg:C.greenBg,go:goPl('delayed')}].map(h=>Object.assign(h,{hasGo:!!h.go,go:h.go||(()=>{}),cur:h.go?'pointer':'default'}));
-      db.kpis.forEach(k=>{const f=k.l===t.k_delayed?'delayed':k.l===t.k_missing?'missing':null,g=f?goPl(f):null;k.go=g||(()=>{});k.cur=g?'pointer':'default';k.more=g?'›':'';});}
+      db.kpis.forEach(k=>{const f=k.l===t.k_delayed?'delayed':k.l===t.k_missing?'missing':k.l===t.k_oseq?'oseq':null,g=f?goPl(f):null;k.go=g||(()=>{});k.cur=g?'pointer':'default';k.more=g?'›':'';});}
 
     // Weekly report — formal layout for the consultant (external) or for internal use
     let rp={tables:[],projects:[],kpis:[],info:[],sign:[],chips:[],modeChips:[],langChips:[]};
