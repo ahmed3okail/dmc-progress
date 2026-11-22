@@ -757,31 +757,110 @@ button{transition:transform .08s ease,background-color .15s ease}button:active{t
 
 <sc-if value="{{ show.dash }}" hint-placeholder-val="{{ false }}">
   <div style="display:flex;flex-direction:column;gap:14px;padding:16px 0">
-    <div style="padding:0 16px;display:flex;align-items:baseline;gap:10px;flex-wrap:wrap"><div style="font-size:22px;font-weight:700">{{ t.dashTitle }}</div><div style="font-size:12.5px;color:#605a51">{{ db.scopeNote }}</div></div>
+    <div style="padding:0 16px;display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+      <div style="flex:1;min-width:220px;display:flex;flex-direction:column;gap:2px"><div style="font-size:24px;font-weight:800;letter-spacing:-.01em">{{ t.dashTitle }}</div><div style="font-size:13.5px;color:#605a51">{{ t.dashSub }} · {{ db.scopeNote }}</div></div>
+      <span style="display:inline-flex;align-items:center;gap:8px;padding:8px 14px;border-radius:999px;background:{{ db.stBg }};color:{{ db.stFg }};font-weight:700;font-size:14px;white-space:nowrap"><span style="width:10px;height:10px;border-radius:50%;background:{{ db.stFg }}"></span>{{ db.stLabel }}</span>
+    </div>
     <div style="display:flex;gap:8px;overflow-x:auto;padding:0 16px 2px">
       <sc-for list="{{ db.chips }}" as="c" hint-placeholder-count="4"><button onClick="{{ c.onClick }}" style="flex:0 0 auto;min-height:40px;padding:0 14px;border-radius:999px;border:1px solid {{ c.bd }};background:{{ c.bg }};color:{{ c.fg }};font-size:14px;white-space:nowrap">{{ c.label }}</button></sc-for>
     </div>
-    <div style="display:flex;flex-wrap:wrap;gap:14px 0;align-items:stretch">
-    <div data-keepcolor="1" style="flex:1 1 380px;margin:0 16px;animation:dmcIn .3s ease both;box-shadow:0 6px 18px rgba(15,61,62,.18);background:#145457;color:#f7f5f1;border-radius:14px;padding:16px;display:flex;gap:20px;align-items:center;flex-wrap:wrap">
-      <div style="position:relative;width:136px;height:136px;flex:0 0 auto">
-        <svg viewBox="0 0 120 120" style="width:136px;height:136px;display:block;transform:rotate(-90deg)">
-          <circle cx="60" cy="60" r="50" style="fill:none;stroke:#0b3132;stroke-width:11"></circle>
-          <circle cx="60" cy="60" r="50" stroke-dasharray="{{ db.ringA }}" style="fill:none;stroke:#ff7a59;stroke-width:11"></circle>
-          <circle cx="60" cy="60" r="36" style="fill:none;stroke:#0b3132;stroke-width:6"></circle>
-          <circle cx="60" cy="60" r="36" stroke-dasharray="{{ db.ringP }}" style="fill:none;stroke:#a59e92;stroke-width:6"></circle>
-        </svg>
-        <div style="position:absolute;inset:0;display:grid;place-items:center;text-align:center"><div><div style="font-size:24px;font-weight:700;line-height:1">{{ db.actual }}</div><div style="font-size:11px;color:#c9c3b8;margin-top:4px">{{ t.actualShort }}</div></div></div>
+    <div style="padding:0 16px;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,165px),1fr));gap:10px">
+      <sc-for list="{{ db.top }}" as="k" hint-placeholder-count="4"><div style="background:#fff;border:1px solid #e2ded6;border-radius:14px;padding:12px 14px;display:flex;flex-direction:column;gap:4px;box-shadow:0 2px 8px rgba(15,61,62,.06);animation:dmcIn .3s ease both">
+        <div style="display:flex;align-items:center;gap:10px"><span data-keepcolor="1" style="flex:0 0 auto;width:42px;height:42px;border-radius:50%;background:{{ k.icBg }};display:grid;place-items:center"><img data-ico="1" src="{{ k.ic }}" alt="" style="width:22px;height:22px;display:block"></span><span style="flex:1;min-width:0;font-size:14px;color:#3d3933;font-weight:600">{{ k.l }}</span>
+        <svg viewBox="0 0 100 32" preserveAspectRatio="none" style="flex:0 0 auto;width:64px;height:26px;direction:ltr">
+          <polygon points="{{ k.spA }}" style="fill:{{ k.spC }};opacity:.12;stroke:none"></polygon>
+          <polyline points="{{ k.spL }}" style="fill:none;stroke:{{ k.spC }};stroke-width:2;vector-effect:non-scaling-stroke;stroke-linejoin:round"></polyline>
+        </svg></div>
+        <span style="font-size:28px;font-weight:800;line-height:1.1;color:{{ k.vC }};direction:ltr;unicode-bidi:isolate;text-align:start;font-variant-numeric:tabular-nums">{{ k.v }}</span>
+        <span style="font-size:12px;color:#605a51"><b style="color:{{ k.chgC }};direction:ltr;unicode-bidi:isolate">{{ k.chg }}</b> {{ k.sub }}</span>
+      </div></sc-for>
+    </div>
+    <div style="padding:0 16px;display:flex;flex-wrap:wrap;gap:12px;align-items:stretch">
+      <div style="flex:2 1 520px;min-width:0;background:#fff;border:1px solid #e2ded6;border-radius:14px;padding:14px;display:flex;flex-direction:column;gap:10px;box-shadow:0 2px 8px rgba(15,61,62,.06);animation:dmcIn .35s ease both">
+        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap"><div style="flex:1;min-width:180px;font-weight:700;font-size:16px">📈 {{ t.p_scurve }}</div>
+          <div style="display:flex;gap:14px;font-size:12.5px;flex-wrap:wrap"><span style="display:flex;align-items:center;gap:6px"><span style="width:10px;height:10px;border-radius:50%;background:#ff7a59"></span>{{ t.planned }}</span><span style="display:flex;align-items:center;gap:6px"><span style="width:10px;height:10px;border-radius:50%;background:#145457"></span>{{ t.actualShort }}</span><sc-if value="{{ db.chart.hasFc }}" hint-placeholder-val="{{ false }}"><span style="display:flex;align-items:center;gap:6px"><span style="width:18px;border-top:3px dotted #145457"></span>{{ t.forecast }}</span></sc-if></div></div>
+        <sc-if value="{{ db.chart.hasFc }}" hint-placeholder-val="{{ false }}"><div style="font-size:12px;color:#605a51">{{ db.chart.fcTxt }}</div></sc-if>
+        <div style="direction:ltr;display:grid;grid-template-columns:34px minmax(0,1fr);gap:4px">
+          <div style="position:relative;height:230px;font-size:10.5px;color:#5f5a52;font-family:'IBM Plex Mono',monospace"><span style="position:absolute;right:2px;top:3.8%;transform:translateY(-50%)">100%</span><span style="position:absolute;right:2px;top:22.3%;transform:translateY(-50%)">80%</span><span style="position:absolute;right:2px;top:40.8%;transform:translateY(-50%)">60%</span><span style="position:absolute;right:2px;top:59.2%;transform:translateY(-50%)">40%</span><span style="position:absolute;right:2px;top:77.7%;transform:translateY(-50%)">20%</span><span style="position:absolute;right:2px;top:96.2%;transform:translateY(-50%)">0%</span></div>
+          <div onPointerMove="{{ db.chart.onMove }}" onPointerDown="{{ db.chart.onMove }}" onPointerLeave="{{ db.chart.onLeave }}" style="position:relative;height:230px;touch-action:pan-y;cursor:crosshair">
+            <svg viewBox="0 0 300 130" preserveAspectRatio="none" style="width:100%;height:230px;display:block;overflow:visible">
+              <line x1="0" y1="5" x2="300" y2="5" style="stroke:#efece6;stroke-width:1;vector-effect:non-scaling-stroke"></line>
+              <line x1="0" y1="29" x2="300" y2="29" style="stroke:#efece6;stroke-width:1;vector-effect:non-scaling-stroke"></line>
+              <line x1="0" y1="53" x2="300" y2="53" style="stroke:#efece6;stroke-width:1;vector-effect:non-scaling-stroke"></line>
+              <line x1="0" y1="77" x2="300" y2="77" style="stroke:#efece6;stroke-width:1;vector-effect:non-scaling-stroke"></line>
+              <line x1="0" y1="101" x2="300" y2="101" style="stroke:#efece6;stroke-width:1;vector-effect:non-scaling-stroke"></line>
+              <line x1="0" y1="125" x2="300" y2="125" style="stroke:#cfc9bf;stroke-width:1;vector-effect:non-scaling-stroke"></line>
+              <line x1="{{ db.chart.tx }}" y1="0" x2="{{ db.chart.tx }}" y2="125" style="stroke:#0f3d3e;stroke-width:1;stroke-dasharray:3 3;vector-effect:non-scaling-stroke"></line>
+              <defs><linearGradient id="dmcArea" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#145457" stop-opacity=".28"></stop><stop offset="1" stop-color="#145457" stop-opacity=".02"></stop></linearGradient></defs>
+              <polygon points="{{ db.chart.area }}" style="fill:url(#dmcArea);stroke:none"></polygon>
+              <polyline points="{{ db.chart.planPts }}" style="fill:none;stroke:#ff7a59;stroke-width:2.5;vector-effect:non-scaling-stroke;stroke-linejoin:round"></polyline>
+              <polyline points="{{ db.chart.fcPts }}" style="fill:none;stroke:#145457;stroke-width:3;stroke-dasharray:1 6;stroke-linecap:round;vector-effect:non-scaling-stroke"></polyline>
+              <polyline points="{{ db.chart.actPts }}" style="fill:none;stroke:#145457;stroke-width:3.5;vector-effect:non-scaling-stroke;stroke-linejoin:round;stroke-linecap:round"></polyline>
+            </svg>
+            <sc-if value="{{ db.pill.show }}" hint-placeholder-val="{{ false }}">
+              <span data-keepcolor="1" style="position:absolute;left:{{ db.pill.left }};top:{{ db.pill.pTop }};transform:{{ db.pill.tf }};background:#ff7a59;color:#fff;font-weight:700;font-size:12px;padding:3px 8px;border-radius:6px;pointer-events:none;white-space:nowrap">{{ db.pill.pT }}</span>
+              <span data-keepcolor="1" style="position:absolute;left:{{ db.pill.left }};top:{{ db.pill.aTop }};transform:{{ db.pill.tf }};background:#145457;color:#fff;font-weight:700;font-size:12px;padding:3px 8px;border-radius:6px;pointer-events:none;white-space:nowrap">{{ db.pill.aT }}</span>
+            </sc-if>
+            <sc-if value="{{ db.hov.show }}" hint-placeholder-val="{{ false }}">
+              <div style="position:absolute;top:0;bottom:3.8%;left:{{ db.hov.left }};width:0;border-left:1.5px solid #1b1a17;pointer-events:none"></div>
+              <span style="position:absolute;left:{{ db.hov.left }};top:{{ db.hov.pTop }};width:12px;height:12px;margin:-6px 0 0 -6px;border-radius:50%;background:#ff7a59;border:2px solid #fff;box-shadow:0 0 0 1px #ff7a59;pointer-events:none"></span>
+              <sc-if value="{{ db.hov.hasA }}" hint-placeholder-val="{{ true }}"><span style="position:absolute;left:{{ db.hov.left }};top:{{ db.hov.aTop }};width:12px;height:12px;margin:-6px 0 0 -6px;border-radius:50%;background:#145457;border:2px solid #fff;box-shadow:0 0 0 1px #145457;pointer-events:none"></span></sc-if>
+              <sc-if value="{{ db.hov.hasF }}" hint-placeholder-val="{{ false }}"><span style="position:absolute;left:{{ db.hov.left }};top:{{ db.hov.fTop }};width:12px;height:12px;margin:-6px 0 0 -6px;border-radius:50%;background:#fff;border:2px dotted #145457;pointer-events:none"></span></sc-if>
+              <div data-keepcolor="1" style="direction:{{ db.dir }};position:absolute;top:6px;left:{{ db.hov.tl }};right:{{ db.hov.tr }};background:#0f3d3e;color:#fff;border-radius:10px;padding:8px 10px;font-size:12.5px;line-height:1.5;pointer-events:none;box-shadow:0 6px 16px rgba(15,61,62,.25);white-space:nowrap">
+                <div style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:#cfe3e1">{{ db.hov.date }}</div>
+                <div><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#ff7a59;margin-inline-end:6px"></span>{{ t.planned }} <b style="direction:ltr;unicode-bidi:isolate">{{ db.hov.pT }}</b></div>
+                <sc-if value="{{ db.hov.hasA }}" hint-placeholder-val="{{ true }}"><div><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#7fd1c8;margin-inline-end:6px"></span>{{ t.actualShort }} <b style="direction:ltr;unicode-bidi:isolate">{{ db.hov.aT }}</b></div></sc-if>
+                <sc-if value="{{ db.hov.hasV }}" hint-placeholder-val="{{ true }}"><div>{{ t.variance }} <b style="direction:ltr;unicode-bidi:isolate">{{ db.hov.vT }}</b></div></sc-if>
+                <sc-if value="{{ db.hov.hasFT }}" hint-placeholder-val="{{ false }}"><div><span style="display:inline-block;width:8px;height:8px;border-radius:50%;border:2px dotted #7fd1c8;margin-inline-end:6px"></span>{{ t.forecast }} <b style="direction:ltr;unicode-bidi:isolate">{{ db.hov.fT }}</b></div></sc-if>
+              </div>
+            </sc-if>
+          </div>
+          <div></div>
+          <div style="position:relative;height:16px;font-size:10.5px;color:#5f5a52;font-family:'IBM Plex Mono',monospace;overflow:hidden"><sc-for list="{{ db.chart.ticks }}" as="x" hint-placeholder-count="5"><span style="position:absolute;left:{{ x.left }};transform:translateX(-50%);white-space:nowrap">{{ x.l }}</span></sc-for></div>
+        </div>
+        <div style="font-size:11.5px;color:#8a8378">👆 {{ t.chartTap }}</div>
       </div>
-      <div style="flex:1;min-width:220px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px 18px">
-        <div><div style="font-size:12px;color:#c9c3b8">{{ t.planned }}</div><div style="font-size:22px;font-weight:700">{{ db.planned }}</div><div style="font-size:11px;color:#a8a194">{{ db.planAt }}</div></div>
-        <div><div style="font-size:12px;color:#c9c3b8">{{ t.variance }}</div><div style="font-size:22px;font-weight:700;color:{{ db.varColor }};direction:ltr;unicode-bidi:isolate;text-align:start">{{ db.variance }}</div></div>
-        <div><div style="font-size:12px;color:#c9c3b8">{{ t.spi }}</div><div style="font-size:22px;font-weight:700">{{ db.spi }}</div></div>
-        <div><div style="font-size:12px;color:#c9c3b8">{{ t.fcFinish }}</div><div style="font-size:15px;font-weight:700;color:{{ db.fcColor }};font-family:'IBM Plex Mono',monospace">{{ db.fc }}</div><div style="font-size:11px;color:#a8a194">{{ t.plFinish }} <span style="font-family:'IBM Plex Mono',monospace">{{ db.plFinish }}</span></div></div>
+      <div style="flex:1 1 300px;min-width:0;background:#fff;border:1px solid #e2ded6;border-radius:14px;padding:14px;display:flex;flex-direction:column;gap:12px;box-shadow:0 2px 8px rgba(15,61,62,.06);animation:dmcIn .35s ease both">
+        <div style="font-weight:700;font-size:16px">🩺 {{ t.p_health }}</div>
+        <div style="display:flex;gap:16px;align-items:center;flex-wrap:wrap">
+          <div style="position:relative;width:150px;height:150px;flex:0 0 auto;margin-inline:auto">
+            <svg viewBox="0 0 120 120" style="width:150px;height:150px;display:block;transform:rotate(-90deg)">
+              <circle cx="60" cy="60" r="50" style="fill:none;stroke:#e9eeed;stroke-width:11"></circle>
+              <circle cx="60" cy="60" r="50" stroke-dasharray="{{ db.ringA }}" style="fill:none;stroke:#145457;stroke-width:11;stroke-linecap:round"></circle>
+              <circle cx="60" cy="60" r="36" style="fill:none;stroke:#fbeee9;stroke-width:6"></circle>
+              <circle cx="60" cy="60" r="36" stroke-dasharray="{{ db.ringP }}" style="fill:none;stroke:#ff7a59;stroke-width:6;stroke-linecap:round"></circle>
+            </svg>
+            <div style="position:absolute;inset:0;display:grid;place-items:center;text-align:center"><div><div style="font-size:22px;font-weight:800;line-height:1;color:#0f3d3e">{{ db.actual }}</div><div style="font-size:11px;color:#605a51;margin-top:3px">{{ t.actualShort }}</div><div style="font-size:11px;color:#e85d3c;font-weight:700;direction:ltr;unicode-bidi:isolate">{{ db.planned }}</div><div style="font-size:10.5px;color:#e85d3c">{{ t.planned }}</div></div></div>
+          </div>
+          <div style="flex:1;min-width:170px;display:flex;flex-direction:column;gap:2px">
+            <sc-for list="{{ db.hl }}" as="h" hint-placeholder-count="4"><button onClick="{{ h.go }}" style="display:flex;align-items:center;gap:10px;width:100%;text-align:start;background:transparent;border:none;border-bottom:1px solid #f0ede7;padding:7px 2px;color:inherit;cursor:{{ h.cur }}">
+              <span style="flex:0 0 auto;width:32px;height:32px;border-radius:9px;background:{{ h.icBg }};display:grid;place-items:center"><img data-ico="1" src="{{ h.ic }}" alt="" style="width:17px;height:17px;display:block"></span>
+              <span style="flex:1;min-width:0;display:flex;flex-direction:column"><span style="font-size:12.5px;color:#605a51">{{ h.l }}</span><span style="font-size:14.5px;font-weight:700;color:{{ h.c }};font-variant-numeric:tabular-nums">{{ h.v }}</span></span>
+              <sc-if value="{{ h.hasGo }}" hint-placeholder-val="{{ false }}"><span style="color:#8a8378;font-size:18px">›</span></sc-if>
+            </button></sc-for>
+          </div>
+        </div>
+        <div style="font-size:11.5px;color:#605a51">{{ db.planAt }} · {{ t.spi }} {{ db.spi }} · {{ t.plFinish }} <span style="font-family:'IBM Plex Mono',monospace">{{ db.plFinish }}</span></div>
       </div>
     </div>
-    <div style="flex:1.6 1 440px;align-content:start;padding:0 16px;display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,160px),1fr));gap:8px">
-      <sc-for list="{{ db.kpis }}" as="k" hint-placeholder-count="8"><div style="background:#fff;border:1px solid #e2ded6;border-inline-start:4px solid {{ k.c }};border-radius:12px;padding:10px 12px;display:flex;flex-direction:column;gap:2px;min-height:80px;box-shadow:0 1px 3px rgba(27,26,23,.05);animation:dmcIn .3s ease both"><div style="display:flex;align-items:center;gap:8px"><span style="flex:1;min-width:0;font-size:24px;font-weight:800;line-height:1.1;color:{{ k.c }};font-variant-numeric:tabular-nums">{{ k.v }}</span><span style="flex:0 0 auto;width:32px;height:32px;border-radius:9px;background:{{ k.icBg }};display:grid;place-items:center"><img data-ico="1" src="{{ k.ic }}" alt="" style="width:18px;height:18px;display:block"></span></div><span style="font-size:13px;color:#2d2a25;font-weight:600">{{ k.l }}</span><span style="font-size:11.5px;color:#605a51;line-height:1.3">{{ k.sub }}</span></div></sc-for>
-    </div>
+    <sc-if value="{{ db.hasBl }}" hint-placeholder-val="{{ true }}"><div style="margin:0 16px;background:#fff;border:1px solid #e2ded6;border-radius:14px;padding:14px;display:flex;flex-direction:column;gap:10px;box-shadow:0 2px 8px rgba(15,61,62,.06);animation:dmcIn .35s ease both">
+      <div style="display:flex;align-items:baseline;gap:10px;flex-wrap:wrap"><div style="font-weight:700;font-size:16px">🏢 {{ db.blTitle }}</div><div style="font-size:12px;color:#605a51">{{ db.blHint }}</div></div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px">
+        <sc-for list="{{ db.bl }}" as="b" hint-placeholder-count="6"><button onClick="{{ b.open }}" style="display:flex;gap:10px;align-items:flex-end;text-align:start;background:#faf8f4;border:1px solid #e6e1d8;border-radius:12px;padding:10px;color:inherit;cursor:pointer">
+          <div style="position:relative;width:40px;height:56px;flex:0 0 40px;border:2px solid #0f3d3e;border-bottom-width:3px;border-radius:4px 4px 0 0;background:repeating-linear-gradient(180deg,#fff 0 10px,#e3ded4 10px 11px);overflow:hidden">
+            <div style="position:absolute;left:0;right:0;bottom:0;height:{{ b.fill }};background:{{ b.col }};opacity:.9"></div>
+            <div style="position:absolute;left:-2px;right:-2px;bottom:{{ b.plan }};border-top:2px dashed #e85d3c"></div>
+          </div>
+          <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:1px">
+            <span style="font-weight:700;font-size:13.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ b.name }}</span>
+            <span style="font-size:11.5px;color:#605a51;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ b.sub }}</span>
+            <span style="display:flex;gap:6px;align-items:baseline"><b style="font-size:17px;color:#0f3d3e">{{ b.pct }}</b><span style="font-size:12px;font-weight:700;color:{{ b.vc }};direction:ltr;unicode-bidi:isolate">{{ b.v }}</span></span>
+          </div>
+        </button></sc-for>
+      </div>
+    </div></sc-if>
+    <div style="padding:0 16px;display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,170px),1fr));gap:8px">
+      <sc-for list="{{ db.kpis }}" as="k" hint-placeholder-count="8"><button onClick="{{ k.go }}" style="text-align:start;color:inherit;cursor:{{ k.cur }};background:#fff;border:1px solid #e2ded6;border-inline-start:4px solid {{ k.c }};border-radius:12px;padding:10px 12px;display:flex;flex-direction:column;gap:2px;min-height:80px;box-shadow:0 1px 3px rgba(27,26,23,.05);animation:dmcIn .3s ease both"><div style="display:flex;align-items:center;gap:8px;width:100%"><span style="flex:1;min-width:0;font-size:22px;font-weight:800;line-height:1.1;color:{{ k.c }};font-variant-numeric:tabular-nums">{{ k.v }}</span><span style="flex:0 0 auto;width:30px;height:30px;border-radius:9px;background:{{ k.icBg }};display:grid;place-items:center"><img data-ico="1" src="{{ k.ic }}" alt="" style="width:17px;height:17px;display:block"></span></div><span style="font-size:13px;color:#2d2a25;font-weight:600">{{ k.l }} {{ k.more }}</span><span style="font-size:11.5px;color:#605a51;line-height:1.3">{{ k.sub }}</span></button></sc-for>
     </div>
     <div style="padding:0 16px;column-width:340px;column-gap:12px">
       <div style="break-inside:avoid;margin-bottom:12px;animation:dmcIn .35s ease both;box-shadow:0 1px 3px rgba(27,26,23,.05);background:#fff;border:1px solid #e2ded6;border-inline-start:4px solid oklch(0.55 0.17 28);border-radius:12px;overflow:hidden;display:flex;flex-direction:column">
@@ -797,34 +876,15 @@ button{transition:transform .08s ease,background-color .15s ease}button:active{t
         </button></sc-for>
         <sc-if value="{{ db.noRisks }}" hint-placeholder-val="{{ false }}"><div style="color:#5f5a52;text-align:center;padding:14px">{{ t.noRisks }}</div></sc-if>
       </div>
-      <div style="break-inside:avoid;margin-bottom:12px;animation:dmcIn .35s ease both;box-shadow:0 1px 3px rgba(27,26,23,.05);background:#fff;border:1px solid #e2ded6;border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:10px">
-        <div style="font-weight:700;font-size:15px">{{ t.p_scurve }}</div>
-        <div style="display:flex;gap:16px;font-size:12.5px;flex-wrap:wrap"><span style="display:flex;align-items:center;gap:6px"><span style="width:18px;height:3px;background:#ff7a59"></span>{{ t.planned }}</span><span style="display:flex;align-items:center;gap:6px"><span style="width:18px;height:4px;background:#145457;border-radius:2px"></span>{{ t.actual }}</span><span style="display:flex;align-items:center;gap:6px"><span style="width:2px;height:14px;background:#0f3d3e"></span>{{ t.todayL }}</span><sc-if value="{{ db.chart.hasFc }}" hint-placeholder-val="{{ false }}"><span style="display:flex;align-items:center;gap:6px"><span style="width:18px;border-top:3px dotted #145457"></span>{{ t.forecast }}</span></sc-if></div>
-        <sc-if value="{{ db.chart.hasFc }}" hint-placeholder-val="{{ false }}"><div style="font-size:12px;color:#605a51">{{ db.chart.fcTxt }}</div></sc-if>
-        <div style="direction:ltr;position:relative">
-          <svg viewBox="0 0 300 130" preserveAspectRatio="none" style="width:100%;height:190px;display:block;overflow:visible">
-            <line x1="0" y1="5" x2="300" y2="5" style="stroke:#ece9e3;stroke-width:1;vector-effect:non-scaling-stroke"></line>
-            <line x1="0" y1="65" x2="300" y2="65" style="stroke:#ece9e3;stroke-width:1;vector-effect:non-scaling-stroke"></line>
-            <line x1="0" y1="125" x2="300" y2="125" style="stroke:#cfc9bf;stroke-width:1;vector-effect:non-scaling-stroke"></line>
-            <line x1="{{ db.chart.tx }}" y1="0" x2="{{ db.chart.tx }}" y2="125" style="stroke:#1b1a17;stroke-width:1.5;vector-effect:non-scaling-stroke"></line>
-            <defs><linearGradient id="dmcArea" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#145457" stop-opacity=".32"></stop><stop offset="1" stop-color="#145457" stop-opacity=".02"></stop></linearGradient></defs>
-            <polygon points="{{ db.chart.area }}" style="fill:url(#dmcArea);stroke:none"></polygon>
-            <polyline points="{{ db.chart.planPts }}" style="fill:none;stroke:#ff7a59;stroke-width:2.5;vector-effect:non-scaling-stroke"></polyline>
-            <polyline points="{{ db.chart.fcPts }}" style="fill:none;stroke:#145457;stroke-width:3;stroke-dasharray:1 6;stroke-linecap:round;vector-effect:non-scaling-stroke"></polyline>
-            <polyline points="{{ db.chart.actPts }}" style="fill:none;stroke:#145457;stroke-width:3.5;vector-effect:non-scaling-stroke;stroke-linejoin:round;stroke-linecap:round"></polyline>
-          </svg>
-          <div style="position:absolute;left:2px;top:-2px;font-size:10px;color:#5f5a52">100%</div>
-          <div style="position:absolute;left:2px;top:88px;font-size:10px;color:#5f5a52">50%</div>
-        </div>
-        <div style="direction:ltr;display:flex;justify-content:space-between;font-size:10.5px;color:#5f5a52;font-family:'IBM Plex Mono',monospace"><span>{{ db.axis.a }}</span><span>{{ db.axis.b }}</span></div>
-      </div>
       <div style="break-inside:avoid;margin-bottom:12px;animation:dmcIn .35s ease both;box-shadow:0 1px 3px rgba(27,26,23,.05);background:#fff;border:1px solid #e2ded6;border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:8px">
         <div style="font-weight:700;font-size:15px">{{ t.p_weekly }}</div>
         <div style="font-size:12px;color:#605a51">{{ t.p_weeklyHelp }}</div>
         <div style="display:flex;gap:6px;direction:ltr;align-items:flex-end;border-bottom:1px solid #cfc9bf;padding-top:6px">
-          <sc-for list="{{ db.weeks }}" as="w" hint-placeholder-count="8"><div style="flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;gap:3px"><span style="font-size:10.5px;font-weight:700;color:#3f3a33">{{ w.aT }}</span><div style="display:flex;gap:2px;align-items:flex-end;justify-content:center;width:100%;height:120px"><div style="width:40%;height:{{ w.pH }};background:#e6d7ae;border-radius:4px 4px 0 0"></div><div style="width:40%;height:{{ w.aH }};background:linear-gradient(180deg,#1f7a7a,#145457);border-radius:4px 4px 0 0"></div></div></div></sc-for>
+          <sc-for list="{{ db.weeks }}" as="w" hint-placeholder-count="8"><button onClick="{{ w.pick }}" style="flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;gap:3px;background:transparent;border:none;padding:0;cursor:pointer;opacity:{{ w.op }};transition:opacity .15s"><span style="font-size:10.5px;font-weight:{{ w.fw }};color:#3f3a33">{{ w.aT }}</span><div style="display:flex;gap:2px;align-items:flex-end;justify-content:center;width:100%;height:120px"><div style="width:40%;height:{{ w.pH }};background:#ffc2b0;border-radius:4px 4px 0 0"></div><div style="width:40%;height:{{ w.aH }};background:linear-gradient(180deg,#1f7a7a,#145457);border-radius:4px 4px 0 0"></div></div></button></sc-for>
         </div>
         <div style="display:flex;gap:6px;direction:ltr"><sc-for list="{{ db.weeks }}" as="w" hint-placeholder-count="8"><span style="flex:1;min-width:0;text-align:center;font-size:10px;color:#605a51;font-family:'IBM Plex Mono',monospace">{{ w.lbl }}</span></sc-for></div>
+        <div style="font-size:12.5px;font-weight:600;color:#0f3d3e;background:#eef5f4;border-radius:8px;padding:7px 10px">{{ db.wkSel }}</div>
+        <div style="font-size:11.5px;color:#8a8378">👆 {{ t.wkTap }}</div>
       </div>
       <div style="break-inside:avoid;margin-bottom:12px;animation:dmcIn .35s ease both;box-shadow:0 1px 3px rgba(27,26,23,.05);background:#fff;border:1px solid #e2ded6;border-radius:12px;overflow:hidden;display:flex;flex-direction:column">
         <div style="padding:14px 14px 6px;font-weight:700;font-size:15px">{{ db.healthTitle }}</div>
@@ -1269,7 +1329,10 @@ const ICO={
  layers:'<path d="m12 2 10 5-10 5L2 7z"/><path d="m2 17 10 5 10-5M2 12l10 5 10-5"/>',
  play:'<circle cx="12" cy="12" r="9"/><path d="m10 8 6 4-6 4z"/>',
  check:'<circle cx="12" cy="12" r="9"/><path d="m8 12 3 3 5-6"/>',
- user:'<circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/>'
+ user:'<circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/>',
+ gauge:'<path d="M3.5 18a9.5 9.5 0 1 1 17 0"/><path d="m12 14 4-5"/><circle cx="12" cy="14" r="1.2"/>',
+ scale:'<path d="M12 3v18M7 21h10M5 7h14"/><path d="m5 7-3 7a3 3 0 0 0 6 0z"/><path d="m19 7-3 7a3 3 0 0 0 6 0z"/>',
+ bars:'<path d="M4 20V12M10 20V6M16 20v-9M22 20H2"/>'
 };
 const _icoC={};
 function ico(n,c){c=String(c).replace(OKLCH_RE,oklchRgb);const k=n+'|'+c;if(_icoC[k])return _icoC[k];const svg='<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="'+c+'" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">'+(ICO[n]||ICO.acts)+'</svg>';return _icoC[k]='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(svg);}
@@ -1464,9 +1527,9 @@ storageBadgeLive:'مشترك · Supabase PostgreSQL · لحظي',storageLive1:'�
 storageLive2:'قواعد سير العمل (موافقة مدير الإنشاءات ثم التخطيط، قفل التحديثات المعتمدة، الصلاحيات حسب التخصص) تفرضها قاعدة البيانات نفسها وليس الشاشة فقط. كل تغيير يُسجَّل في سجل تدقيق.',
 storageLive3:'تنطبق حدود الخطة المجانية (حجم القاعدة، تخزين الملفات، وقد يتوقف المشروع غير النشط مؤقتاً). الصور في مخزن خاص وتُعرض بروابط مؤقتة.',
 prole_site:'مهندس موقع',prole_cm:'مدير الإنشاءات',prole_planner:'مهندس التخطيط',prole_pm:'مدير المشروع / مدير التخطيط',prole_admin:'مسؤول النظام'});
-Object.assign(I18N.en,{tab_dash:'Dashboard',dashTitle:'Project dashboard',dashScopeAll:n=>`${n} projects · weighted by contract value`,dashScopeOne:n=>`${n} activities · weighted by activity weight`,
+Object.assign(I18N.en,{dashSub:'Execution, performance and project health',vsLastWk:'vs last week',wkSel:(d,p,a)=>`Week ending ${d}: planned ${p} · actual ${a}`,wkTap:'Tap a week to read it',chartTap:'Tap or move over the chart to read the values on any date',hSched:'Schedule',bldT:'Buildings',bldTap:'Tap a building to open its drawing and trades',projT:'Projects',projTap:'Tap a project to see its buildings',tab_dash:'Dashboard',dashTitle:'Project dashboard',dashScopeAll:n=>`${n} projects · weighted by contract value`,dashScopeOne:n=>`${n} activities · weighted by activity weight`,
 k_total:'Activities',k_inprog:'In progress',k_done:'Completed',k_notstarted:'Not started',k_awaitCM:'Awaiting CM',k_awaitPL:'Awaiting Planning',k_appr7:'Approved · 7 days',k_returnedN:'Returned',kDelayedSub:n=>`> ${n} pts behind or overdue`,kMissingSub:n=>`no update for ${n}+ days`,kOfTotal:(n,a)=>`${n} of ${a}`,
-p_scurve:'S-curve — planned vs approved actual',p_weekly:'Weekly progress gain — last 8 weeks',p_weeklyHelp:'Gold = planned gain · green = approved actual gain (percentage points)',p_health:'Project health',p_disc:'Performance by discipline',p_flow:'Approval workflow',p_reasons:'Top delay reasons · last 10 weeks',p_behind:'Most behind plan',p_ahead:'Next 14 days',p_feed:'Recent activity',
+p_scurve:'S-curve — planned vs approved actual',p_weekly:'Weekly progress gain — last 8 weeks',p_weeklyHelp:'Light bar = planned gain · dark bar = approved actual gain (percentage points)',p_health:'Project health',p_disc:'Performance by discipline',p_flow:'Approval workflow',p_reasons:'Top delay reasons · last 10 weeks',p_behind:'Most behind plan',p_ahead:'Next 14 days',p_feed:'Recent activity',
 fl_draft:'Drafts (not submitted)',fl_cm:'Awaiting Construction Manager',fl_pl:'Awaiting Planning Engineer',fl_ret:'Returned for correction',fl_appr:'Approved in the last 7 days',
 la_startsN:n=>`${n} activities planned to start`,la_finishesN:n=>`${n} activities planned to finish`,la_riskN:n=>`${n} finishing activities at risk`,discLine:(n,d,m)=>`${n} act. · ${d} delayed · ${m} missing`,
 nuOpen:'+ Add user',nuClose:'Close',nuTitle:'New user',nuName:'E-mail or username',nuFull:'Full name',nuFullPh:'e.g. Mohamed Ali',uTitle:'Job title',uTitlePh:'e.g. Senior Site Engineer',uReports:'Reports to',uNoMgr:'— nobody',uTeamN:n=>`${n} report${n===1?'s':''} to them`,uEdit:'Edit',uSave:'Save',uViewList:'List',uViewTree:'Team structure',treeHelp:'Who reports to whom. Change it from the list: “Reports to” on each user.',nuPw:'Password (at least 8 characters)',nuRole:'Role',nuDisc:'Discipline',nuCreate:'Create user',nuBusy:'Creating…',
@@ -1478,9 +1541,9 @@ chatErr:'Chat is not set up in the database yet. The administrator must run db/0
 returnedBy:n=>`Returned by ${n}`,photoNoteLive:'Up to 4 photos. Time and GPS (if you allow it) are recorded. Photos are compressed and stored in the shared database.',
 signUpOk:'Account created. Ask the administrator to give you a role, discipline and project.',importJson:'Restore backup (JSON)',t_imported:'Backup restored',t_badJson:'Not a valid backup file',
 e_eng:'discipline must be CIV, ARC, LND, MEC or ELE (or Civil, Architectural, Landscape, Mechanical, Electrical)'});
-Object.assign(I18N.ar,{tab_dash:'لوحة المتابعة',dashTitle:'لوحة متابعة المشاريع',dashScopeAll:n=>`${n} مشاريع · مرجّح بقيمة العقد`,dashScopeOne:n=>`${n} نشاط · مرجّح بوزن النشاط`,
+Object.assign(I18N.ar,{dashSub:'التنفيذ والأداء وحالة المشروع',vsLastWk:'عن الأسبوع اللي فات',wkSel:(d,p,a)=>`أسبوع ينتهي ${d}: المخطط ${p} · الفعلي ${a}`,wkTap:'اضغط على أي أسبوع لقراءته',chartTap:'اضغط أو حرّك على المنحنى لقراءة القيم في أي تاريخ',hSched:'الجدول الزمني',bldT:'المباني',bldTap:'اضغط على أي مبنى لفتح رسمه وتقدّم كل تخصص',projT:'المشاريع',projTap:'اضغط على مشروع لعرض مبانيه',tab_dash:'لوحة المتابعة',dashTitle:'لوحة متابعة المشاريع',dashScopeAll:n=>`${n} مشاريع · مرجّح بقيمة العقد`,dashScopeOne:n=>`${n} نشاط · مرجّح بوزن النشاط`,
 k_total:'الأنشطة',k_inprog:'قيد التنفيذ',k_done:'مكتمل',k_notstarted:'لم يبدأ',k_awaitCM:'بانتظار مدير الإنشاءات',k_awaitPL:'بانتظار التخطيط',k_appr7:'معتمد · 7 أيام',k_returnedN:'مُعاد',kDelayedSub:n=>`متأخر أكثر من ${n} نقاط أو تجاوز النهاية`,kMissingSub:n=>`بدون تحديث ${n} أيام أو أكثر`,kOfTotal:(n,a)=>`${n} من ${a}`,
-p_scurve:'منحنى S — المخطط مقابل الفعلي المعتمد',p_weekly:'التقدم الأسبوعي — آخر 8 أسابيع',p_weeklyHelp:'الذهبي = المخطط · الأخضر = الفعلي المعتمد (نقاط مئوية)',p_health:'حالة المشاريع',p_disc:'الأداء حسب التخصص',p_flow:'دورة الاعتماد',p_reasons:'أهم أسباب التأخير · آخر 10 أسابيع',p_behind:'الأكثر تأخراً عن المخطط',p_ahead:'الـ 14 يوماً القادمة',p_feed:'آخر الأحداث',
+p_scurve:'منحنى S — المخطط مقابل الفعلي المعتمد',p_weekly:'التقدم الأسبوعي — آخر 8 أسابيع',p_weeklyHelp:'العمود الفاتح = المخطط · الغامق = الفعلي المعتمد (نقاط مئوية)',p_health:'حالة المشاريع',p_disc:'الأداء حسب التخصص',p_flow:'دورة الاعتماد',p_reasons:'أهم أسباب التأخير · آخر 10 أسابيع',p_behind:'الأكثر تأخراً عن المخطط',p_ahead:'الـ 14 يوماً القادمة',p_feed:'آخر الأحداث',
 fl_draft:'مسودات (لم تُرسل)',fl_cm:'بانتظار مدير الإنشاءات',fl_pl:'بانتظار مهندس التخطيط',fl_ret:'مُعادة للتصحيح',fl_appr:'معتمدة في آخر 7 أيام',
 la_startsN:n=>`${n} نشاط مخطط بدؤه`,la_finishesN:n=>`${n} نشاط مخطط انتهاؤه`,la_riskN:n=>`${n} نشاط ينتهي ومعرّض للخطر`,discLine:(n,d,m)=>`${n} نشاط · ${d} متأخر · ${m} بدون تحديث`,
 nuOpen:'+ إضافة مستخدم',nuClose:'إغلاق',nuTitle:'مستخدم جديد',nuName:'الإيميل أو اسم المستخدم',nuFull:'الاسم بالكامل',nuFullPh:'مثلاً: محمد علي',uTitle:'المسمى الوظيفي',uTitlePh:'مثلاً: مهندس موقع أول',uReports:'تابع لـ',uNoMgr:'— محدش',uTeamN:n=>`${n} تابعين له`,uEdit:'تعديل',uSave:'حفظ',uViewList:'القايمة',uViewTree:'هيكل الفريق',treeHelp:'مين تابع لمين. غيّرها من القايمة: «تابع لـ» عند كل مستخدم.',nuPw:'كلمة المرور (8 أحرف على الأقل)',nuRole:'الدور',nuDisc:'التخصص',nuCreate:'إنشاء المستخدم',nuBusy:'جارٍ الإنشاء…',
@@ -1645,7 +1708,12 @@ function curve(lists,vals){const all=[].concat(...lists);if(!all.length)return{p
   const ad=dates.filter(d=>d<TODAY);if(TODAY>=start)ad.push(TODAY<=end?TODAY:end);
   const act=ad.map(d=>X(d)+','+Y(val(d,'a'))).join(' ');
   let fc='';if(fcEnd){const n=Math.max(2,Math.min(30,Math.ceil(dd(TODAY,fcEnd)/step)));const pts=[];for(let k=0;k<=n;k++){const d=addD(TODAY,Math.round(dd(TODAY,fcEnd)*k/n));const v=k===0?actNow:k===n?100:val(addD(start,Math.round(es+dd(TODAY,d)*spiT)),'p');pts.push(X(d)+','+Y(Math.max(actNow,v)));}fc=pts.join(' ');}
-  return{plan:dates.map(d=>X(d)+','+Y(d>end?100:val(d,'p'))).join(' '),act,fc,area:ad.length?X(ad[0])+',125 '+act+' '+X(ad[ad.length-1])+',125':'',tx:X(TODAY),start,end:end2,planEnd:end,fcEnd,fcLate:fcEnd&&fcEnd>end?dd(end,fcEnd):0};}
+  // samples for the interactive read-out (dashboard): planned / actual / forecast at each date
+  const fcAt=d=>{if(!fcEnd||d<TODAY||d>fcEnd)return null;if(d>=fcEnd)return 100;return Math.max(actNow,val(addD(start,Math.round(es+dd(TODAY,d)*spiT)),'p'));};
+  const sd=uniq(dates.concat(TODAY>=start&&TODAY<=end2?[TODAY]:[]).concat(fcEnd&&fcEnd<=end2?[fcEnd]:[])).sort();
+  const pts=sd.map(d=>({d,x:X(d),p:d>end?100:val(d,'p'),a:d<=TODAY?val(d<=end?d:end,'a'):null,f:fcAt(d)}));
+  const ticks=[];{const m0=new Date(start+'T00:00:00Z');m0.setUTCDate(1);const nM=Math.ceil(span2/30.4)+1,stM=Math.max(1,Math.ceil(nM/6));for(let k=1;k<=nM;k+=stM){const m=new Date(m0);m.setUTCMonth(m0.getUTCMonth()+k);const d=m.toISOString().slice(0,10);if(d>end2)break;ticks.push({d,x:X(d)});}}
+  return{pts,ticks,plan:dates.map(d=>X(d)+','+Y(d>end?100:val(d,'p'))).join(' '),act,fc,area:ad.length?X(ad[0])+',125 '+act+' '+X(ad[ad.length-1])+',125':'',tx:X(TODAY),start,end:end2,planEnd:end,fcEnd,fcLate:fcEnd&&fcEnd>end?dd(end,fcEnd):0};}
 const fmtMs=ms=>{const d=new Date(ms);return `${d.getFullYear()}-${p2(d.getMonth()+1)}-${p2(d.getDate())} ${p2(d.getHours())}:${p2(d.getMinutes())}`;};
 
 function derive(data,cfg){
@@ -1769,7 +1837,7 @@ const TABLE_ORDER=['projects','activities','updates','reminders'];
 class Component extends DCLogic {
   state=(()=>{const s=load();return{data:s?s.data:seed(),lang:(s&&s.prefs&&s.prefs.lang)||'en',role:(s&&s.prefs&&s.prefs.role)||'site',eng:(s&&s.prefs&&ENG.indexOf(s.prefs.eng)>=0&&s.prefs.eng)||'CIV',
     tab:{site:'acts',cm:'review',planner:'review',pm:'dash'},offline:false,obN:0,pwFor:null,pwVal:'',pwBusy:false,bvFl:'',repMode:'ext',repNotes:null,repGhost:false,pdfBusy:false,wrList:[],wrOpen:false,wrTo:{cm:true,pm:true,consultant:false},wrNote:'',wrBusy:false,cutDow:(()=>{try{const v=localStorage.getItem('dmc-erp:cutDow');return v==null?4:Number(v);}catch(e){return 4;}})(),push:'',pushAskHidden:(()=>{try{return localStorage.getItem('dmc-erp:pushAsk')==='no';}catch(e){return false;}})(),detail:null,review:null,form:null,errors:[],q:'',sProj:'all',sFilter:'all',plProj:'P1',plFilter:'all',mode:'demo',auth:'none',user:null,profile:null,syncing:false,lastSync:'',loadErr:'',settingsDb:{},loginEmail:'',loginPw:'',loginErr:'',loginBusy:false,connUrl:connCfg().url,connKey:connCfg().key,wide:false,liveArm:'',pmProj:'all',dlProj:'all',
-    comment:'',importText:'',importRows:null,settings:false,toast:'',resetArm:false,bulk:false,bulkVals:{},bulkErr:{},sel:{},rvProj:'all',rvFlag:'all',sBldg:'all',sZone:'all',sRegion:'all',sType:'all',sWbsOpen:{},dark:(()=>{try{return localStorage.getItem(DARK_KEY)==='1';}catch(e){return false;}})(),alOpen:false,alBusy:false,alRows:[],alErr:'',alKind:'all',dbBld:'',plWbsOpen:{},plBldg:'all',plZone:'all',plType:'all',adjPct:'',adjQty:'',laProj:'all',laDays:14,report:false,repProj:'all',dbProj:'all',uq:'',uFilter:'all',nuOpen:false,nu:{name:'',pw:'',role:'site',disc:'CIV'},nuBusy:false,
+    comment:'',importText:'',importRows:null,settings:false,toast:'',resetArm:false,bulk:false,bulkVals:{},bulkErr:{},sel:{},rvProj:'all',rvFlag:'all',sBldg:'all',sZone:'all',sRegion:'all',sType:'all',sWbsOpen:{},dark:(()=>{try{return localStorage.getItem(DARK_KEY)==='1';}catch(e){return false;}})(),alOpen:false,alBusy:false,alRows:[],alErr:'',alKind:'all',dbBld:'',plWbsOpen:{},plBldg:'all',plZone:'all',plType:'all',adjPct:'',adjQty:'',laProj:'all',laDays:14,report:false,repProj:'all',dbProj:'all',dbHov:-1,dbWk:-1,uq:'',uFilter:'all',nuOpen:false,nu:{name:'',pw:'',role:'site',disc:'CIV'},nuBusy:false,
     chatOpen:false,chatRoom:null,chatText:'',chatImg:null,chatNew:false,chatQ:'',chatMsgs:[],chatReads:[],chatDir:[],chatErr:''};})();
   live(){return this.state.mode==='live';}
   dbSet(k){const v=this.live()?this.state.settingsDb[k]:undefined;return v===undefined||v===null?undefined:v;}
@@ -2464,15 +2532,20 @@ class Component extends DCLogic {
 
     // Dashboard
     let db={chips:[],kpis:[],weeks:[],health:[],disc:[],comp:[],cutChips:[],risks:[],parties:[],flow:[],reasons:[],behind:[],feed:[],ahead:[],chart:{planPts:'',actPts:'',fcPts:'',hasFc:false,fcTxt:'',tx:0},axis:{a:'',b:''}};
-    if(show.dash){const sp=D.projMap[s.dbProj]||null,acts=sp?sp.list:D.acts,ids=new Set(acts.map(a=>a.id));
+    if(show.dash){const sp=D.projMap[s.dbProj]||(D.projects.length===1?D.projects[0]:null),acts=sp?sp.list:D.acts,ids=new Set(acts.map(a=>a.id));
       const rollS=d=>{if(sp)return roll(sp.list,d);let Pp=0,Aa=0;D.projects.forEach(p=>{const x=roll(p.list,d);Pp+=p.value*x.p;Aa+=p.value*x.a;});return{p:Pp/V,a:Aa/V};};
-      const P=sp?sp.planned:pfP,A=sp?sp.actual:pfA,spx=spiOf(A,P),c=sp?curve([sp.list],[1]):curve(D.projects.map(p=>p.list),D.projects.map(p=>p.value));
+      const P=sp?sp.planned:pfP,A=sp?sp.actual:pfA,spx=spiOf(A,P);
+      // heavy parts cached per data set + project, so hovering the chart stays fast
+      const ck=this._dbc&&this._dbc.D===D&&this._dbc.k===(sp?sp.id:'all')?this._dbc:null;
+      const c=ck?ck.c:sp?curve([sp.list],[1]):curve(D.projects.map(p=>p.list),D.projects.map(p=>p.value));
+      const cum=ck?ck.cum:(()=>{const r=[];for(let k=8;k>=0;k--){const e=addD(TODAY,-7*k);r.push(Object.assign({e},rollS(e)));}return r;})();
+      if(!ck)this._dbc={D,k:sp?sp.id:'all',c,cum};
       const fc=spx&&A<100?addD(TODAY,Math.round(Math.max(0,dd(TODAY,c.end))/Math.max(spx,0.2))):c.end;
       const ups=s.data.updates.filter(u=>ids.has(u.actId)),wk=addD(TODAY,-7);
       const n=f=>acts.filter(f).length,started=a=>a.actual>0||(a.ps<=TODAY&&a.actual<100);
       const cnt={draft:n(a=>!!a.draft),cm:ups.filter(u=>u.status==='submitted').length,pl:ups.filter(u=>u.status==='endorsed').length,ret:n(a=>!!a.returned&&!a.draft&&!a.pending),appr:ups.filter(u=>u.status==='approved'&&u.reviewed.slice(0,10)>=wk).length};
       const RC=2*Math.PI*50,RP=2*Math.PI*36;
-      db={chips:[chip(t.allProjects,!sp,()=>this.setState({dbProj:'all'}))].concat(D.projects.map(p=>chip(p.code,!!sp&&sp.id===p.id,()=>this.setState({dbProj:p.id})))),
+      db={chips:[chip(t.allProjects,!sp,()=>this.setState({dbProj:'all',dbHov:-1,dbWk:-1}))].concat(D.projects.map(p=>chip(p.code,!!sp&&sp.id===p.id,()=>this.setState({dbProj:p.id,dbHov:-1,dbWk:-1})))),
         scopeNote:sp?nm(sp)+' · '+t.dashScopeOne(acts.length):t.dashScopeAll(D.projects.length),
         actual:p1(A),planned:p1(P),planAt:t.planAt(PLAN_AT||TODAY),variance:sg(A-P),varColor:A-P>=-2?'oklch(0.82 0.12 150)':'oklch(0.8 0.13 45)',spi:spiTxt(spx),fc,fcColor:fc>c.end?'oklch(0.8 0.13 45)':'oklch(0.82 0.12 150)',plFinish:c.end,
         ringA:r1(RC*clamp(A,0,100)/100)+' '+r1(RC),ringP:r1(RP*clamp(P,0,100)/100)+' '+r1(RP),
@@ -2480,9 +2553,10 @@ class Component extends DCLogic {
           {l:t.k_delayed,v:n(a=>a.delayed),sub:t.kDelayedSub(cfg.thr),c:n(a=>a.delayed)?C.red:C.green},{l:t.k_missing,v:n(a=>a.missing),sub:t.kMissingSub(cfg.stale),c:n(a=>a.missing)?C.red:C.green},
           {l:t.k_awaitCM,v:cnt.cm,sub:t.p_flow,c:cnt.cm?C.blue:'#1b1a17'},{l:t.k_awaitPL,v:cnt.pl,sub:t.p_flow,c:cnt.pl?C.blue:'#1b1a17'},{l:t.k_returnedN,v:cnt.ret,sub:t.fl_ret,c:cnt.ret?C.amber:'#1b1a17'},{l:t.k_appr7,v:cnt.appr,sub:t.fl_appr,c:C.green}].map(k=>Object.assign(k,{v:String(k.v)})),
         chart:{planPts:c.plan,actPts:c.act,fcPts:c.fc,hasFc:!!c.fc,fcTxt:c.fc?t.fcLine(c.fcEnd,c.planEnd,c.fcLate):'',area:c.area,tx:c.tx},axis:{a:c.start,b:c.end}};
-      const wks=[];for(let k=7;k>=0;k--){const e=addD(TODAY,-7*k),r0=rollS(addD(e,-7)),r=rollS(e);wks.push({e,p:Math.max(0,r.p-r0.p),a:Math.max(0,r.a-r0.a)});}
-      const wm=Math.max(0.5,...wks.map(w=>Math.max(w.p,w.a)));
-      db.weeks=wks.map(w=>({lbl:w.e.slice(5),aT:r1(w.a).toFixed(1),pH:(w.p/wm*100)+'%',aH:(w.a/wm*100)+'%'}));
+      const wks=[];for(let k=1;k<=8;k++){const r0=cum[k-1],r=cum[k];wks.push({e:r.e,p:Math.max(0,r.p-r0.p),a:Math.max(0,r.a-r0.a)});}
+      const wm=Math.max(0.5,...wks.map(w=>Math.max(w.p,w.a))),wSel=s.dbWk>=0&&s.dbWk<8?s.dbWk:7;
+      db.weeks=wks.map((w,i)=>({lbl:w.e.slice(5),aT:r1(w.a).toFixed(1),pH:(w.p/wm*100)+'%',aH:(w.a/wm*100)+'%',op:i===wSel?'1':'.45',fw:i===wSel?'800':'600',pick:()=>this.setState({dbWk:i})}));
+      db.wkSel=t.wkSel(wks[wSel].e,sg(wks[wSel].p),sg(wks[wSel].a));
       db.health=sp?bdown(sp.list,'','').map(b=>Object.assign(b,{isProj:false,isLoc:true})):D.projects.slice().sort((a,b)=>ORD[a.status]-ORD[b.status]||a.variance-b.variance).map(p=>({isProj:true,isLoc:false,code:p.code,name:nm(p)+(p.region?' · '+rgL(p.region):''),stLabel:t['st_'+p.status],stBg:STC[p.status][0],stFg:STC[p.status][1],pW:W(p.planned),aW:W(p.actual),bar:p.variance<-5?C.barBad:p.variance<-2?C.barWarn:C.barOk,
         line:t.planned+' '+p1(p.planned)+' · '+t.actualShort+' '+p1(p.actual)+' · SPI '+spiTxt(spiOf(p.actual,p.planned)),v:sg(p.variance),vc:vc(p.variance),flags:t.flags(p.delayed,p.missing,p.pending),open:()=>this.setState({dbProj:p.id})}));
       db.disc=ENG.map(e=>{const l=acts.filter(a=>a.eng===e);if(!l.length)return null;const r=roll(l,TODAY),v=r.a-r.p;
@@ -2492,7 +2566,7 @@ class Component extends DCLogic {
       db.comp=[cmpRow(dueL,t.compAll,'ALL')].concat(ENG.map(e=>{const l=dueL.filter(a=>a.eng===e);return l.length?cmpRow(l,person(e),e):null;}).filter(Boolean));
       db.cutTxt=t.cutLine(t.dows[cfg.cut],D.nextCut,D.cycStart);db.canCut=this.canCut();db.cutHelp=t.cutAuto+(db.canCut?'':' '+t.cutAdminOnly);
       db.cutChips=t.dows.map((x,i)=>chip(x,i===cfg.cut,()=>this.setCut(i)));
-      const cAll=dueL.length?dueL.filter(a=>a.updW).length/dueL.length*100:100,lateN=acts.filter(a=>a.actual<100&&prodOf(a).late>0).length,g0=rollS(addD(TODAY,-7)),g1=rollS(addD(TODAY,-14)),gNow=A-g0.a,gPrev=g0.a-g1.a;
+      const cAll=dueL.length?dueL.filter(a=>a.updW).length/dueL.length*100:100,lateN=acts.filter(a=>a.actual<100&&prodOf(a).late>0).length,g0=cum[7],g1=cum[6],gNow=A-g0.a,gPrev=g0.a-g1.a;
       db.kpis.unshift({l:t.k_comp,v:p0(cAll),sub:t.k_compSub(t.dows[cfg.cut]+' '+D.nextCut),c:cAll>=90?C.green:cAll>=70?C.amber:C.red},
         {l:t.k_gain,v:(gNow>=gPrev?'▲ ':'▼ ')+sg(gNow),sub:t.k_gainSub(sg(gPrev)),c:gNow>=gPrev?C.green:C.red},{l:t.k_fcLate,v:String(lateN),sub:t.k_fcLateSub,c:lateN?C.red:C.green});
       db.kpis=db.kpis.filter(k=>k.l!==t.k_awaitCM&&k.l!==t.k_awaitPL&&k.l!==t.k_returnedN);
@@ -2513,7 +2587,45 @@ class Component extends DCLogic {
       db.ahead=[{l:t.la_startsN(n(a=>a.actual===0&&a.ps>=TODAY&&a.ps<=lim)),c:'#1b1a17'},{l:t.la_finishesN(fin.length),c:'#1b1a17'},{l:t.la_riskN(fin.filter(a=>a.planned-a.actual>cfg.thr||(dd(TODAY,a.pf)<7&&a.actual<70)).length),c:C.red}];
       const ev=[];ups.forEach(u=>(u.log||[]).forEach(l=>ev.push({l,u})));
       db.feed=ev.sort((x,y)=>x.l.at<y.l.at?1:-1).slice(0,10).map(({l,u})=>{const a=D.actMap[u.actId];return{when:l.at.replace('T',' '),txt:person(l.by)+' · '+(t['ev_'+l.ev]||l.ev)+(l.detail?' '+l.detail:''),act:a.code+' · '+nm(a)+' · '+u.pct+'%',open:()=>this.openDetail(a.id)};});
-      db.hasReasons=db.reasons.length>0;db.noReasons=!db.reasons.length;db.hasBehind=db.behind.length>0;db.hasFeed=db.feed.length>0;db.healthTitle=sp?t.byLoc:t.p_health;}
+      db.hasReasons=db.reasons.length>0;db.noReasons=!db.reasons.length;db.hasBehind=db.behind.length>0;db.hasFeed=db.feed.length>0;db.healthTitle=sp?t.byLoc:t.p_health;
+      // ── redesigned top: status pill, 4 KPI cards with sparklines, interactive S-curve, health card, buildings
+      const ov=sp?sp.status:(A-P<-5?'attn':A-P<-2?'watch':'ok');db.stLabel=t['st_'+ov];db.stBg=STC[ov][0];db.stFg=STC[ov][1];
+      const spark=arr=>{const mn=Math.min(...arr),mx=Math.max(...arr),k=mx-mn||1;const pts=arr.map((v,i)=>r1(i/(arr.length-1)*100)+','+r1(30-(v-mn)/k*26));return{l:pts.join(' '),a:'0,32 '+pts.join(' ')+' 100,32'};};
+      const prv=cum[7],spP=spiOf(prv.a,prv.p);
+      const card=(l,v,ic,icBg,cur,old,fmt,good,arr,lc)=>{const d=cur==null||old==null?0:cur-old,e=fmt.e||0.05,up=d>e,dn=d<-e,col=!up&&!dn||!good?'#605a51':(up===(good>0)?C.green:C.red),sk=spark(arr);
+        return{l,v,ic:ico(ic,'#fff'),icBg,chg:(up?'▲ ':dn?'▼ ':'● ')+fmt(d),chgC:col,sub:t.vsLastWk,spL:sk.l,spA:sk.a,spC:lc};};
+      const pp2=v=>(v>0?'+':'')+r1(v).toFixed(1)+'%';
+      db.top=[card(t.planned,p1(P),'bars','#ff7a59',P,prv.p,pp2,0,cum.map(x=>x.p),'#ff7a59'),card(t.actualShort,p1(A),'check','#145457',A,prv.a,pp2,1,cum.map(x=>x.a),'#145457'),
+        card(t.variance,sg(A-P),'scale',A-P<-2?'#e85d3c':'#1f7a7a',A-P,prv.a-prv.p,pp2,1,cum.map(x=>x.a-x.p),A-P<-2?'#e85d3c':'#145457'),
+        card(t.spi,spiTxt(spx),'gauge','#0f3d3e',spx,spP,Object.assign(v=>(v>0?'+':'')+v.toFixed(2),{e:0.005}),1,cum.map(x=>spiOf(x.a,x.p)||0),'#0f3d3e')];
+      db.top[2].vC=vc(A-P);db.top.forEach((k,i)=>{if(i!==2)k.vC='#1b1a17';});
+      // interactive S-curve read-out
+      const pts=c.pts||[],hi=s.dbHov>=0&&s.dbHov<pts.length?s.dbHov:-1,Yp=v=>r1((125-clamp(v,0,100)*1.2)/130*100)+'%';
+      const mon=d=>{try{return new Date(d+'T00:00:00Z').toLocaleDateString(L==='ar'?'ar-EG-u-nu-latn':'en-GB',{month:'short',year:'2-digit',timeZone:'UTC'});}catch(e){return d.slice(0,7);}};
+      db.chart.ticks=(c.ticks||[]).map(k=>({l:mon(k.d),left:r1(k.x/3)+'%'}));
+      const pick=e=>{const r=e.currentTarget.getBoundingClientRect();if(!r.width||!pts.length)return;const x=clamp((e.clientX-r.left)/r.width*300,0,300);let bi=0,bd=1e9;pts.forEach((q,i)=>{const dx=Math.abs(q.x-x);if(dx<bd){bd=dx;bi=i;}});if(bi!==this.state.dbHov)this.setState({dbHov:bi});};
+      db.chart.onMove=pick;db.chart.onLeave=e=>{if(e&&e.pointerType&&e.pointerType!=='mouse')return;if(this.state.dbHov!==-1)this.setState({dbHov:-1});};
+      db.dir=L==='ar'?'rtl':'ltr';db.hov={show:false};db.pill={show:false};
+      if(hi>=0){const q=pts[hi],L1=q.x>150;db.hov={show:true,left:r1(q.x/3)+'%',tl:L1?'auto':'calc('+r1(q.x/3)+'% + 10px)',tr:L1?'calc('+r1(100-q.x/3)+'% + 10px)':'auto',pTop:Yp(q.p),hasA:q.a!=null,aTop:q.a!=null?Yp(q.a):'0',hasF:q.f!=null&&q.a==null,fTop:q.f!=null?Yp(q.f):'0',
+        date:q.d,pT:p1(q.p),aT:q.a!=null?p1(q.a):'—',fT:q.f!=null?p1(q.f):'',hasFT:q.f!=null&&q.a==null,vT:q.a!=null?sg(q.a-q.p):'',vC:q.a!=null?vc(q.a-q.p):'#605a51',hasV:q.a!=null};}
+      else{const q=pts.find(x=>x.d===TODAY);if(q&&q.a!=null){let pt=(125-q.p*1.2)/130*100,at=(125-q.a*1.2)/130*100;if(Math.abs(pt-at)<13){const m=(pt+at)/2,sgn=pt<=at?-1:1;pt=m+sgn*6.5;at=m-sgn*6.5;}
+        const R=q.x>220;db.pill={show:true,left:r1(q.x/3)+'%',tf:R?'translate(calc(-100% - 8px),-50%)':'translate(8px,-50%)',pTop:r1(pt)+'%',aTop:r1(at)+'%',pT:p1(q.p),aT:p1(q.a)};}}
+      // health card
+      const fcD=c.fcEnd||fc,fcLate=fcD>c.planEnd,delN=n(a=>a.delayed),canGo=role==='cm'||role==='planner';
+      const goPl=f=>canGo?()=>{this.setState({tab:Object.assign({},s.tab,{[role]:'progress'}),plProj:sp?sp.id:(D.projects[0]||{}).id,plZone:'all',plType:'all',plBldg:'all',plFilter:f,detail:null});this.top();}:null;
+      db.hl=[{l:t.hSched,v:t['st_'+ov],c:STC[ov][1],ic:ico('delays',STC[ov][1]),icBg:STC[ov][0],go:null},
+        {l:t.k_comp,v:p0(cAll),c:cAll>=90?C.green:cAll>=70?C.amber:C.red,ic:ico('check',cAll>=90?C.green:cAll>=70?C.amber:C.red),icBg:cAll>=90?C.greenBg:cAll>=70?C.amberBg:C.redBg,go:null},
+        {l:t.fcFinish,v:fcD,c:fcLate?C.red:C.green,ic:ico('lookahead',fcLate?C.red:C.green),icBg:fcLate?C.redBg:C.greenBg,go:null},
+        {l:t.k_delayed,v:String(delN),c:delN?C.red:C.green,ic:ico('alert',delN?C.red:C.green),icBg:delN?C.redBg:C.greenBg,go:goPl('delayed')}].map(h=>Object.assign(h,{hasGo:!!h.go,go:h.go||(()=>{}),cur:h.go?'pointer':'default'}));
+      // buildings / projects strip
+      const goB=(pid,b)=>()=>{this.setState({tab:Object.assign({},s.tab,{[role]:'bldg'}),detail:null,dbProj:pid,dbBld:pid+'|'+b});this.top();};
+      const tile=(name,sub,L2,r,open)=>{const v=r.a-r.p;return{name,sub,pct:p0(r.a),v:sg(v),vc:vc(v),fill:W(r.a),plan:W(r.p),col:v<-5?C.barBad:v<-2?C.barWarn:C.barOk,open};};
+      if(sp){const bm={};sp.list.forEach(a=>{if(a.bldg&&a.bldg!=='SITE')(bm[a.bldg]=bm[a.bldg]||[]).push(a);});
+        db.bl=Object.keys(bm).sort((x,y)=>((bm[x][0].btype||'')+' '+x).localeCompare((bm[y][0].btype||'')+' '+y,undefined,{numeric:true})).map(b=>tile(bl(b),bm[b][0].btype||'',bm[b],roll(bm[b],TODAY),goB(sp.id,b)));
+        db.blTitle=t.bldT;db.blHint=t.bldTap;}
+      else{db.bl=D.projects.map(p=>tile(p.code,nm(p),p.list,{a:p.actual,p:p.planned},()=>this.setState({dbProj:p.id,dbHov:-1,dbWk:-1})));db.blTitle=t.projT;db.blHint=t.projTap;}
+      db.hasBl=db.bl.length>0;
+      db.kpis.forEach(k=>{const f=k.l===t.k_delayed?'delayed':k.l===t.k_missing?'missing':null,g=f?goPl(f):null;k.go=g||(()=>{});k.cur=g?'pointer':'default';k.more=g?'›':'';});}
 
     // Weekly report — formal layout for the consultant (external) or for internal use
     let rp={tables:[],projects:[],kpis:[],info:[],sign:[],chips:[],modeChips:[],langChips:[]};
