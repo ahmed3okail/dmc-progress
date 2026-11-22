@@ -153,3 +153,12 @@ update profiles set role='admin', discipline='CIV' where id=(select id from auth
 ## Changes 2026-11-17
 - IT admin account: username `it.admin` (→ `it.admin@dmc.local`), display name "أدمن", role admin. Created via MCP; temporary password given to Ahmed only (not stored here). Ahmed's own account is `Admin` (`admin@dmc.local`) = the **primary admin**.
 - Only the primary admin can set passwords (`db/18_primary_admin_password.sql`, applied + verified with a rolled-back test: it.admin blocked, Admin allowed). The Users tab hides "🔑 New password" for every other admin (`canPw`).
+
+## v2 test version (2026-11-22)
+- Restore point: branch `v1` = main at 5bdc08a (git tags can't be pushed from the cloud session; branch used instead).
+- All new work goes on branch `v2`. `main` stays the live app and must not change until Ahmed says to release v2.
+- Test database: Supabase project `DMC-Curve-Progress-v2-Test`, ref `kgqashsqpmacwxyolfjs` (same org, free). Schema = `db/00_full_schema_new_project.sql` (9 Nov backup + 18 + auth trigger, realtime, grants, storage, cron). Demo data loaded with the temporary Edge Function `load-demo` (signs in as Admin, runs seed()).
+- Test users (all `@dmc.local`, one shared test password told to Ahmed in chat, not stored here): `admin` (primary admin), `civil.eng`, `arch.eng`, `land.eng`, `mech.eng`, `elec.eng`, `cm`, `planner`, `pm`.
+- On branch `v2`, `config.js` points to the test project and shows a red "TEST v2" badge. **When merging v2 into main, keep main's config.js (live DB) — do not merge the test config.**
+- Push notifications are not set up on the test DB (no `private.push_config` row, no `push` function) — push silently does nothing there.
+- Vercel: project `dmc-progress-c4k7` (team `3-okail-blueprint`); the v2 branch gets its own preview URL.
