@@ -1,7 +1,7 @@
 // Injaz — service worker: shows push notifications, opens the app when one is tapped,
 // and keeps a copy of the app files so it can open without internet (network first, cache as fallback).
 // Supabase API calls are never cached.
-const CACHE = 'dmc-shell-v18';
+const CACHE = 'dmc-shell-v19';
 const APP = 'injaz.dc.html';
 self.addEventListener('install', () => self.skipWaiting());
 self.addEventListener('activate', (e) => e.waitUntil((async () => {
