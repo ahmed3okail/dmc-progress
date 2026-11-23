@@ -1,9 +1,24 @@
 // Injaz — service worker: shows push notifications, opens the app when one is tapped,
 // and keeps a copy of the app files so it can open without internet (network first, cache as fallback).
 // Supabase API calls are never cached.
-const CACHE = 'dmc-shell-v19';
+const CACHE = 'dmc-shell-v20';
 const APP = 'injaz.dc.html';
-self.addEventListener('install', () => self.skipWaiting());
+// app files kept from the first install, so the app opens without internet even if it was opened only once
+const SHELL = ['./', APP, 'support.js', 'config.js', 'manifest.json', 'icon-192.png', 'icon-512.png', 'injaz-mark.svg', 'login-art.svg'];
+self.addEventListener('install', (e) => {
+  self.skipWaiting();
+  e.waitUntil(caches.open(CACHE).then((c) => Promise.all(SHELL.map((u) => c.add(u).catch(() => {})))));
+});
+// the page sends the list of files it loaded (libraries, fonts) — keep a copy of each
+self.addEventListener('message', (e) => {
+  const d = e.data || {};
+  if (d.type !== 'dmc-cache' || !Array.isArray(d.urls)) return;
+  e.waitUntil(caches.open(CACHE).then(async (c) => {
+    for (const u of d.urls.slice(0, 200)) {
+      try { if (await c.match(u)) continue; const res = await fetch(u); if (res && (res.ok || res.type === 'opaque')) await c.put(u, res); } catch (_) {}
+    }
+  }));
+});
 self.addEventListener('activate', (e) => e.waitUntil((async () => {
   for (const k of await caches.keys()) if (k.startsWith('dmc-shell-') && k !== CACHE) await caches.delete(k);
   await self.clients.claim();

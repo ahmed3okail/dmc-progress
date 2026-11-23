@@ -1903,7 +1903,7 @@ connTitle:'Database connection',connDemo:'Not connected — DEMO mode (this brow
 signIn:'Sign in',signUp:'Create account',signOut:'Sign out',wait:'Please wait…',email:'Username or email',tab_users:'Users',usersTitle:'Users & permissions',usersHelp:'Add colleagues with “+ Add user” using their work e-mail (or a username). Set role, discipline, projects and who they report to. Changes apply immediately.',you:'You',uActive:'Active',uDisabled:'Disabled',uRole:'Role',uDisc:'Discipline',uProj:'Projects (site engineers & CM see only these)',cantDemoteSelf:'You cannot remove your own admin role',savedOk:'Saved',password:'Password',loginTag:'Site progress · Planning · Reporting',loginSub:'Sign in with your company account. Your role and discipline are assigned by the administrator.',
 signUpNote:'No account? The administrator creates accounts — ask them for your username and password.',loginNeed:'Enter username and password',signUpNeed:'Enter a username and a password of at least 8 characters',signUpOk:'Account created — confirm your email, then sign in.',
 noProfile:'No profile found for this account. Ask the administrator.',inactive:'Your account is disabled.',openDemo:'Open demo mode instead',connecting:'Connecting…',
-liveBar:(h,s)=>'LIVE · Shared database'+(s?' · '+s:''),syncing:'Saving…',syncedAt:x=>'synced '+x,syncErr:'Not saved:',bvFloors:'Floors — tap a floor to see its activities',loadingData:'Loading data…',al_pw:n=>'Set a new password for '+n,pwNew:'New password',pwPh:'At least 8 characters',pwSave:'Save password',pwShort:'Password must be at least 8 characters',pwDemo:'Only in the live app',pwDone:n=>'Password changed for '+n+' — send it to them privately',planAt:d=>'as of cut-off '+d,offSaved:'No connection — saved on this device. It will be sent automatically when the internet is back.',offSent:n=>n+' saved update(s) sent',offBar:n=>'📶 Offline'+(n?' · '+n+' update(s) saved on this device, waiting to send':' · showing the last loaded data'),offWait:n=>'⏳ '+n+' update(s) waiting to send',offSendNow:'Send now',loadErrTxt:'Could not load data',
+liveBar:(h,s)=>'LIVE · Shared database'+(s?' · '+s:''),syncing:'Saving…',syncedAt:x=>'synced '+x,syncErr:'Not saved:',bvFloors:'Floors — tap a floor to see its activities',loadingData:'Loading data…',al_pw:n=>'Set a new password for '+n,pwNew:'New password',pwPh:'At least 8 characters',pwSave:'Save password',pwShort:'Password must be at least 8 characters',pwDemo:'Only in the live app',pwDone:n=>'Password changed for '+n+' — send it to them privately',planAt:d=>'as of cut-off '+d,offSaved:'No connection — saved on this device. It will be sent automatically when the internet is back.',offOpened:x=>`No internet — showing the data saved on this phone (${x}). Your updates are kept here and sent when the internet is back.`,offRelogin:'Please sign in again. Your saved updates are still on this phone and will be sent after you sign in.',offSent:n=>n+' saved update(s) sent',offBar:n=>'📶 Offline'+(n?' · '+n+' update(s) saved on this device, waiting to send':' · showing the last loaded data'),offWait:n=>'⏳ '+n+' update(s) waiting to send',offSendNow:'Send now',loadErrTxt:'Could not load data',
 adminTools:'Administrator tools',adminHelp:'Demo rows are marked is_demo and can be removed at any time without touching real data.',demoLoading:'Loading sample data… keep this page open',loadDemoDb:'Load demo data into database',removeDemoDb:'Remove demo data',demoLoaded:'Demo data loaded',demoRemoved:'Demo data removed',
 storageBadgeLive:'Shared · Supabase PostgreSQL · real-time',storageLive1:'Data is stored in a shared PostgreSQL database (Supabase). Every signed-in user sees the same data, and changes appear for others within seconds.',
 storageLive2:'Workflow rules (CM → Planning approval, approved updates locked, roles per discipline) are enforced by the database itself, not only by this screen. Every change is written to an audit log.',
@@ -1914,7 +1914,7 @@ connTitle:'الاتصال بقاعدة البيانات',connDemo:'غير متص
 signIn:'تسجيل الدخول',signUp:'إنشاء حساب',signOut:'تسجيل الخروج',wait:'انتظر…',email:'اسم المستخدم أو البريد',tab_users:'المستخدمون',usersTitle:'المستخدمون والصلاحيات',usersHelp:'ضيف الزملاء من «+ إضافة مستخدم» بإيميل الشغل (أو اسم مستخدم). حدد الدور والتخصص والمشاريع وهو تابع لمين. التغيير يطبق فوراً.',you:'أنت',uActive:'نشط',uDisabled:'موقوف',uRole:'الدور',uDisc:'التخصص',uProj:'المشاريع (مهندس الموقع ومدير الإنشاءات يرون هذه فقط)',cantDemoteSelf:'لا يمكنك إزالة صلاحية المسؤول عن نفسك',savedOk:'تم الحفظ',password:'كلمة المرور',loginTag:'متابعة تقدم الموقع · التخطيط · التقارير',loginSub:'سجّل الدخول بحساب الشركة. الدور والتخصص يحددهما مسؤول النظام.',
 signUpNote:'معندكش حساب؟ الحسابات بيعملها الأدمن بس — اطلب منه اسم المستخدم وكلمة المرور.',loginNeed:'أدخل البريد وكلمة المرور',signUpNeed:'أدخل البريد وكلمة مرور 8 أحرف على الأقل',signUpOk:'تم إنشاء الحساب — أكّد بريدك ثم سجّل الدخول.',
 noProfile:'لا يوجد ملف لهذا الحساب. تواصل مع المسؤول.',inactive:'حسابك موقوف.',openDemo:'فتح الوضع التجريبي بدلاً من ذلك',connecting:'جارٍ الاتصال…',
-liveBar:(h,s)=>'مباشر · قاعدة بيانات مشتركة'+(s?' · '+s:''),syncing:'جارٍ الحفظ…',syncedAt:x=>'آخر مزامنة '+x,syncErr:'لم يُحفظ:',bvFloors:'الأدوار — اضغط على أي دور لعرض أنشطته',loadingData:'جارٍ تحميل البيانات…',al_pw:n=>'عمل كلمة مرور جديدة لـ '+n,pwNew:'كلمة مرور جديدة',pwPh:'8 حروف على الأقل',pwSave:'حفظ كلمة المرور',pwShort:'كلمة المرور لازم 8 حروف على الأقل',pwDemo:'متاح في النسخة المباشرة فقط',pwDone:n=>'تم تغيير كلمة مرور '+n+' — ابعتها له في رسالة خاصة',planAt:d=>'حتى يوم القطع '+d,offSaved:'لا يوجد اتصال — تم الحفظ على هذا الجهاز وسيُرسل تلقائياً عند عودة الإنترنت.',offSent:n=>'تم إرسال '+n+' تحديث محفوظ',offBar:n=>'📶 بدون إنترنت'+(n?' · '+n+' تحديث محفوظ على الجهاز في انتظار الإرسال':' · يتم عرض آخر بيانات محمّلة'),offWait:n=>'⏳ '+n+' تحديث في انتظار الإرسال',offSendNow:'إرسال الآن',loadErrTxt:'تعذر تحميل البيانات',
+liveBar:(h,s)=>'مباشر · قاعدة بيانات مشتركة'+(s?' · '+s:''),syncing:'جارٍ الحفظ…',syncedAt:x=>'آخر مزامنة '+x,syncErr:'لم يُحفظ:',bvFloors:'الأدوار — اضغط على أي دور لعرض أنشطته',loadingData:'جارٍ تحميل البيانات…',al_pw:n=>'عمل كلمة مرور جديدة لـ '+n,pwNew:'كلمة مرور جديدة',pwPh:'8 حروف على الأقل',pwSave:'حفظ كلمة المرور',pwShort:'كلمة المرور لازم 8 حروف على الأقل',pwDemo:'متاح في النسخة المباشرة فقط',pwDone:n=>'تم تغيير كلمة مرور '+n+' — ابعتها له في رسالة خاصة',planAt:d=>'حتى يوم القطع '+d,offSaved:'لا يوجد اتصال — تم الحفظ على هذا الجهاز وسيُرسل تلقائياً عند عودة الإنترنت.',offOpened:x=>`مفيش نت — بنعرض البيانات المحفوظة على الموبايل (${x}). تحديثاتك بتتحفظ هنا وتتبعت لما النت يرجع.`,offRelogin:'سجّل الدخول تاني. تحديثاتك المحفوظة لسه على الموبايل وهتتبعت بعد ما تدخل.',offSent:n=>'تم إرسال '+n+' تحديث محفوظ',offBar:n=>'📶 بدون إنترنت'+(n?' · '+n+' تحديث محفوظ على الجهاز في انتظار الإرسال':' · يتم عرض آخر بيانات محمّلة'),offWait:n=>'⏳ '+n+' تحديث في انتظار الإرسال',offSendNow:'إرسال الآن',loadErrTxt:'تعذر تحميل البيانات',
 adminTools:'أدوات المسؤول',adminHelp:'الصفوف التجريبية معلّمة is_demo ويمكن حذفها في أي وقت دون المساس بالبيانات الحقيقية.',demoLoading:'جارٍ تحميل البيانات التجريبية… لا تغلق الصفحة',loadDemoDb:'تحميل بيانات تجريبية في القاعدة',removeDemoDb:'حذف البيانات التجريبية',demoLoaded:'تم تحميل البيانات التجريبية',demoRemoved:'تم حذف البيانات التجريبية',
 storageBadgeLive:'مشترك · Supabase PostgreSQL · لحظي',storageLive1:'البيانات محفوظة في قاعدة بيانات PostgreSQL مشتركة (Supabase). كل المستخدمين المسجلين يرون نفس البيانات، والتغييرات تظهر للآخرين خلال ثوانٍ.',
 storageLive2:'قواعد سير العمل (موافقة مدير الإنشاءات ثم التخطيط، قفل التحديثات المعتمدة، الصلاحيات حسب التخصص) تفرضها قاعدة البيانات نفسها وليس الشاشة فقط. كل تغيير يُسجَّل في سجل تدقيق.',
@@ -2340,6 +2340,10 @@ function idb(store,op,key,val){return new Promise(res=>{try{const rq=indexedDB.o
     const r=op==='get'?os.get(key):op==='all'?os.getAll():op==='del'?os.delete(key):os.put(val,key);
     r.onsuccess=()=>res(op==='get'||op==='all'?r.result:true);r.onerror=()=>res(null);}catch(e){res(null);}};
   rq.onerror=()=>res(null);}catch(e){res(null);}});}
+// ask the service worker to keep every file this page loaded (app, libraries, fonts) so the app opens without internet even after only one visit
+function warmCache(){try{if(!('serviceWorker' in navigator))return;navigator.serviceWorker.ready.then(reg=>{const H=/(^|\.)(esm\.sh|cdnjs\.cloudflare\.com|unpkg\.com|fonts\.googleapis\.com|fonts\.gstatic\.com|cdn\.jsdelivr\.net)$/;
+  const urls=performance.getEntriesByType('resource').map(e=>e.name).concat([location.href.split('#')[0]]).filter(u=>{try{const x=new URL(u);return x.origin===location.origin?!/\/sw\.js$/.test(x.pathname):H.test(x.hostname);}catch(e){return false;}});
+  const w=reg.active||navigator.serviceWorker.controller;if(w)w.postMessage({type:'dmc-cache',urls:Array.from(new Set(urls))});}).catch(()=>{});}catch(e){}}
 function isNetErr(e){const m=String((e&&(e.message||e))||'');return (typeof navigator!=='undefined'&&navigator.onLine===false)||/failed to fetch|networkerror|load failed|network request failed|fetch failed|timeout/i.test(m);}
 function compress(file){return new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>{const img=new Image();img.onload=()=>{const sc=Math.min(1,800/Math.max(img.width,img.height));const c=document.createElement('canvas');c.width=Math.round(img.width*sc);c.height=Math.round(img.height*sc);c.getContext('2d').drawImage(img,0,0,c.width,c.height);res(c.toDataURL('image/jpeg',0.6));};img.onerror=rej;img.src=r.result;};r.onerror=rej;r.readAsDataURL(file);});}
 function sampleCSV(){const d=n=>addD(TODAY,n);return [CSV_COLS.join(','),
@@ -2431,10 +2435,10 @@ class Component extends DCLogic {
   savePrefs(){try{localStorage.setItem(PREF_KEY,JSON.stringify({lang:this.state.lang}));}catch(e){}}
   componentDidMount(){applyDark(this.state.dark);this._onVis=()=>{if(document.hidden){if(this._wake)try{this._wake.abort();}catch(e){}}else setTimeout(()=>this.wakeStart(),500);};document.addEventListener('visibilitychange',this._onVis);if(this.state.wakeOn)setTimeout(()=>this.wakeStart(),2500);
     try{this._bidiObs=new MutationObserver(()=>{if(this._bidiQ||this.state.lang!=='ar')return;this._bidiQ=requestAnimationFrame(()=>{this._bidiQ=0;try{bidiFix(document.body);}catch(e){}});});
-      this._bidiObs.observe(document.body,{subtree:true,childList:true,characterData:true});}catch(e){}this._onOnline=()=>{this.setState({offline:false});this.flushOutbox();this.reloadLive();};this._onOffline=()=>this.setState({offline:true});window.addEventListener('online',this._onOnline);window.addEventListener('offline',this._onOffline);this._onResize=()=>{const w=window.innerWidth>=1024;if(w!==this.state.wide)this.setState({wide:w});};window.addEventListener('resize',this._onResize);this._onResize();
+      this._bidiObs.observe(document.body,{subtree:true,childList:true,characterData:true});}catch(e){}this._onOnline=()=>{if(this._offAuth){this.reconnect();return;}this.setState({offline:false});this.flushOutbox();this.reloadLive();};this._onOffline=()=>this.setState({offline:true});window.addEventListener('online',this._onOnline);window.addEventListener('offline',this._onOffline);this._onResize=()=>{const w=window.innerWidth>=1024;if(w!==this.state.wide)this.setState({wide:w});};window.addEventListener('resize',this._onResize);this._onResize();
     try{const p=JSON.parse(localStorage.getItem(PREF_KEY)||'{}');if(p.lang&&p.lang!==this.state.lang)this.setState({lang:p.lang});}catch(e){}
     let n=0;const go=()=>{if(window.DMC_CONFIG===undefined&&n++<15){setTimeout(go,100);return;}this.initConn();};go();
-    if(/^https?:$/.test(location.protocol)&&'serviceWorker' in navigator){navigator.serviceWorker.register('sw.js').catch(()=>{});
+    if(/^https?:$/.test(location.protocol)&&'serviceWorker' in navigator){navigator.serviceWorker.register('sw.js').catch(()=>{});setTimeout(()=>warmCache(),8000);
       navigator.serviceWorker.addEventListener('message',e=>{if(e.data&&e.data.type==='dmc-push-open'&&e.data.url==='#chat')this.setState({chatOpen:true,settings:false});});}
     {const m=/^#b=(.+)$/.exec(location.hash||'');if(m){try{const v=decodeURIComponent(m[1]),i=v.indexOf('|');if(i>0)this._goBldg={pid:v.slice(0,i),b:v.slice(i+1)};}catch(e){}try{history.replaceState(null,'',location.pathname+location.search);}catch(e){}}}
     window.addEventListener('hashchange',()=>{const m=/^#b=(.+)$/.exec(location.hash||'');if(!m)return;try{const v=decodeURIComponent(m[1]),i=v.indexOf('|');if(i>0){this._goBldg={pid:v.slice(0,i),b:v.slice(i+1)};this.applyGoBldg();}}catch(e){}try{history.replaceState(null,'',location.pathname+location.search);}catch(e){}});
@@ -2442,17 +2446,38 @@ class Component extends DCLogic {
   componentWillUnmount(){document.removeEventListener('visibilitychange',this._onVis);if(this._wake)try{this._wake.abort();}catch(e){}window.removeEventListener('resize',this._onResize);if(this._ch&&this._sb)try{this._sb.removeChannel(this._ch);}catch(e){}}
   async initConn(){const c=connCfg();if(!c.url||!c.key){this.setState({mode:'demo',auth:'none'},()=>this.applyGoBldg());return;}
     this.setState({mode:'live',auth:'checking',connUrl:c.url,connKey:c.key,data:{projects:[],activities:[],updates:[],reminders:[],irs:[]},detail:null,review:null});
-    try{const sb=await getSB(c);this._sb=sb;const {data}=await sb.auth.getSession();
-      if(!this._authSub){this._authSub=sb.auth.onAuthStateChange(ev=>{if(ev==='SIGNED_OUT')this.setState({auth:'signedOut',user:null,profile:null});});}
-      if(data&&data.session)await this.afterLogin(data.session.user);else this.setState({auth:'signedOut'});
-    }catch(e){this.setState({auth:'signedOut',loginErr:String(e.message||e)});}}
+    try{const sb=await getSB(c);this._sb=sb;const {data,error}=await sb.auth.getSession();
+      if(!this._authSub){this._authSub=sb.auth.onAuthStateChange(ev=>{if(ev==='SIGNED_OUT'&&!this._offAuth){try{localStorage.removeItem('dmc-erp:lastUser');}catch(e){}this.setState({auth:'signedOut',user:null,profile:null});}});}
+      if(data&&data.session)await this.afterLogin(data.session.user);
+      else if((navigator.onLine===false||(error&&isNetErr(error)))&&await this.offStart()){}
+      else this.setState({auth:'signedOut'});
+    }catch(e){if((navigator.onLine===false||isNetErr(e))&&await this.offStart())return;this.setState({auth:'signedOut',loginErr:String(e.message||e)});}}
+  // No internet and the sign-in has expired (it lasts 1 hour): open with the last account used on this phone, its saved profile and data.
+  // Only someone who signed in here before and did not sign out. Updates are queued; reconnect() renews the sign-in and sends them when the internet is back.
+  async offStart(){let lu=null,prof=null;try{lu=JSON.parse(localStorage.getItem('dmc-erp:lastUser')||'null');prof=lu&&JSON.parse(localStorage.getItem('dmc-erp:prof:'+lu.id)||'null');}catch(e){}
+    if(!lu||!lu.id||!prof||prof.active===false)return false;this._offAuth=true;
+    const role=prof.role==='admin'?(['site','cm','planner','pm','qc'].indexOf(this.state.role)>=0?this.state.role:'planner'):prof.role;
+    await new Promise(r=>this.setState({user:{id:lu.id,email:lu.email},profile:prof,role,eng:prof.discipline||'CIV',auth:'ready',loginErr:'',offline:true},r));
+    const sn=await idb('snap','get',lu.id);if(sn&&sn.data){const data=await this.mergeOutbox(sn.data);this.setState({data,settingsDb:sn.st||{},lastSync:sn.at||''});this.toast(this.T().offOpened((sn.at||'').replace('T',' ').slice(0,16)));}
+    await this.obCount();this.applyGoBldg();
+    if(!this._reTimer)this._reTimer=setInterval(()=>{if(navigator.onLine!==false)this.reconnect();},30000);
+    return true;}
+  async reconnect(){if(!this._offAuth||this._reBusy)return;this._reBusy=true;const t=this.T();
+    try{const sb=await getSB(connCfg());this._sb=sb;const {data,error}=await sb.auth.getSession();
+      if(data&&data.session){this._offAuth=false;if(this._reTimer){clearInterval(this._reTimer);this._reTimer=null;}
+        if(this.state.user&&data.session.user.id!==this.state.user.id){this.setState({data:{projects:[],activities:[],updates:[],reminders:[],irs:[]}});}
+        if(!this._authSub){this._authSub=sb.auth.onAuthStateChange(ev=>{if(ev==='SIGNED_OUT'&&!this._offAuth){try{localStorage.removeItem('dmc-erp:lastUser');}catch(e){}this.setState({auth:'signedOut',user:null,profile:null});}});}
+        this.setState({offline:false});await this.afterLogin(data.session.user);}
+      else if(!(error&&isNetErr(error))&&navigator.onLine!==false){// online but the sign-in cannot be renewed: sign in again; saved updates stay on the phone until then
+        this._offAuth=false;if(this._reTimer){clearInterval(this._reTimer);this._reTimer=null;}this.setState({auth:'signedOut',offline:false,loginErr:t.offRelogin});}
+    }catch(e){}this._reBusy=false;}
   async afterLogin(user){const sb=this._sb,t=this.T();try{sb.rpc('log_login',{p_ua:navigator.userAgent||''}).then(()=>{},()=>{});}catch(e){}let r=await sb.from('profiles').select('*').eq('id',user.id).maybeSingle();const PK='dmc-erp:prof:'+user.id;
     if(r.error&&isNetErr(r.error)){try{const c=JSON.parse(localStorage.getItem(PK)||'null');if(c)r={data:c,error:null};}catch(e){}}
     else if(r.data){try{localStorage.setItem(PK,JSON.stringify(r.data));}catch(e){}}
     if(r.error||!r.data){this.setState({auth:'signedOut',loginErr:(r.error&&r.error.message)||t.noProfile});return;}
-    const prof=r.data;if(prof.active===false){this.setState({auth:'signedOut',loginErr:t.inactive});await sb.auth.signOut();return;}
+    const prof=r.data;if(prof.active===false){try{localStorage.removeItem('dmc-erp:lastUser');}catch(e){}this.setState({auth:'signedOut',loginErr:t.inactive});await sb.auth.signOut();return;}
     const role=prof.role==='admin'?(['site','cm','planner','pm','qc'].indexOf(this.state.role)>=0?this.state.role:'planner'):prof.role;
-    this.setState({user:{id:user.id,email:user.email},profile:prof,role,eng:prof.discipline||'CIV',auth:'ready',loginErr:''});
+    this.setState({user:{id:user.id,email:user.email},profile:prof,role,eng:prof.discipline||'CIV',auth:'ready',loginErr:''});try{localStorage.setItem('dmc-erp:lastUser',JSON.stringify({id:user.id,email:user.email}));}catch(e){}setTimeout(()=>warmCache(),4000);
     await this.reloadLive();this.reloadChat();this.pushCheck();
     if(this._openChatAfterLogin){this._openChatAfterLogin=false;this.setState({chatOpen:true});}
     this.applyGoBldg();
@@ -2479,9 +2504,10 @@ class Component extends DCLogic {
       const blob=await (await fetch(p.src)).blob(),path=x.actId+'/'+x.id+'/'+p.id+'.jpg';
       const r=await sb.storage.from('site-photos').upload(path,blob,{contentType:'image/jpeg',upsert:true});if(r.error)throw r.error;out.push(Object.assign({},p,{path}));}
     x.photos=out;}
-  async pushDiff(prev,next){const sb=this._sb,t=this.T();if(!sb)return;
+  async pushDiff(prev,next){const sb=this._sb,t=this.T();
     const pu=new Map((prev.updates||[]).map(x=>[x.id,x])),chg=(next.updates||[]).filter(x=>pu.get(x.id)!==x);
-    if(chg.length&&navigator.onLine===false){await this.queueUpd(chg);return;}
+    if(chg.length&&(this._offAuth||navigator.onLine===false)){await this.queueUpd(chg);return;}
+    if(!sb||this._offAuth)return;
     this.setState({syncing:true});
     try{for(const k of TABLE_ORDER){const m=MAP[k],pm=new Map((prev[k]||[]).map(x=>[x.id,x])),ins=[];
         for(const x of (next[k]||[])){const o=pm.get(x.id);if(o===x)continue;if(k==='updates')await this.uploadPhotos(x);
@@ -2499,7 +2525,7 @@ class Component extends DCLogic {
     if(!this._obTimer)this._obTimer=setInterval(()=>this.flushOutbox(),30000);}
   async obItems(){const k=this.obKey();return ((await idb('outbox','all'))||[]).filter(o=>o&&o.uid===k).sort((a,b)=>a.at-b.at);}
   async obCount(){const n=(await this.obItems()).length;if(n!==this.state.obN)this.setState({obN:n});return n;}
-  async flushOutbox(){const sb=this._sb,t=this.T();if(!sb||this._obBusy||this.state.auth!=='ready')return;const items=await this.obItems();
+  async flushOutbox(){const sb=this._sb,t=this.T();if(!sb||this._offAuth||this._obBusy||this.state.auth!=='ready')return;const items=await this.obItems();
     if(!items.length){if(this._obTimer){clearInterval(this._obTimer);this._obTimer=null;}if(this.state.obN)this.setState({obN:0});return;}
     if(navigator.onLine===false)return;this._obBusy=true;let sent=0,net=false;
     for(const o of items){const x=Object.assign({},o.x);try{await this.uploadPhotos(x);const row=MAP.updates.to(x);
@@ -2534,7 +2560,7 @@ class Component extends DCLogic {
     this.setState({loginBusy:false});if(r.error){this.setState({loginErr:r.error.message});return;}
     if(r.data&&r.data.session)await this.afterLogin(r.data.user);else this.setState({loginErr:t.signUpOk});}
   async signOut(){try{const sub=await this.pushSub();if(sub){await this._sb.rpc('push_unsubscribe',{p_endpoint:sub.endpoint});}}catch(e){}
-    try{await this._sb.auth.signOut();}catch(e){}this.setState({auth:'signedOut',user:null,profile:null,settings:false,chatOpen:false,chatRoom:null,chatMsgs:[],chatReads:[],chatDir:[],users:[],members:[],data:{projects:[],activities:[],updates:[],reminders:[]}});}
+    try{localStorage.removeItem('dmc-erp:lastUser');}catch(e){}this._offAuth=false;if(this._reTimer){clearInterval(this._reTimer);this._reTimer=null;}try{await this._sb.auth.signOut();}catch(e){}this.setState({auth:'signedOut',user:null,profile:null,settings:false,chatOpen:false,chatRoom:null,chatMsgs:[],chatReads:[],chatDir:[],users:[],members:[],data:{projects:[],activities:[],updates:[],reminders:[]}});}
   connect(){const s=this.state,t=this.T();if(!/^https:\/\/.+/.test(s.connUrl.trim())||s.connKey.trim().length<20){this.toast(t.connBad);return;}
     try{localStorage.setItem(CONN_KEY,JSON.stringify({url:s.connUrl.trim(),key:s.connKey.trim()}));}catch(e){}this.setState({settings:false});this.initConn();}
   disconnect(){try{localStorage.removeItem(CONN_KEY);}catch(e){}if(this._ch&&this._sb)try{this._sb.removeChannel(this._ch);}catch(e){}this._ch=null;
