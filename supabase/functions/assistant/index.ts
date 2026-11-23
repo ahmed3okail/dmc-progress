@@ -7,6 +7,9 @@
 //   GEMINI_MODEL            optional — default gemini-3.8-flash
 //   GEMINI_FALLBACK_MODEL   optional — used when the main model is over its free quota or not available; default gemini-3.5-flash-lite ("" = none)
 //   ASSISTANT_DAILY_LIMIT   optional — questions per user per day (default 60)
+//   GEMINI_TTS_MODEL        optional — voice for read-aloud answers ({tts:true,text}); default gemini-3.8-flash-tts
+//   GEMINI_TTS_FALLBACK_MODEL optional — default gemini-3.8-flash-lite-tts ("" = none)
+//   GEMINI_TTS_VOICE        optional — prebuilt voice name, default Kore
 import { GoogleGenAI } from "npm:@google/genai@1";
 import { createClient } from "npm:@supabase/supabase-js@2.45.4";
 
@@ -57,8 +60,46 @@ Deno.serve(async (req) => {
   const { data: u } = await sb.auth.getUser();
   if (!u?.user) return json({ error: "auth" }, 401);
 
-  let body: { q?: string; history?: { q: string; a: string }[]; ctx?: unknown; lang?: string };
+  let body: { q?: string; history?: { q: string; a: string }[]; ctx?: unknown; lang?: string; tts?: boolean; text?: string };
   try { body = await req.json(); } catch { return json({ error: "bad_json" }, 400); }
+
+  // Read-aloud: turn an answer into speech with a Gemini TTS model (REST, v1beta).
+  if (body.tts) {
+    const text = String(body.text || "").replace(/[\u2066-\u2069\u2060]/g, "").trim().slice(0, 700);
+    if (!text) return json({ error: "empty_q" }, 400);
+    const voice = Deno.env.get("GEMINI_TTS_VOICE") || "Kore";
+    const tm = [Deno.env.get("GEMINI_TTS_MODEL") || "gemini-3.8-flash-tts", Deno.env.get("GEMINI_TTS_FALLBACK_MODEL") ?? "gemini-3.8-flash-lite-tts"]
+      .filter((x, i, a) => x && a.indexOf(x) === i);
+    let lastT = { code: "failed", status: 500, retry: false };
+    for (const model of tm) {
+      try {
+        const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json", "x-goog-api-key": key },
+          body: JSON.stringify({
+            contents: [{ role: "user", parts: [{ text }] }],
+            generationConfig: { responseModalities: ["AUDIO"], speechConfig: { voiceConfig: { prebuiltVoiceConfig: { voiceName: voice } } } },
+          }),
+        });
+        // deno-lint-ignore no-explicit-any
+        const j: any = await res.json().catch(() => ({}));
+        if (!res.ok) {
+          const e = new Error(JSON.stringify(j?.error || j).slice(0, 400)) as Error & { status?: number };
+          e.status = res.status;
+          throw e;
+        }
+        // deno-lint-ignore no-explicit-any
+        const p = (j?.candidates?.[0]?.content?.parts || []).find((x: any) => x?.inlineData?.data);
+        if (!p) return json({ error: "empty" }, 200);
+        return json({ audio: p.inlineData.data, mime: p.inlineData.mimeType || "audio/L16;rate=24000", model });
+      } catch (e) {
+        lastT = errCode(e);
+        console.error("tts", model, lastT.code, String((e as Error)?.message || e).slice(0, 300));
+        if (!lastT.retry && lastT.code !== "failed") break;
+      }
+    }
+    return json({ error: lastT.code }, lastT.status);
+  }
   const q = String(body.q || "").trim().slice(0, 1000);
   if (!q) return json({ error: "empty_q" }, 400);
   const ctx = JSON.stringify(body.ctx ?? {});

@@ -2301,6 +2301,7 @@ function floorNum(x){let m=/^(\d{1,2})\s*(st|nd|rd|th)?\s*(floor|fl\b|f\b)/i.exe
   const lo=x.toLowerCase();for(let i=0;i<FL_EN.length;i++)if(lo.indexOf(FL_EN[i]+' floor')===0)return i+1;
   m=/^(?:الدور\s+)?ال(\S+)/.exec(x.trim());if(m){const w=m[1].replace(/^أ/,'ا');for(let i=0;i<FL_AR.length;i++)if(FL_AR[i].some(v=>v.replace(/^أ/,'ا')===w))return i+1;}return 0;}
 function floorKey(wbs){const seg=String(wbs||'').split(' › ').map(x=>x.trim());for(const x of seg){if(FL_ROOF.test(x))return 'roof';if(FL_FOUND.test(x))return 'found';if(FL_GF.test(x))return 'gf';const n=floorNum(x);if(n>0&&n<=40)return 'f'+n;}return '';}
+function wavHdr(n,rate){const b=new ArrayBuffer(44),v=new DataView(b),w=(o,x)=>{for(let i=0;i<x.length;i++)v.setUint8(o+i,x.charCodeAt(i));};w(0,'RIFF');v.setUint32(4,36+n,true);w(8,'WAVE');w(12,'fmt ');v.setUint32(16,16,true);v.setUint16(20,1,true);v.setUint16(22,1,true);v.setUint32(24,rate,true);v.setUint32(28,rate*2,true);v.setUint16(32,2,true);v.setUint16(34,16,true);w(36,'data');v.setUint32(40,n,true);return b;}
 function floorRank(k){return k==='found'?-1:k==='gf'?0:k==='roof'?99:k==='all'?50:Number(k.slice(1))||50;}
 function flLbl(k,t,lang){if(t['fl_'+k])return t['fl_'+k];const n=Number(k.slice(1));return lang==='ar'?'الدور '+n:n+(n%10===1&&n!==11?'st':n%10===2&&n!==12?'nd':n%10===3&&n!==13?'rd':'th');}
 // % complete type like P6: P physical / D duration / U units
@@ -2657,7 +2658,20 @@ class Component extends DCLogic {
   async pushTest(){const t=this.T();try{const r=await this._sb.functions.invoke('push',{body:{test:true}});if(r.error)throw r.error;this.toast(r.data&&r.data.sent?t.pushTestSent:t.pushTestNone);}catch(e){this.toast(t.pushErr+' '+(e.message||e));}}
   pushDismiss(){try{localStorage.setItem('dmc-erp:pushAsk','no');}catch(e){}this.setState({pushAskHidden:true});}
   toast(m){clearTimeout(this._tt);this.setState({toast:m});this._tt=setTimeout(()=>this.setState({toast:''}),2800);}
-  botSpeak(text,onEnd){const done=()=>{this._speaking=false;if(onEnd)onEnd();else setTimeout(()=>this.wakeStart(),600);};
+  ttsStop(){this._ttsTk=(this._ttsTk||0)+1;if(this._audio){try{this._audio.pause();}catch(e){}this._audio=null;}}
+  // Read an answer aloud with Gemini's voice (LIVE, via the assistant function); falls back to the phone's own voice
+  botSpeak(text,onEnd){const clean=String(text||'').replace(/[⁦-⁩⁠]/g,'').trim();
+    if(!clean||!(this.live()&&this._sb&&this.state.auth==='ready'&&navigator.onLine!==false&&this._ttsOk!==false)){this.botSpeakLocal(text,onEnd);return;}
+    this.ttsStop();try{window.speechSynthesis&&window.speechSynthesis.cancel();}catch(e){}this._speaking=true;if(this._wake)try{this._wake.abort();}catch(e){}
+    const tk=this._ttsTk,done=()=>{if(tk!==this._ttsTk)return;this._speaking=false;if(onEnd)onEnd();else setTimeout(()=>this.wakeStart(),600);},fall=()=>{if(tk!==this._ttsTk)return;this._speaking=false;this.botSpeakLocal(text,onEnd);};
+    this._sb.functions.invoke('assistant',{body:{tts:true,text:clean.replace(/[•·]/g,'،').slice(0,700),lang:this.state.lang}}).then(r=>{if(tk!==this._ttsTk)return;const d=r&&r.data;
+      if(!r||r.error||!d||!d.audio){if(d&&d.error==='not_configured')this._ttsOk=false;fall();return;}
+      const bin=atob(d.audio),u8=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)u8[i]=bin.charCodeAt(i);
+      const rate=Number((/rate=(\d+)/i.exec(d.mime||'')||[])[1])||24000,blob=/wav/i.test(d.mime||'')?new Blob([u8],{type:'audio/wav'}):new Blob([wavHdr(u8.length,rate),u8],{type:'audio/wav'});
+      const url=URL.createObjectURL(blob),au=new Audio(url);this._audio=au;let fin=false;
+      const end=ok=>{if(fin)return;fin=true;try{URL.revokeObjectURL(url);}catch(e){}if(this._audio===au)this._audio=null;if(ok)done();else fall();};
+      au.onended=()=>end(true);au.onerror=()=>end(false);const pr=au.play();if(pr&&pr.catch)pr.catch(()=>end(false));}).catch(fall);}
+  botSpeakLocal(text,onEnd){const done=()=>{this._speaking=false;if(onEnd)onEnd();else setTimeout(()=>this.wakeStart(),600);};
     try{const ss=window.speechSynthesis;if(!ss||!text){done();return;}ss.cancel();this._speaking=true;if(this._wake)try{this._wake.abort();}catch(e){}
       const L=this.state.lang==='ar'?'ar':'en',u=new SpeechSynthesisUtterance(String(text).replace(/[⁦-⁩⁠]/g,'').replace(/[•·]/g,'،').slice(0,700));u.lang=L==='ar'?'ar-EG':'en-US';const v=(ss.getVoices()||[]).find(v=>v.lang&&v.lang.toLowerCase().indexOf(L)===0);if(v)u.voice=v;
       let fin=false;const f=()=>{if(fin)return;fin=true;done();};u.onend=f;u.onerror=f;setTimeout(f,Math.min(40000,1500+String(text).length*90));ss.speak(u);}catch(e){done();}}
@@ -2673,7 +2687,7 @@ class Component extends DCLogic {
     if(rest&&rest.split(/\s+/).length>=2){setTimeout(()=>ask(rest,true),250);return;}
     this.botSpeak(this.T().wakeHello,()=>this.botListen(ask));}
   botListen(askFn){if(this._rec){try{this._rec.stop();}catch(e){}return;}const SR=window.SpeechRecognition||window.webkitSpeechRecognition;if(!SR)return;
-    try{window.speechSynthesis&&window.speechSynthesis.cancel();}catch(e){}this._speaking=false;if(this._wake){const w=this._wake;this._wake=null;w.onend=null;try{w.abort();}catch(e){}}
+    try{window.speechSynthesis&&window.speechSynthesis.cancel();}catch(e){}this.ttsStop();this._speaking=false;if(this._wake){const w=this._wake;this._wake=null;w.onend=null;try{w.abort();}catch(e){}}
     const r=new SR();r.lang=this.state.lang==='ar'?'ar-EG':'en-US';r.interimResults=true;r.continuous=false;r.maxAlternatives=1;let fin='',bad=false;
     r.onresult=e=>{let txt='';for(let i=0;i<e.results.length;i++)txt+=e.results[i][0].transcript;this.setState({botTxt:txt});const last=e.results[e.results.length-1];if(last&&last.isFinal)fin=txt;};
     r.onerror=e=>{bad=true;if(e.error==='not-allowed'||e.error==='service-not-allowed')this.toast(this.T().micDenied);else if(e.error!=='no-speech'&&e.error!=='aborted')this.toast(this.T().micErr);};
@@ -3762,7 +3776,7 @@ class Component extends DCLogic {
       bot={on:!!s.botOpen,wakeOn:!!s.wakeOn,wakeLbl:s.wide?(s.wakeOn?t.wakeOnL:t.wakeOffL):(s.wakeOn?'👂 ✓':'👂'),wakeBg:s.wakeOn?'#ff7a59':'#363d52',wakeFg:s.wakeOn?'#1b1a17':'#e8e9f1',wideP:!!s.wide,pTop:s.wide?'auto':'0',pBot:s.wide?'16px':'0',pEnd:s.wide?'16px':'0',pW:s.wide?'420px':'100%',pH:s.wide?'min(82vh,720px)':'100dvh',pR:s.wide?'20px':'0',toggleWake:()=>this.wakeSet(!s.wakeOn),canAi:live,aiOn,aiLbl:aiOn?'✨ AI ✓':'✨ AI',aiBg:aiOn?'#ff7a59':'#363d52',aiFg:aiOn?'#1b1a17':'#e8e9f1',toggleAi:()=>this.setState({botAI:!s.botAI}),subTxt:aiOn?t.botSubAi:t.botSub,msgs,hasMsgs:msgs.length>0,noMsgs:!msgs.length,txt:s.botTxt||'',quick:QK.map(k=>({label:t[k],ask:()=>ask(t[k],false,true)})),
         canMic:!!(typeof window!=='undefined'&&(window.SpeechRecognition||window.webkitSpeechRecognition)),micOn:!!s.botMic,micBg:s.botMic?'#e85d3c':'#3a4260',micFg:s.botMic?'#fff':'#e8e9f1',micIcon:ico('mic',s.botMic?'#ffffff':'#e8e9f1'),mic:()=>this.botListen(ask),ph:s.botMic?t.botListening:t.botPh,
         onTxt:e=>this.setState({botTxt:e.target.value}),send:()=>ask(s.botTxt),onKey:e=>{if(e.key==='Enter'){e.preventDefault();ask(e.target.value);}},
-        open:()=>this.setState({botOpen:true,chatOpen:false,notifOpen:false,settings:false},()=>setTimeout(scr,30)),close:()=>{try{window.speechSynthesis&&window.speechSynthesis.cancel();}catch(e){}if(this._rec)try{this._rec.abort();}catch(e){}this.setState({botOpen:false});},clear:()=>this.setState({botMsgs:[]}),
+        open:()=>this.setState({botOpen:true,chatOpen:false,notifOpen:false,settings:false},()=>setTimeout(scr,30)),close:()=>{try{window.speechSynthesis&&window.speechSynthesis.cancel();}catch(e){}this.ttsStop();if(this._rec)try{this._rec.abort();}catch(e){}this.setState({botOpen:false});},clear:()=>this.setState({botMsgs:[]}),
         fab:!s.botOpen&&!s.chatOpen&&!s.report&&!s.notifOpen,fabB:s.wide?'22px':'84px',icon:ico('bot','#ffffff')};
     }
     return{bot,...liveVals,qcV,qcIcon:ico('qc','#0f3d3e'),canPw,usersList,uTree,uViews,uTreeOn:show.users&&s.uView==='tree',uListOn:s.uView!=='tree'&&s.uView!=='proj',uProjOn:show.users&&s.uView==='proj',uProj,uNoTeam,uNoTeamOn:show.users&&uNoTeam.length>0,uNoTeamTxt:t.uNoTeam(uNoTeam.length),uNoTeamCodes:uNoTeam.join(', '),uNoTeamGo:()=>this.setState({uView:'proj'}),edV,usersEmpty:show.users&&!usersList.length,uStats,uq:s.uq,onUq:e=>this.setState({uq:e.target.value}),nuOpen:s.nuOpen,nuBtn:s.nuOpen?t.nuClose:t.nuOpen,toggleNu:()=>this.setState({nuOpen:!s.nuOpen}),nuV,permHead,permCells,
