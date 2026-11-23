@@ -2659,9 +2659,10 @@ class Component extends DCLogic {
   pushDismiss(){try{localStorage.setItem('dmc-erp:pushAsk','no');}catch(e){}this.setState({pushAskHidden:true});}
   toast(m){clearTimeout(this._tt);this.setState({toast:m});this._tt=setTimeout(()=>this.setState({toast:''}),2800);}
   ttsStop(){this._ttsTk=(this._ttsTk||0)+1;if(this._audio){try{this._audio.pause();}catch(e){}this._audio=null;}}
-  // Read an answer aloud with Gemini's voice (LIVE, via the assistant function); falls back to the phone's own voice
+  // Read an answer aloud. Default = the phone's own voice (starts at once; Ahmed's choice 2026-11-23).
+  // Gemini's voice (cloud) is kept but off: set this._ttsCloud=true to use it again.
   botSpeak(text,onEnd){const clean=String(text||'').replace(/[⁦-⁩⁠]/g,'').trim();
-    if(!clean||!(this.live()&&this._sb&&this.state.auth==='ready'&&navigator.onLine!==false&&this._ttsOk!==false)){this.botSpeakLocal(text,onEnd);return;}
+    if(!clean||!(this._ttsCloud&&this.live()&&this._sb&&this.state.auth==='ready'&&navigator.onLine!==false&&this._ttsOk!==false)){this.botSpeakLocal(text,onEnd);return;}
     this.ttsStop();try{window.speechSynthesis&&window.speechSynthesis.cancel();}catch(e){}this._speaking=true;if(this._wake)try{this._wake.abort();}catch(e){}
     const tk=this._ttsTk,done=()=>{if(tk!==this._ttsTk)return;this._speaking=false;if(onEnd)onEnd();else setTimeout(()=>this.wakeStart(),600);},fall=()=>{if(tk!==this._ttsTk)return;this._speaking=false;this.botSpeakLocal(text,onEnd);};
     // Split into a short first piece (~75 chars, fast to make) and the rest (the free Gemini voice allows
@@ -2681,7 +2682,7 @@ class Component extends DCLogic {
     if(!parts.length){fall();return;}play(0);}
   botSpeakLocal(text,onEnd){const done=()=>{this._speaking=false;if(onEnd)onEnd();else setTimeout(()=>this.wakeStart(),600);};
     try{const ss=window.speechSynthesis;if(!ss||!text){done();return;}ss.cancel();this._speaking=true;if(this._wake)try{this._wake.abort();}catch(e){}
-      const L=this.state.lang==='ar'?'ar':'en',u=new SpeechSynthesisUtterance(String(text).replace(/[⁦-⁩⁠]/g,'').replace(/[•·]/g,'،').slice(0,700));u.lang=L==='ar'?'ar-EG':'en-US';const v=(ss.getVoices()||[]).find(v=>v.lang&&v.lang.toLowerCase().indexOf(L)===0);if(v)u.voice=v;
+      const L=this.state.lang==='ar'?'ar':'en',u=new SpeechSynthesisUtterance(String(text).replace(/[⁦-⁩⁠]/g,'').replace(/[•·]/g,'،').slice(0,700));u.lang=L==='ar'?'ar-EG':'en-US';const vs=(ss.getVoices()||[]).filter(v=>v.lang&&v.lang.toLowerCase().indexOf(L)===0),want=L==='ar'?'ar-eg':'en-us',v=vs.find(v=>v.lang.toLowerCase().replace('_','-')===want&&/google|natural|online/i.test(v.name))||vs.find(v=>v.lang.toLowerCase().replace('_','-')===want)||vs.find(v=>/google|natural|online/i.test(v.name))||vs[0];if(v)u.voice=v;
       let fin=false;const f=()=>{if(fin)return;fin=true;done();};u.onend=f;u.onerror=f;setTimeout(f,Math.min(40000,1500+String(text).length*90));ss.speak(u);}catch(e){done();}}
   wakeSet(on){try{localStorage.setItem('dmc-erp:wake',on?'1':'0');}catch(e){}this.setState({wakeOn:on},()=>{if(on){this.toast(this.T().wakeOnToast);this.wakeStart();}else if(this._wake)try{this._wake.abort();}catch(e){}});}
   wakeStart(){const SR=window.SpeechRecognition||window.webkitSpeechRecognition;if(!SR||!this.state.wakeOn||document.hidden||this._wake||this._rec||this._speaking)return;
