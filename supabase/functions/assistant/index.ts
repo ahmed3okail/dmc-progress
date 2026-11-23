@@ -6,7 +6,7 @@
 //   GEMINI_API_KEY          required — Google AI Studio API key (never in the app files)
 //   GEMINI_MODEL            optional — default gemini-3.8-flash
 //   GEMINI_FALLBACK_MODEL   optional — used when the main model is over its free quota or not available; default gemini-3.5-flash-lite ("" = none)
-//   GEMINI_FALLBACK_MODEL2  optional — third model to try; default gemini-3.8-flash-lite ("" = none)
+//   (then up to 3 more flash models that Google lists for this key are tried automatically)
 //   ASSISTANT_DAILY_LIMIT   optional — questions per user per day (default 60)
 //   GEMINI_TTS_MODEL        optional — voice for read-aloud answers ({tts:true,text}); default gemini-3.8-flash-tts
 //   GEMINI_TTS_FALLBACK_MODEL optional — default gemini-3.8-flash-lite-tts ("" = none)
@@ -45,6 +45,30 @@ function errCode(e: unknown): { code: string; status: number; retry: boolean } {
   if (st === 500 || st === 503 || st === 504 || /UNAVAILABLE|overloaded|DEADLINE_EXCEEDED|INTERNAL/i.test(msg)) return { code: "unavailable", status: 503, retry: true };
   if (/fetch failed|network|ECONN|ETIMEDOUT|dns/i.test(msg)) return { code: "unavailable", status: 503, retry: true };
   return { code: "failed", status: 500, retry: false };
+}
+
+// Ask Google which text models this key can call (flash / flash-lite first, newest first).
+let MODELS_CACHE: { at: number; list: string[] } | null = null;
+async function textModels(key: string): Promise<string[]> {
+  if (MODELS_CACHE && Date.now() - MODELS_CACHE.at < 3600_000) return MODELS_CACHE.list;
+  try {
+    const res = await fetch("https://generativelanguage.googleapis.com/v1beta/models?pageSize=200", { headers: { "x-goog-api-key": key } });
+    // deno-lint-ignore no-explicit-any
+    const j: any = await res.json();
+    // deno-lint-ignore no-explicit-any
+    const names: string[] = (j?.models || []).filter((m: any) => (m.supportedGenerationMethods || []).includes("generateContent"))
+      // deno-lint-ignore no-explicit-any
+      .map((m: any) => String(m.name || "").replace(/^models\//, ""))
+      .filter((n: string) => /^gemini-[\d.]+-flash(-lite)?(-latest)?$/.test(n));
+    const ver = (n: string) => parseFloat((n.match(/gemini-([\d.]+)/) || [])[1] || "0");
+    names.sort((a, b) => ver(b) - ver(a) || a.length - b.length);
+    MODELS_CACHE = { at: Date.now(), list: names };
+    console.log("models", names.join(","));
+    return names;
+  } catch (e) {
+    console.error("models", String((e as Error)?.message || e).slice(0, 200));
+    return [];
+  }
 }
 
 Deno.serve(async (req) => {
@@ -125,14 +149,16 @@ Deno.serve(async (req) => {
   const ai = new GoogleGenAI({ apiKey: key });
   const main = Deno.env.get("GEMINI_MODEL") || "gemini-3.8-flash";
   const fb = Deno.env.get("GEMINI_FALLBACK_MODEL") ?? "gemini-3.5-flash-lite";
-  const fb2 = Deno.env.get("GEMINI_FALLBACK_MODEL2") ?? "gemini-3.8-flash-lite";
-  const models = [main, fb, fb2].filter((x, i, a) => x && a.indexOf(x) === i);
+  // Other text models this key can use (asked from Google, cached while the function is warm),
+  // tried after the two above when they are busy or missing.
+  const extra = await textModels(key);
+  const models = [main, fb, ...extra].filter((x, i, a) => x && a.indexOf(x) === i).slice(0, 5);
   const wait = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
   let last = { code: "failed", status: 500, retry: false };
-  // Free-tier models often answer 503 "high demand" for a moment: try each model twice
-  // (short pause between), then move to the next model.
-  const tries = models.flatMap((m) => [m, m]);
+  // Free-tier models often answer 503 "high demand" for a moment: try the two main models twice
+  // (short pause between), then the other listed models once.
+  const tries = models.flatMap((m, k) => (k < 2 ? [m, m] : [m])); // the listed extras get one try each
   for (let i = 0; i < tries.length; i++) {
     const model = tries[i];
     if (i > 0 && tries[i - 1] === model) await wait(1200);
@@ -149,10 +175,12 @@ Deno.serve(async (req) => {
       }
       return json({ answer: text, left, model });
     } catch (e) {
-      last = errCode(e);
-      console.error("gemini", model, last.code, String((e as Error)?.message || e).slice(0, 300));
-      if (!last.retry) break; // a bad key will not work with the fallback model either
-      if (last.code !== "unavailable" && tries[i + 1] === model) i++; // only "busy" is worth a second try on the same model
+      const ec = errCode(e);
+      // keep the most useful reason for the app: "busy" beats "model not found"
+      if (!(ec.code === "bad_model" && (last.code === "unavailable" || last.code === "rate"))) last = ec;
+      console.error("gemini", model, ec.code, String((e as Error)?.message || e).slice(0, 300));
+      if (!ec.retry) { last = ec; break; } // a bad key will not work with the fallback model either
+      if (ec.code !== "unavailable" && tries[i + 1] === model) i++; // only "busy" is worth a second try on the same model
     }
   }
   return json({ error: last.code }, last.status);
