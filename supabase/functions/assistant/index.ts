@@ -88,6 +88,7 @@ async function groqModels(key: string): Promise<string[]> {
     if (!res.ok) { const e = new Error(JSON.stringify(j?.error || j).slice(0, 300)) as Error & { status?: number }; e.status = res.status; throw e; }
     // deno-lint-ignore no-explicit-any
     const ids: string[] = (j?.data || []).filter((m: any) => m.active !== false).map((m: any) => String(m.id));
+    console.log("groq all", ids.join(","));
     const chat = ids.filter((id) => !/whisper|tts|guard|playai|orpheus|compound|embed|vision-only|prompt-guard/i.test(id));
     const pref = [/gpt-oss-120b/i, /llama-4-maverick/i, /llama-4-scout/i, /llama-3\.3-70b/i, /qwen/i, /kimi/i, /gpt-oss/i, /llama/i];
     const list: string[] = [];
