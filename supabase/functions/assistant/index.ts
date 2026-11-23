@@ -1,4 +1,4 @@
-// Injaz AI assistant "Sanad" (Edge Function "assistant", verify_jwt on).
+// Injaz AI assistant "Fateen" (Edge Function "assistant", verify_jwt on).
 // Engine: Google Gemini API (Google AI Studio key), official SDK @google/genai.
 // The browser sends the question, the recent chat and a compact summary of the
 // data this user can already see in the app (RLS applies before it leaves the DB).
@@ -22,7 +22,7 @@ const CORS = {
 const json = (b: unknown, status = 200) =>
   new Response(JSON.stringify(b), { status, headers: { ...CORS, "Content-Type": "application/json" } });
 
-const SYSTEM = `You are "Sanad" (سند), the assistant inside "Injaz", a construction progress tracking app used by site engineers, construction managers, planning engineers, QC engineers and project managers.
+const SYSTEM = `You are "Fateen" (فطين), the assistant inside "Injaz", a construction progress tracking app used by site engineers, construction managers, planning engineers, QC engineers and project managers.
 
 Answer ONLY from the JSON data the app gives you in each request (projects, buildings, disciplines, activities, workflow and QC counts). That data is already limited to what this user is allowed to see. If the answer is not in the data, say so briefly and suggest where in the app to look (Progress, Dashboard, Buildings, Look-ahead, Review, QC, Report tabs). Never invent numbers, names, dates or activity codes.
 
