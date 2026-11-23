@@ -250,6 +250,10 @@ Deno.serve(async (req) => {
   }
   const q = String(body.q || "").trim().slice(0, 1000);
   if (!q) return json({ error: "empty_q" }, 400);
+  // Answer in the language of the question, not the app's language (Ahmed typed Arabic in English mode and got English).
+  const langLine = /[\u0600-\u06FF]/.test(q)
+    ? "Answer language: Egyptian Arabic (the question is in Arabic). Keep codes and plot names as they are."
+    : "Answer language: English.";
   const ctx = JSON.stringify(body.ctx ?? {});
   if (ctx.length > 120_000) return json({ error: "too_big" }, 413);
 
@@ -267,7 +271,7 @@ Deno.serve(async (req) => {
     contents.push({ role: "user", parts: [{ text: String(h.q).slice(0, 1000) }] });
     contents.push({ role: "model", parts: [{ text: String(h.a).slice(0, 3000) }] });
   }
-  contents.push({ role: "user", parts: [{ text: "App data (JSON):\n" + ctx }, { text: "Question: " + q }] });
+  contents.push({ role: "user", parts: [{ text: "App data (JSON):\n" + ctx }, { text: "Question: " + q + "\n" + langLine }] });
 
   // 1) Groq first when its key is set (fast); any failure falls through to Gemini.
   if (gkey) {
@@ -276,7 +280,7 @@ Deno.serve(async (req) => {
       if (!h || !h.q || !h.a) continue;
       gm.push({ role: "user", content: String(h.q).slice(0, 400) }, { role: "assistant", content: String(h.a).slice(0, 600) });
     }
-    gm.push({ role: "user", content: "App data (JSON; {cols, rows} = a table):\n" + slim(body.ctx) + "\n\nQuestion: " + q });
+    gm.push({ role: "user", content: "App data (JSON; {cols, rows} = a table):\n" + slim(body.ctx) + "\n\nQuestion: " + q + "\n" + langLine });
     let gl = { code: "failed", status: 500, retry: false };
     // Word-by-word answer (body.stream): pass Groq's tokens straight to the app as plain text.
     // Only when Groq accepts the request; otherwise continue with the normal (JSON) path below.
