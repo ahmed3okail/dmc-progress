@@ -15,6 +15,9 @@
 //   GEMINI_TTS_MODEL        optional — voice for read-aloud answers ({tts:true,text}); default gemini-3.8-flash-tts
 //   GEMINI_TTS_FALLBACK_MODEL optional — default gemini-3.8-flash-lite-tts ("" = none)
 //   GEMINI_TTS_VOICE        optional — prebuilt voice name, default Charon (male, for "Fateen"; was Kore)
+//   AZURE_SPEECH_KEY        optional — Microsoft Azure Speech key (free tier F0). When set, the voice comes from Azure first
+//   AZURE_SPEECH_REGION     with AZURE_SPEECH_KEY — the resource region, e.g. westeurope / uaenorth / eastus
+//   AZURE_VOICE_AR / AZURE_VOICE_EN  optional — default ar-EG-ShakirNeural (male, Egyptian) / en-US-AndrewNeural (male)
 import { GoogleGenAI } from "npm:@google/genai@1";
 import { createClient } from "npm:@supabase/supabase-js@2.45.4";
 
@@ -153,6 +156,38 @@ async function groqAnswer(key: string, model: string, system: string, msgs: { ro
   } finally { clearTimeout(tm); }
 }
 
+// ---------- Azure voice (Egyptian male), chosen by Ahmed 2026-11-23 ----------
+const xmlEsc = (t: string) => t.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&apos;");
+async function azureSpeech(key: string, region: string, text: string, ar: boolean): Promise<{ audio: string; mime: string; model: string }> {
+  const voice = Deno.env.get(ar ? "AZURE_VOICE_AR" : "AZURE_VOICE_EN") || (ar ? "ar-EG-ShakirNeural" : "en-US-AndrewNeural");
+  const lang = voice.split("-").slice(0, 2).join("-");
+  const ssml = `<speak version="1.0" xml:lang="${lang}"><voice name="${voice}">${xmlEsc(text)}</voice></speak>`;
+  const ctl = new AbortController();
+  const tm = setTimeout(() => ctl.abort(), 12000);
+  try {
+    const res = await fetch(`https://${region}.tts.speech.microsoft.com/cognitiveservices/v1`, {
+      method: "POST",
+      signal: ctl.signal,
+      headers: {
+        "Ocp-Apim-Subscription-Key": key,
+        "Content-Type": "application/ssml+xml",
+        "X-Microsoft-OutputFormat": "audio-24khz-48kbitrate-mono-mp3",
+        "User-Agent": "injaz-assistant",
+      },
+      body: ssml,
+    });
+    if (!res.ok) {
+      const e = new Error("azure " + res.status + " " + (await res.text().catch(() => "")).slice(0, 300)) as Error & { status?: number };
+      e.status = res.status;
+      throw e;
+    }
+    const u8 = new Uint8Array(await res.arrayBuffer());
+    let bin = "";
+    for (let i = 0; i < u8.length; i += 0x8000) bin += String.fromCharCode(...u8.subarray(i, i + 0x8000));
+    return { audio: btoa(bin), mime: "audio/mpeg", model: "azure:" + voice };
+  } finally { clearTimeout(tm); }
+}
+
 // ---------- Groq voice (Orpheus: Arabic / English), fast; Gemini voice is the backup ----------
 const GROQ_VOICE: Record<string, string> = {};
 const MALE = ["fahad", "sultan", "abdullah", "khalid", "omar", "faisal", "troy", "austin", "daniel"];
@@ -209,6 +244,15 @@ Deno.serve(async (req) => {
   if (body.tts) {
     const text = String(body.text || "").replace(/[\u2066-\u2069\u2060]/g, "").trim().slice(0, 700);
     if (!text) return json({ error: "empty_q" }, 400);
+    const akey = Deno.env.get("AZURE_SPEECH_KEY") || "", areg = (Deno.env.get("AZURE_SPEECH_REGION") || "").trim().toLowerCase();
+    if (akey && areg) {
+      try {
+        return json(await azureSpeech(akey, areg, text, /[\u0600-\u06FF]/.test(text)));
+      } catch (e) {
+        // logged (bad key / wrong region / limit); fall back to the Gemini voice below
+        console.error("azure tts", String((e as Error)?.message || e).slice(0, 300));
+      }
+    }
     if (gkey && Deno.env.get("GROQ_TTS") === "on") { // off by default: Ahmed didn't like the Saudi voice (2026-11-23)
       try {
         return json(await groqSpeech(gkey, text, /[\u0600-\u06FF]/.test(text)));

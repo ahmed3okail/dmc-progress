@@ -2709,7 +2709,7 @@ class Component extends DCLogic {
     const local=()=>{if(!live())return;dead=true;this._speaking=false;if(quiet){hush();return;}const left=parts.slice(k).join(' ');if(left)this.botSpeakLocal(left,onEnd);else{if(onEnd)onEnd();else setTimeout(()=>this.wakeStart(),600);}};
     const req=t=>this._sb.functions.invoke('assistant',{body:{tts:true,text:t,lang:this.state.lang}}).then(r=>{const d=r&&r.data;if(!r||r.error||!d||!d.audio){if(d&&d.error==='not_configured')this._ttsOk=false;return r&&r.error&&r.error.context&&r.error.context.status===429?(this._ttsLimit=Date.now()+30*60000,null):null;}
       const bin=atob(d.audio),u8=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)u8[i]=bin.charCodeAt(i);
-      const rate=Number((/rate=(\d+)/i.exec(d.mime||'')||[])[1])||24000;return/wav/i.test(d.mime||'')?new Blob([u8],{type:'audio/wav'}):new Blob([wavHdr(u8.length,rate),u8],{type:'audio/wav'});}).catch(()=>null);
+      const rate=Number((/rate=(\d+)/i.exec(d.mime||'')||[])[1])||24000;return/wav/i.test(d.mime||'')?new Blob([u8],{type:'audio/wav'}):/mpeg|mp3/i.test(d.mime||'')?new Blob([u8],{type:'audio/mpeg'}):new Blob([wavHdr(u8.length,rate),u8],{type:'audio/wav'});}).catch(()=>null);
     const pump=()=>{if(!live()||busy)return;if(k>=jobs.length){if(closed)done();return;}busy=true;
       jobs[k].then(blob=>{if(!live())return;if(!blob){local();return;}
         const url=URL.createObjectURL(blob),au=new Audio(url);this._audio=au;let fin=false;
