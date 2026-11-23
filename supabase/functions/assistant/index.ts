@@ -4,13 +4,13 @@
 // data this user can already see in the app (RLS applies before it leaves the DB).
 // Secrets (Supabase › Edge Functions › Secrets):
 //   GEMINI_API_KEY          required — Google AI Studio API key (never in the app files)
-//   GEMINI_MODEL            optional — default gemini-3.8-flash
-//   GEMINI_FALLBACK_MODEL   optional — used when the main model is over its free quota or not available; default gemini-3.5-flash-lite ("" = none)
+//   GEMINI_MODEL            optional — default gemini-3.5-flash-lite (fast; 3.8-flash was answering 503 "high demand" most of the time)
+//   GEMINI_FALLBACK_MODEL   optional — used when the main model is over its free quota or not available; default gemini-3.1-flash-lite ("" = none)
 //   (then up to 3 more flash models that Google lists for this key are tried automatically)
 //   ASSISTANT_DAILY_LIMIT   optional — questions per user per day (default 60)
 //   GEMINI_TTS_MODEL        optional — voice for read-aloud answers ({tts:true,text}); default gemini-3.8-flash-tts
 //   GEMINI_TTS_FALLBACK_MODEL optional — default gemini-3.8-flash-lite-tts ("" = none)
-//   GEMINI_TTS_VOICE        optional — prebuilt voice name, default Kore
+//   GEMINI_TTS_VOICE        optional — prebuilt voice name, default Charon (male, for "Fateen"; was Kore)
 import { GoogleGenAI } from "npm:@google/genai@1";
 import { createClient } from "npm:@supabase/supabase-js@2.45.4";
 
@@ -92,7 +92,7 @@ Deno.serve(async (req) => {
   if (body.tts) {
     const text = String(body.text || "").replace(/[\u2066-\u2069\u2060]/g, "").trim().slice(0, 700);
     if (!text) return json({ error: "empty_q" }, 400);
-    const voice = Deno.env.get("GEMINI_TTS_VOICE") || "Kore";
+    const voice = Deno.env.get("GEMINI_TTS_VOICE") || "Charon";
     const tm = [Deno.env.get("GEMINI_TTS_MODEL") || "gemini-3.8-flash-tts", Deno.env.get("GEMINI_TTS_FALLBACK_MODEL") ?? "gemini-3.8-flash-lite-tts"]
       .filter((x, i, a) => x && a.indexOf(x) === i);
     let lastT = { code: "failed", status: 500, retry: false };
@@ -147,8 +147,8 @@ Deno.serve(async (req) => {
   contents.push({ role: "user", parts: [{ text: "App data (JSON):\n" + ctx }, { text: "Question: " + q }] });
 
   const ai = new GoogleGenAI({ apiKey: key });
-  const main = Deno.env.get("GEMINI_MODEL") || "gemini-3.8-flash";
-  const fb = Deno.env.get("GEMINI_FALLBACK_MODEL") ?? "gemini-3.5-flash-lite";
+  const main = Deno.env.get("GEMINI_MODEL") || "gemini-3.5-flash-lite";
+  const fb = Deno.env.get("GEMINI_FALLBACK_MODEL") ?? "gemini-3.1-flash-lite";
   // Other text models this key can use (asked from Google, cached while the function is warm),
   // tried after the two above when they are busy or missing.
   const extra = await textModels(key);
