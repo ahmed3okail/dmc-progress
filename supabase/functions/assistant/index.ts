@@ -188,6 +188,8 @@ async function groqSpeech(key: string, text: string, ar: boolean): Promise<{ aud
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: CORS });
   if (req.method !== "POST") return json({ error: "method" }, 405);
+  // Warm-up call when the Fateen panel opens: wakes the function so the first question doesn't wait.
+  if (new URL(req.url).searchParams.get("ping") === "1") return json({ ok: true });
   const key = Deno.env.get("GEMINI_API_KEY") || "";
   const gkey = Deno.env.get("GROQ_API_KEY") || "";
   if (!key && !gkey) return json({ error: "not_configured" }, 503);
@@ -200,7 +202,7 @@ Deno.serve(async (req) => {
   const { data: u } = await sb.auth.getUser();
   if (!u?.user) return json({ error: "auth" }, 401);
 
-  let body: { q?: string; history?: { q: string; a: string }[]; ctx?: unknown; lang?: string; tts?: boolean; text?: string };
+  let body: { q?: string; history?: { q: string; a: string }[]; ctx?: unknown; lang?: string; tts?: boolean; text?: string; stream?: boolean };
   try { body = await req.json(); } catch { return json({ error: "bad_json" }, 400); }
 
   // Read-aloud: turn an answer into speech with a Gemini TTS model (REST, v1beta).
@@ -276,6 +278,65 @@ Deno.serve(async (req) => {
     }
     gm.push({ role: "user", content: "App data (JSON; {cols, rows} = a table):\n" + slim(body.ctx) + "\n\nQuestion: " + q });
     let gl = { code: "failed", status: 500, retry: false };
+    // Word-by-word answer (body.stream): pass Groq's tokens straight to the app as plain text.
+    // Only when Groq accepts the request; otherwise continue with the normal (JSON) path below.
+    if (body.stream) {
+      for (const model of await groqModels(gkey)) {
+        try {
+          const res = await fetch(GROQ + "/chat/completions", {
+            method: "POST",
+            headers: { "Content-Type": "application/json", Authorization: "Bearer " + gkey },
+            body: JSON.stringify({
+              model, stream: true, messages: [{ role: "system", content: SYSTEM }, ...gm], temperature: 0.2, max_tokens: 700,
+              ...(/gpt-oss/i.test(model) ? { reasoning_effort: "low" } : {}),
+            }),
+          });
+          if (!res.ok || !res.body) {
+            const msg = (await res.text().catch(() => "")).slice(0, 400);
+            const e = new Error(msg) as Error & { status?: number };
+            e.status = res.status;
+            throw e;
+          }
+          const enc = new TextEncoder(), dec = new TextDecoder();
+          const reader = res.body.getReader();
+          const out = new ReadableStream({
+            async start(ctl) {
+              let buf = "";
+              try {
+                for (;;) {
+                  const { value, done } = await reader.read();
+                  if (done) break;
+                  buf += dec.decode(value, { stream: true });
+                  let i;
+                  while ((i = buf.indexOf("\n")) >= 0) {
+                    const line = buf.slice(0, i).trim();
+                    buf = buf.slice(i + 1);
+                    if (!line.startsWith("data:")) continue;
+                    const data = line.slice(5).trim();
+                    if (data === "[DONE]") continue;
+                    try {
+                      const d = JSON.parse(data)?.choices?.[0]?.delta?.content;
+                      if (d) ctl.enqueue(enc.encode(String(d)));
+                    } catch (_e) { /* ignore a partial line */ }
+                  }
+                }
+              } catch (e) {
+                console.error("groq stream", model, String((e as Error)?.message || e).slice(0, 200));
+              }
+              ctl.close();
+            },
+          });
+          return new Response(out, {
+            headers: { ...CORS, "Content-Type": "text/plain; charset=utf-8", "Cache-Control": "no-cache", "X-Model": "groq:" + model, "X-Left": String(left), "Access-Control-Expose-Headers": "X-Model, X-Left" },
+          });
+        } catch (e) {
+          const st = Number((e as { status?: number })?.status || 0);
+          gl = st === 413 ? { code: "rate", status: 429, retry: true } : errCode(e);
+          console.error("groq", model, gl.code, String((e as Error)?.message || e).slice(0, 300));
+          if (gl.code === "bad_key") break;
+        }
+      }
+    } else
     for (const model of await groqModels(gkey)) {
       try {
         const text = (await groqAnswer(gkey, model, SYSTEM, gm)).replace(/\*\*/g, "").replace(/<think>[\s\S]*?<\/think>/g, "").trim();

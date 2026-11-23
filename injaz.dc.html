@@ -2701,7 +2701,7 @@ class Component extends DCLogic {
     r.onerror=e=>{if(e.error==='not-allowed'||e.error==='service-not-allowed'){denied=true;try{localStorage.setItem('dmc-erp:wake','0');}catch(x){}this.setState({wakeOn:false});this.toast(this.T().micDenied);}};
     r.onend=()=>{this._wake=null;if(denied)return;if(hit!==null)this.wakeHit(hit);else setTimeout(()=>this.wakeStart(),400);};
     this._wake=r;try{r.start();}catch(e){this._wake=null;}}
-  wakeHit(rest){this.setState({botOpen:true,chatOpen:false,notifOpen:false,settings:false});const ask=this._botAsk;if(!ask)return;
+  wakeHit(rest){this.aiWarm();this.setState({botOpen:true,chatOpen:false,notifOpen:false,settings:false});const ask=this._botAsk;if(!ask)return;
     if(rest&&rest.split(/\s+/).length>=2){setTimeout(()=>ask(rest,true),250);return;}
     this.botSpeak(this.T().wakeHello,()=>this.botListen(ask));}
   botListen(askFn){if(this._rec){try{this._rec.stop();}catch(e){}return;}const SR=window.SpeechRecognition||window.webkitSpeechRecognition;if(!SR)return;
@@ -2712,10 +2712,25 @@ class Component extends DCLogic {
     r.onend=()=>{this._rec=null;this.setState({botMic:false});const q=(fin||(!bad&&this.state.botTxt)||'').trim();if(q)askFn(q,true);setTimeout(()=>this.wakeStart(),2500);};
     this._rec=r;this.setState({botMic:true,botTxt:''});try{r.start();}catch(e){this._rec=null;this.setState({botMic:false});}}
   async botAsk(id,q,history,ctx,voice){const upd=o=>this.setState(st=>({botMsgs:(st.botMsgs||[]).map(m=>m.id===id?Object.assign({},m,o):m)}),()=>{const el=document.getElementById('dmc-bot-scroll');if(el)el.scrollTop=el.scrollHeight;});
+    try{const st=await this.botStream(id,q,history,ctx,voice,upd);if(st)return;}catch(e){}
     try{const r=await this._sb.functions.invoke('assistant',{body:{q,history,ctx,lang:this.state.lang}});
       if(r.error){let code='failed';try{const b=await r.error.context.json();code=b.error||code;}catch(e){}upd({wait:false,err:code});return;}
       const d=r.data||{};if(d.refused||!d.answer){upd({wait:false,err:d.error||'refused'});return;}upd({wait:false,ai:d.answer,left:d.left});if(voice)this.botSpeak(d.answer);}
     catch(e){upd({wait:false,err:navigator.onLine===false?'offline':'failed'});}}
+  async aiHdr(){const c=connCfg();const {data}=await this._sb.auth.getSession();const tk=data&&data.session&&data.session.access_token;if(!c.url||!tk)return null;return{url:c.url.replace(/\/+$/,'')+'/functions/v1/assistant',h:{Authorization:'Bearer '+tk,apikey:c.key,'Content-Type':'application/json'}};}
+  async aiWarm(){if(!this.live()||this.state.auth!=='ready'||!this._sb||navigator.onLine===false)return;const n=Date.now();if(this._warmAt&&n-this._warmAt<240000)return;this._warmAt=n;try{const a=await this.aiHdr();if(a)fetch(a.url+'?ping=1',{method:'POST',headers:a.h,body:'{}'}).catch(()=>{});}catch(e){}}
+  // Streams the answer word by word. Returns true when it handled the reply, false to fall back to the normal call.
+  async botStream(id,q,history,ctx,voice,upd){if(typeof fetch!=='function'||typeof TextDecoder==='undefined')return false;const a=await this.aiHdr();if(!a)return false;
+    const r=await fetch(a.url,{method:'POST',headers:a.h,body:JSON.stringify({q,history,ctx,lang:this.state.lang,stream:true})});
+    const ct=(r.headers.get('content-type')||'');
+    if(!ct.includes('text/plain')||!r.body){let d={};try{d=await r.json();}catch(e){return false;}
+      if(!r.ok||d.refused||!d.answer){upd({wait:false,err:d.error||'failed'});return true;}upd({wait:false,ai:d.answer,left:d.left});if(voice)this.botSpeak(d.answer);return true;}
+    const left=r.headers.get('x-left'),rd=r.body.getReader(),dec=new TextDecoder();let txt='',last=0,tm=null;
+    const show=()=>{tm=null;last=Date.now();upd({wait:false,ai:txt.replace(/<think>[\s\S]*?(<\/think>|$)/g,'').replace(/\*\*/g,'').trimStart(),left:left==null?undefined:Number(left)});};
+    try{for(;;){const {done,value}=await rd.read();if(done)break;txt+=dec.decode(value,{stream:true});if(!tm){const w=Math.max(0,60-(Date.now()-last));tm=setTimeout(show,w);}}}
+    catch(e){if(!txt){upd({wait:false,err:navigator.onLine===false?'offline':'failed'});return true;}}
+    if(tm)clearTimeout(tm);txt=(txt+dec.decode()).replace(/<think>[\s\S]*?<\/think>/g,'').replace(/\*\*/g,'').trim();
+    if(!txt){upd({wait:false,err:'empty'});return true;}upd({wait:false,ai:txt,left:left==null?undefined:Number(left)});if(voice)this.botSpeak(txt);return true;}
   D(){const c=this.cfg(),m=this._memo;if(m&&m.data===this.state.data&&m.stale===c.stale&&m.thr===c.thr&&m.cut===c.cut)return m.D;const D=derive(this.state.data,c);this._memo={data:this.state.data,stale:c.stale,thr:c.thr,cut:c.cut,D};return D;}
   top(){try{window.scrollTo(0,0);}catch(e){}}
   formFrom(a){const src=a.draft||a.returned;
@@ -3794,7 +3809,7 @@ class Component extends DCLogic {
       bot={on:!!s.botOpen,wakeOn:!!s.wakeOn,wakeLbl:s.wide?(s.wakeOn?t.wakeOnL:t.wakeOffL):(s.wakeOn?'👂 ✓':'👂'),wakeBg:s.wakeOn?'#ff7a59':'#363d52',wakeFg:s.wakeOn?'#1b1a17':'#e8e9f1',wideP:!!s.wide,pTop:s.wide?'auto':'0',pBot:s.wide?'16px':'0',pEnd:s.wide?'16px':'0',pW:s.wide?'420px':'100%',pH:s.wide?'min(82vh,720px)':'100dvh',pR:s.wide?'20px':'0',toggleWake:()=>this.wakeSet(!s.wakeOn),say:!!s.botSay,stop:()=>this.botStop(),voiceLbl:s.botVoice===false?'🔇':'🔊',voiceTip:s.botVoice===false?t.botVoiceOff:t.botVoiceOn,voiceBg:s.botVoice===false?'#363d52':'#2f5f5a',toggleVoice:()=>{const v=s.botVoice===false;try{localStorage.setItem('dmc-erp:botVoice',v?'1':'0');}catch(e){}if(!v)this.botStop();this.setState({botVoice:v});this.toast(v?t.botVoiceOn:t.botVoiceOff);},canAi:live,aiOn,aiLbl:aiOn?'✨ AI ✓':'✨ AI',aiBg:aiOn?'#ff7a59':'#363d52',aiFg:aiOn?'#1b1a17':'#e8e9f1',toggleAi:()=>{const v=!s.botAI;try{localStorage.setItem('dmc-erp:botAI',v?'1':'0');}catch(e){}this.setState({botAI:v});},subTxt:aiOn?t.botSubAi:t.botSub,msgs,hasMsgs:msgs.length>0,noMsgs:!msgs.length,txt:s.botTxt||'',quick:QK.map(k=>({label:t[k],ask:()=>ask(t[k],false,true)})),
         canMic:!!(typeof window!=='undefined'&&(window.SpeechRecognition||window.webkitSpeechRecognition)),micOn:!!s.botMic,micBg:s.botMic?'#e85d3c':'#3a4260',micFg:s.botMic?'#fff':'#e8e9f1',micIcon:ico('mic',s.botMic?'#ffffff':'#e8e9f1'),mic:()=>this.botListen(ask),ph:s.botMic?t.botListening:t.botPh,
         onTxt:e=>this.setState({botTxt:e.target.value}),send:()=>ask(s.botTxt),onKey:e=>{if(e.key==='Enter'){e.preventDefault();ask(e.target.value);}},
-        open:()=>this.setState({botOpen:true,chatOpen:false,notifOpen:false,settings:false},()=>setTimeout(scr,30)),close:()=>{try{window.speechSynthesis&&window.speechSynthesis.cancel();}catch(e){}this.ttsStop();if(this._rec)try{this._rec.abort();}catch(e){}this.setState({botOpen:false});},clear:()=>this.setState({botMsgs:[]}),
+        open:()=>{this.aiWarm();this.setState({botOpen:true,chatOpen:false,notifOpen:false,settings:false},()=>setTimeout(scr,30));},close:()=>{try{window.speechSynthesis&&window.speechSynthesis.cancel();}catch(e){}this.ttsStop();if(this._rec)try{this._rec.abort();}catch(e){}this.setState({botOpen:false});},clear:()=>this.setState({botMsgs:[]}),
         fab:!s.botOpen&&!s.chatOpen&&!s.report&&!s.notifOpen,fabB:s.wide?'22px':'84px',icon:ico('bot','#ffffff')};
     }
     return{bot,...liveVals,qcV,qcIcon:ico('qc','#0f3d3e'),canPw,usersList,uTree,uViews,uTreeOn:show.users&&s.uView==='tree',uListOn:s.uView!=='tree'&&s.uView!=='proj',uProjOn:show.users&&s.uView==='proj',uProj,uNoTeam,uNoTeamOn:show.users&&uNoTeam.length>0,uNoTeamTxt:t.uNoTeam(uNoTeam.length),uNoTeamCodes:uNoTeam.join(', '),uNoTeamGo:()=>this.setState({uView:'proj'}),edV,usersEmpty:show.users&&!usersList.length,uStats,uq:s.uq,onUq:e=>this.setState({uq:e.target.value}),nuOpen:s.nuOpen,nuBtn:s.nuOpen?t.nuClose:t.nuOpen,toggleNu:()=>this.setState({nuOpen:!s.nuOpen}),nuV,permHead,permCells,
