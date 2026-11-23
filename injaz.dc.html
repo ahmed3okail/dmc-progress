@@ -2664,13 +2664,21 @@ class Component extends DCLogic {
     if(!clean||!(this.live()&&this._sb&&this.state.auth==='ready'&&navigator.onLine!==false&&this._ttsOk!==false)){this.botSpeakLocal(text,onEnd);return;}
     this.ttsStop();try{window.speechSynthesis&&window.speechSynthesis.cancel();}catch(e){}this._speaking=true;if(this._wake)try{this._wake.abort();}catch(e){}
     const tk=this._ttsTk,done=()=>{if(tk!==this._ttsTk)return;this._speaking=false;if(onEnd)onEnd();else setTimeout(()=>this.wakeStart(),600);},fall=()=>{if(tk!==this._ttsTk)return;this._speaking=false;this.botSpeakLocal(text,onEnd);};
-    this._sb.functions.invoke('assistant',{body:{tts:true,text:clean.replace(/[•·]/g,'،').slice(0,700),lang:this.state.lang}}).then(r=>{if(tk!==this._ttsTk)return;const d=r&&r.data;
-      if(!r||r.error||!d||!d.audio){if(d&&d.error==='not_configured')this._ttsOk=false;fall();return;}
+    // Split into a short first piece (fast to make, starts playing in ~2 s) and up to 2 longer ones,
+    // ask for all of them at once, and play them in order.
+    const full=clean.replace(/[•·]/g,'،').slice(0,700),parts=[];{let rest=full;const cut=(t,max)=>{if(t.length<=max)return t.length;const sub=t.slice(0,max);let k=Math.max(sub.lastIndexOf('\n'),sub.lastIndexOf('. '),sub.lastIndexOf('، '),sub.lastIndexOf('؟'),sub.lastIndexOf('! '),sub.lastIndexOf(': '));if(k<max*0.4)k=sub.lastIndexOf(' ');return k>0?k+1:max;};
+      while(rest.trim()&&parts.length<3){const n=parts.length===2?rest.length:cut(rest,parts.length?330:130);const p0=rest.slice(0,n).trim();if(p0)parts.push(p0);rest=rest.slice(n);}}
+    const req=t=>this._sb.functions.invoke('assistant',{body:{tts:true,text:t,lang:this.state.lang}}).then(r=>{const d=r&&r.data;if(!r||r.error||!d||!d.audio){if(d&&d.error==='not_configured')this._ttsOk=false;return null;}
       const bin=atob(d.audio),u8=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)u8[i]=bin.charCodeAt(i);
-      const rate=Number((/rate=(\d+)/i.exec(d.mime||'')||[])[1])||24000,blob=/wav/i.test(d.mime||'')?new Blob([u8],{type:'audio/wav'}):new Blob([wavHdr(u8.length,rate),u8],{type:'audio/wav'});
-      const url=URL.createObjectURL(blob),au=new Audio(url);this._audio=au;let fin=false;
-      const end=ok=>{if(fin)return;fin=true;try{URL.revokeObjectURL(url);}catch(e){}if(this._audio===au)this._audio=null;if(ok)done();else fall();};
-      au.onended=()=>end(true);au.onerror=()=>end(false);const pr=au.play();if(pr&&pr.catch)pr.catch(()=>end(false));}).catch(fall);}
+      const rate=Number((/rate=(\d+)/i.exec(d.mime||'')||[])[1])||24000;return/wav/i.test(d.mime||'')?new Blob([u8],{type:'audio/wav'}):new Blob([wavHdr(u8.length,rate),u8],{type:'audio/wav'});}).catch(()=>null);
+    const jobs=parts.map(req);
+    const play=k=>{if(tk!==this._ttsTk)return;if(k>=jobs.length){done();return;}
+      jobs[k].then(blob=>{if(tk!==this._ttsTk)return;
+        if(!blob){this._speaking=false;const left=parts.slice(k).join(' ');if(left)this.botSpeakLocal(left,onEnd);else done();return;}
+        const url=URL.createObjectURL(blob),au=new Audio(url);this._audio=au;let fin=false;
+        const end=ok=>{if(fin)return;fin=true;try{URL.revokeObjectURL(url);}catch(e){}if(this._audio===au)this._audio=null;if(tk!==this._ttsTk)return;if(ok)play(k+1);else{this._speaking=false;this.botSpeakLocal(parts.slice(k).join(' '),onEnd);}};
+        au.onended=()=>end(true);au.onerror=()=>end(false);const pr=au.play();if(pr&&pr.catch)pr.catch(()=>end(false));});};
+    if(!parts.length){fall();return;}play(0);}
   botSpeakLocal(text,onEnd){const done=()=>{this._speaking=false;if(onEnd)onEnd();else setTimeout(()=>this.wakeStart(),600);};
     try{const ss=window.speechSynthesis;if(!ss||!text){done();return;}ss.cancel();this._speaking=true;if(this._wake)try{this._wake.abort();}catch(e){}
       const L=this.state.lang==='ar'?'ar':'en',u=new SpeechSynthesisUtterance(String(text).replace(/[⁦-⁩⁠]/g,'').replace(/[•·]/g,'،').slice(0,700));u.lang=L==='ar'?'ar-EG':'en-US';const v=(ss.getVoices()||[]).find(v=>v.lang&&v.lang.toLowerCase().indexOf(L)===0);if(v)u.voice=v;

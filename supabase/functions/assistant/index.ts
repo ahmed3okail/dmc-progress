@@ -100,14 +100,31 @@ async function groqModels(key: string): Promise<string[]> {
     return ["openai/gpt-oss-120b"];
   }
 }
-// Groq's free tier allows only a few thousand tokens per minute, so it gets a smaller copy of the data.
+// Groq's free tier allows only ~7,000-8,000 input tokens per minute, so it gets a much smaller copy
+// of the data: lists of objects become {cols, rows} tables (field names once), and the lists are cut
+// until the JSON is under ~10,000 characters (about 3,500 tokens).
 // deno-lint-ignore no-explicit-any
-function slim(ctx: any): any {
-  if (!ctx || typeof ctx !== "object") return ctx;
-  const c = { ...ctx };
-  const cut: Record<string, number> = { buildings: 40, mostDelayed: 15, startingNext14Days: 15, mentioned: 25 };
-  for (const k in cut) if (Array.isArray(c[k])) c[k] = c[k].slice(0, cut[k]);
-  return c;
+function table(list: any[]): any {
+  if (!Array.isArray(list) || !list.length || typeof list[0] !== "object") return list;
+  const cols = Object.keys(list[0]);
+  return { cols, rows: list.map((o) => cols.map((c) => (o[c] && typeof o[c] === "object" ? table(o[c]) : o[c]))) };
+}
+// deno-lint-ignore no-explicit-any
+function slim(ctx: any): string {
+  if (!ctx || typeof ctx !== "object") return JSON.stringify(ctx ?? {});
+  const cut: Record<string, number> = { buildings: 25, mostDelayed: 10, startingNext14Days: 8, mentioned: 15 };
+  for (let round = 0; round < 6; round++) {
+    // deno-lint-ignore no-explicit-any
+    const c: any = { ...ctx };
+    for (const k in cut) if (Array.isArray(c[k])) c[k] = table(c[k].slice(0, cut[k]));
+    // deno-lint-ignore no-explicit-any
+    if (Array.isArray(c.projects)) c.projects = c.projects.map((p: any) => ({ ...p, disciplines: table(p.disciplines || []) }));
+    for (const k in c) if (Array.isArray(c[k])) c[k] = table(c[k]);
+    const out = JSON.stringify(c);
+    if (out.length <= 10000 || round === 5) return out.slice(0, 14000);
+    for (const k in cut) cut[k] = Math.max(3, Math.floor(cut[k] * 0.6));
+  }
+  return "{}";
 }
 async function groqAnswer(key: string, model: string, system: string, msgs: { role: string; content: string }[]): Promise<string> {
   const ctl = new AbortController();
@@ -117,7 +134,11 @@ async function groqAnswer(key: string, model: string, system: string, msgs: { ro
       method: "POST",
       signal: ctl.signal,
       headers: { "Content-Type": "application/json", Authorization: "Bearer " + key },
-      body: JSON.stringify({ model, messages: [{ role: "system", content: system }, ...msgs], temperature: 0.2, max_tokens: 1200 }),
+      body: JSON.stringify({
+        model, messages: [{ role: "system", content: system }, ...msgs], temperature: 0.2, max_tokens: 700,
+        // gpt-oss "thinks" first and those tokens count against the per-minute limit: keep it short.
+        ...(/gpt-oss/i.test(model) ? { reasoning_effort: "low" } : {}),
+      }),
     });
     // deno-lint-ignore no-explicit-any
     const j: any = await res.json().catch(() => ({}));
@@ -210,11 +231,11 @@ Deno.serve(async (req) => {
   // 1) Groq first when its key is set (fast); any failure falls through to Gemini.
   if (gkey) {
     const gm: { role: string; content: string }[] = [];
-    for (const h of hist) {
+    for (const h of hist.slice(-3)) {
       if (!h || !h.q || !h.a) continue;
-      gm.push({ role: "user", content: String(h.q).slice(0, 1000) }, { role: "assistant", content: String(h.a).slice(0, 2000) });
+      gm.push({ role: "user", content: String(h.q).slice(0, 400) }, { role: "assistant", content: String(h.a).slice(0, 600) });
     }
-    gm.push({ role: "user", content: "App data (JSON):\n" + JSON.stringify(slim(body.ctx ?? {})) + "\n\nQuestion: " + q });
+    gm.push({ role: "user", content: "App data (JSON; {cols, rows} = a table):\n" + slim(body.ctx) + "\n\nQuestion: " + q });
     let gl = { code: "failed", status: 500, retry: false };
     for (const model of await groqModels(gkey)) {
       try {
