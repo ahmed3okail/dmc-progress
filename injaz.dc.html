@@ -3682,7 +3682,7 @@ class Component extends DCLogic {
         if(has(q,['المشروع كله','كل المباني','all buildings','whole project'])){c.bn='';c.fl='';}
         if(c.pj&&c.bn&&!mine.some(a=>a.pid===c.pj.id&&a.bldg===c.bn)){c.bn='';c.fl='';}
         return c;};
-      const answer=(raw,prev,fresh,msg)=>{const c=parse(raw,prev,fresh),R={text:'',items:[],more:'',ctx:c,ctxL:'',acts:[]};
+      const answer=(raw,prev,fresh,msg)=>{if((()=>{const G=['hi','hello','hey','salam','sanad','السلام','عليكم','سلام','اهلا','أهلا','مرحبا','هاي','هلو','ازيك','إزيك','ازيكم','يا','سند','عامل','ايه','إيه','صباح','الخير','مساء','النور','good','morning','evening'],w=String(raw||'').toLowerCase().replace(/[!.,؟?،]/g,' ').split(/\s+/).filter(Boolean);return w.length>0&&w.length<=4&&w.every(x=>G.includes(x))&&!/^(صباح|good)/.test(w[0]);})())return{text:t.wakeHello+'\n\n'+t.botHello,items:[],more:'',ctx:null,ctxL:'',acts:[]};const c=parse(raw,prev,fresh),R={text:'',items:[],more:'',ctx:c,ctxL:'',acts:[]};
         if(c.ac){const a=c.ac,st=stOf(a),pr=prodOf(a);R.text=t.botAct(a.code,nm(a),locL(a),t[st[0]],p0(a.planned),p0(a.actual),sg(a.variance),a.ps,a.pf,person(a.eng),pr&&pr.fc&&a.actual<100?pr.fc:'');R.items=[actIt(a)];R.ctx=null;
           if(c.act==='open')R.auto=go(a.id);return R;}
         if(c.it==='brief'){const b=brief();b.ctx=null;b.acts=[];return b;}
@@ -3741,7 +3741,7 @@ class Component extends DCLogic {
         if(c.act==='open'){const k=['dash','week','review','qc'].find(canTab);openBtn(t.botOpenDash,k?goTab(k):null);R.text=t.botOpening;return R;}
         R.text=t.botDunno;R.ctx=null;return R;};
       const ms=s.botMsgs||[];
-      let pc=null;const ansOf=m=>{let A;if(m.brief){A=brief();pc=null;}else if(m.wait){A={text:t.botThinking,items:[],more:''};}else if(m.ai!=null&&!m.err){A={text:m.ai,items:[],more:''};pc=null;}else{const f=answer(m.q,pc,m.fresh,m);pc=f.ctx||null;A=m.err?{text:t.botAiErr(m.err)+(f.text!==t.botDunno?'\n\n'+f.text:''),items:f.items,more:f.more,ctxL:f.ctxL,acts:f.acts}:f;}return A;};
+      let pc=null;const ansOf=m=>{let A;if(m.brief){A=brief();pc=null;}else if(m.wait){A={text:t.botThinking,items:[],more:''};}else if(m.ai!=null&&!m.err){A={text:m.ai,items:[],more:''};pc=null;}else{const f=answer(m.q,pc,m.fresh,m);pc=f.ctx||null;A=m.err?{text:t.botAiErr(m.err)+'\n\n'+f.text,items:f.items,more:f.more,ctxL:f.ctxL,acts:f.acts}:f;}return A;};
       const msgs=ms.map((m,i)=>{let A;try{A=ansOf(m);}catch(e){console.error(e);A={text:t.botDunno,items:[],more:''};}const acts=A.acts||[];return{q:m.brief?t.qkBrief:m.q,a:A.text,items:A.items,hasItems:A.items.length>0,more:A.more,hasMore:!!A.more,ctxL:A.ctxL||'',hasCtx:!!A.ctxL,acts,hasActs:acts.length>0,hint:A.hint||'',hasHint:!!A.hint,isAi:m.ai!=null&&!m.err,aiTag:m.wait?'✨ …':'✨ AI',isBrief:!!m.brief,briefOff:()=>{try{localStorage.setItem('dmc-erp:briefOff','1');}catch(e){}this.setState({briefOff:true});this.toast(t.brOffToast);},showOff:!!m.brief&&!s.briefOff,showOn:!!m.brief&&!!s.briefOff,briefOn:()=>{try{localStorage.setItem('dmc-erp:briefOff','0');}catch(e){}this.setState({briefOff:false});}};});
       const QK=role==='site'?['qkBrief','qkMine','qkMiss','qkLate','qkRet','qkLook','qkQc']:role==='qc'?['qkBrief','qkQc','qkLook','qkProg','qkBld']:['qkBrief','qkProg','qkLate','qkBld','qkMiss','qkRev','qkFin','qkLook','qkQc'];
       const scr=()=>{const el=document.getElementById('dmc-bot-scroll');if(el)el.scrollTop=el.scrollHeight;};

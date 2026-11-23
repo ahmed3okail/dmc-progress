@@ -6,6 +6,7 @@
 //   GEMINI_API_KEY          required — Google AI Studio API key (never in the app files)
 //   GEMINI_MODEL            optional — default gemini-3.8-flash
 //   GEMINI_FALLBACK_MODEL   optional — used when the main model is over its free quota or not available; default gemini-3.5-flash-lite ("" = none)
+//   GEMINI_FALLBACK_MODEL2  optional — third model to try; default gemini-3.8-flash-lite ("" = none)
 //   ASSISTANT_DAILY_LIMIT   optional — questions per user per day (default 60)
 //   GEMINI_TTS_MODEL        optional — voice for read-aloud answers ({tts:true,text}); default gemini-3.8-flash-tts
 //   GEMINI_TTS_FALLBACK_MODEL optional — default gemini-3.8-flash-lite-tts ("" = none)
@@ -124,10 +125,17 @@ Deno.serve(async (req) => {
   const ai = new GoogleGenAI({ apiKey: key });
   const main = Deno.env.get("GEMINI_MODEL") || "gemini-3.8-flash";
   const fb = Deno.env.get("GEMINI_FALLBACK_MODEL") ?? "gemini-3.5-flash-lite";
-  const models = fb && fb !== main ? [main, fb] : [main];
+  const fb2 = Deno.env.get("GEMINI_FALLBACK_MODEL2") ?? "gemini-3.8-flash-lite";
+  const models = [main, fb, fb2].filter((x, i, a) => x && a.indexOf(x) === i);
+  const wait = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
   let last = { code: "failed", status: 500, retry: false };
-  for (const model of models) {
+  // Free-tier models often answer 503 "high demand" for a moment: try each model twice
+  // (short pause between), then move to the next model.
+  const tries = models.flatMap((m) => [m, m]);
+  for (let i = 0; i < tries.length; i++) {
+    const model = tries[i];
+    if (i > 0 && tries[i - 1] === model) await wait(1200);
     try {
       const r = await ai.models.generateContent({
         model,
@@ -144,6 +152,7 @@ Deno.serve(async (req) => {
       last = errCode(e);
       console.error("gemini", model, last.code, String((e as Error)?.message || e).slice(0, 300));
       if (!last.retry) break; // a bad key will not work with the fallback model either
+      if (last.code !== "unavailable" && tries[i + 1] === model) i++; // only "busy" is worth a second try on the same model
     }
   }
   return json({ error: last.code }, last.status);
