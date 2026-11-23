@@ -2659,16 +2659,16 @@ class Component extends DCLogic {
   pushDismiss(){try{localStorage.setItem('dmc-erp:pushAsk','no');}catch(e){}this.setState({pushAskHidden:true});}
   toast(m){clearTimeout(this._tt);this.setState({toast:m});this._tt=setTimeout(()=>this.setState({toast:''}),2800);}
   ttsStop(){this._ttsTk=(this._ttsTk||0)+1;if(this._audio){try{this._audio.pause();}catch(e){}this._audio=null;}}
-  // Read an answer aloud. Default = the phone's own voice (starts at once; Ahmed's choice 2026-11-23).
-  // Gemini's voice (cloud) is kept but off: set this._ttsCloud=true to use it again.
+  // Read an answer aloud with a cloud voice (Groq Orpheus first, Gemini backup, via the assistant function);
+  // the phone's own voice only when that fails (Ahmed: phone voice is female and bad Arabic). this._ttsCloud=false turns cloud off.
   botSpeak(text,onEnd){const clean=String(text||'').replace(/[⁦-⁩⁠]/g,'').trim();
-    if(!clean||!(this._ttsCloud&&this.live()&&this._sb&&this.state.auth==='ready'&&navigator.onLine!==false&&this._ttsOk!==false)){this.botSpeakLocal(text,onEnd);return;}
+    if(!clean||!(this._ttsCloud!==false&&this.live()&&this._sb&&this.state.auth==='ready'&&navigator.onLine!==false&&this._ttsOk!==false)){this.botSpeakLocal(text,onEnd);return;}
     this.ttsStop();try{window.speechSynthesis&&window.speechSynthesis.cancel();}catch(e){}this._speaking=true;if(this._wake)try{this._wake.abort();}catch(e){}
     const tk=this._ttsTk,done=()=>{if(tk!==this._ttsTk)return;this._speaking=false;if(onEnd)onEnd();else setTimeout(()=>this.wakeStart(),600);},fall=()=>{if(tk!==this._ttsTk)return;this._speaking=false;this.botSpeakLocal(text,onEnd);};
-    // Split into a short first piece (~75 chars, fast to make) and the rest (the free Gemini voice allows
-    // only a few requests a minute), ask for both at once, and play them in order.
+    // Split into a short first piece (~75 chars, fast to make) and pieces of up to ~190 chars (Groq's voice
+    // takes short inputs), ask for all at once, and play them in order.
     const full=clean.replace(/[•·]/g,'،').slice(0,700),parts=[];{let rest=full;const cut=(t,max)=>{if(t.length<=max)return t.length;const sub=t.slice(0,max);let k=Math.max(sub.lastIndexOf('\n'),sub.lastIndexOf('. '),sub.lastIndexOf('، '),sub.lastIndexOf('؟'),sub.lastIndexOf('! '),sub.lastIndexOf(': '));if(k<max*0.4)k=sub.lastIndexOf(' ');return k>0?k+1:max;};
-      while(rest.trim()&&parts.length<2){const n=parts.length===1?rest.length:cut(rest,75);const p0=rest.slice(0,n).trim();if(p0)parts.push(p0);rest=rest.slice(n);}}
+      while(rest.trim()&&parts.length<6){const n=parts.length===5?rest.length:cut(rest,parts.length?190:75);const p0=rest.slice(0,n).trim();if(p0)parts.push(p0);rest=rest.slice(n);}}
     const req=t=>this._sb.functions.invoke('assistant',{body:{tts:true,text:t,lang:this.state.lang}}).then(r=>{const d=r&&r.data;if(!r||r.error||!d||!d.audio){if(d&&d.error==='not_configured')this._ttsOk=false;return null;}
       const bin=atob(d.audio),u8=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)u8[i]=bin.charCodeAt(i);
       const rate=Number((/rate=(\d+)/i.exec(d.mime||'')||[])[1])||24000;return/wav/i.test(d.mime||'')?new Blob([u8],{type:'audio/wav'}):new Blob([wavHdr(u8.length,rate),u8],{type:'audio/wav'});}).catch(()=>null);

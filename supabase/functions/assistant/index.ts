@@ -8,7 +8,8 @@
 //   GEMINI_FALLBACK_MODEL   optional — used when the main model is over its free quota or not available; default gemini-3.1-flash-lite ("" = none)
 //   (then up to 3 more flash models that Google lists for this key are tried automatically)
 //   GROQ_API_KEY            optional — Groq key (console.groq.com). When set, Groq answers first (very fast)
-//                           and Gemini is the backup; text only (the voice stays Gemini).
+//                           and Gemini is the backup. Voice too: Orpheus Arabic (Saudi) / English on Groq,
+//                           GROQ_TTS_VOICE_AR / GROQ_TTS_VOICE_EN (default fahad / troy), GROQ_TTS=off to skip.
 //   GROQ_MODEL              optional — Groq model id; default = best one Groq lists for the key
 //   ASSISTANT_DAILY_LIMIT   optional — questions per user per day (default 60)
 //   GEMINI_TTS_MODEL        optional — voice for read-aloud answers ({tts:true,text}); default gemini-3.8-flash-tts
@@ -152,6 +153,38 @@ async function groqAnswer(key: string, model: string, system: string, msgs: { ro
   } finally { clearTimeout(tm); }
 }
 
+// ---------- Groq voice (Orpheus: Arabic / English), fast; Gemini voice is the backup ----------
+const GROQ_VOICE: Record<string, string> = {};
+const MALE = ["fahad", "sultan", "abdullah", "khalid", "omar", "faisal", "troy", "austin", "daniel"];
+async function groqSpeech(key: string, text: string, ar: boolean): Promise<{ audio: string; mime: string; model: string }> {
+  const model = Deno.env.get(ar ? "GROQ_TTS_MODEL_AR" : "GROQ_TTS_MODEL_EN") || (ar ? "canopylabs/orpheus-arabic-saudi" : "canopylabs/orpheus-v1-english");
+  let voice = Deno.env.get(ar ? "GROQ_TTS_VOICE_AR" : "GROQ_TTS_VOICE_EN") || GROQ_VOICE[model] || (ar ? "fahad" : "troy");
+  for (let attempt = 0; attempt < 2; attempt++) {
+    const res = await fetch(GROQ + "/audio/speech", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Authorization: "Bearer " + key },
+      body: JSON.stringify({ model, input: text, voice, response_format: "wav" }),
+    });
+    if (res.ok) {
+      const u8 = new Uint8Array(await res.arrayBuffer());
+      let bin = "";
+      for (let i = 0; i < u8.length; i += 0x8000) bin += String.fromCharCode(...u8.subarray(i, i + 0x8000));
+      GROQ_VOICE[model] = voice;
+      return { audio: btoa(bin), mime: "audio/wav", model: "groq:" + model + ":" + voice };
+    }
+    const msg = (await res.text().catch(() => "")).slice(0, 600);
+    console.error("groq tts", model, voice, res.status, msg);
+    // A wrong voice name: Groq lists the valid ones in the error; pick a male one if we can.
+    const names = (msg.match(/[A-Za-z]{3,}/g) || []).map((x) => x.toLowerCase());
+    const pick = MALE.find((m) => names.includes(m) && m !== voice);
+    if (res.status === 400 && /voice/i.test(msg) && pick) { voice = pick; continue; }
+    const e = new Error(msg) as Error & { status?: number };
+    e.status = res.status;
+    throw e;
+  }
+  throw new Error("groq tts voice");
+}
+
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: CORS });
   if (req.method !== "POST") return json({ error: "method" }, 405);
@@ -172,9 +205,14 @@ Deno.serve(async (req) => {
 
   // Read-aloud: turn an answer into speech with a Gemini TTS model (REST, v1beta).
   if (body.tts) {
-    if (!key) return json({ error: "not_configured" }, 503);
     const text = String(body.text || "").replace(/[\u2066-\u2069\u2060]/g, "").trim().slice(0, 700);
     if (!text) return json({ error: "empty_q" }, 400);
+    if (gkey && Deno.env.get("GROQ_TTS") !== "off") {
+      try {
+        return json(await groqSpeech(gkey, text, /[\u0600-\u06FF]/.test(text)));
+      } catch (_e) { /* logged in groqSpeech; fall back to Gemini below */ }
+    }
+    if (!key) return json({ error: "not_configured" }, 503);
     const voice = Deno.env.get("GEMINI_TTS_VOICE") || "Charon";
     const tm = [Deno.env.get("GEMINI_TTS_MODEL") || "gemini-3.8-flash-tts", Deno.env.get("GEMINI_TTS_FALLBACK_MODEL") ?? "gemini-3.8-flash-lite-tts"]
       .filter((x, i, a) => x && a.indexOf(x) === i);
