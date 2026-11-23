@@ -9,7 +9,7 @@
 //   (then up to 3 more flash models that Google lists for this key are tried automatically)
 //   GROQ_API_KEY            optional — Groq key (console.groq.com). When set, Groq answers first (very fast)
 //                           and Gemini is the backup. Voice too: Orpheus Arabic (Saudi) / English on Groq,
-//                           GROQ_TTS_VOICE_AR / GROQ_TTS_VOICE_EN (default fahad / troy), GROQ_TTS=off to skip.
+//                           GROQ_TTS=on to use it (off by default), GROQ_TTS_VOICE_AR / _EN.
 //   GROQ_MODEL              optional — Groq model id; default = best one Groq lists for the key
 //   ASSISTANT_DAILY_LIMIT   optional — questions per user per day (default 60)
 //   GEMINI_TTS_MODEL        optional — voice for read-aloud answers ({tts:true,text}); default gemini-3.8-flash-tts
@@ -207,7 +207,7 @@ Deno.serve(async (req) => {
   if (body.tts) {
     const text = String(body.text || "").replace(/[\u2066-\u2069\u2060]/g, "").trim().slice(0, 700);
     if (!text) return json({ error: "empty_q" }, 400);
-    if (gkey && Deno.env.get("GROQ_TTS") !== "off") {
+    if (gkey && Deno.env.get("GROQ_TTS") === "on") { // off by default: Ahmed didn't like the Saudi voice (2026-11-23)
       try {
         return json(await groqSpeech(gkey, text, /[\u0600-\u06FF]/.test(text)));
       } catch (_e) { /* logged in groqSpeech; fall back to Gemini below */ }
