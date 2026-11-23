@@ -1,5 +1,5 @@
 // Injaz AI assistant "Fateen" (Edge Function "assistant", verify_jwt on).
-// Engine: Google Gemini API (Google AI Studio key), official SDK @google/genai.
+// Engines: Groq (OpenAI-compatible REST, fast) when GROQ_API_KEY is set, else / then Google Gemini (SDK @google/genai).
 // The browser sends the question, the recent chat and a compact summary of the
 // data this user can already see in the app (RLS applies before it leaves the DB).
 // Secrets (Supabase › Edge Functions › Secrets):
@@ -7,6 +7,9 @@
 //   GEMINI_MODEL            optional — default gemini-3.5-flash-lite (fast; 3.8-flash was answering 503 "high demand" most of the time)
 //   GEMINI_FALLBACK_MODEL   optional — used when the main model is over its free quota or not available; default gemini-3.1-flash-lite ("" = none)
 //   (then up to 3 more flash models that Google lists for this key are tried automatically)
+//   GROQ_API_KEY            optional — Groq key (console.groq.com). When set, Groq answers first (very fast)
+//                           and Gemini is the backup; text only (the voice stays Gemini).
+//   GROQ_MODEL              optional — Groq model id; default = best one Groq lists for the key
 //   ASSISTANT_DAILY_LIMIT   optional — questions per user per day (default 60)
 //   GEMINI_TTS_MODEL        optional — voice for read-aloud answers ({tts:true,text}); default gemini-3.8-flash-tts
 //   GEMINI_TTS_FALLBACK_MODEL optional — default gemini-3.8-flash-lite-tts ("" = none)
@@ -71,11 +74,68 @@ async function textModels(key: string): Promise<string[]> {
   }
 }
 
+// ---------- Groq (OpenAI-compatible chat completions) ----------
+const GROQ = "https://api.groq.com/openai/v1";
+let GROQ_MODELS: { at: number; list: string[] } | null = null;
+async function groqModels(key: string): Promise<string[]> {
+  const want = Deno.env.get("GROQ_MODEL");
+  if (want) return [want];
+  if (GROQ_MODELS && Date.now() - GROQ_MODELS.at < 3600_000) return GROQ_MODELS.list;
+  try {
+    const res = await fetch(GROQ + "/models", { headers: { Authorization: "Bearer " + key } });
+    // deno-lint-ignore no-explicit-any
+    const j: any = await res.json();
+    if (!res.ok) { const e = new Error(JSON.stringify(j?.error || j).slice(0, 300)) as Error & { status?: number }; e.status = res.status; throw e; }
+    // deno-lint-ignore no-explicit-any
+    const ids: string[] = (j?.data || []).filter((m: any) => m.active !== false).map((m: any) => String(m.id));
+    const chat = ids.filter((id) => !/whisper|tts|guard|playai|orpheus|compound|embed|vision-only|prompt-guard/i.test(id));
+    const pref = [/gpt-oss-120b/i, /llama-4-maverick/i, /llama-4-scout/i, /llama-3\.3-70b/i, /qwen/i, /kimi/i, /gpt-oss/i, /llama/i];
+    const list: string[] = [];
+    for (const r of pref) for (const id of chat) if (r.test(id) && !list.includes(id)) list.push(id);
+    GROQ_MODELS = { at: Date.now(), list: list.slice(0, 2) };
+    console.log("groq models", list.join(","));
+    return GROQ_MODELS.list;
+  } catch (e) {
+    console.error("groq models", String((e as Error)?.message || e).slice(0, 200));
+    return ["openai/gpt-oss-120b"];
+  }
+}
+// Groq's free tier allows only a few thousand tokens per minute, so it gets a smaller copy of the data.
+// deno-lint-ignore no-explicit-any
+function slim(ctx: any): any {
+  if (!ctx || typeof ctx !== "object") return ctx;
+  const c = { ...ctx };
+  const cut: Record<string, number> = { buildings: 40, mostDelayed: 15, startingNext14Days: 15, mentioned: 25 };
+  for (const k in cut) if (Array.isArray(c[k])) c[k] = c[k].slice(0, cut[k]);
+  return c;
+}
+async function groqAnswer(key: string, model: string, system: string, msgs: { role: string; content: string }[]): Promise<string> {
+  const ctl = new AbortController();
+  const tm = setTimeout(() => ctl.abort(), 20000);
+  try {
+    const res = await fetch(GROQ + "/chat/completions", {
+      method: "POST",
+      signal: ctl.signal,
+      headers: { "Content-Type": "application/json", Authorization: "Bearer " + key },
+      body: JSON.stringify({ model, messages: [{ role: "system", content: system }, ...msgs], temperature: 0.2, max_tokens: 1200 }),
+    });
+    // deno-lint-ignore no-explicit-any
+    const j: any = await res.json().catch(() => ({}));
+    if (!res.ok) {
+      const e = new Error(JSON.stringify(j?.error || j).slice(0, 400)) as Error & { status?: number };
+      e.status = res.status;
+      throw e;
+    }
+    return String(j?.choices?.[0]?.message?.content || "");
+  } finally { clearTimeout(tm); }
+}
+
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: CORS });
   if (req.method !== "POST") return json({ error: "method" }, 405);
-  const key = Deno.env.get("GEMINI_API_KEY");
-  if (!key) return json({ error: "not_configured" }, 503);
+  const key = Deno.env.get("GEMINI_API_KEY") || "";
+  const gkey = Deno.env.get("GROQ_API_KEY") || "";
+  if (!key && !gkey) return json({ error: "not_configured" }, 503);
 
   // The caller's own session: RLS applies to everything below.
   const auth = req.headers.get("Authorization") || "";
@@ -90,6 +150,7 @@ Deno.serve(async (req) => {
 
   // Read-aloud: turn an answer into speech with a Gemini TTS model (REST, v1beta).
   if (body.tts) {
+    if (!key) return json({ error: "not_configured" }, 503);
     const text = String(body.text || "").replace(/[\u2066-\u2069\u2060]/g, "").trim().slice(0, 700);
     if (!text) return json({ error: "empty_q" }, 400);
     const voice = Deno.env.get("GEMINI_TTS_VOICE") || "Charon";
@@ -146,6 +207,30 @@ Deno.serve(async (req) => {
   }
   contents.push({ role: "user", parts: [{ text: "App data (JSON):\n" + ctx }, { text: "Question: " + q }] });
 
+  // 1) Groq first when its key is set (fast); any failure falls through to Gemini.
+  if (gkey) {
+    const gm: { role: string; content: string }[] = [];
+    for (const h of hist) {
+      if (!h || !h.q || !h.a) continue;
+      gm.push({ role: "user", content: String(h.q).slice(0, 1000) }, { role: "assistant", content: String(h.a).slice(0, 2000) });
+    }
+    gm.push({ role: "user", content: "App data (JSON):\n" + JSON.stringify(slim(body.ctx ?? {})) + "\n\nQuestion: " + q });
+    let gl = { code: "failed", status: 500, retry: false };
+    for (const model of await groqModels(gkey)) {
+      try {
+        const text = (await groqAnswer(gkey, model, SYSTEM, gm)).replace(/\*\*/g, "").replace(/<think>[\s\S]*?<\/think>/g, "").trim();
+        if (text) return json({ answer: text, left, model: "groq:" + model });
+      } catch (e) {
+        const st = Number((e as { status?: number })?.status || 0);
+        gl = st === 413 ? { code: "rate", status: 429, retry: true } : errCode(e);
+        console.error("groq", model, gl.code, String((e as Error)?.message || e).slice(0, 300));
+        if (gl.code === "bad_key") break;
+      }
+    }
+    if (!key) return json({ error: gl.code }, gl.status);
+  }
+
+  // 2) Gemini.
   const ai = new GoogleGenAI({ apiKey: key });
   const main = Deno.env.get("GEMINI_MODEL") || "gemini-3.5-flash-lite";
   const fb = Deno.env.get("GEMINI_FALLBACK_MODEL") ?? "gemini-3.1-flash-lite";
